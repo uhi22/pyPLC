@@ -1,6 +1,6 @@
-#Some try-outs with Python and network adaptor low-level communiation
+# Some try-outs with Python and network adaptor low-level communiation
 
-##Installation / Preconditions
+## Installation / Preconditions
 Tested with windows10
 
 1.	Install python (windows automatically launches the installer if you type „python“ into the search field of the task bar)
