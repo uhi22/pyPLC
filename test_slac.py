@@ -1,11 +1,11 @@
 
-# Vorraussetzungen:
-# Library pcap-ct (nicht libpcap, nicht pylibpcap, nicht pypcap)
+# Preconditions:
+# Library pcap-ct (not libpcap, not pylibpcap, not pypcap)
 #
-# Stand 2022-08-14:
-#  - Auswahl des Interaces ok
-#  - Sniffen des SLAC-request ok
-#  - Aussenden eine Demo-Botschaft ok
+# Version 2022-08-14:
+#  - Selection of interfaces ok
+#  - Sniffing of the SLAC-request ok
+#  - Transmission of a demo message ok
 #
 import pcap
 
