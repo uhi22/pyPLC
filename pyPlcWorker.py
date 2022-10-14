@@ -6,9 +6,6 @@
 #------------------------------------------------------------
 import pyPlcHomeplug
 
-
-
-
 class pyPlcWorker():
     def __init__(self, callbackAddToTrace=None, callbackShowStatus=None):
         print("initializing pyPlcWorker") 
@@ -27,11 +24,9 @@ class pyPlcWorker():
         
     def mainfunction(self):
         self.nMainFunctionCalls+=1
-        self.showStatus("pyPlcWorker loop " + str(self.nMainFunctionCalls))
-        #self.hp.mainfunction()
+        #self.showStatus("pyPlcWorker loop " + str(self.nMainFunctionCalls))
+        self.hp.mainfunction() # call the lower-level worker
         
-
-
     def handleUserAction(self, strAction):
         self.strUserAction = strAction
         self.addToTrace("UserAction " + strAction)
