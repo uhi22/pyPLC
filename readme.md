@@ -24,5 +24,9 @@ addr = lambda pkt, offset: '.'.join(str(pkt[i]) for i in range(offset, offset + 
 for ts, pkt in sniffer:
      print('%d\tSRC %-16s\tDST %-16s' % (ts, addr(pkt, sniffer.dloff + 12), addr(pkt, sniffer.dloff + 16)))
 
+## Test image
+(Just added in the Github web interface while editing the readme.md, by pressing Ctrl-V)
+![image](https://user-images.githubusercontent.com/98478946/194760396-11c36e78-fed3-4d07-87ff-c7d2649a41b2.png)
+
 ## Further steps
 (to be continued)
