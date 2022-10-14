@@ -124,7 +124,7 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[59]=0x0 # 
 
     def sendTestFrame(self):
-        addToTrace("transmitting test frame...")
+        self.addToTrace("transmitting test frame...")
         self.composeTestFrame()
         self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
         
@@ -163,7 +163,7 @@ class pyPlcHomeplug():
         self.sniffer.setnonblock(True)
         print("sniffer created at " + self.strInterfaceName)
 
-    def addToTrace(s):
+    def addToTrace(self, s):
         self.callbackAddToTrace(s)
 
     def showStatus(self, s):
