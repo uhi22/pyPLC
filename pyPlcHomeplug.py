@@ -51,7 +51,79 @@ class pyPlcHomeplug():
                 print("HomePlug protocol")
         return blIsHomePlug
 
-    def composeTestFrame(self):
+    def composeTestFrameSlacReq(self):
+		# SLAC request, as it was recorded 2021-12-17 WP charger 2
+        self.mytransmitbuffer = bytearray(60)
+        # Destination MAC
+        self.mytransmitbuffer[0]=0xFF
+        self.mytransmitbuffer[1]=0xFF
+        self.mytransmitbuffer[2]=0xFF
+        self.mytransmitbuffer[3]=0xFF
+        self.mytransmitbuffer[4]=0xFF
+        self.mytransmitbuffer[5]=0xFF
+
+        # Source MAC
+        self.mytransmitbuffer[6]=0x04 # Ioniq MAC
+        self.mytransmitbuffer[7]=0x65
+        self.mytransmitbuffer[8]=0x65
+        self.mytransmitbuffer[9]=0x00
+        self.mytransmitbuffer[10]=0x64
+        self.mytransmitbuffer[11]=0xC3
+
+        # Protocol
+        self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
+        self.mytransmitbuffer[13]=0xE1
+
+        self.mytransmitbuffer[14]=0x01 # version
+        self.mytransmitbuffer[15]=0x64 # SLAC_PARAM.REQ
+
+        self.mytransmitbuffer[16]=0x60 # 
+        self.mytransmitbuffer[17]=0x00 # 
+        self.mytransmitbuffer[18]=0x00 # 
+        self.mytransmitbuffer[19]=0x00 # 
+        self.mytransmitbuffer[20]=0x00 # 
+        self.mytransmitbuffer[21]=0x04 # runid 8 bytes
+        self.mytransmitbuffer[22]=0x65 # 
+        self.mytransmitbuffer[23]=0x65 # 
+        self.mytransmitbuffer[24]=0x00 # 
+        self.mytransmitbuffer[25]=0x64 # 
+        self.mytransmitbuffer[26]=0xC3 # 
+        self.mytransmitbuffer[27]=0x00 # 
+        self.mytransmitbuffer[28]=0x00 # 
+        
+        self.mytransmitbuffer[29]=0x00 # rest is 0
+        self.mytransmitbuffer[30]=0x00 # 
+        self.mytransmitbuffer[31]=0x00 # 
+        self.mytransmitbuffer[32]=0x00 # 
+        self.mytransmitbuffer[33]=0x00 # 
+        self.mytransmitbuffer[34]=0x00 # 
+        self.mytransmitbuffer[35]=0x00 # 
+        self.mytransmitbuffer[36]=0x00 # 
+        self.mytransmitbuffer[37]=0x00 # 
+        self.mytransmitbuffer[38]=0x00 # 
+        self.mytransmitbuffer[39]=0x00 # 
+        self.mytransmitbuffer[40]=0x00 # 
+        self.mytransmitbuffer[41]=0x00 # 
+        self.mytransmitbuffer[42]=0x00 # 
+        self.mytransmitbuffer[43]=0x00 # 
+        self.mytransmitbuffer[44]=0x00 # 
+        self.mytransmitbuffer[45]=0x00 # 
+        self.mytransmitbuffer[46]=0x00 # 
+        self.mytransmitbuffer[47]=0x00 #
+        self.mytransmitbuffer[48]=0x00 # 
+        self.mytransmitbuffer[49]=0x00 # 
+        self.mytransmitbuffer[50]=0x00 # 
+        self.mytransmitbuffer[51]=0x00 # 
+        self.mytransmitbuffer[52]=0x00 # 
+        self.mytransmitbuffer[53]=0x00 # 
+        self.mytransmitbuffer[54]=0x00 # 
+        self.mytransmitbuffer[55]=0x00 # 
+        self.mytransmitbuffer[56]=0x00 # 
+        self.mytransmitbuffer[57]=0x00 # 
+        self.mytransmitbuffer[58]=0x00 # 
+        self.mytransmitbuffer[59]=0x00 # 
+
+    def composeTestFrameSlacResp(self):
         self.mytransmitbuffer = bytearray(60)
         # Destination MAC
         self.mytransmitbuffer[0]=0x04 # Ioniq MAC
@@ -125,7 +197,7 @@ class pyPlcHomeplug():
 
     def sendTestFrame(self):
         self.addToTrace("transmitting test frame...")
-        self.composeTestFrame()
+        self.composeTestFrameSlacReq()
         self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
         
     def findEthernetAdaptor(self):
