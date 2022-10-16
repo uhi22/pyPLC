@@ -9,7 +9,6 @@ import pyPlcHomeplug
 class pyPlcWorker():
     def __init__(self, callbackAddToTrace=None, callbackShowStatus=None):
         print("initializing pyPlcWorker") 
-        self.something = "Hallo das ist ein Test"
         self.nMainFunctionCalls=0
         self.strUserAction = ""
         self.callbackAddToTrace = callbackAddToTrace
@@ -30,7 +29,5 @@ class pyPlcWorker():
     def handleUserAction(self, strAction):
         self.strUserAction = strAction
         self.addToTrace("UserAction " + strAction)
-        if (strAction == "t"):
-            self.addToTrace("sending test frame")
-            self.hp.sendTestFrame()
+        self.hp.sendTestFrame(strAction)
 
