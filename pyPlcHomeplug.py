@@ -82,6 +82,7 @@ MMTYPE_CNF = 0x0001
 MMTYPE_IND = 0x0002
 MMTYPE_RSP = 0x0003
 
+
  
 class pyPlcHomeplug():    
     def showIpAddresses(self, mybytearray):
@@ -133,10 +134,10 @@ class pyPlcHomeplug():
         for i in range(0, len(self.mytransmitbuffer)):
             self.mytransmitbuffer[i]=0
 
-    def setNwkAt(self, index):
-        # sets the Network Key (NMK) at a certain position in the transmit buffer
+    def setNmkAt(self, index):
+        # sets the Network Membership Key (NMK) at a certain position in the transmit buffer
         for i in range(0, 16):
-            self.mytransmitbuffer[index+i]=self.NWK[i] # NWK 
+            self.mytransmitbuffer[index+i]=self.NMK[i] # NMK
 
     def setNidAt(self, index):
         # (b0f2e695666b03 was NID of TPlink)
@@ -208,7 +209,7 @@ class pyPlcHomeplug():
         #self.setNidAt(33) # 14-20 nid  7 bytes from 33 to 39
         self.mytransmitbuffer[40]=0x01 # 21 peks (payload encryption key select) Table 11-83. 01 is NMK. We had 02 here, why???
                                        # with 0x0F we could choose "no key, payload is sent in the clear"
-        self.setNwkAt(41)
+        self.setNmkAt(41)
         self.mytransmitbuffer[41]+=variation # to try different NMKs
         # and three remaining zeros
 
@@ -452,15 +453,35 @@ class pyPlcHomeplug():
             self.NID[i] = self.myreceivebuffer[29+i]
             s=s+hex(self.NID[i])+ " "
         print("From GetKeyCnf, got network ID (NID) " + s)
-        
+
+    def evaluateSlacMatchCnf(self):
+        # The SLAC_MATCH.CNF contains the NMK and the NID.
+        # We extract this information, so that we can use it for the CM_SET_KEY afterwards.
+        # References: https://github.com/qca/open-plc-utils/blob/master/slac/evse_cm_slac_match.c
+        # 2021-12-16_HPC_säule1_full_slac.pcapng
+        s = ""
+        for i in range(0, 7):
+            self.NID[i] = self.myreceivebuffer[85+i]
+            s=s+hex(self.NID[i])+ " "
+        print("From SlacMatchCnf, got network ID (NID) " + s)        
+        s = ""
+        for i in range(0, 16):
+            self.NMK[i] = self.myreceivebuffer[93+i]
+            s=s+hex(self.NMK[i])+ " "
+        print("From SlacMatchCnf, got network membership key (NMK) " + s) 
+        # use the extracted NMK and NID to set the key in the adaptor:
+        self.composeTestFrameSetKey(0)
+        self.addToTrace("transmitting CM_SET_KEY.REQ")
+        self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
     
     def evaluateReceivedHomeplugPacket(self):
         mmt = self.getManagementMessageType()
         print(hex(mmt))
         if (mmt == CM_GET_KEY + MMTYPE_CNF):
             self.evaluateGetKeyCnf()
+        if (mmt == CM_SLAC_MATCH + MMTYPE_CNF):
+            self.evaluateSlacMatchCnf()
 
-        #if (pkt[15]==0x64): #SLAC_Request
         
     def findEthernetAdaptor(self):
         self.strInterfaceName="eth0" # default, if the real is not found
@@ -495,7 +516,7 @@ class pyPlcHomeplug():
         self.findEthernetAdaptor()
         self.sniffer = pcap.pcap(name=self.strInterfaceName, promisc=True, immediate=True, timeout_ms=50)
         self.sniffer.setnonblock(True)
-        self.NWK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key
+        self.NMK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
         self.runningCounter=0
         print("sniffer created at " + self.strInterfaceName)
