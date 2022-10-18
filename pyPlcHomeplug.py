@@ -25,7 +25,13 @@
 #       we see the LEDs on the adaptor shortly going completely off, completely on, and back to normal state. This
 #       is the sign, that the new key was accepted. It means, the
 #       adaptor is making a reset, to apply the new key.
-# 5. CM_SET_KEY and CM_GET_KEY works also when sent to broadcast address.
+# 5. CM_SET_KEY and CM_GET_KEY works also when sent to broadcast address. For both, devolo and tpLink.
+# 2022-10-18 further tests
+# 6. The devolo reports the SLAC_PARAM from the standalone-IONIQ to the wirkshark. Even in the case, when the devolo is paired to a tpLink.
+# 7. The tpLink does NOT report the SLAC_PARAM to ethernet. Bad.
+# 8. The tpLink has software from 2017, maybe the SLAC was removed at this version.
+# 9. Article regarding firmware- and configuration update: https://fitzcarraldoblog.wordpress.com/2020/07/22/updating-the-powerline-adapters-in-my-home-network/
+
 
 import pcap
 
@@ -114,23 +120,17 @@ class pyPlcHomeplug():
                 print("HomePlug protocol")
         return blIsHomePlug
         
-    def fillSourceMac(self, mac):
-        self.mytransmitbuffer[6]=mac[0]
-        self.mytransmitbuffer[7]=mac[1]
-        self.mytransmitbuffer[8]=mac[2]
-        self.mytransmitbuffer[9]=mac[3]
-        self.mytransmitbuffer[10]=mac[4]
-        self.mytransmitbuffer[11]=mac[5]
+    def fillSourceMac(self, mac, offset=6): # at offset 6 in the ethernet frame, we have the source MAC
+        # we can give a different offset, to re-use the MAC also in the data area
+        for i in range(0, 6):
+            self.mytransmitbuffer[offset+i]=mac[i]
         
-    def fillDestinationMac(self, mac):
-        self.mytransmitbuffer[0]=mac[0]
-        self.mytransmitbuffer[1]=mac[1]
-        self.mytransmitbuffer[2]=mac[2]
-        self.mytransmitbuffer[3]=mac[3]
-        self.mytransmitbuffer[4]=mac[4]
-        self.mytransmitbuffer[5]=mac[5]
+    def fillDestinationMac(self, mac, offset=0): # at offset 0 in the ethernet frame, we have the destination MAC
+         # we can give a different offset, to re-use the MAC also in the data area
+        for i in range(0, 6):
+            self.mytransmitbuffer[offset+i]=mac[i]
         
-    def cleanTransmitBuffer(self):
+    def cleanTransmitBuffer(self): # fill the complete ethernet transmit buffer with 0x00
         for i in range(0, len(self.mytransmitbuffer)):
             self.mytransmitbuffer[i]=0
 
@@ -149,7 +149,7 @@ class pyPlcHomeplug():
         # calculates the MMTYPE (base value + lower two bits), see Table 11-2 of homeplug spec
         return (self.myreceivebuffer[16]<<8) + self.myreceivebuffer[15]
 
-    def composeTestFrameGetSwReq(self):
+    def composeGetSwReq(self):
 		# GET_SW.REQ request, as used by the win10 laptop
         self.mytransmitbuffer = bytearray(60)
         self.cleanTransmitBuffer()
@@ -167,7 +167,7 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[18]=0xB0 # 
         self.mytransmitbuffer[19]=0x52 # 
 
-    def composeTestFrameSetKey(self, variation=0):
+    def composeSetKey(self, variation=0):
 		# CM_SET_KEY.REQ request
         # From example trace from catphish https://openinverter.org/forum/viewtopic.php?p=40558&sid=9c23d8c3842e95c4cf42173996803241#p40558
         # Table 11-88 in the homeplug_av21_specification_final_public.pdf
@@ -213,7 +213,7 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[41]+=variation # to try different NMKs
         # and three remaining zeros
 
-    def composeTestFrameGetKey(self):
+    def composeGetKey(self):
 		# CM_GET_KEY.REQ request
         # from https://github.com/uhi22/plctool2/blob/master/listen_to_eth.c
         # and homeplug_av21_specification_final_public.pdf
@@ -249,25 +249,21 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[34]=0x00 # 
         self.mytransmitbuffer[35]=0x00 # 17 PMN Protocol message number
 
-    def composeTestFrameSlacReq(self):
-		# SLAC request, as it was recorded 2021-12-17 WP charger 2
+    def composeSlacParamReq(self):
+		# SLAC_PARAM request, as it was recorded 2021-12-17 WP charger 2
         self.mytransmitbuffer = bytearray(60)
         self.cleanTransmitBuffer()
         # Destination MAC
         self.fillDestinationMac(MAC_BROADCAST)
-
         # Source MAC
         self.fillSourceMac(MAC_IONIQ)
-
         # Protocol
         self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
         self.mytransmitbuffer[13]=0xE1
-
         self.mytransmitbuffer[14]=0x01 # version
         self.mytransmitbuffer[15]=0x64 # SLAC_PARAM.REQ
-
         self.mytransmitbuffer[16]=0x60 # 
-        self.mytransmitbuffer[17]=0x00 # 
+        self.mytransmitbuffer[17]=0x00 # 2 bytes fragmentation information. 0000 means: unfragmented.
         self.mytransmitbuffer[18]=0x00 # 
         self.mytransmitbuffer[19]=0x00 # 
         self.mytransmitbuffer[20]=0x00 # 
@@ -279,103 +275,41 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[26]=0xC3 # 
         self.mytransmitbuffer[27]=0x00 # 
         self.mytransmitbuffer[28]=0x00 # 
+        # rest is 00
         
-        self.mytransmitbuffer[29]=0x00 # rest is 0
-        self.mytransmitbuffer[30]=0x00 # 
-        self.mytransmitbuffer[31]=0x00 # 
-        self.mytransmitbuffer[32]=0x00 # 
-        self.mytransmitbuffer[33]=0x00 # 
-        self.mytransmitbuffer[34]=0x00 # 
-        self.mytransmitbuffer[35]=0x00 # 
-        self.mytransmitbuffer[36]=0x00 # 
-        self.mytransmitbuffer[37]=0x00 # 
-        self.mytransmitbuffer[38]=0x00 # 
-        self.mytransmitbuffer[39]=0x00 # 
-        self.mytransmitbuffer[40]=0x00 # 
-        self.mytransmitbuffer[41]=0x00 # 
-        self.mytransmitbuffer[42]=0x00 # 
-        self.mytransmitbuffer[43]=0x00 # 
-        self.mytransmitbuffer[44]=0x00 # 
-        self.mytransmitbuffer[45]=0x00 # 
-        self.mytransmitbuffer[46]=0x00 # 
-        self.mytransmitbuffer[47]=0x00 #
-        self.mytransmitbuffer[48]=0x00 # 
-        self.mytransmitbuffer[49]=0x00 # 
-        self.mytransmitbuffer[50]=0x00 # 
-        self.mytransmitbuffer[51]=0x00 # 
-        self.mytransmitbuffer[52]=0x00 # 
-        self.mytransmitbuffer[53]=0x00 # 
-        self.mytransmitbuffer[54]=0x00 # 
-        self.mytransmitbuffer[55]=0x00 # 
-        self.mytransmitbuffer[56]=0x00 # 
-        self.mytransmitbuffer[57]=0x00 # 
-        self.mytransmitbuffer[58]=0x00 # 
-        self.mytransmitbuffer[59]=0x00 # 
-        
-    def composeTestFrameSlacResp(self):
+    def composeSlacParamCnf(self):
         self.mytransmitbuffer = bytearray(60)
         self.cleanTransmitBuffer()
         # Destination MAC
         self.fillDestinationMac(MAC_IONIQ)
-
         # Source MAC
-        self.fillSourceMac(MAC_ALPI)
-
+        self.fillSourceMac(MAC_RANDOM)
         # Protocol
         self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
         self.mytransmitbuffer[13]=0xE1
-
         self.mytransmitbuffer[14]=0x01 # version
         self.mytransmitbuffer[15]=0x65 # SLAC_PARAM.confirm
-
         self.mytransmitbuffer[16]=0x60 # 
-        self.mytransmitbuffer[17]=0x00 # 
+        self.mytransmitbuffer[17]=0x00 # 2 bytes fragmentation information. 0000 means: unfragmented.
         self.mytransmitbuffer[18]=0x00 # 
-        self.mytransmitbuffer[19]=0xff # 
+        self.mytransmitbuffer[19]=0xff # 19-24 sound target
         self.mytransmitbuffer[20]=0xff # 
         self.mytransmitbuffer[21]=0xff # 
         self.mytransmitbuffer[22]=0xff # 
         self.mytransmitbuffer[23]=0xff # 
         self.mytransmitbuffer[24]=0xff # 
-        self.mytransmitbuffer[25]=0x0A # 
-        self.mytransmitbuffer[26]=0x06 # 
-        self.mytransmitbuffer[27]=0x01 # 
-        self.mytransmitbuffer[28]=0x04 # 
-        self.mytransmitbuffer[29]=0x65 # 
-        self.mytransmitbuffer[30]=0x65 # 
-        self.mytransmitbuffer[31]=0x00 # 
-
-        self.mytransmitbuffer[32]=0x64 # 
-        self.mytransmitbuffer[33]=0xC3 # 
+        self.mytransmitbuffer[25]=0x0A # sound count
+        self.mytransmitbuffer[26]=0x06 # timeout
+        self.mytransmitbuffer[27]=0x01 # resptype
+        self.fillDestinationMac(MAC_IONIQ, 28)  # forwarding_sta, same as PEV MAC, plus 2 bytes 00 00
         self.mytransmitbuffer[34]=0x00 # 
         self.mytransmitbuffer[35]=0x00 # 
-        self.mytransmitbuffer[36]=0x04 # 
-        self.mytransmitbuffer[37]=0x65 # 
-        self.mytransmitbuffer[38]=0x65 # 
-        self.mytransmitbuffer[39]=0x00 # 
-        self.mytransmitbuffer[40]=0x64 # 
-        self.mytransmitbuffer[41]=0xC3 # 
+        self.fillDestinationMac(MAC_IONIQ, 36)  # runid, same as PEV MAC, plus 2 bytes 00 00 
         self.mytransmitbuffer[42]=0x0 # 
-        self.mytransmitbuffer[43]=0x0 # 
-        self.mytransmitbuffer[44]=0x0 # 
-        self.mytransmitbuffer[45]=0x0 # 
-        self.mytransmitbuffer[46]=0x0 # 
-        self.mytransmitbuffer[47]=0x0 #
- 
-        self.mytransmitbuffer[48]=0x0 # 
-        self.mytransmitbuffer[49]=0x0 # 
-        self.mytransmitbuffer[50]=0x0 # 
-        self.mytransmitbuffer[51]=0x0 # 
-        self.mytransmitbuffer[52]=0x0 # 
-        self.mytransmitbuffer[53]=0x0 # 
-        self.mytransmitbuffer[54]=0x0 # 
-        self.mytransmitbuffer[55]=0x0 # 
-        self.mytransmitbuffer[56]=0x0 # 
-        self.mytransmitbuffer[57]=0x0 # 
-        self.mytransmitbuffer[58]=0x0 # 
-        self.mytransmitbuffer[59]=0x0 # 
+        self.mytransmitbuffer[43]=0x0 #
+        # rest is 00
 
-    def composeTestFrameDHCP(self):
+    def composeDHCP(self):
 		# DHCP discover, to check whether this "normal" package arrives on the other side
         self.mytransmitbuffer = bytearray(379)
         self.cleanTransmitBuffer()
@@ -417,32 +351,32 @@ class pyPlcHomeplug():
     def sendTestFrame(self, selection):
         
         if (selection=="1"):
-            self.composeTestFrameSlacReq()
-            self.addToTrace("transmitting TestFrame SlacReq...")
+            self.composeSlacParamReq()
+            self.addToTrace("transmitting SLAC_PARAM.REQ...")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
         if (selection=="2"):
-            self.composeTestFrameSlacResp()
-            self.addToTrace("transmitting TestFrame SlacResp...")            
+            self.composeSlacParamCnf()
+            self.addToTrace("transmitting SLAC_PARAM.CNF...")            
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
         if (selection=="S"):
-            self.composeTestFrameGetSwReq()
-            self.addToTrace("transmitting TestFrame GetSwReq...")
+            self.composeGetSwReq()
+            self.addToTrace("transmitting GetSwReq...")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
         if (selection=="s"):
-            self.composeTestFrameSetKey(1)
-            self.addToTrace("transmitting TestFrame SET_KEY.REQ (key 1)")
+            self.composeSetKey(1)
+            self.addToTrace("transmitting SET_KEY.REQ (key 1)")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
         if (selection=="t"):
-            self.composeTestFrameSetKey(2)
-            self.addToTrace("transmitting TestFrame SET_KEY.REQ (key 2)")
+            self.composeSetKey(2)
+            self.addToTrace("transmitting SET_KEY.REQ (key 2)")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
         if (selection=="D"):
-            self.composeTestFrameDHCP()
-            self.addToTrace("transmitting TestFrame broken DHCP")           
+            self.composeDHCP()
+            self.addToTrace("transmitting broken DHCP")           
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
         if (selection=="G"):
-            self.composeTestFrameGetKey()
-            self.addToTrace("transmitting TestFrame GET_KEY")           
+            self.composeGetKey()
+            self.addToTrace("transmitting GET_KEY")           
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
       
     def evaluateGetKeyCnf(self):
@@ -454,6 +388,13 @@ class pyPlcHomeplug():
             s=s+hex(self.NID[i])+ " "
         print("From GetKeyCnf, got network ID (NID) " + s)
 
+    def evaluateSlacParamReq(self):
+        # We received a SLAC_PARAM request from the PEV. This is the initiation of a SLAC procedure.
+        # If we want to emulate an EVSE, we want to answer.
+        self.composeSlacParamCnf()
+        self.addToTrace("transmitting CM_SLAC_PARAM.CNF")
+        self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+        
     def evaluateSlacMatchCnf(self):
         # The SLAC_MATCH.CNF contains the NMK and the NID.
         # We extract this information, so that we can use it for the CM_SET_KEY afterwards.
@@ -470,7 +411,7 @@ class pyPlcHomeplug():
             s=s+hex(self.NMK[i])+ " "
         print("From SlacMatchCnf, got network membership key (NMK) " + s) 
         # use the extracted NMK and NID to set the key in the adaptor:
-        self.composeTestFrameSetKey(0)
+        self.composeSetKey(0)
         self.addToTrace("transmitting CM_SET_KEY.REQ")
         self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
     
@@ -481,6 +422,8 @@ class pyPlcHomeplug():
             self.evaluateGetKeyCnf()
         if (mmt == CM_SLAC_MATCH + MMTYPE_CNF):
             self.evaluateSlacMatchCnf()
+        if (mmt == CM_SLAC_PARAM + MMTYPE_REQ):
+            self.evaluateSlacParamReq()
 
         
     def findEthernetAdaptor(self):
