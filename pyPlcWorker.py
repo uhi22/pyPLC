@@ -18,8 +18,8 @@ class pyPlcWorker():
     def addToTrace(self, s):
         self.callbackAddToTrace(s)
         
-    def showStatus(self, s):
-        self.callbackShowStatus(s)        
+    def showStatus(self, s, selection = ""):
+        self.callbackShowStatus(s, selection)        
         
     def mainfunction(self):
         self.nMainFunctionCalls+=1
@@ -28,6 +28,13 @@ class pyPlcWorker():
         
     def handleUserAction(self, strAction):
         self.strUserAction = strAction
+        if (strAction == "P"):
+            self.hp.enterPevMode()
+        if (strAction == "E"):
+            self.hp.enterEvseMode()
+        if (strAction == "L"):
+            self.hp.enterListenMode()
+            
         self.addToTrace("UserAction " + strAction)
         self.hp.sendTestFrame(strAction)
 

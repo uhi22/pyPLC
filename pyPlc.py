@@ -26,9 +26,16 @@ def inkey():
 def cbAddToTrace(s):
     print(s)
 
-def cbShowStatus(s):
-    print(s)
-    lblStatus['text']=s
+def cbShowStatus(s, selection=""):
+    #print(s)
+    if (selection == "mode"):
+        lblMode['text']=s
+        s=""
+    if (selection == "pevmac"):
+        lblPevMac['text']=s
+        s=""
+    if (len(s)>0):
+        lblStatus['text']=s
     root.update()
 
 root = tk.Tk()
@@ -39,6 +46,11 @@ lblHelp = tk.Label(root, text="x=exit, t=testframe")
 lblHelp.pack()
 lblStatus = tk.Label(root, text="(Status)")
 lblStatus.pack()
+lblPevMac = tk.Label(root, text="(pev mac)")
+lblPevMac.pack()
+lblMode = tk.Label(root, text="(mode)")
+lblMode.pack()
+
 # Bind the keyboard handler to all relevant elements:
 display.bind('<Key>', storekeyname)
 root.bind('<Key>', storekeyname)
