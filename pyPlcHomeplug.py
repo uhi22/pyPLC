@@ -34,24 +34,8 @@
 
 
 import pcap
-
-def twoCharHex(b):
-    strHex = "%0.2X" % b
-    return strHex
-
-def showAsHex(mybytearray):
-    packetlength = len(mybytearray)
-    strHex = ""
-    for i in range(0, packetlength):
-        strHex = strHex + twoCharHex(mybytearray[i]) + " "
-    print("len " + str(packetlength) + " data " + strHex)
-
-def prettyMac(macByteArray):
-    s=""
-    for i in range(0, 5):
-       s = s + twoCharHex(macByteArray[i]) + ":"
-    s = s + twoCharHex(macByteArray[i])
-    return s
+import pyPlcIpv6
+from helpers import * # prettyMac etc
 
 MAC_BROADCAST = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF ]
 MAC_LAPTOP    = [0xdc, 0x0e, 0xa1, 0x11, 0x67, 0x08 ]
@@ -117,14 +101,12 @@ class pyPlcHomeplug():
             
         print("From " + strSourceMac + strSourceFriendlyName + " to " + strDestMac)
 
-    def isHomeplug(self, mybytearray):
-        blIsHomePlug=False
-        if len(mybytearray)>(6+6+2):
-            protocol=mybytearray[12]*256 + mybytearray[13]
-            if (protocol == 0x88E1):
-                blIsHomePlug=True
-                # print("HomePlug protocol")
-        return blIsHomePlug
+    def getEtherType(self, messagebufferbytearray):
+        etherType=0
+        if len(messagebufferbytearray)>(6+6+2):
+            etherType=messagebufferbytearray[12]*256 + messagebufferbytearray[13]
+        return etherType
+        
         
     def fillSourceMac(self, mac, offset=6): # at offset 6 in the ethernet frame, we have the source MAC
         # we can give a different offset, to re-use the MAC also in the data area
@@ -424,31 +406,34 @@ class pyPlcHomeplug():
         if (selection=="1"):
             self.composeSlacParamReq()
             self.addToTrace("transmitting SLAC_PARAM.REQ...")
-            self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+            self.transmit(self.mytransmitbuffer)
         if (selection=="2"):
             self.composeSlacParamCnf()
             self.addToTrace("transmitting SLAC_PARAM.CNF...")            
-            self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+            self.transmit(self.mytransmitbuffer)
         if (selection=="S"):
             self.composeGetSwReq()
             self.addToTrace("transmitting GetSwReq...")
-            self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+            self.transmit(self.mytransmitbuffer)
         if (selection=="s"):
             self.composeSetKey(0)
             self.addToTrace("transmitting SET_KEY.REQ (key 0)")
-            self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+            self.transmit(self.mytransmitbuffer)
         if (selection=="t"):
             self.composeSetKey(2)
             self.addToTrace("transmitting SET_KEY.REQ (key 2)")
-            self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+            self.transmit(self.mytransmitbuffer)
         if (selection=="D"):
             self.composeDHCP()
             self.addToTrace("transmitting broken DHCP")           
-            self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+            self.transmit(self.mytransmitbuffer)
         if (selection=="G"):
             self.composeGetKey()
             self.addToTrace("transmitting GET_KEY")           
-            self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+            self.transmit(self.mytransmitbuffer)
+            
+    def transmit(self, pkt):
+        self.sniffer.sendpacket(bytes(pkt))
       
     def evaluateGetKeyCnf(self):
         # The getkey response contains the Network ID (NID), even if the request was rejected. We store the NID,
@@ -594,6 +579,8 @@ class pyPlcHomeplug():
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
         self.pevMac = [0x55, 0x56, 0x57, 0x58, 0x59, 0x5A ] # a default pev MAC
         self.runningCounter=0
+        self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit)
+        self.ipv6.ownMac = MAC_RANDOM
         self.enterEvseMode()
         self.showStatus(prettyMac(self.pevMac), "pevmac")
         print("sniffer created at " + self.strInterfaceName)
@@ -609,16 +596,16 @@ class pyPlcHomeplug():
         for ts, pkt in self.sniffer: # attention: for using this in non-blocking manner, we need the patch described above.
             self.nPacketsReceived+=1
             # print('%d' % (ts)) # the time stamp
-            if (self.isHomeplug(pkt)):
+            etherType = self.getEtherType(pkt)
+            if (etherType == 0x88E1): # it is a HomePlug message
                 self.myreceivebuffer = pkt
                 #    self.showMacAddresses(pkt)
                 self.evaluateReceivedHomeplugPacket()
+            if (etherType == 0x86dd): # it is an IPv6 frame
+                self.ipv6.evaluateReceivedPacket(pkt)
+                
         self.showStatus("nPacketsReceived=" + str(self.nPacketsReceived))
         
     def close(self):
         self.sniffer.close()
 
-#sn = pyPlcHomeplug()
-#while (1):
-# print("Press control-C to stop")
-# sn.mainfunction()
