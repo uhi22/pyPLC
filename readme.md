@@ -110,6 +110,8 @@ Pcap-ct does not work with Python 3.4. After update to Python 3.8, it works.
 * Python script interprets the relevant incoming messages (SLAC_PARAM.REQ, MNBC_SOUND.IND, SLAC_MATCH.REQ) and reacts accordingly.
 * After successfull SLAC sequence, all three LEDs on the TPlink are ON, means: Network is established.
 * In wireshark, we see that the car is sending UDP multicast messages to destination port 15118. This looks like a good sign, that it wants a ISO15118 compatible communication.
+![image](https://user-images.githubusercontent.com/98478946/196766285-1c3152f7-31db-4b5f-98b1-9f1216f9b9de.png)
+
 ### 2022-10-19 Sniffing mode not yet working with the TPlink adaptors
 * with a Devolo dLAN 200 AVplus, software INT6000-MAC-4-4-4405-00-4497-20101201-FINAL-B in original parametrization, it is possible
 to see the complete SLAC traffic (both directions) which sniffing the communication between a real charger and a real car. This does
