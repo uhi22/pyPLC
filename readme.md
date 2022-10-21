@@ -99,6 +99,45 @@ Now, in the IDLE shall 3.10.6, the import works:
 ### Usage on Raspberry
 Pcap-ct does not work with Python 3.4. After update to Python 3.8, it works.
 
+## Example flow
+This chapter describes the start of a charging session, considering all layers.
+
+Precondition: On charger side, there is a homeplugGP-capable device present, which is configured as CentralCoordinator.
+1. The charger creates a "random" value for NID (network ID) and NMK (network membership key), and configures its homeplug modem with these values.
+1. The user connects the plug into the car.
+2. The car pulls the 12V at CP line to 9V.
+3. The charger changes the CP from "permanent high" to "5% PWM".
+4. The car wakes up its communication controller and homeplug modem.
+5. The car sees coordinator packets on the line, and starts the SLAC sequence by sending SLAC_PARAM.REQ. Can be also two times.
+6. The charger receives the SLAC_PARAM.REQ and confirms it with SLAC_PARAM.CNF.
+7. The car sends START_ATTEN_CHAR.IND, to start the attenuation measurement. In total 3 times.
+8. The car sends MNBC_SOUND.IND, to provide different sounds. In total 10 times.
+9. The charger sends ATTEN_CHAR.IND, which contains the number of sounds and for each group the attenuation in dB.
+10. The car receives the ATTEN_CHAR.IND. If it would receive multiple of them from different chargers (due to cross-coupling), the car decides based on the attenuation levels, which of the charges is the nearest.
+11. The car sends ATTEN_CHAR.RSP to the charger which reported the loudest signals.
+12. The car sends SLAC_MATCH.REQ to the charger. It wants to pair with it.
+13. The charger responds with SLAC_MATCH.CNF. This contains the self-decided NID (network ID) and NMK (network membership key).
+14. The car receives the SLAC_MATCH.CNF, takes the NID and NMK from this message, and configures its homeplug modem with this data.
+15. Now, the homeplug modems of the car and of the charger have formed a "private" Homeplug network. The RF traffic can only be decoded by
+participants who are using the same NID and NMK.
+16. The car wants to know the chargers IP address. In computer networks, a DHCP would be a usual way to do this. In the CCS world, a different
+approach is used: SDP, which is the SECC discovery protocol. The DHCP may be also supported as fallback.
+17. The car sends a broadcast message "Is here a charger in this network?". Technically, it is an IPv6.UDP.V2GTP.SDP message
+with 2 bytes payload, which defines the security level expected by the car. In usual case, the car says "I want unprotected TCP.".
+18. The charger receives the SDP request, and sends a SDP response "My IP address is xy, and I support unprotected TCP."
+19. The car wants to make sure, that the IP addresses are unique and the relation between IP address and MAC is clear. For
+this, it sends a "Neighbour solicitation". (This looks a little bit oversized, because only the participants are in the local network, but
+it is standard technology.)
+20. The charger responds to the neighbor solicitation request.
+21. Now, the car and the charger have a clear view about addressing (MAC, IP).
+22. The car requests to open a TCP connection to chargerIP at port 15118.
+23. The charger, which was listening on port 15118, confirms the TCP channel.
+24. Now, the car and the charger have a reliable, bidirectional TCP channel.
+25. The car and the charger use the TCP channel, to exchange V2GTP messages, with EXI content.
+26. Todo: Controlled by the content of the EXI messages, the car and the charging are walking through different states to negotiate, start and supervise the charging process.
+
+
+
 
 ## Change history / functional status
 ### 2022-10-19 Communication with Ioniq car established
