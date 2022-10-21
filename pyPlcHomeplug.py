@@ -542,14 +542,17 @@ class pyPlcHomeplug():
     def enterPevMode(self):
         self.iAmEvse = 0 # not emulating a charging station
         self.iAmPev = 1 # emulating a vehicle
+        self.ipv6.enterPevMode()
         self.showStatus("PEV mode", "mode")
     def enterEvseMode(self):
-        self.iAmEvse = 1 # not emulating a charging station
-        self.iAmPev = 0 # emulating a vehicle
+        self.iAmEvse = 1 # emulating a charging station
+        self.iAmPev = 0 # not emulating a vehicle
+        self.ipv6.enterEvseMode()
         self.showStatus("EVSE mode", "mode")
     def enterListenMode(self):
         self.iAmEvse = 0 # not emulating a charging station
-        self.iAmPev = 0 # emulating a vehicle
+        self.iAmPev = 0 # not emulating a vehicle
+        self.ipv6.enterListenMode()
         self.showStatus("LISTEN mode", "mode")        
 
     def __init__(self, callbackAddToTrace=None, callbackShowStatus=None):

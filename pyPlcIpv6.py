@@ -3,6 +3,11 @@
 #
 # It has the following sub-functionalities:
 # - IP.UDP.SDP: listen to requests from the car, and responding to them.
+#   Eth --> IPv6 --> UDP --> V2GTP --> SDP
+#                                       |
+#                                       v
+#   Eth <-- IPv6 <-- UDP <-- V2GTP <-- SDP
+#
 #
 # Abbreviations:
 # SECC: Supply Equipment Communication Controller. The "computer" of the charging station.
@@ -22,15 +27,11 @@ class ipv6handler():
     def packResponseIntoEthernet(self, buffer):
         # packs the IP packet into an ethernet packet
         self.EthResponse = bytearray(len(buffer) + 6 + 6 + 2) # Ethernet header needs 14 bytes:
-                                                      #  6 bytes MAC
-                                                      #  6 bytes MAC
+                                                      #  6 bytes destination MAC
+                                                      #  6 bytes source MAC
                                                       #  2 bytes EtherType
-        self.EthResponse[0] = 0x33 # destination MAC. We use multicast. Todo: Better use the PEV MAC.
-        self.EthResponse[1] = 0x33
-        self.EthResponse[2] = 0x00
-        self.EthResponse[3] = 0x00
-        self.EthResponse[4] = 0x00
-        self.EthResponse[5] = 0x01
+        for i in range(0, 6): # fill the destination MAC with the source MAC of the received package
+            self.EthResponse[i] = self.myreceivebuffer[6+i]
         self.fillMac(self.ownMac) # bytes 6 to 11 are the source MAC
         self.EthResponse[12] = 0x86 # 86dd is IPv6
         self.EthResponse[13] = 0xdd
@@ -79,7 +80,7 @@ class ipv6handler():
         lenInclChecksum = len(buffer) + 8
         self.UdpResponse[4] = lenInclChecksum >> 8
         self.UdpResponse[5] = lenInclChecksum & 0xFF
-        checksum = 0x1234 # todo: calculate this checksum
+        checksum = 0x1234 # todo: calculate this checksum, see https://en.wikipedia.org/wiki/User_Datagram_Protocol
         self.UdpResponse[6] = checksum >> 8
         self.UdpResponse[7] = checksum & 0xFF
         for i in range(0, len(buffer)):
@@ -87,10 +88,10 @@ class ipv6handler():
         showAsHex(self.UdpResponse, "UDP response ")
         self.packResponseIntoIp(self.UdpResponse)
         
-    def prepareSdpResponse(self):
+    def sendSdpResponse(self):
         # SECC Discovery Response.
-        # The response from the charger to the EV, which tells the chargers IPv6 address to the EV.
-        self.SdpPayload = bytearray(20)
+        # The response from the charger to the EV, which transfers the IPv6 address of the charger to the car.
+        self.SdpPayload = bytearray(20) # SDP response has 20 bytes
         for i in range(0, 16):
             self.SdpPayload[i] = self.SeccIp[i] # 16 bytes IP address of the charger
         self.SdpPayload[16] = 15118 >> 8 # SECC port high byte. Port is always 15118.
@@ -118,10 +119,11 @@ class ipv6handler():
         showAsHex(self.V2Gframe, "V2Gframe ")
         self.packResponseIntoUdp(self.V2Gframe)
         
-    def evaluateUdp(self):
+    def evaluateUdpPayload(self):
         if (self.destinationport == 15118): # port for the SECC
             if ((self.udpPayload[0]==0x01) and (self.udpPayload[1]==0xFE)): # protocol version 1 and inverted
                 # it is a V2GTP message
+                showAsHex(self.udpPayload, "V2GTP ")
                 self.evccPort = self.sourceport
                 v2gptPayloadType = self.udpPayload[2] * 256 + self.udpPayload[3]
                 # 0x8001 EXI encoded V2G message
@@ -139,16 +141,25 @@ class ipv6handler():
                             if (seccDiscoveryReqTransportProtocol!=0x00):
                                 print("seccDiscoveryReqTransportProtocol " + str(seccDiscoveryReqTransportProtocol) + " is not supported")
                             else:
-                                # This was a valid SDP request. Let's respond.
-                                
-                                showAsHex(self.udpPayload, "udp payload ")
-                                print("ok, this was a valid SDP request. Will respond.")
-                                self.prepareSdpResponse()
+                                # This was a valid SDP request. Let's respond, if we are the charger.
+                                print("ok, this was a valid SDP request")
+                                if (self.iAmEvse==1):
+                                    print("We are the SECC. Sending SDP response.")
+                                    self.sendSdpResponse()
                     else:
                         print("v2gptPayloadLen on SDP request is " + str(v2gptPayloadLen) + " not supported")
                 else:        
                     print("v2gptPayloadType " + hex(v2gptPayloadType) + " not supported")
                     
+    def enterPevMode(self):
+        self.iAmEvse = 0 # not emulating a charging station
+        self.iAmPev = 1 # emulating a vehicle
+    def enterEvseMode(self):
+        self.iAmEvse = 1 # emulating a charging station
+        self.iAmPev = 0 # not emulating a vehicle
+    def enterListenMode(self):
+        self.iAmEvse = 0 # not emulating a charging station
+        self.iAmPev = 0 # not emulating a vehicle
 
     def evaluateReceivedPacket(self, pkt):
         if (len(pkt)>60):
@@ -162,14 +173,15 @@ class ipv6handler():
                 # udplen is including 8 bytes header at the begin
                 if (self.udplen>8):
                     self.udpPayload = bytearray(self.udplen-8)
-                    print("self.udplen=" + str(self.udplen))
-                    print("self.myreceivebuffer len=" + str(len(self.myreceivebuffer)))
+                    # print("self.udplen=" + str(self.udplen))
+                    # print("self.myreceivebuffer len=" + str(len(self.myreceivebuffer)))
                     for i in range(0, self.udplen-8):
                         #print("index " + str(i) + " " + hex(self.myreceivebuffer[62+i]))
                         self.udpPayload[i] = self.myreceivebuffer[62+i]
-                    self.evaluateUdp()
+                    self.evaluateUdpPayload()
                         
     def __init__(self, transmitCallback):
+        self.enterEvseMode()
         self.transmit = transmitCallback
         self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0xaa, 0xaa, 0xff, 0xfe, 0, 0xaa, 0xaa ] # 16 bytes, a default IPv6 address for the charging station
         self.EvccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0x65, 0x65, 0xff, 0xfe, 0, 0x64, 0xC3 ] # 16 bytes, a default IPv6 address for the vehicle
