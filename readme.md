@@ -18,6 +18,7 @@ There are three different use cases, where this project can be helpful:
 - Install wireshark to view the network traffic
 - Install Pcap-ct python library
 - Patch Pcap-ct to support non-blocking operation
+- Run `python pyPlc.py` and use keyboard to trigger actions
 
 ## Hardware preparation
 Tested device: TPlink TL-PA1040P Ver 5.0
