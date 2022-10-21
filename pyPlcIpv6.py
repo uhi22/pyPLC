@@ -188,7 +188,11 @@ class ipv6handler():
     def __init__(self, transmitCallback):
         self.enterEvseMode()
         self.transmit = transmitCallback
-        self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0xaa, 0xaa, 0xff, 0xfe, 0, 0xaa, 0xaa ] # 16 bytes, a default IPv6 address for the charging station
-        self.EvccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0x65, 0x65, 0xff, 0xfe, 0, 0x64, 0xC3 ] # 16 bytes, a default IPv6 address for the vehicle
+        # 16 bytes, a default IPv6 address for the charging station
+        # self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0xaa, 0xaa, 0xff, 0xfe, 0, 0xaa, 0xaa ]
+        # fe80::e0ad:99ac:52eb:85d3 is the Win10 laptop
+        self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0xe0, 0xad, 0x99, 0xac, 0x52, 0xeb, 0x85, 0xd3 ]
+        # 16 bytes, a default IPv6 address for the vehicle
+        self.EvccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0x65, 0x65, 0xff, 0xfe, 0, 0x64, 0xC3 ] 
         self.ownMac = [ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 ] # 6 bytes own MAC default. Should be overwritten before use.
     

@@ -38,7 +38,7 @@ import pyPlcIpv6
 from helpers import * # prettyMac etc
 
 MAC_BROADCAST = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF ]
-MAC_LAPTOP    = [0xdc, 0x0e, 0xa1, 0x11, 0x67, 0x08 ]
+MAC_LAPTOP    = [0xdc, 0x0e, 0xa1, 0x11, 0x67, 0x08 ] # Win10 laptop
 MAC_RANDOM    = [0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff ]
 MAC_ALPI      = [0x0A, 0x19, 0x4A, 0x39, 0xD6, 0x98 ] # alpitronics
 MAC_TPLINK_E4 = [0x98, 0x48, 0x27, 0x5A, 0x3C, 0xE4 ] # TPlink PLC adaptor
@@ -144,7 +144,7 @@ class pyPlcHomeplug():
         # Destination MAC
         self.fillDestinationMac(MAC_BROADCAST)
         # Source MAC
-        self.fillSourceMac(MAC_RANDOM)
+        self.fillSourceMac(self.myMAC)
         # Protocol
         self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
         self.mytransmitbuffer[13]=0xE1
@@ -167,7 +167,7 @@ class pyPlcHomeplug():
         self.fillDestinationMac(MAC_BROADCAST)
         # Source MAC
         #self.fillSourceMac(MAC_LAPTOP)
-        self.fillSourceMac(MAC_RANDOM)
+        self.fillSourceMac(self.myMAC)
         # Protocol
         self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
         self.mytransmitbuffer[13]=0xE1
@@ -216,7 +216,7 @@ class pyPlcHomeplug():
         self.fillDestinationMac(MAC_BROADCAST)
         # Source MAC
         #self.fillSourceMac(MAC_LAPTOP)
-        self.fillSourceMac(MAC_RANDOM)
+        self.fillSourceMac(self.myMAC)
         # Protocol
         self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
         self.mytransmitbuffer[13]=0xE1
@@ -274,7 +274,7 @@ class pyPlcHomeplug():
         # Destination MAC
         self.fillDestinationMac(self.pevMac)
         # Source MAC
-        self.fillSourceMac(MAC_RANDOM)
+        self.fillSourceMac(self.myMAC)
         # Protocol
         self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
         self.mytransmitbuffer[13]=0xE1
@@ -306,7 +306,7 @@ class pyPlcHomeplug():
         # Destination MAC
         self.fillDestinationMac(self.pevMac)
         # Source MAC
-        self.fillSourceMac(MAC_RANDOM)
+        self.fillSourceMac(self.myMAC)
         # Protocol
         self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
         self.mytransmitbuffer[13]=0xE1
@@ -339,7 +339,7 @@ class pyPlcHomeplug():
         # Destination MAC
         self.fillDestinationMac(self.pevMac)
         # Source MAC
-        self.fillSourceMac(MAC_RANDOM)
+        self.fillSourceMac(self.myMAC)
         # Protocol
         self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
         self.mytransmitbuffer[13]=0xE1
@@ -355,7 +355,7 @@ class pyPlcHomeplug():
                                        # 23 - 39: pev_id 17 bytes. All zero in alpi/Ioniq trace.
         self.fillDestinationMac(self.pevMac, 40) # 40 - 45 pev_mac                               
                                        # 46 - 62: evse_id 17 bytes. All zero in alpi/Ioniq trace.
-        self.fillSourceMac(MAC_RANDOM, 63) # 63 - 68 evse_mac 
+        self.fillSourceMac(self.myMAC, 63) # 63 - 68 evse_mac 
         self.fillDestinationMac(self.pevMac, 69) # 69-76 run_id. Is the ioniq mac plus 00 00.
                                        # 77 to 84 reserved 0
         self.setNidAt(85) # 85-91 NID. We can nearly freely choose this, but the upper two bits need to be zero
@@ -581,9 +581,10 @@ class pyPlcHomeplug():
         self.NMK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
         self.pevMac = [0x55, 0x56, 0x57, 0x58, 0x59, 0x5A ] # a default pev MAC
+        self.myMAC = MAC_LAPTOP # todo: find this dynamically
         self.runningCounter=0
         self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit)
-        self.ipv6.ownMac = MAC_RANDOM
+        self.ipv6.ownMac = self.myMAC
         self.enterEvseMode()
         self.showStatus(prettyMac(self.pevMac), "pevmac")
         print("sniffer created at " + self.strInterfaceName)
