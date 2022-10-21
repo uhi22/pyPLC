@@ -136,7 +136,8 @@ this, it sends a "Neighbour solicitation". (This looks a little bit oversized, b
 their addresses have already been exchanged in the above steps. But ICMP is standard technology.)
 20. The charger responds to the neighbor solicitation request with a neighbor advertisement. This contains the MAC address of the charger.
 In the case, we use this pyPLC project as charger, we rely on the operating system that it covers the ICMP. On Win10, this works perfectly,
-the only thing we must make sure, that the MAC and IPv6 of the ethernet port are correctly configured in the python script.
+the only thing we must make sure, that the MAC and IPv6 of the ethernet port are correctly configured in the python script. Use
+`ipconfig -all` on Windows, to find out the addresses.
 21. Now, the car and the charger have a clear view about addressing (MAC, IPv6).
 22. The car requests to open a TCP connection to chargerIP at port 15118.
 23. The charger, which was listening on port 15118, confirms the TCP channel. (Todo: not yet implemented)
