@@ -17,6 +17,7 @@
 #        on the 6 byte MAC address.
 
 from helpers import showAsHex
+import udpChecksum
 
 
 class ipv6handler():
@@ -80,12 +81,16 @@ class ipv6handler():
         lenInclChecksum = len(buffer) + 8
         self.UdpResponse[4] = lenInclChecksum >> 8
         self.UdpResponse[5] = lenInclChecksum & 0xFF
-        checksum = 0x1234 # todo: calculate this checksum, see https://en.wikipedia.org/wiki/User_Datagram_Protocol
-        self.UdpResponse[6] = checksum >> 8
-        self.UdpResponse[7] = checksum & 0xFF
+        # checksum will be calculated afterwards
+        self.UdpResponse[6] = 0
+        self.UdpResponse[7] = 0
         for i in range(0, len(buffer)):
             self.UdpResponse[8+i] = buffer[i]
         showAsHex(self.UdpResponse, "UDP response ")
+        # The content of buffer is ready. We can calculate the checksum. see https://en.wikipedia.org/wiki/User_Datagram_Protocol
+        checksum = udpChecksum.calculateUdpChecksumForIPv6(self.UdpResponse, self.SeccIp, self.EvccIp)   
+        self.UdpResponse[6] = checksum >> 8
+        self.UdpResponse[7] = checksum & 0xFF        
         self.packResponseIntoIp(self.UdpResponse)
         
     def sendSdpResponse(self):
