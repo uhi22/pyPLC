@@ -1,4 +1,4 @@
-# Some try-outs with Python and network adaptor low-level communiation
+# CCS sniffing: Some try-outs with Python and network adaptor low-level communication
 
 ## Goal
 This project tries to use cheap powerline network adaptors for communication with electric cars charging system.
@@ -11,6 +11,9 @@ There are three different use cases, where this project can be helpful:
 ## References
 * [i] https://www.goingelectric.de/wiki/CCS-Technische-Details/
 * [ii] https://openinverter.org/forum/viewtopic.php?p=37085#p37085
+* [iii] https://github.com/qca/open-plc-utils
+* [iv] https://github.com/karpierz/pcap-ct
+* [v] https://github.com/FlUxIuS/V2Gdecoder
 
 ## Quick start / overview
 - Modify a PLC adaptor hardware, that it runs on battery
@@ -21,11 +24,7 @@ There are three different use cases, where this project can be helpful:
 - Run `python pyPlc.py` and use keyboard to trigger actions
 
 ## Hardware preparation
-Tested device: TPlink TL-PA1040P Ver 5.0
-- remove the housing
-- remove the AC power connector parts
-- connect cables to supply the device by battery. Works with 12V, also works with 5V from an USB power bank.
-- connect cables and circuit (1nF and 150ohms in series) for connecting to the pilot line.
+See [Hardware manual](doc/hardware.md)
 
 ## Configuration of the PLC adaptor
 The factory settings of the Homeplug PLC adaptor do not in all cases support the requirements of the communication
@@ -80,10 +79,11 @@ Attention: There are (at least) three different python-libs available for pcap:
 -	Pylibpcap (But: only Python2)
 -	Pypcap (recommented on https://stackoverflow.com/questions/63941109/pcap-open-live-issue)
 -	Pcap-ct (https://pypi.org/project/pcap-ct/)
+
 We use the last one.
-	python -m pip install --upgrade pcap-ct
+    python -m pip install --upgrade pcap-ct
 This is fighting against the Libpcap-installation, so we need to deinstall the second:
-	python -m pip uninstall libpcap
+    python -m pip uninstall libpcap
 Then again install pcap-ct, and finally add in the libpcap\_platform\__init__py the missing is_osx = False. (Is in the meanwhile fixed in the github repository.)
 
 Finally, we need to patch the Pcap-ct, because the python script needs a non-blocking version. This is discussed in https://github.com/karpierz/pcap-ct/issues/9
@@ -173,4 +173,10 @@ Using the TPlink and Win10 laptop as evse, the python script runs successfully t
 neighbor solicitation (ICMP) to confirm the IPv6 address, and the Win10 responds to it. The car tries to open the TCP on port 15118, this is failing
 because of missing implementation of the listener on PC side.
 
-(further steps ongoing)
+## List of open topics
+- add listener to socket at port 15118 (use case: evse)
+- add evaluation of the TP packets (use case: sniffer)
+- convert the EXI data to the readable xml (e.g. using https://github.com/FlUxIuS/V2Gdecoder)
+- replace the fix-configured addresses (MAC, IP) in the python script by the real one from the operating system
+- improve docu (add layer diagram, improve hardware docu, add link to evse which provides the 5% PWM)
+- (and much more)
