@@ -1,0 +1,53 @@
+@startuml
+
+package "pyPLC" {
+	package "pyPlcIPv6" {
+		[miniIPv6]
+		[pyPlcUdp]
+		[pyPlcSDP]
+		[pyPlcTcpExiSniff]
+		[pyPlcV2GEXI]
+	}
+
+	package "pyPlcHomeplug" {
+		[dispatcher]
+		[SLAC]
+	}
+	
+	
+	[xmlProcessing]
+}
+
+[ControlPilotLine]
+[HomeplugAdaptor]
+[pcap DLL] as pcap
+[wireshark]
+[FlUxIuS/V2Gdecoder] as dec
+
+package "WindowsOS or Linux" {
+  [OS_Ethernet]
+  [OS_IPv6]
+  [OS_TCP]
+  [OS_ICMP]
+}
+
+[ControlPilotLine] <-up-> [HomeplugAdaptor]
+[HomeplugAdaptor] <-up-> [OS_Ethernet]
+[OS_Ethernet] <-up-> [pcap]
+[OS_Ethernet] <-up-> [OS_IPv6]
+[OS_Ethernet] <-up-> [OS_ICMP]
+[OS_IPv6] <-up-> [OS_TCP]
+
+[pcap] <-up-> [pcap-ct]
+[pcap] -up-> [wireshark]
+[pcap-ct] <-up-> [dispatcher]
+[dispatcher] <-up-> [SLAC]
+[dispatcher] <-up-> [miniIPv6]
+[miniIPv6] <-up-> [pyPlcUdp]
+[miniIPv6] -up-> [pyPlcTcpExiSniff]
+[pyPlcUdp] <-up-> [pyPlcSDP]
+[OS_TCP] <-up-> [pyPlcV2GEXI]
+[pyPlcV2GEXI] -r-> [dec]
+[pyPlcTcpExiSniff] -r-> [dec]
+[dec] -l-> [xmlProcessing]
+@enduml
