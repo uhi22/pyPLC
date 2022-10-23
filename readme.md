@@ -23,6 +23,9 @@ There are three different use cases, where this project can be helpful:
 - Patch Pcap-ct to support non-blocking operation
 - Run `python pyPlc.py` and use keyboard to trigger actions
 
+## Architecture
+![architectural overview](doc/pyPlc_architecture.png)
+
 ## Hardware preparation
 See [Hardware manual](doc/hardware.md)
 
