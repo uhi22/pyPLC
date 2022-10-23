@@ -14,6 +14,7 @@ There are three different use cases, where this project can be helpful:
 * [iii] https://github.com/qca/open-plc-utils
 * [iv] https://github.com/karpierz/pcap-ct
 * [v] https://github.com/FlUxIuS/V2Gdecoder
+* [vi] https://github.com/SwitchEV/iso15118
 
 ## Quick start / overview
 - Modify a PLC adaptor hardware, that it runs on battery
