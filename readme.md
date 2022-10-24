@@ -180,7 +180,7 @@ because of missing implementation of the listener on PC side.
 ## List of open topics
 - add listener to socket at port 15118 (use case: evse)
 - add evaluation of the TP packets (use case: sniffer)
-- convert the EXI data to the readable xml (e.g. using https://github.com/FlUxIuS/V2Gdecoder)
+- convert the EXI data to the readable xml (e.g. using https://github.com/FlUxIuS/V2Gdecoder, or https://github.com/Martin-P/OpenV2G)
 - replace the fix-configured addresses (MAC, IP) in the python script by the real one from the operating system
 - improve docu (add layer diagram, improve hardware docu, add link to evse which provides the 5% PWM)
 - (and much more)
