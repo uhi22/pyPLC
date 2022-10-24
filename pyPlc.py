@@ -32,7 +32,7 @@ def cbShowStatus(s, selection=""):
         lblMode['text']=s
         s=""
     if (selection == "pevmac"):
-        lblPevMac['text']=s
+        lblPevMac['text']="PEV MAC " + s
         s=""
     if (len(s)>0):
         lblStatus['text']=s
@@ -40,9 +40,8 @@ def cbShowStatus(s, selection=""):
 
 root = tk.Tk()
 lastKey = ''
-display = tk.Label(root, text='No Key', width=30) # A textual element in the graphical user interface
-display.pack()
-lblHelp = tk.Label(root, text="x=exit, t=testframe")
+lblHelp = tk.Label(root, justify= "left")
+lblHelp['text']="x=exit \nS=GET_SW \nP=PEV mode \nE=EVSE mode \nL=Listen mode \ns=SET_KEY \nG=GET_KEY (try twice) \nt=SET_KEY modified"
 lblHelp.pack()
 lblStatus = tk.Label(root, text="(Status)")
 lblStatus.pack()
@@ -52,7 +51,6 @@ lblMode = tk.Label(root, text="(mode)")
 lblMode.pack()
 
 # Bind the keyboard handler to all relevant elements:
-display.bind('<Key>', storekeyname)
 root.bind('<Key>', storekeyname)
 cbShowStatus("initialized")
 root.update()

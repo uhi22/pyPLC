@@ -33,8 +33,7 @@ class pyPlcWorker():
         if (strAction == "E"):
             self.hp.enterEvseMode()
         if (strAction == "L"):
-            self.hp.enterListenMode()
-            
-        self.addToTrace("UserAction " + strAction)
+            self.hp.enterListenMode()  
+        # self.addToTrace("UserAction " + strAction)
         self.hp.sendTestFrame(strAction)
 

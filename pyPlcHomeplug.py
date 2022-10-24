@@ -401,8 +401,7 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[37]=0x43 # 
 
 
-    def sendTestFrame(self, selection):
-        
+    def sendTestFrame(self, selection): 
         if (selection=="1"):
             self.composeSlacParamReq()
             self.addToTrace("transmitting SLAC_PARAM.REQ...")
@@ -420,12 +419,8 @@ class pyPlcHomeplug():
             self.addToTrace("transmitting SET_KEY.REQ (key 0)")
             self.transmit(self.mytransmitbuffer)
         if (selection=="t"):
-            self.composeSetKey(2)
+            self.composeSetKey(2) # set key with modified content
             self.addToTrace("transmitting SET_KEY.REQ (key 2)")
-            self.transmit(self.mytransmitbuffer)
-        if (selection=="D"):
-            self.composeDHCP()
-            self.addToTrace("transmitting broken DHCP")           
             self.transmit(self.mytransmitbuffer)
         if (selection=="G"):
             self.composeGetKey()
@@ -600,10 +595,10 @@ class pyPlcHomeplug():
         for ts, pkt in self.sniffer: # attention: for using this in non-blocking manner, we need the patch described above.
             self.nPacketsReceived+=1
             # print('%d' % (ts)) # the time stamp
+            # We received an ethernet package. Determine its type, and dispatch it to the related handler.
             etherType = self.getEtherType(pkt)
             if (etherType == 0x88E1): # it is a HomePlug message
                 self.myreceivebuffer = pkt
-                #    self.showMacAddresses(pkt)
                 self.evaluateReceivedHomeplugPacket()
             if (etherType == 0x86dd): # it is an IPv6 frame
                 self.ipv6.evaluateReceivedPacket(pkt)
