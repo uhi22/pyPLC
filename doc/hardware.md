@@ -16,13 +16,20 @@ Contra:
 
 ### Devolo dLAN 1200+
 Todo: add picture how to connect the DC power and the RF
+![image](https://user-images.githubusercontent.com/98478946/197516219-33440602-3feb-4c91-b353-efa90969b419.png)
+
 
 
 ### TPlink TL-PA4010P
 This adaptor was suggested by https://openinverter.org/forum/viewtopic.php?p=37085#p37085 and there,
 successfully used to establish a communication to the CCS charger.
 
-Todo: add picture how to connect the DC power and the RF
+![image](https://user-images.githubusercontent.com/98478946/197516154-8cf09924-50c1-4d76-a218-b411f2158f5e.png)
+![image](https://user-images.githubusercontent.com/98478946/197515835-a6844243-9456-450c-84d5-ef2351258505.png)
+![image](https://user-images.githubusercontent.com/98478946/197516061-431ffa9c-6614-4d44-ab80-5399fdb321d2.png)
+![image](https://user-images.githubusercontent.com/98478946/197516296-e04e257b-0d10-40b7-9acb-e0ca2491a74c.png)
+![image](https://user-images.githubusercontent.com/98478946/197515717-346325b4-86f3-459c-9576-3b777697f707.png)
+
 
 Pro:
 * Can be configured as pev and as EVSE, using two different configuration files (created and patches with github.com/qca/open-plc-utils)
