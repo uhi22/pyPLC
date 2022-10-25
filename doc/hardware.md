@@ -18,6 +18,7 @@ Contra:
 
 ### Devolo dLAN 1200+
 Todo: add picture how to connect the DC power and the RF
+
 ![image](https://user-images.githubusercontent.com/98478946/197516219-33440602-3feb-4c91-b353-efa90969b419.png)
 
 
@@ -47,9 +48,9 @@ Works on the original 12V supply line also with 13V/110mA, 10V/120mA, 6V/190mA, 
 Just supplying 5V from an USB power bank at the original 12V line works fine. The only drawback is a slightly reduced transmit power, because
 the RF transmitter is connected to the 12V, but is is no issue, because it has anyway much too much transmit power for the CCS use case.
 
-How to modify: Tested device: TPlink TL-PA1040P Ver 5.0
+How to modify:
 - remove the housing
 - remove the AC power connector parts
-- connect cables to supply the device by battery. Works with 12V, also works with 5V from an USB power bank.
+- connect cables to supply the device. Works with 12V, also works with 5V from an USB power bank.
 - connect cables and circuit (1nF and 150ohms in series) for connecting to the pilot line.
 
