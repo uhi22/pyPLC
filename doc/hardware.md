@@ -3,7 +3,9 @@
 ## Homeplug adaptors
 
 ### Devolo dLAN 200 AVplus
-Todo: add picture how to connect the DC power and the RF
+
+![image](https://user-images.githubusercontent.com/98478946/197698551-25887d20-1d90-40d1-9704-a5770db46739.png)
+![image](https://user-images.githubusercontent.com/98478946/197698729-d66a847a-b93f-495b-82ec-ca1430708336.png)
 
 Pro:
 * Routes the SLAC traffic from RF port to Ethernet, using the original software (INT6000-MAC-4-4-4405-00-4497-20101201-FINAL-B)
