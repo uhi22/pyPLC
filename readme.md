@@ -185,7 +185,7 @@ neighbor solicitation (ICMP) to confirm the IPv6 address, and the Win10 responds
 because of missing implementation of the listener on PC side.
 
 ### 2022-10-26 [*ListenMode*] Network/AVLN is established
-Using the TPlink in EVSE mode and Win10 laptop, listening to a communication setup between real car and real alpitronics, the python script
+Using the TPlink in EVSE mode and Win10 laptop, listening to a communication setup between real car and real alpitronics charger, the python script
 successfully extracts the NID and NMK from the SLAC_MATCH response, sets this information into the TPlink, and the TPlink turns three
 LEDs on. Means: Network established. When we send a broadcast software version request, we get three responses: One from the TPlink, one from the
 PLC modem of the car, and one from the PLC modem of the charger. This confirms, that the network is established.
@@ -195,8 +195,15 @@ third participant in the network. Trace in results/2022-10-26_WP4_networkEstabli
 
 ## Biggest Challenges
 - [*ListenMode*] Find a way to enable the sniffer mode or monitor mode in the AR7420. Seems to be not included in the public qca/open-plc-utils.
-Without this mode, we see only the broadcase messages, not the TCP / UDP traffic between the EVSE and the PEV. Any idea how to enable full-transparency
-of the QCA?
+Without this mode, we see only the broadcast messages, not the TCP / UDP traffic between the EVSE and the PEV.
+The \open-plc-utils\pib\piboffset.xml mentions a setting "SnifferEnable" at 0102 and "SnifferReturnMACAddress" starting at 0103. But setting
+the enable to 1 and adding a senseful MAC address does not lead to a difference.
+The docu of qca/open-plc-utils mentions ampsnif and plcsnif, but these are not included. An old
+release (https://github.com/qca/open-plc-utils/archive/refs/tags/OSR-6010.zip) is mentioning VS_SNIFFER message, ampsnif, plcsnif and even
+functions Monitor() and Sniffer(), but these are included from a path ../nda/ which is not part of the public repository.
+
+Any idea how to enable full-transparency of the AR7420?
+
 - [all modes] convert the EXI data to the readable xml (e.g. using https://github.com/FlUxIuS/V2Gdecoder, or https://github.com/Martin-P/OpenV2G).
 Evaluate different EXI decoders/encoders, regarding speed, correctness and stability.
 - [all modes] replace the fix-configured addresses (MAC, IP) in the python script by the real one from the operating system
