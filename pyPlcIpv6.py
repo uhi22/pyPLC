@@ -214,7 +214,8 @@ class ipv6handler():
                 self.evaluateTcpPacket()
                         
     def __init__(self, transmitCallback):
-        self.enterEvseMode()
+        #self.enterEvseMode()
+        self.enterListenMode()
         self.transmit = transmitCallback
         # 16 bytes, a default IPv6 address for the charging station
         # self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0xaa, 0xaa, 0xff, 0xfe, 0, 0xaa, 0xaa ]

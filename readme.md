@@ -177,6 +177,15 @@ Using the TPlink and Win10 laptop as evse, the python script runs successfully t
 neighbor solicitation (ICMP) to confirm the IPv6 address, and the Win10 responds to it. The car tries to open the TCP on port 15118, this is failing
 because of missing implementation of the listener on PC side.
 
+### 2022-10-26 Network is established in sniffer mode
+Using the TPlink in EVSE mode and Win10 laptop, listening to a communication setup between real car and real alpitronics, the python script
+successfully extracts the NID and NMK from the SLAC_MATCH response, sets this information into the TPlink, and the TPlink turns three
+LEDs on. Means: Network established. When we send a broadcast software version request, we get three responses: One from the TPlink, one from the
+PLC modem of the car, and one from the PLC modem of the charger. This confirms, that the network is established.
+But: From the higher level communication (IPv6, UDP, TCP) we see only the broadcast neighbor solicitation at the beginning. The remaining traffic
+is hidden, most likely because the TPlink "too intelligent", it knows who has which MAC address and hides traffic which is not intended for the
+third participant in the network.
+
 ## List of open topics
 - add listener to socket at port 15118 (use case: evse)
 - add evaluation of the TP packets (use case: sniffer)
