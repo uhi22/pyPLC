@@ -5,8 +5,9 @@ This project tries to use cheap powerline network adaptors for communication wit
 
 There are three different use cases, where this project can be helpful:
 1. Sniffing the traffic between an CCS charger and a car. For instance to measure which side is the limiting element for reduced charging power.
-2. Building a charger for CCS or for AC with digital communication.
-3. Building a charging unit for a car which does not support powerline communication.
+In this project, we call this mode *ListenMode*.
+2. Building a charger for CCS or for AC with digital communication. We call this *EvseMode*.
+3. Building a charging unit for a car which does not support powerline communication. Let's call it *PevMode*.
 
 ## References
 * [i] https://www.goingelectric.de/wiki/CCS-Technische-Details/
@@ -187,10 +188,15 @@ But: From the higher level communication (IPv6, UDP, TCP) we see only the broadc
 is hidden, most likely because the TPlink "too intelligent", it knows who has which MAC address and hides traffic which is not intended for the
 third participant in the network. Trace in results/2022-10-26_WP4_networkEstablishedButHiddenCommunication.pcapng
 
-## List of open topics
-- add listener to socket at port 15118 (use case: evse)
-- add evaluation of the TP packets (use case: sniffer)
-- convert the EXI data to the readable xml (e.g. using https://github.com/FlUxIuS/V2Gdecoder, or https://github.com/Martin-P/OpenV2G)
-- replace the fix-configured addresses (MAC, IP) in the python script by the real one from the operating system
-- improve docu (add layer diagram, improve hardware docu, add link to evse which provides the 5% PWM)
+## Biggest Challenges
+- [ListenMode] Find a way to enable the sniffer mode or monitor mode in the AR7420. Seems to be not included in the public qca/open-plc-utils.
+Without this mode, we see only the broadcase messages, not the TCP / UDP traffic between the EVSE and the PEV. Any idea how to enable full-transparency
+of the QCA?
+- [all modes] convert the EXI data to the readable xml (e.g. using https://github.com/FlUxIuS/V2Gdecoder, or https://github.com/Martin-P/OpenV2G).
+Evaluate different EXI decoders/encoders, regarding speed, correctness and stability.
+- [all modes] replace the fix-configured addresses (MAC, IP) in the python script by the real one from the operating system
+
+## Other open topics
+- [EvseMode] Add listener to socket at port 15118
+- improve docu (update layer diagram, improve hardware docu, add link to evse which provides the 5% PWM)
 - (and much more)
