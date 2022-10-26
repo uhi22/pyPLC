@@ -184,7 +184,7 @@ LEDs on. Means: Network established. When we send a broadcast software version r
 PLC modem of the car, and one from the PLC modem of the charger. This confirms, that the network is established.
 But: From the higher level communication (IPv6, UDP, TCP) we see only the broadcast neighbor solicitation at the beginning. The remaining traffic
 is hidden, most likely because the TPlink "too intelligent", it knows who has which MAC address and hides traffic which is not intended for the
-third participant in the network.
+third participant in the network. Trace in results/2022-10-26_WP4_networkEstablishedButHiddenCommunication.pcapng
 
 ## List of open topics
 - add listener to socket at port 15118 (use case: evse)
