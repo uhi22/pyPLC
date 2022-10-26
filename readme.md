@@ -15,6 +15,7 @@ There are three different use cases, where this project can be helpful:
 * [iv] https://github.com/karpierz/pcap-ct
 * [v] https://github.com/FlUxIuS/V2Gdecoder
 * [vi] https://github.com/SwitchEV/iso15118
+* [vii] https://books.google.de/books?id=WYlmEAAAQBAJ&pg=PA99&lpg=PA99&dq=%22ampsnif%22&source=bl&ots=hqCjdFooZ-&sig=ACfU3U0EleLZQu0zWhHQZGktp8OytCMrLg&hl=de&sa=X&ved=2ahUKEwjT0Yq88P36AhWj_rsIHeGMA5MQ6AF6BAgKEAM#v=onepage&q=%22ampsnif%22&f=false How to enable sniffer mode.
 
 ## Quick start / overview
 - Modify a PLC adaptor hardware, that it runs on battery
