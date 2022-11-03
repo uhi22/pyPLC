@@ -18,6 +18,7 @@ In this project, we call this mode *ListenMode*.
 * [vi] https://github.com/SwitchEV/iso15118
 * [vii] https://books.google.de/books?id=WYlmEAAAQBAJ&pg=PA99&lpg=PA99&dq=%22ampsnif%22&source=bl&ots=hqCjdFooZ-&sig=ACfU3U0EleLZQu0zWhHQZGktp8OytCMrLg&hl=de&sa=X&ved=2ahUKEwjT0Yq88P36AhWj_rsIHeGMA5MQ6AF6BAgKEAM#v=onepage&q=%22ampsnif%22&f=false How to enable sniffer mode.
 * [viii] https://www.mdpi.com/2076-3417/6/6/165/htm "Building an Interoperability Test System for Electric Vehicle Chargers Based on ISO/IEC 15118 and IEC 61850 Standards", including V2G message sequence chart
+* [iix] https://www.oppcharge.org/dok/ISO_15118-2_OpportunityCharging_Rev1.3.0.pdf Pantograph specific differences with some insight into ISO15118.
 
 ## Quick start / overview
 - Modify a PLC adaptor hardware, that it runs on battery
@@ -160,24 +161,31 @@ the complete process uses XML data, which is packed in EXI frames, which in turn
 the various steps is visible in a sequence chart in [viii].
 31. The car announces the supported application protocols, e.g. DIN or ISO, using the SupportedApplicationProtocolRequest.
 32. The charger chooses the best application protocol from the list, and announces the decision with SupportedApplicationProtocolResponse.
-33. The car initiates the charging session with SessionSetupRequest.
+33. The car initiates the charging session with SessionSetupRequest. This defines a SessionId, which will be used in the further steps.
 34. The charger confirms the session with SessionSetupResponse.
-35. The car sends ServiceDiscoveryRequest.
+35. The car sends ServiceDiscoveryRequest. Usually, this means it says "I want to charge" by setting serviceCathegory=EVCharging.
 36. The charger confirms with ServiceDiscoveryResponse.
-37. The car sends PaymentServiceSelectionRequest.
+37. The car sends PaymentServiceSelectionRequest. Usually (in non-plug-and-charge case), the car says "I cannot pay, something else should
+handle the payment", by setting paymentOption=ExternalPayment.
 38. The charger confirms with PaymentServiceSelectionResponse.
-39. The car sends AuthorizationRequest.
+39. The car sends AuthorizationRequest. In non-plug-and-charge case this is most likely not containing relevant data.
 40. The charger confirms with AuthorizationResponse.
-41. The car sends ChargeParameterRequest.
-42. The charger confirms with ChargeParameterResponse. Now, the initialization phase of the charging session is finished.
-43. The car sends CableCheckRequest.
+41. The car sends ChargeParameterRequest. This contains the wanted RequestedEnergyTransferMode, e.g. to select
+DC or AC and which power pins are used. The car announces the maximum current limit and the maximum voltage limit.
+42. The charger confirms with ChargeParameterResponse. The contains the limits from charger side, e.g. min and max voltage,
+min and max current. Now, the initialization phase of the charging session is finished.
+43. The car changes to CP State to C or D, by applying an additional resistor between CP and ground.
+43. The car sends CableCheckRequest. This contains the information, whether the connector is locked.
 44. The charger confirms with CableCheckResponse.
-45. The car sends PreChargeRequest.
-46. The charger confirms with PreChargeResponse.
+45. The car sends PreChargeRequest. With this, the car announces the target voltage of the charger before closing the circut. The goal
+is, to adjust the chargers output voltage to match the cars battery voltage.
+46. The charger confirms with PreChargeResponse. This response contains the actual voltage on the charger.
 47. The car sends PowerDelivery(Start)Request.
 48. The charger confirms with PowerDeliveryResponse.
-49. The car sends CurrentDemandRequest (repeated while the charging is ongoing).
-50. The charger confirms with CurrentDemandResponse.
+49. The car sends CurrentDemandRequest (repeated while the charging is ongoing). In this message, the car tells the charger the target voltage and
+target current.
+50. The charger confirms with CurrentDemandResponse. This contains the measured voltage, measured current, and flags which show which limitation
+is active (current limitation, voltage limitation, power limitation).
 51. The car sends PowerDelivery(Stop)Request.
 52. The charger confirms with PowerDeliveryResponse.
 53. The car sends WeldingDetectionRequest.
