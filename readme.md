@@ -175,23 +175,27 @@ DC or AC and which power pins are used. The car announces the maximum current li
 42. The charger confirms with ChargeParameterResponse. The contains the limits from charger side, e.g. min and max voltage,
 min and max current. Now, the initialization phase of the charging session is finished.
 43. The car changes to CP State to C or D, by applying an additional resistor between CP and ground.
-43. The car sends CableCheckRequest. This contains the information, whether the connector is locked.
-44. The charger confirms with CableCheckResponse.
-45. The car sends PreChargeRequest. With this, the car announces the target voltage of the charger before closing the circut. The goal
-is, to adjust the chargers output voltage to match the cars battery voltage.
-46. The charger confirms with PreChargeResponse. This response contains the actual voltage on the charger.
-47. The car sends PowerDelivery(Start)Request.
-48. The charger confirms with PowerDeliveryResponse.
-49. The car sends CurrentDemandRequest (repeated while the charging is ongoing). In this message, the car tells the charger the target voltage and
-target current.
-50. The charger confirms with CurrentDemandResponse. This contains the measured voltage, measured current, and flags which show which limitation
-is active (current limitation, voltage limitation, power limitation).
-51. The car sends PowerDelivery(Stop)Request.
+44. The car sends CableCheckRequest. This contains the information, whether the connector is locked.
+45. The charger applies voltage to the cable and measures the isolation resistance.
+46. The charger confirms with CableCheckResponse.
+47. The car sends PreChargeRequest. With this, the car announces the target voltage of the charger before closing the circut. The goal
+is, to adjust the chargers output voltage to match the cars battery voltage. Also a current limit (max 2A) is sent.
+48. The charger confirms with PreChargeResponse. This response contains the actual voltage on the charger.
+49. The charger adjusts its output voltage according to the requested voltage.
+50. The car measures the voltage on the inlet and on the battery. If the difference is small enough (less than 20V?), the car
+closes the power relay.
+51. The car sends PowerDelivery(Start)Request.
 52. The charger confirms with PowerDeliveryResponse.
-53. The car sends WeldingDetectionRequest.
-54. The charger confirms with WeldingDetectionResponse.
-55. The car sends SessionStopRequest.
-56. The charger confirms with SessionStopResponse.
+53. The car sends CurrentDemandRequest (repeated while the charging is ongoing). In this message, the car tells the charger the target voltage and
+target current.
+54. The charger confirms with CurrentDemandResponse. This contains the measured voltage, measured current, and flags which show which limitation
+is active (current limitation, voltage limitation, power limitation).
+55. The car sends PowerDelivery(Stop)Request.
+56. The charger confirms with PowerDeliveryResponse.
+57. The car sends WeldingDetectionRequest.
+58. The charger confirms with WeldingDetectionResponse.
+59. The car sends SessionStopRequest.
+60. The charger confirms with SessionStopResponse.
 
 
 
