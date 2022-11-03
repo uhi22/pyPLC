@@ -17,6 +17,7 @@ In this project, we call this mode *ListenMode*.
 * [v] https://github.com/FlUxIuS/V2Gdecoder
 * [vi] https://github.com/SwitchEV/iso15118
 * [vii] https://books.google.de/books?id=WYlmEAAAQBAJ&pg=PA99&lpg=PA99&dq=%22ampsnif%22&source=bl&ots=hqCjdFooZ-&sig=ACfU3U0EleLZQu0zWhHQZGktp8OytCMrLg&hl=de&sa=X&ved=2ahUKEwjT0Yq88P36AhWj_rsIHeGMA5MQ6AF6BAgKEAM#v=onepage&q=%22ampsnif%22&f=false How to enable sniffer mode.
+* [viii] https://www.mdpi.com/2076-3417/6/6/165/htm "Building an Interoperability Test System for Electric Vehicle Chargers Based on ISO/IEC 15118 and IEC 61850 Standards", including V2G message sequence chart
 
 ## Quick start / overview
 - Modify a PLC adaptor hardware, that it runs on battery
@@ -112,52 +113,77 @@ This chapter describes the start of a charging session, considering all layers.
 Precondition: On charger side, there is a homeplugGP-capable device present, which is configured as CentralCoordinator.
 1. The charger (Supply entity communication controller, SECC) creates a "random" value for NID (network ID) and
 NMK (network membership key), and configures its homeplug modem with these values.
-1. The charger provides 12V on the control pilot (CP) line (State A).
-1. The user connects the plug into the car.
-2. The car pulls the 12V at CP line to 9V (State B).
-3. The charger sees the level change on CP and applies 5% PWM on CP.
-4. The car sees the 5%, and interprets it as request for digital communication. It wakes up its communication controller (electric vehicle
+2. The charger provides 12V on the control pilot (CP) line (State A).
+3. The user connects the plug into the car.
+4. The car pulls the 12V at CP line to 9V (State B).
+5. The charger sees the level change on CP and applies 5% PWM on CP.
+6. The car sees the 5%, and interprets it as request for digital communication. It wakes up its communication controller (electric vehicle
 communication controller, EVCC) and homeplug modem.
-5. The car sees homeplug coordinator packets on the CP, and starts the SLAC sequence by sending SLAC_PARAM.REQ. Can be also two times.
-6. The charger receives the SLAC_PARAM.REQ and confirms it with SLAC_PARAM.CNF.
-7. The car sends START_ATTEN_CHAR.IND, to start the attenuation measurement. In total 3 times.
-8. The car sends MNBC_SOUND.IND, to provide different sounds (signals different frequency ranges). In total 10 times.
-8. The homeplug modem in the charger should measure the signal strength, and report the values to the SECC in an ethernet frame ATTEN_PROFILE.IND.
+7. The car sees homeplug coordinator packets on the CP, and starts the SLAC sequence by sending SLAC_PARAM.REQ. Can be also two times.
+8. The charger receives the SLAC_PARAM.REQ and confirms it with SLAC_PARAM.CNF.
+9. The car sends START_ATTEN_CHAR.IND, to start the attenuation measurement. In total 3 times.
+10. The car sends MNBC_SOUND.IND, to provide different sounds (signals different frequency ranges). In total 10 times.
+11. The homeplug modem in the charger should measure the signal strength, and report the values to the SECC in an ethernet frame ATTEN_PROFILE.IND.
 However, the used homeplug adaptor with AR7420 seems not to support this feature. That's why we need to "guess" some attenuation values
 for the next step.
-9. The charger sends ATTEN_CHAR.IND, which contains the number of sounds and for each group the attenuation in dB. Pitfall: The car may ignore
+12. The charger sends ATTEN_CHAR.IND, which contains the number of sounds and for each group the attenuation in dB. Pitfall: The car may ignore
 implausible values (e.g. all zero dB), and the process may be stuck.
-10. The car receives the ATTEN_CHAR.IND. If it would receive multiple of them from different chargers (due to cross-coupling), the car
+13. The car receives the ATTEN_CHAR.IND. If it would receive multiple of them from different chargers (due to cross-coupling), the car
 decides based on the attenuation levels, which of the charges is the nearest.
-11. The car sends ATTEN_CHAR.RSP to the charger which reported the loudest signals.
-12. The car sends SLAC_MATCH.REQ to the charger. This means, it wants to pair with it.
-13. The charger responds with SLAC_MATCH.CNF. This contains the self-decided NID (network ID) and NMK (network membership key).
-14. The car receives the SLAC_MATCH.CNF, takes the NID and NMK from this message, and configures its homeplug modem with this data.
-15. Now, the homeplug modems of the car and of the charger have formed a "private" Homeplug network (AV local network, AVLN). The RF
+14. The car sends ATTEN_CHAR.RSP to the charger which reported the loudest signals.
+15. The car sends SLAC_MATCH.REQ to the charger. This means, it wants to pair with it.
+16. The charger responds with SLAC_MATCH.CNF. This contains the self-decided NID (network ID) and NMK (network membership key).
+17. The car receives the SLAC_MATCH.CNF, takes the NID and NMK from this message, and configures its homeplug modem with this data.
+18. Now, the homeplug modems of the car and of the charger have formed a "private" Homeplug network (AV local network, AVLN). The RF
 traffic can only be decoded by participants who are using the same NID and NMK.
-16. The car wants to know the chargers IP address. In computer networks, a DHCP would be a usual way to do this. In the CCS world, a different
+19. The car wants to know the chargers IP address. In computer networks, a DHCP would be a usual way to do this. In the CCS world, a different
 approach is used: SDP, which is the SECC discovery protocol. The DHCP may be also supported as fallback.
-17. The car sends a broadcast message "Is here a charger in this network?". Technically, it is an IPv6.UDP.V2GTP.SDP message
+20. The car sends a broadcast message "Is here a charger in this network?". Technically, it is an IPv6.UDP.V2GTP.SDP message
 with 2 bytes payload, which defines the security level expected by the car. In usual case, the car says "I want unprotected TCP.".
-18. The charger receives the SDP request, and sends a SDP response "My IP address is xy, and I support unprotected TCP."
-19. The car wants to make sure, that the IP addresses are unique and the relation between IP address and MAC address is clear. For
+21. The charger receives the SDP request, and sends a SDP response "My IP address is xy, and I support unprotected TCP."
+22. The car wants to make sure, that the IP addresses are unique and the relation between IP address and MAC address is clear. For
 this, it sends a "Neighbour solicitation". (This looks a little bit oversized, because only two participants are in the local network, and
 their addresses have already been exchanged in the above steps. But ICMP is standard technology.)
-20. The charger responds to the neighbor solicitation request with a neighbor advertisement. This contains the MAC address of the charger.
+23. The charger responds to the neighbor solicitation request with a neighbor advertisement. This contains the MAC address of the charger.
 In the case, we use this pyPLC project as charger (*EvseMode*), we rely on the operating system that it covers the ICMP. On Win10,
 this works perfectly, the only thing we must make sure, that the MAC and IPv6 of the ethernet port are correctly configured in the
 python script. Use `ipconfig -all` on Windows, to find out the addresses.
-21. Now, the car and the charger have a clear view about addressing (MAC adresses, IPv6 addresses).
-22. The car requests to open a TCP connection to charger at port 15118.
-23. The charger, which was listening on port 15118, confirms the TCP channel. (Todo: not yet implemented)
-24. Now, the car and the charger have a reliable, bidirectional TCP channel.
-25. The car and the charger use the TCP channel, to exchange V2GTP messages, with EXI content.
-26. The charger is the "server" for the EXI, it is just waiting for requests from the car. The car is the "client", it actively
+24. Now, the car and the charger have a clear view about addressing (MAC adresses, IPv6 addresses).
+25. The car requests to open a TCP connection to charger at port 15118.
+26. The charger, which was listening on port 15118, confirms the TCP channel. (Todo: not yet implemented)
+27. Now, the car and the charger have a reliable, bidirectional TCP channel.
+28. The car and the charger use the TCP channel, to exchange V2GTP messages, with EXI content.
+29. The charger is the "server" for the EXI, it is just waiting for requests from the car. The car is the "client", it actively
 initiates the EXI data exchange.
-27. The car walks through different states to negotiate, start and supervise the charging process. From communication point of view,
-the complete process uses XML data, which is packed in EXI frames, which in turn are transported in the TCP channel mentioned above.
-28. Todo: Decribe the steps in detail.
-
+30. The car walks through different states to negotiate, start and supervise the charging process. From communication point of view,
+the complete process uses XML data, which is packed in EXI frames, which in turn are transported in the TCP channel mentioned above. The overview over
+the various steps is visible in a sequence chart in [viii].
+31. The car announces the supported application protocols, e.g. DIN or ISO, using the SupportedApplicationProtocolRequest.
+32. The charger chooses the best application protocol from the list, and announces the decision with SupportedApplicationProtocolResponse.
+33. The car initiates the charging session with SessionSetupRequest.
+34. The charger confirms the session with SessionSetupResponse.
+35. The car sends ServiceDiscoveryRequest.
+36. The charger confirms with ServiceDiscoveryResponse.
+37. The car sends PaymentServiceSelectionRequest.
+38. The charger confirms with PaymentServiceSelectionResponse.
+39. The car sends AuthorizationRequest.
+40. The charger confirms with AuthorizationResponse.
+41. The car sends ChargeParameterRequest.
+42. The charger confirms with ChargeParameterResponse. Now, the initialization phase of the charging session is finished.
+43. The car sends CableCheckRequest.
+44. The charger confirms with CableCheckResponse.
+45. The car sends PreChargeRequest.
+46. The charger confirms with PreChargeResponse.
+47. The car sends PowerDelivery(Start)Request.
+48. The charger confirms with PowerDeliveryResponse.
+49. The car sends CurrentDemandRequest (repeated while the charging is ongoing).
+50. The charger confirms with CurrentDemandResponse.
+51. The car sends PowerDelivery(Stop)Request.
+52. The charger confirms with PowerDeliveryResponse.
+53. The car sends WeldingDetectionRequest.
+54. The charger confirms with WeldingDetectionResponse.
+55. The car sends SessionStopRequest.
+56. The charger confirms with SessionStopResponse.
 
 
 
