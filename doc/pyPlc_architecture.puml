@@ -1,12 +1,15 @@
 @startuml
 
+header
+green lines mean: at least stub functionality is working
+endheader
+
 package "pyPLC" {
 	package "pyPlcIPv6" {
 		[miniIPv6]
 		[pyPlcUdp]
 		[pyPlcSDP]
 		[pyPlcTcpExiSniff]
-		[pyPlcV2GEXI]
 	}
 
 	package "pyPlcHomeplug" {
@@ -14,15 +17,21 @@ package "pyPLC" {
 		[SLAC]
 	}
 	
+	[fsmEvse]
+	[fsmPev]
+
+	package "pyPlcTcpSocket" {
+		[pyPlcTcpServerSocket]
+		[pyPlcTcpClientSocket]
+	}
 	
-	[xmlProcessing]
 }
 
 [ControlPilotLine]
 [HomeplugAdaptor]
 [pcap DLL] as pcap
 [wireshark]
-[FlUxIuS/V2Gdecoder] as dec
+[/FlUxIuS/V2Gdecoder or /Martin-P/OpenV2G] as dec
 
 package "WindowsOS or Linux" {
   [OS_Ethernet]
@@ -31,23 +40,25 @@ package "WindowsOS or Linux" {
   [OS_ICMP]
 }
 
-[ControlPilotLine] <-up-> [HomeplugAdaptor]
-[HomeplugAdaptor] <-up-> [OS_Ethernet]
-[OS_Ethernet] <-up-> [pcap]
-[OS_Ethernet] <-up-> [OS_IPv6]
-[OS_Ethernet] <-up-> [OS_ICMP]
-[OS_IPv6] <-up-> [OS_TCP]
+[ControlPilotLine] <-[#green]up-> [HomeplugAdaptor]
+[HomeplugAdaptor] <-[#green]up-> [OS_Ethernet]
+[OS_Ethernet] <-[#green]up-> [pcap]
+[OS_Ethernet] <-[#green]up-> [OS_IPv6]
+[OS_Ethernet] <-[#green]up-> [OS_ICMP]
+[OS_IPv6] <-[#green]up-> [OS_TCP]
 
-[pcap] <-up-> [pcap-ct]
-[pcap] -up-> [wireshark]
-[pcap-ct] <-up-> [dispatcher]
-[dispatcher] <-up-> [SLAC]
-[dispatcher] <-up-> [miniIPv6]
-[miniIPv6] <-up-> [pyPlcUdp]
+[pcap] <-[#green]up-> [pcap-ct]
+[pcap] -[#green]up-> [wireshark]
+[pcap-ct] <-[#green]up-> [dispatcher]
+[dispatcher] <-[#green]up-> [SLAC]
+[dispatcher] <-[#green]up-> [miniIPv6]
+[miniIPv6] <-[#green]up-> [pyPlcUdp]
 [miniIPv6] -up-> [pyPlcTcpExiSniff]
-[pyPlcUdp] <-up-> [pyPlcSDP]
-[OS_TCP] <-up-> [pyPlcV2GEXI]
-[pyPlcV2GEXI] -r-> [dec]
+[pyPlcUdp] <-[#green]up-> [pyPlcSDP]
+[OS_TCP] <-[#green]up-> [pyPlcTcpServerSocket]
+[OS_TCP] <-up-> [pyPlcTcpClientSocket]
+[pyPlcTcpServerSocket] <-[#green]up-> [fsmEvse]
+[pyPlcTcpClientSocket] <-up-> [fsmPev]
+[fsmEvse] <-r-> [dec]
 [pyPlcTcpExiSniff] -r-> [dec]
-[dec] -l-> [xmlProcessing]
 @enduml
