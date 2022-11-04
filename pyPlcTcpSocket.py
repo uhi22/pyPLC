@@ -200,6 +200,10 @@ def testClientSocket():
         if (c.isRxDataAvailable()):
             d = c.getRxData()
             print("received " + str(d))
+        if ((i % 3)==0):
+            print("sending something to the server")
+            c.transmit(bytes("Test", "utf-8"))
+            
     print("end")
 
 
