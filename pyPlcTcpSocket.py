@@ -1,5 +1,5 @@
 
-# Server on a non-blocking socket
+# Server and client on a non-blocking socket
 #
 # explanation of socket handling:
 # https://docs.python.org/3/howto/sockets.html
@@ -12,20 +12,32 @@ import socket
 import select
 import sys # for argv
 import time # for time.sleep()
+import errno
 
 class pyPlcClientSocket():
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         self.isConnected = False
+        self.rxData = []
         
     def connect(self, host, port):
         try:
+            print("connecting...")
+            # for connecting, we are still in blocking-mode because
+            # otherwise we run into error "[Errno 10035] A non-blocking socket operation could not be completed immediately"
+            # We set a shorter timeout, so we do not block too long if the connection is not established:
+            self.sock.settimeout(0.5)
             self.sock.connect((host, port))
+            self.sock.setblocking(0) # make this socket non-blocking, so that the recv function will immediately return
             self.isConnected = True
-        except:
+        except socket.error as e:
+            print("connection failed", e)
             self.isConnected = False
             
-    def mysend(self, msg):
+    def transmit(self, msg):
+        if (self.isConnected == False):
+            # if not connected, just ignore the transmission request
+            return -1
         totalsent = 0
         MSGLEN = len(msg)
         while (totalsent < MSGLEN) and (self.isConnected):
@@ -33,14 +45,47 @@ class pyPlcClientSocket():
                 sent = self.sock.send(msg[totalsent:])
                 if sent == 0:
                     self.isConnected = False
-                    raise RuntimeError("socket connection broken")
+                    print("socket connection broken")
+                    return -1
                 totalsent = totalsent + sent
             except:
                 self.isConnected = False
+                return -1
+        return 0 # success
+        
     def isRxDataAvailable(self):
-        # todo
-        # ... = self.sock.recv(..., 2048))
-        return 0
+        # check for availability of data, and get the data from the socket into local buffer.
+        if (self.isConnected == False):
+            return False
+        blDataAvail=False
+        try:
+            msg = self.sock.recv(4096)
+        except socket.error as e:
+            err = e.args[0]
+            if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
+                # this is the normal case, if no data is available
+                # print('No data available')
+                pass
+            else:
+                # a "real" error occurred
+                # print("real error")
+                # print(e)
+                self.isConnected = False
+        else:
+            if len(msg) == 0:
+                # print('orderly shutdown on server end')
+                self.isConnected = False
+            else:
+                # we received data. Store it.
+                self.rxData = msg
+                blDataAvail=True
+        return blDataAvail
+        
+    def getRxData(self):
+        # provides the received data, and clears the receive buffer
+        d = self.rxData
+        self.rxData = []
+        return d 
 
 class pyPlcTcpServerSocket():
     def __init__(self):
@@ -72,9 +117,11 @@ class pyPlcTcpServerSocket():
         
     def transmit(self, txMessage):
         numberOfSockets = len(self.read_list)
-        if (numberOfSockets!=2):
-            print("we have " + str(numberOfSockets) + ", we should have 2, one for accepting and one for data transfer. Will not transmit.")
+        if (numberOfSockets<2):
+            # print("we have " + str(numberOfSockets) + ", we should have 2, one for accepting and one for data transfer. Will not transmit.")
             return -1
+        # Simplification: We will send to the FIRST open connection, even we would have more connections open. This is
+        # ok, because in our use case we have exactly one client.
         totalsent = 0
         MSGLEN = len(txMessage)
         while totalsent < MSGLEN:
@@ -83,12 +130,11 @@ class pyPlcTcpServerSocket():
                 print("socket connection broken")
                 return -1
             totalsent = totalsent + sent
-        return 0
+        return 0 # success
         
     def mainfunction(self):
         # The select() function will block until one of the socket states has changed.
         # We specify a timeout, to be able to run it in the main loop.
-        # print("before select")
         timeout_s = 0.05 # 50ms
         readable, writable, errored = select.select(self.read_list, [], [], timeout_s)
         for s in readable:
@@ -133,7 +179,13 @@ def testServerSocket():
                 d = s.getRxData()
                 print("received " + str(d))
                 msg = "ok, you sent " + str(d)
+                print("responding " + msg)
                 s.transmit(bytes(msg, "utf-8"))
+        if ((nLoops % 50)==0):
+            print("trying to send something else")
+            msg = "ok, something else..."
+            s.transmit(bytes(msg, "utf-8"))
+            
 
 def testClientSocket():
     print("Testing the pyPlcTcpClientSocket...")
@@ -141,12 +193,13 @@ def testClientSocket():
     c.connect('fe80::e0ad:99ac:52eb:85d3', 15118)
     print("connected="+str(c.isConnected))
     print("sending something to the server")
-    c.mysend(bytes("Test", "utf-8"))
-    print("waiting 3s")
-    time.sleep(3)
-    if (c.isRxDataAvailable()):
-                d = c.getRxData()
-                print("received " + str(d))
+    c.transmit(bytes("Test", "utf-8"))
+    for i in range(0, 10):
+        print("waiting 1s")
+        time.sleep(1)
+        if (c.isRxDataAvailable()):
+            d = c.getRxData()
+            print("received " + str(d))
     print("end")
 
 
