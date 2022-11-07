@@ -6,6 +6,7 @@
 
 import pyPlcTcpSocket
 import time # for time.sleep()
+from exiConnector import * # for EXI data handling/converting
 
 stateInitialized = 0
 stateWaitForSupportedApplicationProtocolResponse = 1
@@ -30,7 +31,8 @@ class fsmPev():
         
     def stateFunctionInitialized(self):
         if (self.Tcp.isConnected):
-            self.Tcp.transmit(bytes("TestFromPevInInitialized", "utf-8"))
+            # self.Tcp.transmit(bytes("TestFromPevInInitialized", "utf-8"))
+            self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestIoniq)))
             self.enterState(stateWaitForSupportedApplicationProtocolResponse)
         
     def stateFunctionWaitForSupportedApplicationProtocolResponse(self):

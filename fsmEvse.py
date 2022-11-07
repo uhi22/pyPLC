@@ -6,6 +6,7 @@
 
 import pyPlcTcpSocket
 import time # for time.sleep()
+from exiConnector import * # for EXI data handling/converting
 
 stateWaitForSupportedApplicationProtocolRequest = 0
 stateWaitForSessionSetupRequest = 1
@@ -30,10 +31,19 @@ class fsmEvse():
         
     def stateFunctionWaitForSupportedApplicationProtocolRequest(self):
         if (len(self.rxData)>0):
-            msg = "ok, you sent " + str(self.rxData) 
+            print("received " + str(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            print("received exi " + str(exidata))
             self.rxData = []
-            print("responding " + msg)
-            self.Tcp.transmit(bytes(msg, "utf-8"))
+            strConverterResult = exiDecode(exidata)
+            print(strConverterResult)
+            if (strConverterResult.find("ProtocolNamespace=urn:din")>0):
+                # todo: of course we should care for schemaID and prio also here
+                print("Detected DIN")
+                msg = addV2GTPHeader(exiEncode("SupportedApplicationProtocolResponse"))
+                print("responding " + str(msg))
+                self.Tcp.transmit(msg)
+            
             self.enterState(1)
         
     def stateFunctionWaitForSessionSetupRequest(self):
