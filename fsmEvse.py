@@ -105,6 +105,12 @@ class fsmEvse():
             stateWaitForPowerDeliveryRequest: stateFunctionWaitForPowerDeliveryRequest,
         }
         
+    def reInit(self):
+        print("re-initializing fsmEvse") 
+        self.state = 0
+        self.cyclesInState = 0
+        self.rxData = []
+
     def __init__(self):
         print("initializing fsmEvse") 
         self.Tcp = pyPlcTcpSocket.pyPlcTcpServerSocket()

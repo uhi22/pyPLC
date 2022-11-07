@@ -9,6 +9,8 @@
 import tkinter as tk
 import time
 import pyPlcWorker
+from pyPlcModes import *
+import sys # for argv
 
 def storekeyname(event):
     global nKeystrokes
@@ -38,6 +40,21 @@ def cbShowStatus(s, selection=""):
         lblStatus['text']=s
     root.update()
 
+myMode = C_LISTEN_MODE
+if (len(sys.argv) > 1):
+    if (sys.argv[1] == "P"):
+        myMode = C_PEV_MODE
+    else:
+        if (sys.argv[1] == "E"):
+            myMode = C_EVSE_MODE
+
+if (myMode == C_LISTEN_MODE):
+    print("starting in LISTEN_MODE")
+if (myMode == C_PEV_MODE):
+    print("starting in PEV_MODE")
+if (myMode == C_EVSE_MODE):
+    print("starting in EVSE_MODE")
+ 
 root = tk.Tk()
 lastKey = ''
 lblHelp = tk.Label(root, justify= "left")
@@ -54,7 +71,7 @@ lblMode.pack()
 root.bind('<Key>', storekeyname)
 cbShowStatus("initialized")
 root.update()
-worker=pyPlcWorker.pyPlcWorker(cbAddToTrace, cbShowStatus)
+worker=pyPlcWorker.pyPlcWorker(cbAddToTrace, cbShowStatus, myMode)
 
 nMainloops=0
 nKeystrokes=0

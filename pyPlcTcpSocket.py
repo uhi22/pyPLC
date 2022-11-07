@@ -14,7 +14,7 @@ import sys # for argv
 import time # for time.sleep()
 import errno
 
-class pyPlcClientSocket():
+class pyPlcTcpClientSocket():
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         self.isConnected = False
@@ -189,7 +189,7 @@ def testServerSocket():
 
 def testClientSocket():
     print("Testing the pyPlcTcpClientSocket...")
-    c = pyPlcClientSocket()
+    c = pyPlcTcpClientSocket()
     c.connect('fe80::e0ad:99ac:52eb:85d3', 15118)
     print("connected="+str(c.isConnected))
     print("sending something to the server")

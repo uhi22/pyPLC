@@ -36,6 +36,7 @@
 import pcap
 import pyPlcIpv6
 from helpers import * # prettyMac etc
+from pyPlcModes import *
 
 MAC_BROADCAST = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF ]
 MAC_LAPTOP    = [0xdc, 0x0e, 0xa1, 0x11, 0x67, 0x08 ] # Win10 laptop
@@ -532,7 +533,7 @@ class pyPlcHomeplug():
             if (strInterfaceName == '\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}'):
                 print("This is the wanted Ethernet adaptor.")
                 self.strInterfaceName="eth"+str(i)
-            print("eth"+ str(i) + " is " + strInterfaceName)
+            #print("eth"+ str(i) + " is " + strInterfaceName)
             
     def enterPevMode(self):
         self.iAmEvse = 0 # not emulating a charging station
@@ -550,7 +551,7 @@ class pyPlcHomeplug():
         self.ipv6.enterListenMode()
         self.showStatus("LISTEN mode", "mode")        
 
-    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None):
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE):
         self.mytransmitbuffer = bytearray("Hallo das ist ein Test", 'UTF-8')
         self.nPacketsReceived = 0
         self.callbackAddToTrace = callbackAddToTrace
@@ -580,7 +581,12 @@ class pyPlcHomeplug():
         self.runningCounter=0
         self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit)
         self.ipv6.ownMac = self.myMAC
-        self.enterEvseMode()
+        if (mode == C_LISTEN_MODE):
+            self.enterListenMode()
+        if (mode == C_EVSE_MODE):
+            self.enterEvseMode()
+        if (mode == C_PEV_MODE):
+            self.enterPevMode()
         self.showStatus(prettyMac(self.pevMac), "pevmac")
         print("sniffer created at " + self.strInterfaceName)
 
