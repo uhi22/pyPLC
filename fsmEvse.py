@@ -36,7 +36,7 @@ class fsmEvse():
             exidata = removeV2GTPHeader(self.rxData)
             print("received exi" + prettyHexMessage(exidata))
             self.rxData = []
-            strConverterResult = exiDecode(exidata)
+            strConverterResult = exiDecode(exidata, "DH") # Decode Handshake-request
             print(strConverterResult)
             if (strConverterResult.find("ProtocolNamespace=urn:din")>0):
                 # todo: of course we should care for schemaID and prio also here

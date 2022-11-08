@@ -41,7 +41,7 @@ class fsmPev():
             exidata = removeV2GTPHeader(self.rxData)
             print("received exi" + prettyHexMessage(exidata))
             self.rxData = []
-            strConverterResult = exiDecode(exidata)
+            strConverterResult = exiDecode(exidata, "Dh") # Decode Handshake-response
             print(strConverterResult)
             # todo: evaluate the message
             # EDA for encode DIN, SessionSetupRequest
