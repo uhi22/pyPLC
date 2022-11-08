@@ -51,20 +51,35 @@ import json
 #     remove the 8 bytes V2GTP header
 #     8000dbab9371d3234b71d1b981899189d191818991d26b9b3a232b30020000040040
 exiHexDemoSupportedApplicationProtocolRequestIoniq="8000dbab9371d3234b71d1b981899189d191818991d26b9b3a232b30020000040040"
-# Command line:
-# ./OpenV2G.exe DH8000dbab9371d3234b71d1b981899189d191818991d26b9b3a232b30020000040040
+#    Command line:
+#    ./OpenV2G.exe DH8000dbab9371d3234b71d1b981899189d191818991d26b9b3a232b30020000040040
 
 
 #   (2) From OpenV2G main_example.appHandshake()
-#     8000ebab9371d34b9b79d189a98989c1d191d191818981d26b9b3a232b30010000040001b75726e3a64696e3a37303132313a323031323a4d73674465660020000100880
+#   8000ebab9371d34b9b79d189a98989c1d191d191818981d26b9b3a232b30010000040001b75726e3a64696e3a37303132313a323031323a4d73674465660020000100880
 exiHexDemoSupportedApplicationProtocolRequest2="8000ebab9371d34b9b79d189a98989c1d191d191818981d26b9b3a232b30010000040001b75726e3a64696e3a37303132313a323031323a4d73674465660020000100880"
-# Command line:
-# ./OpenV2G.exe DH8000ebab9371d34b9b79d189a98989c1d191d191818981d26b9b3a232b30010000040001b75726e3a64696e3a37303132313a323031323a4d73674465660020000100880
+#   Command line:
+#   ./OpenV2G.exe DH8000ebab9371d34b9b79d189a98989c1d191d191818981d26b9b3a232b30010000040001b75726e3a64696e3a37303132313a323031323a4d73674465660020000100880
 
 #   (3) SupportedApplicationProtocolResponse
-#    80400040
-# Command line:
-# ./OpenV2G.exe DH80400040
+#   80400040
+#   Command line:
+#   ./OpenV2G.exe DH80400040
+
+#   (4) SessionSetupRequest DIN
+#   809a0011d00000
+#   Command line:
+#   ./OpenV2G.exe DD809a0011d00000
+
+#   (5) SessionSetupResponse DIN
+# 809a02004080c1014181c211e0000080
+#   ./OpenV2G.exe DD809a02004080c1014181c211e0000080
+
+# (6) CableCheckReq
+# "result": "809a001010400000"
+
+# (7) PreChargeReq
+# "result": "809a001150400000c80006400000"
 
 
 # Configuration of the exi converter tool
@@ -140,7 +155,7 @@ def exiDecode(exiHex, prefix="DH"):
         exiHex = exiByteArrayToHex(exiHex)
     #print("type is " + str(type(exiHex)))
     param1 = prefix + exiHex # DH for decode handshake
-    print("exiDecode: trying to decode " + exiHex + " with schema " + prefix)
+    #print("exiDecode: trying to decode " + exiHex + " with schema " + prefix)
     result = subprocess.run(
         [pathToOpenV2GExe, param1], capture_output=True, text=True)
     #print("stdout:", result.stdout)
@@ -159,7 +174,7 @@ def exiEncode(strMessageName, params=""):
         strConverterResult = "exiEncode ERROR. stderr:" + result.stderr
         print(strConverterResult)
     else:
-        print("exiEncode stdout:", result.stdout)
+        #print("exiEncode stdout:", result.stdout)
         # Now we have an encoder result in json form, something like:
         # {
         # "info": "",
@@ -169,7 +184,7 @@ def exiEncode(strMessageName, params=""):
         try:
             y = json.loads(result.stdout)
             strConverterResult = y["result"]
-            print("strConverterResult is " + str(strConverterResult))
+            #print("strConverterResult is " + str(strConverterResult))
         except:
             strConverterResult = "exiEncode failed to convert json to dict."
             print(strConverterResult)
@@ -186,27 +201,53 @@ def testByteArrayConversion(s):
     print("with V2GTP header=" + exiWithHeaderString)
 
 
-if __name__ == "__main__":
-    print("Testing exiConnector...")
-    testByteArrayConversion("123456")
-    testByteArrayConversion("1234567")
-    testByteArrayConversion("ABCDEF")
-    testByteArrayConversion("00112233445566778899AABBCCDDEEFF")
-    testByteArrayConversion("TRASH!")
-        
-    print("Testing exiDecode with exiHexDemoSupportedApplicationProtocolRequestIoniq")
-    print(exiDecode(exiHexDemoSupportedApplicationProtocolRequestIoniq))
-    print("Testing exiDecode with exiHexDemoSupportedApplicationProtocolRequest2")
-    strConverterResult = exiDecode(exiHexDemoSupportedApplicationProtocolRequest2)
-    print(strConverterResult)
-
-    strConverterResult = exiDecode(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequest2))
-    print(strConverterResult)
+def testDecoder(strHex, pre="DH", comment=""):
+    global nFail
+    print("Decoder test for " + comment + " with data " + strHex)
+    decoded=exiDecode(strHex, pre)
+    print(decoded)
+    strExpected = comment
+    if (decoded.find(strExpected)>0):
+        print("---pass---")
+    else:
+        print("---***!!!FAIL!!!***---")
+        nFail+=1
     
-    if (strConverterResult.find("ProtocolNamespace=urn:din")>0):
-        print("Detected DIN")
+
+if __name__ == "__main__":
+    nFail=0
+    print("Testing exiConnector...")
+    #testByteArrayConversion("123456")
+    #testByteArrayConversion("1234567")
+    #testByteArrayConversion("ABCDEF")
+    #testByteArrayConversion("00112233445566778899AABBCCDDEEFF")
+    #testByteArrayConversion("TRASH!")
+    
+    testDecoder("8000ebab9371d34b9b79d189a98989c1d191d191818981d26b9b3a232b30010000040001b75726e3a64696e3a37303132313a323031323a4d73674465660020000100880", pre="DH", comment="supportedAppProtocolReq")
+    testDecoder("80400040", pre="DH", comment="supportedAppProtocolRes")
+
+    testDecoder("809a0011d00000", pre="DD", comment="SessionSetupReq")
+    testDecoder("809a02004080c1014181c211e0000080", pre="DD", comment="SessionSetupRes")
+    testDecoder("809a001198", pre="DD", comment="ServiceDiscoveryReq")
+    testDecoder("809a0011a0012002412104", pre="DD", comment="ServiceDiscoveryRes")
+    testDecoder("809a0011b2001280", pre="DD", comment="ServicePaymentSelectionReq")
+    testDecoder("809a0011c000", pre="DD", comment="ServicePaymentSelectionRes")
+    testDecoder("809a00107211400dc0c8c82324701900", pre="DD", comment="ChargeParameterDiscoveryReq")    
+    testDecoder("809a001080004820400000c99002062050193080c0c802064c8010190140c80a20", pre="DD", comment="ChargeParameterDiscoveryRes")
+    testDecoder("809a001010400000", pre="DD", comment="CableCheckReq")
+    testDecoder("809a0010200200000000", pre="DD", comment="CableCheckRes")
+    testDecoder("809a001150400000c80006400000", pre="DD", comment="PreChargeReq")
+    testDecoder("809a00116002000000320000", pre="DD", comment="PreChargeRes")
+    print("Number of fails: " + str(nFail))
+    
+
         
-    param1 = "ED1" # ED for encode DIN, session setup response
-    result = subprocess.run([pathToOpenV2GExe, param1], capture_output=True, text=True)    
-    print("stdout:", result.stdout)
-    print("stderr:", result.stderr)
+    #print("Testing exiDecode with exiHexDemoSupportedApplicationProtocolRequestIoniq")
+    #print(exiDecode(exiHexDemoSupportedApplicationProtocolRequestIoniq))
+    #print("Testing exiDecode with exiHexDemoSupportedApplicationProtocolRequest2")
+    #strConverterResult = exiDecode(exiHexDemoSupportedApplicationProtocolRequest2)
+    #print(strConverterResult)
+
+    #strConverterResult = exiDecode(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequest2))
+    #print(strConverterResult)
+        

@@ -13,9 +13,9 @@ stateInitialized = 0
 stateWaitForSupportedApplicationProtocolResponse = 1
 stateWaitForSessionSetupResponse = 2
 stateWaitForServiceDiscoveryResponse = 3
-stateWaitForPaymentServiceSelectionResponse = 4
+stateWaitForServicePaymentSelectionResponse = 4
 stateWaitForAuthorizationResponse = 5
-stateWaitForChargeParameterResponse = 6
+stateWaitForChargeParameterDiscoveryResponse = 6
 stateWaitForCableCheckResponse = 7
 stateWaitForPreChargeResponse = 8
 stateWaitForPowerDeliveryResponse = 9
@@ -32,34 +32,129 @@ class fsmPev():
         
     def stateFunctionInitialized(self):
         if (self.Tcp.isConnected):
+            # we just use the initial request message from the Ioniq. It contains one entry: DIN.
             self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestIoniq)))
             self.enterState(stateWaitForSupportedApplicationProtocolResponse)
         
     def stateFunctionWaitForSupportedApplicationProtocolResponse(self):
         if (len(self.rxData)>0):
-            print("In state stateFunctionWaitForSupportedApplicationProtocolResponse, received " + prettyHexMessage(self.rxData))
+            print("In state WaitForSupportedApplicationProtocolResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
-            print("received exi" + prettyHexMessage(exidata))
             self.rxData = []
             strConverterResult = exiDecode(exidata, "Dh") # Decode Handshake-response
             print(strConverterResult)
-            # todo: evaluate the message
-            # EDA for encode DIN, SessionSetupRequest
-            msg = addV2GTPHeader(exiEncode("EDA"))
-            print("sending SessionSetupRequest" + prettyHexMessage(msg))
-            self.Tcp.transmit(msg)
-            self.enterState(stateWaitForSessionSetupResponse)
+            if (strConverterResult.find("supportedAppProtocolRes")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDA")) # EDA for Encode, Din, SessionSetupReq
+                print("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)
+                self.enterState(stateWaitForSessionSetupResponse)
+        if (self.isTooLong()):
+            self.enterState(0)
             
     def stateFunctionWaitForSessionSetupResponse(self):
         if (len(self.rxData)>0):
-            #self.enterState(stateWaitForServiceDiscoveryResponse)
-            pass
+            print("In state WaitForSessionSetupResponse, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            self.rxData = []
+            strConverterResult = exiDecode(exidata, "DD") # Decode DIN
+            print(strConverterResult)
+            if (strConverterResult.find("SessionSetupRes")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDB")) # EDB for Encode, Din, ServiceDiscoveryRequest
+                print("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)
+                self.enterState(stateWaitForServiceDiscoveryResponse)
+        if (self.isTooLong()):
+            self.enterState(0)
+
+    def stateFunctionWaitForServiceDiscoveryResponse(self):
+        if (len(self.rxData)>0):
+            print("In state WaitForServiceDiscoveryResponse, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            self.rxData = []
+            strConverterResult = exiDecode(exidata, "DD") # Decode DIN
+            print(strConverterResult)
+            if (strConverterResult.find("ServiceDiscoveryRes")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDC")) # EDC for Encode, Din, ServicePaymentSelection
+                print("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)
+                self.enterState(stateWaitForServicePaymentSelectionResponse)
+        if (self.isTooLong()):
+            self.enterState(0)
+
+    def stateFunctionWaitForServicePaymentSelectionResponse(self):
+        if (len(self.rxData)>0):
+            print("In state WaitForServicePaymentSelectionResponse, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            self.rxData = []
+            strConverterResult = exiDecode(exidata, "DD") # Decode DIN
+            print(strConverterResult)
+            if (strConverterResult.find("ServicePaymentSelectionRes")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDE")) # EDE for Encode, Din, ChargeParameterDiscovery. We ignore Authorization, not specified in DIN.
+                print("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)
+                self.enterState(stateWaitForChargeParameterDiscoveryResponse)
+        if (self.isTooLong()):
+            self.enterState(0)
         
+    def stateFunctionWaitForChargeParameterDiscoveryResponse(self):
+        if (len(self.rxData)>0):
+            print("In state WaitForChargeParameterDiscoveryResponse, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            self.rxData = []
+            strConverterResult = exiDecode(exidata, "DD") # Decode DIN
+            print(strConverterResult)
+            if (strConverterResult.find("ChargeParameterDiscoveryRes")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDF")) # EDF for Encode, Din, CableCheck
+                print("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)
+                self.enterState(stateWaitForCableCheckResponse)
+        if (self.isTooLong()):
+            self.enterState(0)
+
+    def stateFunctionWaitForCableCheckResponse(self):
+        if (len(self.rxData)>0):
+            print("In state WaitForCableCheckResponse, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            self.rxData = []
+            strConverterResult = exiDecode(exidata, "DD") # Decode DIN
+            print(strConverterResult)
+            if (strConverterResult.find("CableCheckRes")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDG")) # EDG for Encode, Din, PreCharge
+                print("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)
+                self.enterState(stateWaitForPreChargeResponse)
+        if (self.isTooLong()):
+            self.enterState(0)
+
+    def stateFunctionWaitForPreChargeResponse(self):
+        if (len(self.rxData)>0):
+            print("In state WaitForPreChargeResponse, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            self.rxData = []
+            strConverterResult = exiDecode(exidata, "DD") # Decode DIN
+            print(strConverterResult)
+            if (strConverterResult.find("PreChargeRes")>0):
+                # todo: check the request content, and fill response parameters
+                print("PreCharge aknowledge received.")
+                print("As Demo, we stay in PreCharge until the timeout elapses.")
+        if (self.isTooLong()):
+            self.enterState(0)
        
     stateFunctions = { 
             stateInitialized: stateFunctionInitialized,
             stateWaitForSupportedApplicationProtocolResponse: stateFunctionWaitForSupportedApplicationProtocolResponse,
             stateWaitForSessionSetupResponse: stateFunctionWaitForSessionSetupResponse,
+            stateWaitForServiceDiscoveryResponse: stateFunctionWaitForServiceDiscoveryResponse,
+            stateWaitForServicePaymentSelectionResponse: stateFunctionWaitForServicePaymentSelectionResponse,
+            stateWaitForChargeParameterDiscoveryResponse: stateFunctionWaitForChargeParameterDiscoveryResponse,
+            stateWaitForCableCheckResponse: stateFunctionWaitForCableCheckResponse,
+            stateWaitForPreChargeResponse: stateFunctionWaitForPreChargeResponse,
         }
 
     def reInit(self):
@@ -83,10 +178,7 @@ class fsmPev():
         #self.Tcp.mainfunction() # call the lower-level worker
         if (self.Tcp.isRxDataAvailable()):
                 self.rxData = self.Tcp.getRxData()
-                print("received " + prettyHexMessage(self.rxData))
-                #msg = "ok, you sent " + str(self.rxData)
-                #print("responding " + msg)
-                #self.Tcp.transmit(bytes(msg, "utf-8"))
+                #print("received " + prettyHexMessage(self.rxData))
         # run the state machine:
         self.cyclesInState += 1 # for timeout handling, count how long we are in a state
         self.stateFunctions[self.state](self)
