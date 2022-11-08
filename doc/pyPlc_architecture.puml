@@ -4,7 +4,7 @@ header
 green lines mean: at least stub functionality is working
 endheader
 
-package "pyPLC" {
+package "github.com/uhi22/pyPLC" {
 	package "pyPlcIPv6" {
 		[miniIPv6]
 		[pyPlcUdp]
@@ -17,8 +17,9 @@ package "pyPLC" {
 		[SLAC]
 	}
 	
-	[fsmEvse]
-	[fsmPev]
+	[fsmEvse \nThe charger state machine.] as fsmEvse
+	[fsmPev \nThe car state machine.] as fsmPev
+	[exiConnector.py] as exiConnector
 
 	package "pyPlcTcpSocket" {
 		[pyPlcTcpServerSocket]
@@ -31,7 +32,10 @@ package "pyPLC" {
 [HomeplugAdaptor]
 [pcap DLL] as pcap
 [wireshark]
-[/FlUxIuS/V2Gdecoder or /Martin-P/OpenV2G] as dec
+
+package "github.com/uhi22/OpenV2Gx" {
+	[OpenV2Gx.exe \nEncodes and Decodes EXI data via command line interface.] as dec
+}
 
 package "WindowsOS or Linux" {
   [OS_Ethernet]
@@ -41,6 +45,7 @@ package "WindowsOS or Linux" {
 }
 
 [ControlPilotLine] <-[#green]up-> [HomeplugAdaptor]
+[ControlPilotLine] <-[#green]up-> [PWM-Generator]
 [HomeplugAdaptor] <-[#green]up-> [OS_Ethernet]
 [OS_Ethernet] <-[#green]up-> [pcap]
 [OS_Ethernet] <-[#green]up-> [OS_IPv6]
@@ -56,9 +61,11 @@ package "WindowsOS or Linux" {
 [miniIPv6] -up-> [pyPlcTcpExiSniff]
 [pyPlcUdp] <-[#green]up-> [pyPlcSDP]
 [OS_TCP] <-[#green]up-> [pyPlcTcpServerSocket]
-[OS_TCP] <-up-> [pyPlcTcpClientSocket]
+[OS_TCP] <-[#green]up-> [pyPlcTcpClientSocket]
 [pyPlcTcpServerSocket] <-[#green]up-> [fsmEvse]
-[pyPlcTcpClientSocket] <-up-> [fsmPev]
-[fsmEvse] <-r-> [dec]
-[pyPlcTcpExiSniff] -r-> [dec]
+[pyPlcTcpClientSocket] <-[#green]up-> [fsmPev]
+[fsmEvse] <-[#green]r-> [exiConnector]
+[fsmPev] <-[#green]r-> [exiConnector]
+[dec] <-[#green]up-> [exiConnector]
+[dec] -l-> [pyPlcTcpExiSniff] 
 @enduml
