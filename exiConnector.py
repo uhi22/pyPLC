@@ -42,6 +42,7 @@ from helpers import showAsHex, twoCharHex
 import subprocess
 import sys
 import time
+import json
 
 # Example data:
 #   (1) From the Ioniq:
@@ -89,11 +90,11 @@ def exiByteArrayToHex(b):
     return s
 
 def addV2GTPHeader(exidata):
-    print("type is " + str(type(exidata)))
+    #print("type is " + str(type(exidata)))
     if (str(type(exidata)) == "<class 'str'>"):
-        print("changing type to bytearray")
+        #print("changing type to bytearray")
         exidata = exiHexToByteArray(exidata)
-    print("type is " + str(type(exidata)))
+    #print("type is " + str(type(exidata)))
     # takes the bytearray with exidata, and adds a header to it, according to the Vehicle-to-Grid-Transport-Protocol
     exiLen = len(exidata)
     header = bytearray(8) # V2GTP header has 8 bytes
@@ -119,14 +120,14 @@ def exiDecode(exiHex, prefix="DH"):
     # input: exi data. Either hexstring, or bytearray or bytes
     #        prefix to select the schema
     # if the input is a byte array, we convert it into hex string. If it is already a hex string, we take it as it is.
-    print("type is " + str(type(exiHex)))
+    #print("type is " + str(type(exiHex)))
     if (str(type(exiHex)) == "<class 'bytearray'>"):
-        print("changing type to hex string")
+        #print("changing type to hex string")
         exiHex = exiByteArrayToHex(exiHex)
     if (str(type(exiHex)) == "<class 'bytes'>"):
-        print("changing type to hex string")
+        #print("changing type to hex string")
         exiHex = exiByteArrayToHex(exiHex)
-    print("type is " + str(type(exiHex)))
+    #print("type is " + str(type(exiHex)))
     param1 = prefix + exiHex # DH for decode handshake
     print("exiDecode: trying to decode " + exiHex + " with schema " + prefix)
     result = subprocess.run(
@@ -139,12 +140,28 @@ def exiDecode(exiHex, prefix="DH"):
     
 def exiEncode(strMessageName, params=""):
     # todo: handle the schema, the message name and the parameters
-    param1 = "EH1" # EH for encode handshake, SupportedApplicationProtocolResponse
+    # param1 = "Eh" # Eh for encode handshake, SupportedApplicationProtocolResponse
+    # param1 = "EDa" # EDa for Encode, Din, SessionSetupResponse
+    param1 = strMessageName
     result = subprocess.run([pathToOpenV2GExe, param1], capture_output=True, text=True)    
-    print("exiEncode stdout:", result.stdout)
     if (len(result.stderr)>0):
-        print("exiEncode ERROR. stderr:" + result.stderr)
-    strConverterResult = result.stdout
+        strConverterResult = "exiEncode ERROR. stderr:" + result.stderr
+        print(strConverterResult)
+    else:
+        print("exiEncode stdout:", result.stdout)
+        # Now we have an encoder result in json form, something like:
+        # {
+        # "info": "",
+        # "error": "",
+        # "result": "8004440400"
+        # }
+        try:
+            y = json.loads(result.stdout)
+            strConverterResult = y["result"]
+            print("strConverterResult is " + str(strConverterResult))
+        except:
+            strConverterResult = "exiEncode failed to convert json to dict."
+            print(strConverterResult)
     return strConverterResult    
     
 

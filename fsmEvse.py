@@ -6,6 +6,7 @@
 
 import pyPlcTcpSocket
 import time # for time.sleep()
+from helpers import prettyHexMessage
 from exiConnector import * # for EXI data handling/converting
 
 stateWaitForSupportedApplicationProtocolRequest = 0
@@ -26,30 +27,40 @@ class fsmEvse():
         
     def isTooLong(self):
         # The timeout handling function.
-        return (self.cyclesInState > 20)
+        return (self.cyclesInState > 50)
         
         
     def stateFunctionWaitForSupportedApplicationProtocolRequest(self):
         if (len(self.rxData)>0):
-            print("received " + str(self.rxData))
+            print("In state WaitForSupportedApplicationProtocolRequest, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
-            print("received exi " + str(exidata))
+            print("received exi" + prettyHexMessage(exidata))
             self.rxData = []
             strConverterResult = exiDecode(exidata)
             print(strConverterResult)
             if (strConverterResult.find("ProtocolNamespace=urn:din")>0):
                 # todo: of course we should care for schemaID and prio also here
                 print("Detected DIN")
-                msg = addV2GTPHeader(exiEncode("SupportedApplicationProtocolResponse"))
-                print("responding " + str(msg))
+                # Eh for encode handshake, SupportedApplicationProtocolResponse
+                msg = addV2GTPHeader(exiEncode("Eh"))
+                print("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
-            
-            self.enterState(1)
+                self.enterState(1)
         
     def stateFunctionWaitForSessionSetupRequest(self):
         if (len(self.rxData)>0):
+            print("In state stateFunctionWaitForSessionSetupRequest, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            print("received exi" + prettyHexMessage(exidata))
             self.rxData = []
-            self.enterState(2)
+            strConverterResult = exiDecode(exidata)
+            print(strConverterResult)
+            if (True):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDa")) # EDa for Encode, Din, SessionSetupResponse
+                print("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)  
+                self.enterState(2)
         if (self.isTooLong()):
             self.enterState(0)
             
@@ -132,7 +143,7 @@ class fsmEvse():
         self.Tcp.mainfunction() # call the lower-level worker
         if (self.Tcp.isRxDataAvailable()):
                 self.rxData = self.Tcp.getRxData()
-                print("received " + str(self.rxData))
+                #print("received " + str(self.rxData))
                 #msg = "ok, you sent " + str(self.rxData)
                 #print("responding " + msg)
                 #self.Tcp.transmit(bytes(msg, "utf-8"))

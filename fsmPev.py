@@ -6,6 +6,7 @@
 
 import pyPlcTcpSocket
 import time # for time.sleep()
+from helpers import prettyHexMessage
 from exiConnector import * # for EXI data handling/converting
 
 stateInitialized = 0
@@ -31,17 +32,34 @@ class fsmPev():
         
     def stateFunctionInitialized(self):
         if (self.Tcp.isConnected):
-            # self.Tcp.transmit(bytes("TestFromPevInInitialized", "utf-8"))
             self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestIoniq)))
             self.enterState(stateWaitForSupportedApplicationProtocolResponse)
         
     def stateFunctionWaitForSupportedApplicationProtocolResponse(self):
         if (len(self.rxData)>0):
+            print("In state stateFunctionWaitForSupportedApplicationProtocolResponse, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            print("received exi" + prettyHexMessage(exidata))
+            self.rxData = []
+            strConverterResult = exiDecode(exidata)
+            print(strConverterResult)
+            # todo: evaluate the message
+            # EDA for encode DIN, SessionSetupRequest
+            msg = addV2GTPHeader(exiEncode("EDA"))
+            print("sending SessionSetupRequest" + prettyHexMessage(msg))
+            self.Tcp.transmit(msg)
+            self.enterState(stateWaitForSessionSetupResponse)
+            
+    def stateFunctionWaitForSessionSetupResponse(self):
+        if (len(self.rxData)>0):
+            #self.enterState(stateWaitForServiceDiscoveryResponse)
             pass
+        
        
     stateFunctions = { 
             stateInitialized: stateFunctionInitialized,
             stateWaitForSupportedApplicationProtocolResponse: stateFunctionWaitForSupportedApplicationProtocolResponse,
+            stateWaitForSessionSetupResponse: stateFunctionWaitForSessionSetupResponse,
         }
 
     def reInit(self):
@@ -65,7 +83,7 @@ class fsmPev():
         #self.Tcp.mainfunction() # call the lower-level worker
         if (self.Tcp.isRxDataAvailable()):
                 self.rxData = self.Tcp.getRxData()
-                print("received " + str(self.rxData))
+                print("received " + prettyHexMessage(self.rxData))
                 #msg = "ok, you sent " + str(self.rxData)
                 #print("responding " + msg)
                 #self.Tcp.transmit(bytes(msg, "utf-8"))

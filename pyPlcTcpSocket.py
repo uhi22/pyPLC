@@ -155,7 +155,7 @@ class pyPlcTcpServerSocket():
                     #print("The client closed the connection in the meanwhile.")
                     data = None
                 if data:
-                    print("received data:", data)
+                    # print("received data:", data)
                     self.rxData = data
                 else:
                     print("connection closed")

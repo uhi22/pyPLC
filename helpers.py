@@ -11,6 +11,13 @@ def showAsHex(mybytearray, description=""):
         strHex = strHex + twoCharHex(mybytearray[i]) + " "
     print(description + "(" + str(packetlength) + "bytes) = " + strHex)
 
+def prettyHexMessage(mybytearray, description=""):
+    packetlength = len(mybytearray)
+    strHex = ""
+    for i in range(0, packetlength):
+        strHex = strHex + twoCharHex(mybytearray[i]) + " "
+    return description + "(" + str(packetlength) + "bytes) = " + strHex
+
 def prettyMac(macByteArray):
     s=""
     for i in range(0, 5):
