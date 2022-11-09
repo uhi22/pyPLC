@@ -207,17 +207,32 @@ def testDecoder(strHex, pre="DH", comment=""):
     print("Decoder test for " + comment + " with data " + strHex)
     decoded=exiDecode(strHex, pre)
     print(decoded)
-    strExpected = comment
-    if (decoded.find(strExpected)>0):
-        print("---pass---")
-    else:
-        print("---***!!!FAIL!!!***---")
-        nFail+=1
-    
+    if (len(comment)>0):
+        strExpected = comment
+        if (decoded.find(strExpected)>0):
+            print("---pass---")
+        else:
+            print("---***!!!FAIL!!!***---")
+            nFail+=1
+
+def testReadExiFromFile():
+    file1 = open('results\\tmp.txt', 'r')
+    Lines = file1.readlines()
+    for myLine in Lines:
+        if (myLine[0:9]=="[SNIFFER]"):
+            posOfEqualsign = myLine.find("=")
+            s = myLine[posOfEqualsign+1:] # The part after the "=" contains the EXI hex data.
+            s = s.replace(" ", "") # Remove blanks
+            s = s.replace("\n", "") # Remove line feeds
+            #print(s)
+            testDecoder(s, "DD", "")
+  
 
 if __name__ == "__main__":
     nFail=0
     print("Testing exiConnector...")
+    testReadExiFromFile()
+    exit()
     #testByteArrayConversion("123456")
     #testByteArrayConversion("1234567")
     #testByteArrayConversion("ABCDEF")
