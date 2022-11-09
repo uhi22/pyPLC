@@ -231,6 +231,26 @@ But: From the higher level communication (IPv6, UDP, TCP) we see only the broadc
 is hidden, most likely because the TPlink "too intelligent", it knows who has which MAC address and hides traffic which is not intended for the
 third participant in the network. Trace in results/2022-10-26_WP4_networkEstablishedButHiddenCommunication.pcapng
 
+### 2022-11-09 [*EvseMode*][*PevMode*] Exi decoder first steps working
+Using EXI decoder/encoder from basis https://github.com/Martin-P/OpenV2G and created fork https://github.com/uhi22/OpenV2Gx to
+provide a command-line interface, which can be used by the python script. The OpenV2G includes generated source code for four
+xml schemas (Handshake, DIN, ISO1, ISO2), provided by Siemens. Seems to be good maintained and is very efficient, because the
+decoder/encoder are directly available as C code, dedicated for each schema. This skips the slow process of reading the schema,
+parsing it, creating the grammer information. On Windows10 notebook, measured 15ms for decoder run from python via command line.
+The OpenV2G was compiled on Windows10 using the included makefile, using the `mingw32-make all`.
+The OpenV2G decoder/encoder code reveals some differences between the different schemas (DIN versus ISO). As starting point, only the
+DIN schema is considered in the command line interface and python part.
+
+The python part now contains the charging state machines for car and charger, as draft.
+
+Using the TPlink and Win10 laptop as evse, connected to Ioniq car, the python script successfully succeeds to SLAC, TCP connection,
+schema handshake, SessionSetup, ServiceDiscovery, ServicePaymentSelection. It stops on ChargeParameterDiscovery, most likely to
+missing or wrong implementation. Results (log file and pcap) are stored in
+https://github.com/uhi22/pyPLC/tree/master/results.
+
+As summary, the concept with the python script together with the compiled EXI decoder works. Further efforts can be spent on
+completing the missing details of the V2G messages.
+
 ## Biggest Challenges
 - [*ListenMode*] Find a way to enable the sniffer mode or monitor mode in the AR7420. Seems to be not included in the public qca/open-plc-utils.
 Without this mode, we see only the broadcast messages, not the TCP / UDP traffic between the EVSE and the PEV.
@@ -242,12 +262,10 @@ functions Monitor() and Sniffer(), but these are included from a path ../nda/ wh
 
 Any idea how to enable full-transparency of the AR7420?
 
-- [all modes] convert the EXI data to the readable xml (e.g. using https://github.com/FlUxIuS/V2Gdecoder, or https://github.com/Martin-P/OpenV2G).
-Evaluate different EXI decoders/encoders, regarding speed, correctness and stability.
 - [all modes] replace the fix-configured addresses (MAC, IP) in the python script by the real one from the operating system
 
 ## Other open topics
-- [*EvseMode*] Add listener to socket at port 15118
-- [*PevMode*] Testing
+- [*EvseMode*] [*PevMode*] Fill V2G messages as far as needed, to convince the car to accept it.
+- [*PevMode*] Testing on real charger
 - improve docu (update layer diagram, improve hardware docu, add link to evse which provides the 5% PWM)
 - (and much more)
