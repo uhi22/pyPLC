@@ -16,7 +16,7 @@
 # SLAAC: Stateless auto address configuration (not SLAC!). A method to automatically set IPv6 address, based
 #        on the 6 byte MAC address.
 
-from helpers import showAsHex
+from helpers import showAsHex, prettyHexMessage
 import udpChecksum
 
 
@@ -172,8 +172,7 @@ class ipv6handler():
         # 0x8001 EXI encoded V2G message
         if (v2gptPayloadType == 0x8001):
             self.ExiPacket = self.v2gframe[8:] # the exi payload, without the 8 bytes V2GTP header
-            print("EXI from " + str(self.tcpsourceport) + " to " + str(self.tcpdestinationport))
-            showAsHex(self.ExiPacket)
+            print("[SNIFFER] EXI from " + str(self.tcpsourceport) + " to " + str(self.tcpdestinationport) + " " + prettyHexMessage(self.ExiPacket))
             # Todo: further process the EXI packet. E.g. write it into file for offline analysis.
             # And send it to decoder.
 
