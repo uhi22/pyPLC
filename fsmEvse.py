@@ -13,7 +13,7 @@ stateWaitForSupportedApplicationProtocolRequest = 0
 stateWaitForSessionSetupRequest = 1
 stateWaitForServiceDiscoveryRequest = 2
 stateWaitForServicePaymentSelectionRequest = 3
-stateWaitForAuthorizationRequest = 4
+stateWaitForFlexibleRequest = 4
 stateWaitForChargeParameterDiscoveryRequest = 5
 stateWaitForCableCheckRequest = 6
 stateWaitForPreChargeRequest = 7
@@ -90,62 +90,53 @@ class fsmEvse():
                 msg = addV2GTPHeader(exiEncode("EDc")) # EDc for Encode, Din, ServicePaymentSelectionResponse
                 print("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
-                self.enterState(stateWaitForChargeParameterDiscoveryRequest)
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified. The Ioniq sends PowerDeliveryReq as next.
         if (self.isTooLong()):
             self.enterState(0)
             
-    def stateFunctionWaitForAuthorizationRequest(self): # not specified in the DIN
+    def stateFunctionWaitForFlexibleRequest(self):
         if (len(self.rxData)>0):
-            self.rxData = []
-            self.enterState(5)
-        if (self.isTooLong()):
-            self.enterState(0)
-            
-    def stateFunctionWaitForChargeParameterDiscoveryRequest(self):
-        if (len(self.rxData)>0):
-            print("In state WaitForChargeParameterDiscoveryRequest, received " + prettyHexMessage(self.rxData))
+            print("In state WaitForFlexibleRequest, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD")
             print(strConverterResult)
+            if (strConverterResult.find("PowerDeliveryReq")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDh")) # EDh for Encode, Din, PowerDeliveryResponse
+                print("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)  
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("ChargeParameterDiscoveryReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDe")) # EDe for Encode, Din, ChargeParameterDiscoveryResponse
                 print("responding " + prettyHexMessage(msg))
-                self.Tcp.transmit(msg)
-                self.enterState(stateWaitForCableCheckRequest)
-        if (self.isTooLong()):
-            self.enterState(0)
-            
-    def stateFunctionWaitForCableCheckRequest(self):
-        if (len(self.rxData)>0):
-            print("In state WaitForCableCheckRequest, received " + prettyHexMessage(self.rxData))
-            exidata = removeV2GTPHeader(self.rxData)
-            self.rxData = []
-            strConverterResult = exiDecode(exidata, "DD")
-            print(strConverterResult)
+                self.Tcp.transmit(msg)  
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN               
             if (strConverterResult.find("CableCheckReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDf")) # EDf for Encode, Din, CableCheckResponse
                 print("responding " + prettyHexMessage(msg))
-                self.Tcp.transmit(msg)
-                self.enterState(stateWaitForPreChargeRequest)
+                self.Tcp.transmit(msg)  
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN               
+            if (strConverterResult.find("PreChargeReq")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDg")) # EDg for Encode, Din, PreChargeResponse
+                print("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)  
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN               
+        if (self.isTooLong()):
+            self.enterState(0)
+            
+    def stateFunctionWaitForChargeParameterDiscoveryRequest(self):
+        if (self.isTooLong()):
+            self.enterState(0)
+    
+    def stateFunctionWaitForCableCheckRequest(self):
         if (self.isTooLong()):
             self.enterState(0)
             
     def stateFunctionWaitForPreChargeRequest(self):
-        if (len(self.rxData)>0):
-            print("In state WaitForPreChargeRequest, received " + prettyHexMessage(self.rxData))
-            exidata = removeV2GTPHeader(self.rxData)
-            self.rxData = []
-            strConverterResult = exiDecode(exidata, "DD")
-            print(strConverterResult)
-            if (strConverterResult.find("PreChargeReq")>0):
-                # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDg")) # EDf for Encode, Din, PreChargeResponse
-                print("responding " + prettyHexMessage(msg))
-                self.Tcp.transmit(msg)
-                self.enterState(stateWaitForPowerDeliveryRequest)
         if (self.isTooLong()):
             self.enterState(0)
             
@@ -164,7 +155,7 @@ class fsmEvse():
             stateWaitForSessionSetupRequest: stateFunctionWaitForSessionSetupRequest,
             stateWaitForServiceDiscoveryRequest: stateFunctionWaitForServiceDiscoveryRequest,
             stateWaitForServicePaymentSelectionRequest: stateFunctionWaitForServicePaymentSelectionRequest,
-            # stateWaitForAuthorizationRequest: stateFunctionWaitForAuthorizationRequest, not in DIN
+            stateWaitForFlexibleRequest: stateFunctionWaitForFlexibleRequest,
             stateWaitForChargeParameterDiscoveryRequest: stateFunctionWaitForChargeParameterDiscoveryRequest,
             stateWaitForCableCheckRequest: stateFunctionWaitForCableCheckRequest,
             stateWaitForPreChargeRequest: stateFunctionWaitForPreChargeRequest,
