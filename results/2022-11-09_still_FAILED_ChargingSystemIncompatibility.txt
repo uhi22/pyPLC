@@ -1,0 +1,177 @@
+
+C:\UwesTechnik\pyPLC>python pyPlc.py E
+starting in EVSE_MODE
+initializing pyPlcWorker
+Interfaces:
+\Device\NPF_{CF245078-25B1-4487-AE2A-1763158ACD5F}
+\Device\NPF_{7105741E-F8FC-46AD-9BCD-95F7CDCC76B0}
+\Device\NPF_{F2DFA311-B486-461A-A3F4-0DBA998BF9F9}
+\Device\NPF_{0DFD428E-B132-4188-8EBC-38C13B0C89CF}
+\Device\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}
+\Device\NPF_{68936D7B-F0E7-46E7-A047-3C07A24E03B9}
+\Device\NPF_{A541C45F-EDAC-4242-ABF6-B4337228BBFF}
+\Device\NPF_Loopback
+index match at 0 dev name=b'\\Device\\NPF_Loopback' dev.description=b'Adapter for loopback traffic capture'
+index match at 1 dev name=b'\\Device\\NPF_{A541C45F-EDAC-4242-ABF6-B4337228BBFF}' dev.description=b'Microsoft Wi-Fi Direct Virtual Adapter'
+index match at 2 dev name=b'\\Device\\NPF_{68936D7B-F0E7-46E7-A047-3C07A24E03B9}' dev.description=b'Microsoft Wi-Fi Direct Virtual Adapter #2'
+index match at 3 dev name=b'\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}' dev.description=b'Broadcom NetLink (TM) Gigabit Ethernet'
+This is the wanted Ethernet adaptor.
+index match at 4 dev name=b'\\Device\\NPF_{0DFD428E-B132-4188-8EBC-38C13B0C89CF}' dev.description=b'Broadcom 802.11n-Netzwerkadapter'
+index match at 5 dev name=b'\\Device\\NPF_{F2DFA311-B486-461A-A3F4-0DBA998BF9F9}' dev.description=b'WAN Miniport (IP)'
+index match at 6 dev name=b'\\Device\\NPF_{7105741E-F8FC-46AD-9BCD-95F7CDCC76B0}' dev.description=b'WAN Miniport (IPv6)'
+index match at 7 dev name=b'\\Device\\NPF_{CF245078-25B1-4487-AE2A-1763158ACD5F}' dev.description=b'WAN Miniport (Network Monitor)'
+index match at 3 dev name=b'\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}' dev.description=b'Broadcom NetLink (TM) Gigabit Ethernet'
+sniffer created at eth3
+initializing fsmEvse
+pyPlcTcpSocket listening on port 15118
+0x6064
+transmitting CM_SLAC_PARAM.CNF
+0x6065
+0x606a
+0x606a
+0x606a
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+transmitting ATTEN_CHAR.IND
+0xa14e
+0x6086
+0x606e
+0x606f
+0x607c
+transmitting SLAC_MATCH.CNF
+0x607d
+V2GTP (10bytes) = 01 FE 90 00 00 00 00 02 10 00
+ok, this was a valid SDP request
+We are the SECC. Sending SDP response.
+SDP payload (20bytes) = FE 80 00 00 00 00 00 00 E0 AD 99 AC 52 EB 85 D3 3B 0E 10 00
+V2Gframe (28bytes) = 01 FE 90 01 00 00 00 14 FE 80 00 00 00 00 00 00 E0 AD 99 AC 52 EB 85 D3 3B 0E 10 00
+UDP response (36bytes) = 3B 0E C3 71 00 24 00 00 01 FE 90 01 00 00 00 14 FE 80 00 00 00 00 00 00 E0 AD 99 AC 52 EB 85 D3 3B 0E 10 00
+IP response (76bytes) = 60 00 00 00 00 24 11 0A FE 80 00 00 00 00 00 00 E0 AD 99 AC 52 EB 85 D3 FE 80 00 00 00 00 00 00 06 65 65 FF FE 00 64 C3 3B 0E C3 71 00 24 B3 26 01 FE 90 01 00 00 00 14 FE 80 00 00 00 00 00 00 E0 AD 99 AC 52 EB 85 D3 3B 0E 10 00
+Connection from ('fe80::665:65ff:fe00:64c3', 50095, 0, 16)
+In state WaitForSupportedApplicationProtocolRequest, received (42bytes) = 01 FE 80 01 00 00 00 22 80 00 DB AB 93 71 D3 23 4B 71 D1 B9 81 89 91 89 D1 91 81 89 91 D2 6B 9B 3A 23 2B 30 02 00 00 04 00 40
+{
+"info": "34 bytes to convert",
+"error": "",
+"result": "Vehicle supports 1 protocols. ProtocolEntry#1 ProtocolNamespace=urn:din:70121:2012:MsgDef Version=2.0 SchemaID=1 Priority=1 ",
+"schema": "appHandshake",
+"msgName": "supportedAppProtocolReq",
+"debug": ""
+}
+Detected DIN
+responding (12bytes) = 01 FE 80 01 00 00 00 04 80 40 00 40
+from 0 entering 1
+[SNIFFER] EXI from 50095 to 15118 (34bytes) = 80 00 DB AB 93 71 D3 23 4B 71 D1 B9 81 89 91 89 D1 91 81 89 91 D2 6B 9B 3A 23 2B 30 02 00 00 04 00 40
+[SNIFFER] EXI from 15118 to 50095 (4bytes) = 80 40 00 40
+[SNIFFER] EXI from 50095 to 15118 (21bytes) = 80 9A 02 00 00 00 00 00 00 00 00 11 D0 18 11 95 94 01 93 0C 00
+In state stateFunctionWaitForSessionSetupRequest, received (29bytes) = 01 FE 80 01 00 00 00 15 80 9A 02 00 00 00 00 00 00 00 00 11 D0 18 11 95 94 01 93 0C 00
+{
+"info": "21 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"msgName": "SessionSetupReq",
+"EVCCID.bytesLen": "6",
+"EVCCID": "0465650064c3",
+"debug": "Line532"
+}
+responding (24bytes) = 01 FE 80 01 00 00 00 10 80 9A 02 00 40 80 C1 01 41 81 C2 11 E0 00 00 80
+from 1 entering 2
+[SNIFFER] EXI from 15118 to 50095 (16bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 E0 00 00 80
+[SNIFFER] EXI from 50095 to 15118 (14bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 94 00
+In state WaitForServiceDiscoveryRequest, received (22bytes) = 01 FE 80 01 00 00 00 0E 80 9A 02 00 40 80 C1 01 41 81 C2 11 94 00
+{
+"info": "14 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"msgName": "ServiceDiscoveryReq",
+"ServiceCategory_isUsed": "True",
+"debug": "Line508"
+}
+responding (27bytes) = 01 FE 80 01 00 00 00 13 80 9A 02 00 40 80 C1 01 41 81 C2 11 A0 01 20 02 41 00 84
+from 2 entering 3
+[SNIFFER] EXI from 15118 to 50095 (19bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 A0 01 20 02 41 00 84
+[SNIFFER] EXI from 50095 to 15118 (16bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 B2 00 12 80
+In state WaitForServicePaymentSelectionRequest, received (24bytes) = 01 FE 80 01 00 00 00 10 80 9A 02 00 40 80 C1 01 41 81 C2 11 B2 00 12 80
+{
+"info": "16 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"msgName": "ServicePaymentSelectionReq",
+"SelectedPaymentOption": "ExternalPayment",
+"SelectedService.arrayLen": "1",
+"SelectedService.array": "0:1",
+"debug": "Line520"
+}
+responding (22bytes) = 01 FE 80 01 00 00 00 0E 80 9A 02 00 40 80 C1 01 41 81 C2 11 C0 00
+from 3 entering 4
+[SNIFFER] EXI from 15118 to 50095 (14bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 C0 00
+In state WaitForFlexibleRequest, received (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 30 20 00 0A 00 00 00 00
+{
+"info": "20 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"msgName": "PowerDeliveryReq",
+"ReadyToChargeState": "0",
+"ChargingProfile_isUsed": "0",
+"EVPowerDeliveryParameter_isUsed": "0",
+"DC_EVPowerDeliveryParameter_isUsed": "1",
+"EVReady": "0",
+"EVErrorCode": "10",
+"EVErrorCodeText": "FAILED_ChargingSystemIncompatibility",
+"EVRESSSOC": "0",
+"BulkChargingComplete": "0",
+"ChargingComplete": "0",
+"debug": "Line472"
+}
+responding (26bytes) = 01 FE 80 01 00 00 00 12 80 9A 02 00 40 80 C1 01 41 81 C2 11 40 04 20 40 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50095 to 15118 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 30 20 00 0A 00 00 00 00
+[SNIFFER] EXI from 15118 to 50095 (18bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 40 04 20 40 00 00
+[SNIFFER] EXI from 50095 to 15118 (13bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 F0
+In state WaitForFlexibleRequest, received (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 40 80 C1 01 41 81 C2 11 F0
+{
+"info": "13 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"msgName": "SessionStopReq",
+"debug": "Line544"
+}
+connection closed
+from 4 entering 0
+
+C:\UwesTechnik\pyPLC>
