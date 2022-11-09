@@ -1,0 +1,170 @@
+C:\UwesTechnik\pyPLC>python pyPlc.py E
+starting in EVSE_MODE
+initializing pyPlcWorker
+sniffer created at eth3
+initializing fsmEvse
+pyPlcTcpSocket listening on port 15118
+0x6064
+transmitting CM_SLAC_PARAM.CNF
+0x6065
+0x606a
+0x606a
+0x606a
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+transmitting ATTEN_CHAR.IND
+0xa14e
+0x6086
+0x606e
+0x606f
+0x607c
+transmitting SLAC_MATCH.CNF
+0x607d
+V2GTP (10bytes) = 01 FE 90 00 00 00 00 02 10 00
+ok, this was a valid SDP request
+We are the SECC. Sending SDP response.
+SDP payload (20bytes) = FE 80 00 00 00 00 00 00 E0 AD 99 AC 52 EB 85 D3 3B 0E 10 00
+V2Gframe (28bytes) = 01 FE 90 01 00 00 00 14 FE 80 00 00 00 00 00 00 E0 AD 99 AC 52 EB 85 D3 3B 0E 10 00
+UDP response (36bytes) = 3B 0E C3 73 00 24 00 00 01 FE 90 01 00 00 00 14 FE 80 00 00 00 00 00 00 E0 AD 99 AC 52 EB 85 D3 3B 0E 10 00
+IP response (76bytes) = 60 00 00 00 00 24 11 0A FE 80 00 00 00 00 00 00 E0 AD 99 AC 52 EB 85 D3 FE 80 00 00 00 00 00 00 06 65 65 FF FE 00 64 C3 3B 0E C3 73 00 24 B3 24 01 FE 90 01 00 00 00 14 FE 80 00 00 00 00 00 00 E0 AD 99 AC 52 EB 85 D3 3B 0E 10 00
+Connection from ('fe80::665:65ff:fe00:64c3', 50109, 0, 16)
+In state WaitForSupportedApplicationProtocolRequest, received (42bytes) = 01 FE 80 01 00 00 00 22 80 00 DB AB 93 71 D3 23 4B 71 D1 B9 81 89 91 89 D1 91 81 89 91 D2 6B 9B 3A 23 2B 30 02 00 00 04 00 40
+{
+"info": "34 bytes to convert",
+"error": "",
+"result": "Vehicle supports 1 protocols. ProtocolEntry#1 ProtocolNamespace=urn:din:70121:2012:MsgDef Version=2.0 SchemaID=1 Priority=1 ",
+"schema": "appHandshake",
+"msgName": "supportedAppProtocolReq"
+}
+Detected DIN
+responding (12bytes) = 01 FE 80 01 00 00 00 04 80 40 00 40
+from 0 entering 1
+EXI from 50109 to 15118
+(34bytes) = 80 00 DB AB 93 71 D3 23 4B 71 D1 B9 81 89 91 89 D1 91 81 89 91 D2 6B 9B 3A 23 2B 30 02 00 00 04 00 40
+EXI from 15118 to 50109
+(4bytes) = 80 40 00 40
+EXI from 50109 to 15118
+(21bytes) = 80 9A 02 00 00 00 00 00 00 00 00 11 D0 18 11 95 94 01 93 0C 00
+In state stateFunctionWaitForSessionSetupRequest, received (29bytes) = 01 FE 80 01 00 00 00 15 80 9A 02 00 00 00 00 00 00 00 00 11 D0 18 11 95 94 01 93 0C 00
+{
+"info": "21 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"msgName": "SessionSetupReq"
+}
+responding (24bytes) = 01 FE 80 01 00 00 00 10 80 9A 02 00 40 80 C1 01 41 81 C2 11 E0 00 00 80
+from 1 entering 2
+EXI from 15118 to 50109
+(16bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 E0 00 00 80
+EXI from 50109 to 15118
+(14bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 94 00
+In state WaitForServiceDiscoveryRequest, received (22bytes) = 01 FE 80 01 00 00 00 0E 80 9A 02 00 40 80 C1 01 41 81 C2 11 94 00
+{
+"info": "14 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"msgName": "ServiceDiscoveryReq"
+}
+responding (19bytes) = 01 FE 80 01 00 00 00 0B 80 9A 00 11 A0 01 20 02 41 21 04
+from 2 entering 3
+EXI from 15118 to 50109
+(11bytes) = 80 9A 00 11 A0 01 20 02 41 21 04
+EXI from 50109 to 15118
+(8bytes) = 80 9A 00 11 B2 00 12 80
+In state WaitForServicePaymentSelectionRequest, received (16bytes) = 01 FE 80 01 00 00 00 08 80 9A 00 11 B2 00 12 80
+{
+"info": "8 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"msgName": "ServicePaymentSelectionReq"
+}
+responding (14bytes) = 01 FE 80 01 00 00 00 06 80 9A 00 11 C0 00
+from 3 entering 5
+EXI from 15118 to 50109
+(6bytes) = 80 9A 00 11 C0 00
+In state WaitForChargeParameterDiscoveryRequest, received (20bytes) = 01 FE 80 01 00 00 00 0C 80 9A 00 11 30 20 00 0A 00 00 00 00
+{
+"info": "12 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0"
+}
+EXI from 50109 to 15118
+(12bytes) = 80 9A 00 11 30 20 00 0A 00 00 00 00
+from 5 entering 0
+In state WaitForSupportedApplicationProtocolRequest, received (13bytes) = 01 FE 80 01 00 00 00 05 80 9A 00 11 F0
+{
+"info": "5 bytes to convert",
+"error": "runTheDecoder error-111",
+"result": "",
+"schema": "appHandshake"
+}
+EXI from 50109 to 15118
+(5bytes) = 80 9A 00 11 F0
+connection closed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
