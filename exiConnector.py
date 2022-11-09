@@ -223,21 +223,40 @@ if __name__ == "__main__":
     #testByteArrayConversion("00112233445566778899AABBCCDDEEFF")
     #testByteArrayConversion("TRASH!")
     
-    testDecoder("8000ebab9371d34b9b79d189a98989c1d191d191818981d26b9b3a232b30010000040001b75726e3a64696e3a37303132313a323031323a4d73674465660020000100880", pre="DH", comment="supportedAppProtocolReq")
-    testDecoder("80400040", pre="DH", comment="supportedAppProtocolRes")
+    if (False):
+        testDecoder("8000ebab9371d34b9b79d189a98989c1d191d191818981d26b9b3a232b30010000040001b75726e3a64696e3a37303132313a323031323a4d73674465660020000100880", pre="DH", comment="supportedAppProtocolReq")
+        testDecoder("80400040", pre="DH", comment="supportedAppProtocolRes")
 
-    testDecoder("809a0011d00000", pre="DD", comment="SessionSetupReq")
-    testDecoder("809a02004080c1014181c211e0000080", pre="DD", comment="SessionSetupRes")
-    testDecoder("809a001198", pre="DD", comment="ServiceDiscoveryReq")
-    testDecoder("809a0011a0012002412104", pre="DD", comment="ServiceDiscoveryRes")
-    testDecoder("809a0011b2001280", pre="DD", comment="ServicePaymentSelectionReq")
-    testDecoder("809a0011c000", pre="DD", comment="ServicePaymentSelectionRes")
-    testDecoder("809a00107211400dc0c8c82324701900", pre="DD", comment="ChargeParameterDiscoveryReq")    
-    testDecoder("809a001080004820400000c99002062050193080c0c802064c8010190140c80a20", pre="DD", comment="ChargeParameterDiscoveryRes")
-    testDecoder("809a001010400000", pre="DD", comment="CableCheckReq")
-    testDecoder("809a0010200200000000", pre="DD", comment="CableCheckRes")
-    testDecoder("809a001150400000c80006400000", pre="DD", comment="PreChargeReq")
-    testDecoder("809a00116002000000320000", pre="DD", comment="PreChargeRes")
+        testDecoder("809a0011d00000", pre="DD", comment="SessionSetupReq")
+        testDecoder("809a02004080c1014181c211e0000080", pre="DD", comment="SessionSetupRes")
+        testDecoder("809a001198", pre="DD", comment="ServiceDiscoveryReq")
+        testDecoder("809a0011a0012002412104", pre="DD", comment="ServiceDiscoveryRes")
+        testDecoder("809a0011b2001280", pre="DD", comment="ServicePaymentSelectionReq")
+        testDecoder("809a0011c000", pre="DD", comment="ServicePaymentSelectionRes")
+        testDecoder("809a00107211400dc0c8c82324701900", pre="DD", comment="ChargeParameterDiscoveryReq")    
+        testDecoder("809a001080004820400000c99002062050193080c0c802064c8010190140c80a20", pre="DD", comment="ChargeParameterDiscoveryRes")
+        testDecoder("809a001010400000", pre="DD", comment="CableCheckReq")
+        testDecoder("809a0010200200000000", pre="DD", comment="CableCheckRes")
+        testDecoder("809a001150400000c80006400000", pre="DD", comment="PreChargeReq")
+        testDecoder("809a00116002000000320000", pre="DD", comment="PreChargeRes")
+    
+    if (True):
+        print("The request from the Ioniq after the EVSE sent ServicePaymentSelectionRes:")
+        testDecoder("809A00113020000A00000000", pre="DD", comment="PowerDeliveryReq")
+    if (True):
+        print("The session setup request of the Ioniq:")
+        testDecoder("809A02000000000000000011D01811959401930C00", pre="DD", comment="SessionSetupReq")
+
+    if (False):
+        testDecoder("809a00113060", pre="DD", comment="PowerDeliveryReq")
+        testDecoder("809a0011400420400000", pre="DD", comment="PowerDeliveryRes")
+        testDecoder("809a0010d0400000c800410c8000", pre="DD", comment="CurrentDemandReq")
+        testDecoder("809a0010e0020000003200019000000600", pre="DD", comment="CurrentDemandRes")
+        testDecoder("809a001210400000", pre="DD", comment="WeldingDetectionReq")
+        testDecoder("809a00122002000000320000", pre="DD", comment="WeldingDetectionRes")
+        testDecoder("809a0011f0", pre="DD", comment="SessionStopReq")
+        testDecoder("809a00120000", pre="DD", comment="SessionStopRes")
+    
     print("Number of fails: " + str(nFail))
     
 
