@@ -203,6 +203,7 @@ def testByteArrayConversion(s):
 
 def testDecoder(strHex, pre="DH", comment=""):
     global nFail
+    strHex = strHex.replace(" ", "") # remove blanks
     print("Decoder test for " + comment + " with data " + strHex)
     decoded=exiDecode(strHex, pre)
     print(decoded)
@@ -240,12 +241,19 @@ if __name__ == "__main__":
         testDecoder("809a001150400000c80006400000", pre="DD", comment="PreChargeReq")
         testDecoder("809a00116002000000320000", pre="DD", comment="PreChargeRes")
     
-    if (True):
+    if (False):
         print("The request from the Ioniq after the EVSE sent ServicePaymentSelectionRes:")
         testDecoder("809A00113020000A00000000", pre="DD", comment="PowerDeliveryReq")
     if (True):
         print("The session setup request of the Ioniq:")
         testDecoder("809A02000000000000000011D01811959401930C00", pre="DD", comment="SessionSetupReq")
+        testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 E0 00 00 80", pre="DD", comment="SessionSetupRes")
+        testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 94 00", pre="DD", comment="ServiceDiscoveryReq")
+        testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 A0 01 20 02 41 00 84", pre="DD", comment="ServiceDiscoveryRes")
+        testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 B2 00 12 80", pre="DD", comment="ServicePaymentSelectionReq")
+        testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 C0 00", pre="DD", comment="ServicePaymentSelectionRes")
+        print("The error response of the Ioniq with FAILED_ChargingSystemIncompatibility")
+        testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 30 20 00 0A 00 00 00 00", pre="DD", comment="PowerDeliveryReq")
 
     if (False):
         testDecoder("809a00113060", pre="DD", comment="PowerDeliveryReq")
