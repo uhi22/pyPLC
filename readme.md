@@ -151,7 +151,7 @@ this works perfectly, the only thing we must make sure, that the MAC and IPv6 of
 python script. Use `ipconfig -all` on Windows, to find out the addresses.
 24. Now, the car and the charger have a clear view about addressing (MAC adresses, IPv6 addresses).
 25. The car requests to open a TCP connection to charger at port 15118.
-26. The charger, which was listening on port 15118, confirms the TCP channel. (Todo: not yet implemented)
+26. The charger, which was listening on port 15118, confirms the TCP channel.
 27. Now, the car and the charger have a reliable, bidirectional TCP channel.
 28. The car and the charger use the TCP channel, to exchange V2GTP messages, with EXI content.
 29. The charger is the "server" for the EXI, it is just waiting for requests from the car. The car is the "client", it actively
@@ -159,14 +159,22 @@ initiates the EXI data exchange.
 30. The car walks through different states to negotiate, start and supervise the charging process. From communication point of view,
 the complete process uses XML data, which is packed in EXI frames, which in turn are transported in the TCP channel mentioned above. The overview over
 the various steps is visible in a sequence chart in [viii].
+31. The first request-response-pair decides about which XML schema is used for the later communication. This first communication uses
+a special XML schema, the "application handshake" schema. Afterwards, one of the following three schemas will be used: DIN, ISO1, ISO2. These
+are different flavours of the DIN/ISO15118 specification, which have small but significant differences. This means, the negotiation of
+the exact schema is essential for the next step.
 31. The car announces the supported application protocols, e.g. DIN or ISO, using the SupportedApplicationProtocolRequest.
 32. The charger chooses the best application protocol from the list, and announces the decision with SupportedApplicationProtocolResponse.
-33. The car initiates the charging session with SessionSetupRequest. This defines a SessionId, which will be used in the further steps.
-34. The charger confirms the session with SessionSetupResponse.
+33. The car initiates the charging session with SessionSetupRequest. The SessionID in
+this first message is zero, which is the reserved number meaning "new session".
+34. The charger confirms the session with SessionSetupResponse. In this message, the charger sends for the first time
+a new, non-zero SessionID. This SessionID is used in all the upcoming messages from both sides.
 35. The car sends ServiceDiscoveryRequest. Usually, this means it says "I want to charge" by setting serviceCathegory=EVCharging.
-36. The charger confirms with ServiceDiscoveryResponse.
+36. The charger confirms with ServiceDiscoveryResponse. This contains the offered services and payment options. Usually it says which type
+of charging the charger supports (e.g. AC 1phase, AC 3phase, or DC according CCS https://en.wikipedia.org/wiki/IEC_62196#FF), and that
+the payment should be handled externally by the user, or by the car.
 37. The car sends PaymentServiceSelectionRequest. Usually (in non-plug-and-charge case), the car says "I cannot pay, something else should
-handle the payment", by setting paymentOption=ExternalPayment.
+handle the payment", by setting paymentOption=ExternalPayment. Optionally it could announce other services than charging, e.g. internet access.
 38. The charger confirms with PaymentServiceSelectionResponse.
 39. The car sends AuthorizationRequest. In non-plug-and-charge case this is most likely not containing relevant data.
 40. The charger confirms with AuthorizationResponse.
