@@ -13,6 +13,8 @@ import select
 import sys # for argv
 import time # for time.sleep()
 import errno
+import os
+import subprocess
 
 class pyPlcTcpClientSocket():
     def __init__(self):
@@ -89,7 +91,10 @@ class pyPlcTcpClientSocket():
 
 class pyPlcTcpServerSocket():
     def __init__(self):
-        self.ipAdress = 'fe80::e0ad:99ac:52eb:85d3'
+        # Todo: find the link-local IPv6 address automatically.
+        #self.ipAdress = 'fe80::e0ad:99ac:52eb:85d3'
+        #self.ipAdress = 'fe80::c690:83f3:fbcb:980e%15'
+        self.ipAdress = ''
         self.tcpPort = 15118 # The port for CCS
         self.BUFFER_SIZE = 1024  # Normally 1024
         # Concept explanation:
@@ -191,6 +196,7 @@ def testClientSocket():
     print("Testing the pyPlcTcpClientSocket...")
     c = pyPlcTcpClientSocket()
     c.connect('fe80::e0ad:99ac:52eb:85d3', 15118)
+    #c.connect('fe80::e0ad:99ac:52eb:9999', 15118)
     print("connected="+str(c.isConnected))
     print("sending something to the server")
     c.transmit(bytes("Test", "utf-8"))
@@ -206,8 +212,37 @@ def testClientSocket():
             
     print("end")
 
+def testExtra():
+    print("testExtra")
+    findLinkLocalIpv6Address()
+    
+def findLinkLocalIpv6Address():
+    # For the IPv4 address, this works:
+    # print(socket.gethostbyname(socket.gethostname())) # Result: The ipv4 address of the ethernet adaptor
+    # But this does not help, we need the IPv6 address.
+    #
+    # On windows we can use command line tool "ipconfig".
+    # The link-local addresses always start with fe80::, so we just parse the output of ipconfig line-by-line.
+    # If we have multiple interfaces (e.g. ethernet and WLAN), it will find multiple link-local-addresses.
+    foundAddresses = []
+    if os.name == 'nt':
+        result = subprocess.run(["ipconfig.exe"], capture_output=True, text=True, encoding="ansi")    
+        if (len(result.stderr)>0):
+            print(result.stderr)
+        else:
+            lines = result.stdout.split("\n")
+            for line in lines:
+                if (line.find("IPv6")>0):
+                    k = line.find(" fe80::")
+                    if (k>0):
+                        foundAddresses.append(line[k+1:])
+    print("Found " + str(len(foundAddresses)) + " link-local addresses.")
+    for a in foundAddresses:
+        print(a)
 
 if __name__ == "__main__":
+    print("Testing pyPlcTcpSocket.py....")
+    
     if (len(sys.argv) == 1):
         print("Use command line argument c for clientSocket or s for serverSocket")
         exit()
@@ -216,5 +251,8 @@ if __name__ == "__main__":
         exit()
     if (sys.argv[1] == "s"):
         testServerSocket()
+        exit()
+    if (sys.argv[1] == "x"):
+        testExtra()
         exit()
     print("Use command line argument c for clientSocket or s for serverSocket")
