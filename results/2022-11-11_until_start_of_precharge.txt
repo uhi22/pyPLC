@@ -1,0 +1,1224 @@
+C:\UwesTechnik\pyPLC>python pyPlc.py E
+starting in EVSE_MODE
+initializing pyPlcWorker
+[addressManager] we have local MAC DC:0E:A1:11:67:08. Todo: find this out dynamically.
+[addressManager] Found 2 link-local IPv6 addresses.
+fe80::c690:83f3:fbcb:980e%15
+fe80::4c46:fea5:b6c9:25a9%3
+[addressManager] Warning: Multiple Ipv6 addresses were found. If you have multiple network adaptors, try to disconnect the not relevant ones.
+[addressManager] Using the first detected, fe80::c690:83f3:fbcb:980e%15
+[addressManager] Local IPv6 is fe80::c690:83f3:fbcb:980e%15
+[addressManager] Found 2 link-local IPv6 addresses.
+fe80::c690:83f3:fbcb:980e%15
+fe80::4c46:fea5:b6c9:25a9%3
+[addressManager] Warning: Multiple Ipv6 addresses were found. If you have multiple network adaptors, try to disconnect the not relevant ones.
+[addressManager] Using the first detected, fe80::c690:83f3:fbcb:980e%15
+[addressManager] Local IPv6 is fe80::c690:83f3:fbcb:980e%15
+Interfaces:
+\Device\NPF_{CF245078-25B1-4487-AE2A-1763158ACD5F}
+\Device\NPF_{7105741E-F8FC-46AD-9BCD-95F7CDCC76B0}
+\Device\NPF_{F2DFA311-B486-461A-A3F4-0DBA998BF9F9}
+\Device\NPF_{0DFD428E-B132-4188-8EBC-38C13B0C89CF}
+\Device\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}
+\Device\NPF_{68936D7B-F0E7-46E7-A047-3C07A24E03B9}
+\Device\NPF_{A541C45F-EDAC-4242-ABF6-B4337228BBFF}
+\Device\NPF_Loopback
+index match at 0 dev name=b'\\Device\\NPF_Loopback' dev.description=b'Adapter for loopback traffic capture'
+index match at 1 dev name=b'\\Device\\NPF_{A541C45F-EDAC-4242-ABF6-B4337228BBFF}' dev.description=b'Microsoft Wi-Fi Direct Virtual Adapter'
+index match at 2 dev name=b'\\Device\\NPF_{68936D7B-F0E7-46E7-A047-3C07A24E03B9}' dev.description=b'Microsoft Wi-Fi Direct Virtual Adapter #2'
+index match at 3 dev name=b'\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}' dev.description=b'Broadcom NetLink (TM) Gigabit Ethernet'
+This is the wanted Ethernet adaptor.
+index match at 4 dev name=b'\\Device\\NPF_{0DFD428E-B132-4188-8EBC-38C13B0C89CF}' dev.description=b'Broadcom 802.11n-Netzwerkadapter'
+index match at 5 dev name=b'\\Device\\NPF_{F2DFA311-B486-461A-A3F4-0DBA998BF9F9}' dev.description=b'WAN Miniport (IP)'
+index match at 6 dev name=b'\\Device\\NPF_{7105741E-F8FC-46AD-9BCD-95F7CDCC76B0}' dev.description=b'WAN Miniport (IPv6)'
+index match at 7 dev name=b'\\Device\\NPF_{CF245078-25B1-4487-AE2A-1763158ACD5F}' dev.description=b'WAN Miniport (Network Monitor)'
+index match at 3 dev name=b'\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}' dev.description=b'Broadcom NetLink (TM) Gigabit Ethernet'
+[addressManager] will give local MAC DC:0E:A1:11:67:08
+[addressManager] will give local MAC DC:0E:A1:11:67:08
+pyPlcIpv6 started with ownMac DC:0E:A1:11:67:08
+[addressManager] converting self.localIpv6Address into bytearray
+fe80::c690:83f3:fbcb:980e
+fe80:0000:0000:0000:c690:83f3:fbcb:980e
+fe80000000000000c69083f3fbcb980e
+sniffer created at eth3
+initializing fsmEvse
+pyPlcTcpSocket listening on port 15118
+The socket is linked the following IP addresses:
+fe80::c690:83f3:fbcb:980e
+fe80::4c46:fea5:b6c9:25a9
+2003:d1:170f:d500:701a:25e1:3ba1:c8b8
+2003:d1:170f:d500:b758:9801:b23f:bba0
+0x6064
+[addressManager] pev has MAC 04:65:65:00:64:C3
+transmitting CM_SLAC_PARAM.CNF
+0x6064
+[addressManager] pev has MAC 04:65:65:00:64:C3
+transmitting CM_SLAC_PARAM.CNF
+0x6065
+0x6065
+0x606a
+0x606a
+0x606a
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+0xa14e
+0x6086
+0x6076
+transmitting ATTEN_CHAR.IND
+0xa14e
+0x6086
+0x606e
+0x606f
+0x607c
+transmitting SLAC_MATCH.CNF
+0x607d
+[addressManager] pev has IP fe80:0000:0000:0000:0665:65ff:fe00:64c3
+V2GTP (10bytes) = 01 FE 90 00 00 00 00 02 10 00
+ok, this was a valid SDP request
+We are the SECC. Sending SDP response.
+SDP payload (20bytes) = FE 80 00 00 00 00 00 00 C6 90 83 F3 FB CB 98 0E 3B 0E 10 00
+V2Gframe (28bytes) = 01 FE 90 01 00 00 00 14 FE 80 00 00 00 00 00 00 C6 90 83 F3 FB CB 98 0E 3B 0E 10 00
+Connection from ('fe80::665:65ff:fe00:64c3', 50094, 0, 15)
+In state WaitForSupportedApplicationProtocolRequest, received (42bytes) = 01 FE 80 01 00 00 00 22 80 00 DB AB 93 71 D3 23 4B 71 D1 B9 81 89 91 89 D1 91 81 89 91 D2 6B 9B 3A 23 2B 30 02 00 00 04 00 40
+{
+"msgName": "supportedAppProtocolReq",
+"info": "34 bytes to convert",
+"error": "",
+"result": "Vehicle supports 1 protocols. ProtocolEntry#1 ProtocolNamespace=urn:din:70121:2012:MsgDef Version=2.0 SchemaID=1 Priority=1 ",
+"schema": "appHandshake",
+"debug": ""
+}
+Detected DIN
+responding (12bytes) = 01 FE 80 01 00 00 00 04 80 40 00 40
+from 0 entering 1
+[SNIFFER] EXI from 50094 to 15118 (34bytes) = 80 00 DB AB 93 71 D3 23 4B 71 D1 B9 81 89 91 89 D1 91 81 89 91 D2 6B 9B 3A 23 2B 30 02 00 00 04 00 40
+[SNIFFER] EXI from 15118 to 50094 (4bytes) = 80 40 00 40
+[SNIFFER] EXI from 50094 to 15118 (21bytes) = 80 9A 02 00 00 00 00 00 00 00 00 11 D0 18 11 95 94 01 93 0C 00
+In state stateFunctionWaitForSessionSetupRequest, received (29bytes) = 01 FE 80 01 00 00 00 15 80 9A 02 00 00 00 00 00 00 00 00 11 D0 18 11 95 94 01 93 0C 00
+{
+"msgName": "SessionSetupReq",
+"info": "21 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0000000000000000",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVCCID.bytesLen": "6",
+"EVCCID": "0465650064c3",
+"debug": "Line532"
+}
+responding (31bytes) = 01 FE 80 01 00 00 00 17 80 9A 02 00 40 80 C1 01 41 81 C2 11 E0 20 1D 69 68 C0 C0 C0 C0 C0 80
+from 1 entering 2
+[SNIFFER] EXI from 15118 to 50094 (23bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 E0 20 1D 69 68 C0 C0 C0 C0 C0 80
+[SNIFFER] EXI from 50094 to 15118 (14bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 94 00
+In state WaitForServiceDiscoveryRequest, received (22bytes) = 01 FE 80 01 00 00 00 0E 80 9A 02 00 40 80 C1 01 41 81 C2 11 94 00
+{
+"msgName": "ServiceDiscoveryReq",
+"info": "14 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ServiceCategory_isUsed": "True",
+"debug": "Line508"
+}
+responding (27bytes) = 01 FE 80 01 00 00 00 13 80 9A 02 00 40 80 C1 01 41 81 C2 11 A0 01 20 02 41 00 C4
+from 2 entering 3
+[SNIFFER] EXI from 15118 to 50094 (19bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 A0 01 20 02 41 00 C4
+[SNIFFER] EXI from 50094 to 15118 (16bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 B2 00 12 80
+In state WaitForServicePaymentSelectionRequest, received (24bytes) = 01 FE 80 01 00 00 00 10 80 9A 02 00 40 80 C1 01 41 81 C2 11 B2 00 12 80
+{
+"msgName": "ServicePaymentSelectionReq",
+"info": "16 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"SelectedPaymentOption": "ExternalPayment",
+"SelectedService.arrayLen": "1",
+"SelectedService.array": "0:1",
+"debug": "Line520"
+}
+responding (22bytes) = 01 FE 80 01 00 00 00 0E 80 9A 02 00 40 80 C1 01 41 81 C2 11 C0 00
+from 3 entering 4
+[SNIFFER] EXI from 15118 to 50094 (14bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 C0 00
+[SNIFFER] EXI from 50094 to 15118 (13bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 10 B8
+In state WaitForFlexibleRequest, received (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 40 80 C1 01 41 81 C2 10 B8
+{
+"msgName": "",
+"info": "13 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"msgName": "ContractAuthenticationReq",
+"debug": "Line424"
+}
+responding (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 40 80 C1 01 41 81 C2 10 C0 00 00
+from 4 entering 4
+[SNIFFER] EXI from 15118 to 50094 (15bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 10 C0 00 00
+[SNIFFER] EXI from 50094 to 15118 (46bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 10 71 90 00 00 05 00 40 61 A0 1E 04 07 0C 84 C0 20 50 A0 20 00 C2 43 83 68 04 03 09 09 48 20 10 5E 0A 60
+In state WaitForFlexibleRequest, received (54bytes) = 01 FE 80 01 00 00 00 2E 80 9A 02 00 40 80 C1 01 41 81 C2 10 71 90 00 00 05 00 40 61 A0 1E 04 07 0C 84 C0 20 50 A0 20 00 C2 43 83 68 04 03 09 09 48 20 10 5E 0A 60
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "46 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line400"
+}
+responding (49bytes) = 01 FE 80 01 00 00 00 29 80 9A 02 00 40 80 C1 01 41 81 C2 10 80 00 48 20 40 00 00 C9 90 02 06 20 50 19 30 80 C0 C8 02 06 4C 80 10 19 01 40 C8 0A 20
+from 4 entering 4
+[SNIFFER] EXI from 15118 to 50094 (41bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 10 80 00 48 20 40 00 00 C9 90 02 06 20 50 19 30 80 C0 C8 02 06 4C 80 10 19 01 40 C8 0A 20
+In state WaitForFlexibleRequest, received (25bytes) = 01 FE 80 01 00 00 00 11 80 9A 02 00 40 80 C1 01 41 81 C2 10 11 00 00 05 00
+{
+"msgName": "CableCheckReq",
+"info": "17 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line364"
+}
+responding (26bytes) = 01 FE 80 01 00 00 00 12 80 9A 02 00 40 80 C1 01 41 81 C2 10 20 02 00 00 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (17bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 10 11 00 00 05 00
+[SNIFFER] EXI from 15118 to 50094 (18bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 10 20 02 00 00 00 00
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+In state WaitForFlexibleRequest, received (33bytes) = 01 FE 80 01 00 00 00 19 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+{
+"msgName": "PreChargeReq",
+"info": "25 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line484"
+}
+responding (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+from 4 entering 4
+[SNIFFER] EXI from 50094 to 15118 (25bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 51 00 00 05 00 40 A1 38 36 04 06 01 40
+[SNIFFER] EXI from 15118 to 50094 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 60 02 00 00 00 32 00 00
+[SNIFFER] EXI from 50094 to 15118 (20bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 30 22 00 00 0A 00 00 00
+In state WaitForFlexibleRequest, received (28bytes) = 01 FE 80 01 00 00 00 14 80 9A 02 00 40 80 C1 01 41 81 C2 11 30 22 00 00 0A 00 00 00
+{
+"msgName": "PowerDeliveryReq",
+"info": "20 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ReadyToChargeState": "0",
+"ChargingProfile_isUsed": "0",
+"EVPowerDeliveryParameter_isUsed": "0",
+"DC_EVPowerDeliveryParameter_isUsed": "1",
+"EVReady": "1",
+"EVErrorCode": "0",
+"EVErrorCodeText": "otherError",
+"EVRESSSOC": "40",
+"BulkChargingComplete": "0",
+"ChargingComplete": "0",
+"debug": "Line472"
+}
+responding (26bytes) = 01 FE 80 01 00 00 00 12 80 9A 02 00 40 80 C1 01 41 81 C2 11 40 04 20 40 00 00
+from 4 entering 4
+[SNIFFER] EXI from 15118 to 50094 (18bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 40 04 20 40 00 00
+[SNIFFER] EXI from 50094 to 15118 (13bytes) = 80 9A 02 00 40 80 C1 01 41 81 C2 11 F0
+In state WaitForFlexibleRequest, received (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 40 80 C1 01 41 81 C2 11 F0
+{
+"msgName": "SessionStopReq",
+"info": "13 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0102030405060708",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line544"
+}
+connection closed
+from 4 entering 0
+
+C:\UwesTechnik\pyPLC>

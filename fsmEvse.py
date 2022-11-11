@@ -124,7 +124,16 @@ class fsmEvse():
                 msg = addV2GTPHeader(exiEncode("EDg")) # EDg for Encode, Din, PreChargeResponse
                 print("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
-                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN               
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
+            if (strConverterResult.find("ContractAuthenticationReq")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDl")) # EDl for Encode, Din, ContractAuthenticationResponse
+                print("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)  
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
+
+
+                
         if (self.isTooLong()):
             self.enterState(0)
             

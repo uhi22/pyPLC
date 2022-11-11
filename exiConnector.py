@@ -231,8 +231,8 @@ def testReadExiFromFile():
 if __name__ == "__main__":
     nFail=0
     print("Testing exiConnector...")
-    testReadExiFromFile()
-    exit()
+    #testReadExiFromFile()
+    #exit()
     #testByteArrayConversion("123456")
     #testByteArrayConversion("1234567")
     #testByteArrayConversion("ABCDEF")
@@ -269,6 +269,10 @@ if __name__ == "__main__":
         testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 C0 00", pre="DD", comment="ServicePaymentSelectionRes")
         print("The error response of the Ioniq with FAILED_ChargingSystemIncompatibility")
         testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 30 20 00 0A 00 00 00 00", pre="DD", comment="PowerDeliveryReq")
+        
+        print("The request of the Ioniq after ServicePaymentSelectionResponse")
+        testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 10 B8", pre="DD", comment="ContractAuthenticationReq")
+
 
     if (False):
         testDecoder("809a00113060", pre="DD", comment="PowerDeliveryReq")
