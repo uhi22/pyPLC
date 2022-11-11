@@ -8,6 +8,8 @@ import pyPlcHomeplug
 import fsmEvse
 import fsmPev
 from pyPlcModes import *
+import addressManager
+        
 
 class pyPlcWorker():
     def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_EVSE_MODE):
@@ -15,9 +17,11 @@ class pyPlcWorker():
         self.nMainFunctionCalls=0
         self.mode = mode
         self.strUserAction = ""
+        self.addressManager = addressManager.addressManager()
+        self.addressManager.findLinkLocalIpv6Address()
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
-        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.callbackAddToTrace, self.callbackShowStatus, self.mode)
+        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.callbackAddToTrace, self.callbackShowStatus, self.mode, self.addressManager)
         if (self.mode == C_EVSE_MODE):
             self.evse = fsmEvse.fsmEvse()
         if (self.mode == C_PEV_MODE):

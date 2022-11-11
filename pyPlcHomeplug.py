@@ -39,12 +39,6 @@ from helpers import * # prettyMac etc
 from pyPlcModes import *
 
 MAC_BROADCAST = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF ]
-MAC_LAPTOP    = [0xdc, 0x0e, 0xa1, 0x11, 0x67, 0x08 ] # Win10 laptop
-MAC_RANDOM    = [0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff ]
-MAC_ALPI      = [0x0A, 0x19, 0x4A, 0x39, 0xD6, 0x98 ] # alpitronics
-MAC_TPLINK_E4 = [0x98, 0x48, 0x27, 0x5A, 0x3C, 0xE4 ] # TPlink PLC adaptor
-MAC_TPLINK_E6 = [0x98, 0x48, 0x27, 0x5A, 0x3C, 0xE6 ] # TPlink PLC adaptor
-MAC_DEVOLO_26 = [0xBC, 0xF2, 0xAF, 0x0B, 0x8E, 0x26 ] # Devolo PLC adaptor
 
 
 CM_SET_KEY = 0x6008
@@ -167,7 +161,6 @@ class pyPlcHomeplug():
         #self.fillDestinationMac(MAC_TPLINK_E4)
         self.fillDestinationMac(MAC_BROADCAST)
         # Source MAC
-        #self.fillSourceMac(MAC_LAPTOP)
         self.fillSourceMac(self.myMAC)
         # Protocol
         self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
@@ -216,7 +209,6 @@ class pyPlcHomeplug():
         #self.fillDestinationMac(MAC_TPLINK_E4)
         self.fillDestinationMac(MAC_BROADCAST)
         # Source MAC
-        #self.fillSourceMac(MAC_LAPTOP)
         self.fillSourceMac(self.myMAC)
         # Protocol
         self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
@@ -363,43 +355,6 @@ class pyPlcHomeplug():
                                        # 92 reserved 0                                 
         self.setNmkAt(93) # 93 to 108 NMK. We can freely choose this. Normally we should use a random number. 
         
-    def composeDHCP(self):
-		# DHCP discover, to check whether this "normal" package arrives on the other side
-        self.mytransmitbuffer = bytearray(379)
-        self.cleanTransmitBuffer()
-        # Destination MAC
-        self.fillDestinationMac(MAC_BROADCAST)
-        # Source MAC
-        self.fillSourceMac(MAC_LAPTOP)
-        self.mytransmitbuffer[12]=0x08 # Protocol IPv4
-        self.mytransmitbuffer[13]=0x00
-        self.mytransmitbuffer[14]=0x45 # header len
-        self.mytransmitbuffer[15]=0x00 # 
-        self.mytransmitbuffer[16]=0x01 # 
-        self.mytransmitbuffer[17]=0x6D # 
-        self.mytransmitbuffer[18]=0x9B # 
-        self.mytransmitbuffer[19]=0x30 # 
-        self.mytransmitbuffer[20]=0x00 # 
-        self.mytransmitbuffer[21]=0x00 # 
-        self.mytransmitbuffer[22]=0x40 # 
-        self.mytransmitbuffer[23]=0x11 # 
-        self.mytransmitbuffer[24]=0xde # 
-        self.mytransmitbuffer[25]=0x50 # 
-        self.mytransmitbuffer[26]=0x00 # 
-        self.mytransmitbuffer[27]=0x00 # 
-        self.mytransmitbuffer[28]=0x00 # 
-        self.mytransmitbuffer[29]=0x00 # 
-        
-        self.mytransmitbuffer[30]=0xFF # 
-        self.mytransmitbuffer[31]=0xFF # 
-        self.mytransmitbuffer[32]=0xFF # 
-        self.mytransmitbuffer[33]=0xFF # 
-
-        self.mytransmitbuffer[34]=0x00 # 
-        self.mytransmitbuffer[35]=0x44 # 
-
-        self.mytransmitbuffer[36]=0x00 # 
-        self.mytransmitbuffer[37]=0x43 # 
 
 
     def sendTestFrame(self, selection): 
@@ -456,6 +411,7 @@ class pyPlcHomeplug():
         
         for i in range(0, 6):
             self.pevMac[i] = self.myreceivebuffer[6+i]
+        self.addressManager.setPevMac(self.pevMac)
         self.showStatus(prettyMac(self.pevMac), "pevmac")
         # If we want to emulate an EVSE, we want to answer.
         if (self.iAmEvse==1):
@@ -551,11 +507,12 @@ class pyPlcHomeplug():
         self.ipv6.enterListenMode()
         self.showStatus("LISTEN mode", "mode")        
 
-    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE):
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE, addrMan=None):
         self.mytransmitbuffer = bytearray("Hallo das ist ein Test", 'UTF-8')
         self.nPacketsReceived = 0
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
+        self.addressManager = addrMan
         #self.sniffer = pcap.pcap(name=None, promisc=True, immediate=True, timeout_ms=50)
         # eth3 means: Third entry from back, in the list of interfaces, which is provided by pcap.findalldevs.
         #  Improvement necessary: select the interface based on the name.
@@ -576,10 +533,10 @@ class pyPlcHomeplug():
         self.sniffer.setnonblock(True)
         self.NMK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
-        self.pevMac = [0x55, 0x56, 0x57, 0x58, 0x59, 0x5A ] # a default pev MAC
-        self.myMAC = MAC_LAPTOP # todo: find this dynamically
+        self.pevMac = [0x55, 0x56, 0x57, 0x58, 0x59, 0x5A ] # a default pev MAC. Will be overwritten later.
+        self.myMAC = self.addressManager.getLocalMacAddress()
         self.runningCounter=0
-        self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit)
+        self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager)
         self.ipv6.ownMac = self.myMAC
         if (mode == C_LISTEN_MODE):
             self.enterListenMode()

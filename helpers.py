@@ -20,7 +20,10 @@ def prettyHexMessage(mybytearray, description=""):
 
 def prettyMac(macByteArray):
     s=""
-    for i in range(0, 5):
+    length = len(macByteArray)
+    if (length!=6):
+        s="invalid MAC length " + str(length) + "!"
+    for i in range(0, length-1):
        s = s + twoCharHex(macByteArray[i]) + ":"
-    s = s + twoCharHex(macByteArray[i])
+    s = s + twoCharHex(macByteArray[length-1])
     return s

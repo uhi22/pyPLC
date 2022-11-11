@@ -16,7 +16,7 @@
 # SLAAC: Stateless auto address configuration (not SLAC!). A method to automatically set IPv6 address, based
 #        on the 6 byte MAC address.
 
-from helpers import showAsHex, prettyHexMessage
+from helpers import showAsHex, prettyHexMessage, prettyMac
 import udpChecksum
 
 
@@ -63,7 +63,7 @@ class ipv6handler():
             self.IpResponse[24+i] = self.EvccIp[i] # destination IP address
         for i in range(0, len(buffer)):
             self.IpResponse[40+i] = buffer[i]
-        showAsHex(self.IpResponse, "IP response ")
+        #showAsHex(self.IpResponse, "IP response ")
         self.packResponseIntoEthernet(self.IpResponse)
 
 
@@ -86,7 +86,7 @@ class ipv6handler():
         self.UdpResponse[7] = 0
         for i in range(0, len(buffer)):
             self.UdpResponse[8+i] = buffer[i]
-        showAsHex(self.UdpResponse, "UDP response ")
+        #showAsHex(self.UdpResponse, "UDP response ")
         # The content of buffer is ready. We can calculate the checksum. see https://en.wikipedia.org/wiki/User_Datagram_Protocol
         checksum = udpChecksum.calculateUdpChecksumForIPv6(self.UdpResponse, self.SeccIp, self.EvccIp)   
         self.UdpResponse[6] = checksum >> 8
@@ -128,6 +128,10 @@ class ipv6handler():
         if (self.destinationport == 15118): # port for the SECC
             if ((self.udpPayload[0]==0x01) and (self.udpPayload[1]==0xFE)): # protocol version 1 and inverted
                 # it is a V2GTP message
+                if (self.iAmEvse):
+                    # if we are the charger, lets save the cars IP for later use.
+                    self.EvccIp = self.sourceIp
+                    self.addressManager.setPevIp(self.EvccIp)
                 showAsHex(self.udpPayload, "V2GTP ")
                 self.evccPort = self.sourceport
                 v2gptPayloadType = self.udpPayload[2] * 256 + self.udpPayload[3]
@@ -194,6 +198,10 @@ class ipv6handler():
         # The evaluation function for received ipv6 packages.
         if (len(pkt)>60):
             self.myreceivebuffer = pkt
+            # extract the source ipv6 address
+            self.sourceIp = bytearray(16)
+            for i in range(0, 16):
+                self.sourceIp[i] = self.myreceivebuffer[22+i]
             self.nextheader = self.myreceivebuffer[20]
             if (self.nextheader == 0x11): # it is an UDP frame
                 self.sourceport = self.myreceivebuffer[54] * 256 + self.myreceivebuffer[55]
@@ -212,15 +220,23 @@ class ipv6handler():
             if (self.nextheader == 0x06): # it is an TCP frame
                 self.evaluateTcpPacket()
                         
-    def __init__(self, transmitCallback):
-        #self.enterEvseMode()
-        self.enterListenMode()
+    def __init__(self, transmitCallback, addressManager):
+        self.enterEvseMode()
+        #self.enterListenMode()
         self.transmit = transmitCallback
+        self.addressManager = addressManager
         # 16 bytes, a default IPv6 address for the charging station
         # self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0xaa, 0xaa, 0xff, 0xfe, 0, 0xaa, 0xaa ]
         # fe80::e0ad:99ac:52eb:85d3 is the Win10 laptop
-        self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0xe0, 0xad, 0x99, 0xac, 0x52, 0xeb, 0x85, 0xd3 ]
+        # self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0xe0, 0xad, 0x99, 0xac, 0x52, 0xeb, 0x85, 0xd3 ]
         # 16 bytes, a default IPv6 address for the vehicle
+        # todo: On EVSE side, extract the vehicles IP address from the SDP communication
         self.EvccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0x65, 0x65, 0xff, 0xfe, 0, 0x64, 0xC3 ] 
-        self.ownMac = [ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 ] # 6 bytes own MAC default. Should be overwritten before use.
-    
+        #self.ownMac = [ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 ] # 6 bytes own MAC default. Should be overwritten before use.
+        self.ownMac = self.addressManager.getLocalMacAddress()
+        print("pyPlcIpv6 started with ownMac " + prettyMac(self.ownMac))
+        if (self.iAmEvse):
+            # If we are an charger, we need to support the SDP, which requires to know our IPv6 adrress.
+            self.SeccIp = self.addressManager.getLinkLocalIpv6Address("bytearray")
+            
+        

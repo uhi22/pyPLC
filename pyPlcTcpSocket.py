@@ -108,6 +108,15 @@ class pyPlcTcpServerSocket():
         self.ourSocket.bind((self.ipAdress, self.tcpPort))
         self.ourSocket.listen(1)
         print("pyPlcTcpSocket listening on port " + str(self.tcpPort))
+        hostname=socket.gethostname()
+        IPAddr=socket.gethostbyname(hostname)
+        addressInfo = socket.getaddrinfo(hostname, None, socket.AF_INET6)
+        #print("Your Computer Name is:"+hostname)
+        print("The socket is linked the following IP addresses:")
+        for i in range(0, len(addressInfo)):
+            #fe80::4c46:fea5:b6c9:25a9
+            IPv6Addr = addressInfo[i][4][0]
+            print(IPv6Addr)
         self.read_list = [self.ourSocket]
         self.rxData = []
         
@@ -214,31 +223,8 @@ def testClientSocket():
 
 def testExtra():
     print("testExtra")
-    findLinkLocalIpv6Address()
+    #findLinkLocalIpv6Address()
     
-def findLinkLocalIpv6Address():
-    # For the IPv4 address, this works:
-    # print(socket.gethostbyname(socket.gethostname())) # Result: The ipv4 address of the ethernet adaptor
-    # But this does not help, we need the IPv6 address.
-    #
-    # On windows we can use command line tool "ipconfig".
-    # The link-local addresses always start with fe80::, so we just parse the output of ipconfig line-by-line.
-    # If we have multiple interfaces (e.g. ethernet and WLAN), it will find multiple link-local-addresses.
-    foundAddresses = []
-    if os.name == 'nt':
-        result = subprocess.run(["ipconfig.exe"], capture_output=True, text=True, encoding="ansi")    
-        if (len(result.stderr)>0):
-            print(result.stderr)
-        else:
-            lines = result.stdout.split("\n")
-            for line in lines:
-                if (line.find("IPv6")>0):
-                    k = line.find(" fe80::")
-                    if (k>0):
-                        foundAddresses.append(line[k+1:])
-    print("Found " + str(len(foundAddresses)) + " link-local addresses.")
-    for a in foundAddresses:
-        print(a)
 
 if __name__ == "__main__":
     print("Testing pyPlcTcpSocket.py....")
