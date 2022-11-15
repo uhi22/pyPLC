@@ -19,6 +19,7 @@ stateWaitForChargeParameterDiscoveryResponse = 6
 stateWaitForCableCheckResponse = 7
 stateWaitForPreChargeResponse = 8
 stateWaitForPowerDeliveryResponse = 9
+stateNotYetInitialized = 10
 
 class fsmPev():
     def enterState(self, n):
@@ -145,7 +146,10 @@ class fsmPev():
                 print("As Demo, we stay in PreCharge until the timeout elapses.")
         if (self.isTooLong()):
             self.enterState(0)
-       
+    
+    def stateFunctionNotYetInitialized(self):
+        pass # nothing to do, just wait for external event for re-initialization
+        
     stateFunctions = { 
             stateInitialized: stateFunctionInitialized,
             stateWaitForSupportedApplicationProtocolResponse: stateFunctionWaitForSupportedApplicationProtocolResponse,
@@ -155,6 +159,7 @@ class fsmPev():
             stateWaitForChargeParameterDiscoveryResponse: stateFunctionWaitForChargeParameterDiscoveryResponse,
             stateWaitForCableCheckResponse: stateFunctionWaitForCableCheckResponse,
             stateWaitForPreChargeResponse: stateFunctionWaitForPreChargeResponse,
+            stateNotYetInitialized: stateFunctionNotYetInitialized
         }
 
     def reInit(self):
@@ -163,7 +168,7 @@ class fsmPev():
         self.cyclesInState = 0
         self.rxData = []
         if (not self.Tcp.isConnected):
-            self.Tcp.connect('fe80::e0ad:99ac:52eb:85d3', 15118)
+            self.Tcp.connect('fe80:0000:0000:0000:c690:83f3:fbcb:980e', 15118) # todo: use the EVSE IP address which was found out with SDP
             if (not self.Tcp.isConnected):
                 print("connection failed")
             else:
@@ -172,7 +177,10 @@ class fsmPev():
     def __init__(self):
         print("initializing fsmPev") 
         self.Tcp = pyPlcTcpSocket.pyPlcTcpClientSocket()
-        self.reInit()
+        self.state = stateNotYetInitialized
+        self.cyclesInState = 0
+        self.rxData = []        
+        # we do NOT call the reInit, because we want to wait with the connection until external trigger comes
                 
     def mainfunction(self):
         #self.Tcp.mainfunction() # call the lower-level worker

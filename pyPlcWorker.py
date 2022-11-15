@@ -21,7 +21,8 @@ class pyPlcWorker():
         self.addressManager.findLinkLocalIpv6Address()
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
-        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.callbackAddToTrace, self.callbackShowStatus, self.mode, self.addressManager)
+        self.oldAvlnStatus = 0
+        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.callbackAddToTrace, self.callbackShowStatus, self.mode, self.addressManager, self.callbackAvlnEstablished)
         if (self.mode == C_EVSE_MODE):
             self.evse = fsmEvse.fsmEvse()
         if (self.mode == C_PEV_MODE):
@@ -32,6 +33,18 @@ class pyPlcWorker():
         
     def showStatus(self, s, selection = ""):
         self.callbackShowStatus(s, selection)        
+
+    def callbackAvlnEstablished(self, status):
+        if (status==1):
+            print("[PLCWORKER] AVLN is formed")
+            if (self.oldAvlnStatus==0):
+                self.oldAvlnStatus = 1
+                if (self.mode == C_PEV_MODE):
+                    self.pev.reInit()
+                    
+        else:
+            print("[PLCWORKER] no AVLN")
+            self.oldAvlnStatus = 0
         
     def mainfunction(self):
         self.nMainFunctionCalls+=1

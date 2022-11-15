@@ -65,6 +65,11 @@ class addressManager():
         self.pevMac = pevMac
         print("[addressManager] pev has MAC " + prettyMac(self.pevMac))
 
+    def setEvseMac(self, evseMac):
+        # During the SLAC, the MAC of the EVSE was found out. Store it, maybe we need it later.
+        self.evseMac = evseMac
+        print("[addressManager] evse has MAC " + prettyMac(self.evseMac))
+
     def setPevIp(self, pevIp):
         # During SDP, the IPv6 of the PEV was found out. Store it, maybe we need it later.
         if (type(pevIp)==type(bytearray([0]))):

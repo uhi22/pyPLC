@@ -40,7 +40,6 @@ from pyPlcModes import *
 
 MAC_BROADCAST = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF ]
 
-
 CM_SET_KEY = 0x6008
 CM_GET_KEY = 0x600C
 CM_SC_JOIN = 0x6010
@@ -67,6 +66,7 @@ CM_VALIDATE = 0x6078
 CM_SLAC_MATCH = 0x607C
 CM_SLAC_USER_DATA = 0x6080
 CM_ATTEN_PROFILE = 0x6084
+CM_GET_SW = 0xA000
 
 MMTYPE_REQ = 0x0000
 MMTYPE_CNF = 0x0001
@@ -294,14 +294,55 @@ class pyPlcHomeplug():
         # rest is 00
     
     def composeStartAttenCharInd(self):
-        # todo
-        print("todo: implement composeStartAttenCharInd")
-        pass
+        # reference: see wireshark interpreted frame from ioniq
+        self.mytransmitbuffer = bytearray(60)
+        self.cleanTransmitBuffer()
+        # Destination MAC
+        self.fillDestinationMac(MAC_BROADCAST)
+        # Source MAC
+        self.fillSourceMac(self.myMAC)
+        # Protocol
+        self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
+        self.mytransmitbuffer[13]=0xE1
+        self.mytransmitbuffer[14]=0x01 # version
+        self.mytransmitbuffer[15]=0x6A # START_ATTEN_CHAR.IND
+        self.mytransmitbuffer[16]=0x60 # 
+        self.mytransmitbuffer[17]=0x00 # 2 bytes fragmentation information. 0000 means: unfragmented.
+        self.mytransmitbuffer[18]=0x00 # 
+        self.mytransmitbuffer[19]=0x00 # apptype
+        self.mytransmitbuffer[20]=0x00 # sectype
+        self.mytransmitbuffer[21]=0x0a # number of sounds: 10
+        self.mytransmitbuffer[22]=0x06 # timeout N*100ms
+        self.mytransmitbuffer[23]=0x01 # response type 
+        self.fillSourceMac(self.myMAC, 24) # 24 to 29: sound_forwarding_sta, MAC of the PEV
+        self.fillSourceMac(self.myMAC, 30) # 30 to 37: runid, filled with MAC of PEV and two bytes 00 00
+        # rest is 00
 
     def composeNmbcSoundInd(self):
-        # todo
-        print("todo: implement composeNmbcSoundInd")
-        pass
+        # reference: see wireshark interpreted frame from Ioniq
+        self.mytransmitbuffer = bytearray(71)
+        self.cleanTransmitBuffer()
+        # Destination MAC
+        self.fillDestinationMac(MAC_BROADCAST)
+        # Source MAC
+        self.fillSourceMac(self.myMAC)
+        # Protocol
+        self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
+        self.mytransmitbuffer[13]=0xE1
+        self.mytransmitbuffer[14]=0x01 # version
+        self.mytransmitbuffer[15]=0x76 # NMBC_SOUND.IND
+        self.mytransmitbuffer[16]=0x60 # 
+        self.mytransmitbuffer[17]=0x00 # 2 bytes fragmentation information. 0000 means: unfragmented.
+        self.mytransmitbuffer[18]=0x00 # 
+        self.mytransmitbuffer[19]=0x00 # apptype
+        self.mytransmitbuffer[20]=0x00 # sectype
+        self.mytransmitbuffer[21]=0x00 # 21 to 37 sender ID, all 00
+        self.mytransmitbuffer[38]=self.remainingNumberOfSounds # countdown. Remaining number of sounds. Starts with 9 and counts down to 0.
+        self.fillSourceMac(self.myMAC, 39) # 39 to 46: runid, filled with MAC of PEV and two bytes 00 00
+        self.mytransmitbuffer[47]=0x00 # 47 to 54: reserved, all 00
+        # 55 to 70: random number. All 0xff in the ioniq message.
+        for i in range(55, 71):
+            self.mytransmitbuffer[i]=0xFF
         
     def composeAttenCharInd(self):
         self.mytransmitbuffer = bytearray(129)
@@ -336,6 +377,57 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[127]=0x13
         self.mytransmitbuffer[128]=0x19
         
+    def composeAttenCharRsp(self):
+        # reference: see wireshark interpreted frame from Ioniq
+        self.mytransmitbuffer = bytearray(70)
+        self.cleanTransmitBuffer()
+        # Destination MAC
+        self.fillDestinationMac(self.evseMac)
+        # Source MAC
+        self.fillSourceMac(self.myMAC)
+        # Protocol
+        self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
+        self.mytransmitbuffer[13]=0xE1
+        self.mytransmitbuffer[14]=0x01 # version
+        self.mytransmitbuffer[15]=0x6F # ATTEN_CHAR.RSP
+        self.mytransmitbuffer[16]=0x60 # 
+        self.mytransmitbuffer[17]=0x00 # 2 bytes fragmentation information. 0000 means: unfragmented.
+        self.mytransmitbuffer[18]=0x00 # 
+        self.mytransmitbuffer[19]=0x00 # apptype
+        self.mytransmitbuffer[20]=0x00 # sectype
+        self.fillSourceMac(self.myMAC, 21) # 21 to 26: source MAC
+        self.fillDestinationMac(self.myMAC, 27) # 27 to 34: runid. The PEV mac, plus 00 00.
+        # 35 to 51: source_id, all 00
+        # 52 to 68: resp_id, all 00
+        # 69: result. 0 is ok
+        
+    def composeSlacMatchReq(self):
+        # reference: see wireshark interpreted frame from Ioniq
+        self.mytransmitbuffer = bytearray(85)
+        self.cleanTransmitBuffer()
+        # Destination MAC
+        self.fillDestinationMac(self.evseMac)
+        # Source MAC
+        self.fillSourceMac(self.myMAC)
+        # Protocol
+        self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
+        self.mytransmitbuffer[13]=0xE1
+        self.mytransmitbuffer[14]=0x01 # version
+        self.mytransmitbuffer[15]=0x7C # SLAC_MATCH.REQ
+        self.mytransmitbuffer[16]=0x60 # 
+        self.mytransmitbuffer[17]=0x00 # 2 bytes fragmentation information. 0000 means: unfragmented.
+        self.mytransmitbuffer[18]=0x00 # 
+        self.mytransmitbuffer[19]=0x00 # apptype
+        self.mytransmitbuffer[20]=0x00 # sectype
+        self.mytransmitbuffer[21]=0x3E # 21 to 22: length
+        self.mytransmitbuffer[22]=0x00 #
+        # 23 to 39: pev_id, all 00
+        self.fillSourceMac(self.myMAC, 40) # 40 to 45: PEV MAC
+        # 46 to 62: evse_id, all 00
+        self.fillDestinationMac(self.evseMac, 63) # 63 to 68: EVSE MAC
+        self.fillSourceMac(self.myMAC, 63) # 69 to 76: runid. The PEV mac, plus 00 00.
+        # 77 to 84: reserved, all 00        
+    
     def composeSlacMatchCnf(self):
         self.mytransmitbuffer = bytearray(109)
         self.cleanTransmitBuffer()
@@ -366,75 +458,6 @@ class pyPlcHomeplug():
         self.setNmkAt(93) # 93 to 108 NMK. We can freely choose this. Normally we should use a random number. 
         
 
-    def runPevSequencer(self):
-        # in PEV mode, initiate the SLAC sequence
-        # Todo: Timing between the states, and timeout handling to be implemented
-        if (self.iAmPev==1):
-            if (self.pevSequenceState==0): # waiting for start condition
-                # In real life we would check whether we see 5% PWM on the pilot line.
-                # Then we would maybe wait a little bit until the homeplug modems are awake.
-                # Now sending the first packet for the SLAC sequence:
-                self.composeSlacParamReq()
-                self.addToTrace("transmitting SLAC_PARAM.REQ...")
-                self.transmit(self.mytransmitbuffer)                
-                self.pevSequenceState = 1
-                return
-            if (self.pevSequenceState==1): # waiting for SLAC_PARAM.CNF
-                return
-            if (self.pevSequenceState==2): # received SLAC_PARAM.CNF
-                # todo: transmit the START_ATTEN_CHAR.IND 3 times
-                self.composeStartAttenCharInd()
-                self.addToTrace("transmitting START_ATTEN_CHAR.IND...")
-                self.transmit(self.mytransmitbuffer)                
-                self.pevSequenceState = 3
-                return
-            if (self.pevSequenceState==3):
-                # todo: transmit the START_ATTEN_CHAR.IND 3 times
-                self.composeStartAttenCharInd()
-                self.addToTrace("transmitting START_ATTEN_CHAR.IND...")
-                self.transmit(self.mytransmitbuffer)                
-                self.pevSequenceState = 4
-                return
-            if (self.pevSequenceState==4):
-                # todo: transmit the START_ATTEN_CHAR.IND 3 times
-                self.composeStartAttenCharInd()
-                self.addToTrace("transmitting START_ATTEN_CHAR.IND...")
-                self.transmit(self.mytransmitbuffer)                
-                self.pevSequenceState = 5
-                self.SoundCountDown=10
-                return
-            if (self.pevSequenceState==5): # START_ATTEN_CHAR.IND are finished. Now we send 10 MNBC_SOUND.IND
-                self.composeNmbcSoundInd()
-                self.addToTrace("transmitting MNBC_SOUND.IND...")
-                self.transmit(self.mytransmitbuffer)  
-                if (self.SoundCountDown>0):
-                    self.SoundCountDown-=1
-                else:
-                    self.pevSequenceState = 6
-                return
-            if (self.pevSequenceState==6):  # waiting for ATTEN_CHAR.IND
-                # todo: it is possible that we receive this message from multiple chargers. We need
-                # to select the charger with the loudest reported signals.
-                return
-            if (self.pevSequenceState==7):  # ATTEN_CHAR.IND was received and the nearest charger decided
-                self.composeAttenCharRsp()
-                self.addToTrace("transmitting ATTEN_CHAR.RSP...")
-                self.transmit(self.mytransmitbuffer)  
-                self.pevSequenceState = 8
-                return
-            if (self.pevSequenceState==8):  # ATTEN_CHAR.RSP was transmitted. Next is SLAC_MATCH.REQ
-                self.composeSlacMatchReq()
-                self.addToTrace("transmitting SLAC_MATCH.REQ...")
-                self.transmit(self.mytransmitbuffer)  
-                self.pevSequenceState = 9
-                return
-            if (self.pevSequenceState==9):  # waiting for SLAC_MATCH.CNF
-                return
-            if (self.pevSequenceState==10):  # SLAC is finished, KEY is set, AVLN is established.
-                # todo: inform the higher-level state machine, that now it can start the SDP
-                return
-                
-                
 
     def sendTestFrame(self, selection): 
         if (selection=="1"):
@@ -468,6 +491,7 @@ class pyPlcHomeplug():
     def evaluateGetKeyCnf(self):
         # The getkey response contains the Network ID (NID), even if the request was rejected. We store the NID,
         # to have it available for the next request.
+        self.addToTrace("received GET_KEY.CNF")
         s = ""
         for i in range(0, 7): # NID has 7 bytes
             self.NID[i] = self.myreceivebuffer[29+i]
@@ -478,16 +502,36 @@ class pyPlcHomeplug():
         # The Setkey confirmation
         # In spec, the result 0 means "success". But in reality, the 0 means: did not work. When it works,
         # then the LEDs are blinking (device is restarting), and the response is 1.
+        self.addToTrace("received SET_KEY.CNF")
         result = self.myreceivebuffer[19]
         if (result == 0):
             self.addToTrace("SetKeyCnf says 0, this is a bad sign")
         else:
             self.addToTrace("SetKeyCnf says " + str(result) + ", this is formally 'rejected', but indeed ok.")
 
+    def evaluateGetSwCnf(self):
+        # The GET_SW confirmation. This contains the software version of the homeplug modem.
+        # Reference: see wireshark interpreted frame from TPlink, Ioniq and Alpitronic charger
+        self.addToTrace("received GET_SW.CNF")
+        self.numberOfSoftwareVersionResponses+=1
+        sourceMac=bytearray(6)
+        for i in range(0, 6):
+            sourceMac[i] = self.myreceivebuffer[6+i]
+        strMac=prettyMac(sourceMac)
+        verLen = self.myreceivebuffer[22]
+        strVersion = ""
+        if ((verLen>0) and (verLen<0x30)):
+            for i in range(0, verLen):
+                x = self.myreceivebuffer[23+i]
+                if (x<0x20):
+                    x=0x20 # make unprintable character to space.
+                strVersion+=chr(x) # convert ASCII code to string
+        self.addToTrace("For " + strMac + " the software version is " + strVersion)
+        
     def evaluateSlacParamReq(self):
         # We received a SLAC_PARAM request from the PEV. This is the initiation of a SLAC procedure.
         # We extract the pev MAC from it.
-        
+        self.addToTrace("received SLAC_PARAM.REQ")
         for i in range(0, 6):
             self.pevMac[i] = self.myreceivebuffer[6+i]
         self.addressManager.setPevMac(self.pevMac)
@@ -495,11 +539,12 @@ class pyPlcHomeplug():
         # If we want to emulate an EVSE, we want to answer.
         if (self.iAmEvse==1):
             self.composeSlacParamCnf()
-            self.addToTrace("transmitting CM_SLAC_PARAM.CNF")
+            self.addToTrace("[EVSE] transmitting CM_SLAC_PARAM.CNF")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
     
     def evaluateSlacParamCnf(self):
         # As PEV, we receive the first response from the charger.
+        self.addToTrace("received SLAC_PARAM.CNF")
         if (self.iAmPev==1):
             if (self.pevSequenceState==1): # we were waiting for the SlacParamCnf
                 self.pevSequenceState=2 # enter next state. Will be handled in the cyclic runPevSequencer
@@ -508,19 +553,35 @@ class pyPlcHomeplug():
         # We received MNBC_SOUND.IND from the PEV. Normally this happens 10times, with a countdown (remaining number of sounds)
         # running from 9 to 0. If the countdown is 0, this is the last message. In case we are the EVSE, we need
         # to answer with a ATTEN_CHAR.IND, which normally contains the attenuation for 10 sounds, 58 groups.
+        self.addToTrace("received MNBC_SOUND.IND")
         if (self.iAmEvse==1):
             countdown = self.myreceivebuffer[38]
             if (countdown == 0):
                 self.composeAttenCharInd()
-                self.addToTrace("transmitting ATTEN_CHAR.IND")
+                self.addToTrace("[EVSE] transmitting ATTEN_CHAR.IND")
                 self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+                
+    def evaluateAttenCharInd(self):
+        self.addToTrace("received ATTEN_CHAR.IND")    
+        if (self.iAmPev==1):
+            self.addToTrace("[PEVSLAC] received AttenCharInd in state " + str(self.pevSequenceState))
+            if (self.pevSequenceState==6): # we were waiting for the AttenCharInd
+                # todo: Handle the case when we receive multiple responses from different chargers.
+                #       Wait a certain time, and compare the attenuation profiles. Decide for the nearest charger.
+                # Take the MAC of the charger from the frame, and store it for later use.
+                for i in range(0, 6):
+                    self.evseMac[i] = self.myreceivebuffer[6+i] # source MAC starts at offset 6
+                self.addressManager.setEvseMac(self.evseMac)
+                self.pevSequenceState=7 # enter next state. Will be handled in the cyclic runPevSequencer
+            
             
     def evaluateSlacMatchReq(self):
         # We received SLAC_MATCH.REQ from the PEV.
         # If we are EVSE, we send the response.
+        self.addToTrace("received SLAC_MATCH.REQ")
         if (self.iAmEvse==1):
             self.composeSlacMatchCnf()
-            self.addToTrace("transmitting SLAC_MATCH.CNF")
+            self.addToTrace("[EVSE] transmitting SLAC_MATCH.CNF")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
         
   
@@ -534,24 +595,27 @@ class pyPlcHomeplug():
             # The SET_KEY was already done at startup.
             pass
         else:
+            self.addToTrace("received SLAC_MATCH.CNF")
             s = ""
             for i in range(0, 7): # NID has 7 bytes
                 self.NID[i] = self.myreceivebuffer[85+i]
                 s=s+hex(self.NID[i])+ " "
-            print("From SlacMatchCnf, got network ID (NID) " + s)        
+            self.addToTrace("From SlacMatchCnf, got network ID (NID) " + s)        
             s = ""
             for i in range(0, 16):
                 self.NMK[i] = self.myreceivebuffer[93+i]
                 s=s+hex(self.NMK[i])+ " "
-            print("From SlacMatchCnf, got network membership key (NMK) " + s) 
+            self.addToTrace("From SlacMatchCnf, got network membership key (NMK) " + s) 
             # use the extracted NMK and NID to set the key in the adaptor:
             self.composeSetKey(0)
             self.addToTrace("transmitting CM_SET_KEY.REQ")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+            if (self.pevSequenceState==9): # we were waiting for finishing the SLAC_MATCH.CNF and SET_KEY.REQ
+                self.pevSequenceState=10
     
     def evaluateReceivedHomeplugPacket(self):
         mmt = self.getManagementMessageType()
-        print(hex(mmt))
+        # print(hex(mmt))
         if (mmt == CM_GET_KEY + MMTYPE_CNF):
             self.evaluateGetKeyCnf()
         if (mmt == CM_SLAC_MATCH + MMTYPE_REQ):
@@ -564,8 +628,142 @@ class pyPlcHomeplug():
             self.evaluateSlacParamCnf()
         if (mmt == CM_MNBC_SOUND + MMTYPE_IND):
             self.evaluateMnbcSoundInd()
+        if (mmt == CM_ATTEN_CHAR + MMTYPE_IND):
+            self.evaluateAttenCharInd()
         if (mmt == CM_SET_KEY + MMTYPE_CNF):
             self.evaluateSetKeyCnf()
+        if (mmt == CM_GET_SW + MMTYPE_CNF):
+            self.evaluateGetSwCnf()
+
+
+    def enterState(self, n):
+        print("[PEVSLAC] from " + str(self.pevSequenceState) + " entering " + str(n))
+        self.pevSequenceState = n
+        self.pevSequenceCyclesInState = 0
+        
+    def isTooLong(self):
+        # The timeout handling function.
+        return (self.pevSequenceCyclesInState > 50)
+        
+    def runPevSequencer(self):
+        # in PEV mode, initiate the SLAC sequence
+        # Todo: Timing between the states, and timeout handling to be implemented
+        if (self.iAmPev==1):
+            if (self.pevSequenceState==0): # waiting for start condition
+                # In real life we would check whether we see 5% PWM on the pilot line.
+                # Then we would maybe wait a little bit until the homeplug modems are awake.
+                # Now sending the first packet for the SLAC sequence:
+                self.composeSlacParamReq()
+                self.addToTrace("[PEVSLAC] transmitting SLAC_PARAM.REQ...")
+                self.transmit(self.mytransmitbuffer)                
+                self.enterState(1)
+                return
+            if (self.pevSequenceState==1): # waiting for SLAC_PARAM.CNF
+                return
+            if (self.pevSequenceState==2): # received SLAC_PARAM.CNF
+                self.composeStartAttenCharInd()
+                self.addToTrace("[PEVSLAC] transmitting START_ATTEN_CHAR.IND...")
+                self.transmit(self.mytransmitbuffer)        
+                self.enterState(3)
+                self.pevSequenceDelayCycles = 0
+                return
+            if (self.pevSequenceState==3):
+                if (self.pevSequenceDelayCycles>0):
+                    self.pevSequenceDelayCycles-=1
+                    return
+                self.composeStartAttenCharInd()
+                self.addToTrace("[PEVSLAC] transmitting START_ATTEN_CHAR.IND...") # original from ioniq is 20ms after the first
+                self.transmit(self.mytransmitbuffer)                
+                self.enterState(4)
+                self.pevSequenceDelayCycles = 0
+                return
+            if (self.pevSequenceState==4):
+                if (self.pevSequenceDelayCycles>0):
+                    self.pevSequenceDelayCycles-=1
+                    return
+                self.composeStartAttenCharInd()
+                self.addToTrace("[PEVSLAC] transmitting START_ATTEN_CHAR.IND...") # original from ioniq is 20ms after the second
+                self.transmit(self.mytransmitbuffer)                
+                self.enterState(5)
+                self.pevSequenceDelayCycles = 1
+                self.remainingNumberOfSounds = 10
+                return
+            if (self.pevSequenceState==5): # START_ATTEN_CHAR.IND are finished. Now we send 10 MNBC_SOUND.IND
+                if (self.pevSequenceDelayCycles>0):
+                    self.pevSequenceDelayCycles-=1
+                    return
+                if (self.remainingNumberOfSounds>0):
+                    self.remainingNumberOfSounds-=1
+                    self.composeNmbcSoundInd()
+                    self.addToTrace("[PEVSLAC] transmitting MNBC_SOUND.IND...") # original from ioniq is 40ms after the last START_ATTEN_CHAR.IND
+                    self.transmit(self.mytransmitbuffer)
+                    if (self.remainingNumberOfSounds==0):
+                        self.enterState(6) # move fast to the next state, so that a fast response is catched in the correct state
+                    self.pevSequenceDelayCycles = 0 # original from ioniq is 20ms between the messages
+                return
+            if (self.pevSequenceState==6):  # waiting for ATTEN_CHAR.IND
+                # todo: it is possible that we receive this message from multiple chargers. We need
+                # to select the charger with the loudest reported signals.
+                return
+            if (self.pevSequenceState==7):  # ATTEN_CHAR.IND was received and the nearest charger decided
+                self.composeAttenCharRsp()
+                self.addToTrace("[PEVSLAC] transmitting ATTEN_CHAR.RSP...")
+                self.transmit(self.mytransmitbuffer)  
+                self.enterState(8)
+                self.pevSequenceDelayCycles = 15 # original from ioniq is 860ms from ATTEN_CHAR.RSP to SLAC_MATCH.REQ
+                return
+            if (self.pevSequenceState==8):  # ATTEN_CHAR.RSP was transmitted. Next is SLAC_MATCH.REQ
+                if (self.pevSequenceDelayCycles>0):
+                    self.pevSequenceDelayCycles-=1
+                    return
+                self.composeSlacMatchReq()
+                self.addToTrace("[PEVSLAC] transmitting SLAC_MATCH.REQ...")
+                self.transmit(self.mytransmitbuffer)  
+                self.enterState(9)
+                return
+            if (self.pevSequenceState==9):  # waiting for SLAC_MATCH.CNF
+                return
+            if (self.pevSequenceState==10):  # SLAC is finished, SET_KEY.REQ is transmitted. Wait some time, until
+                # the homeplug modem made the reset and is ready with the new key.
+                self.addToTrace("[PEVSLAC] waiting until homeplug modem starts up with new key...")
+                self.pevSequenceDelayCycles = 200
+                self.enterState(11)
+                return
+            if (self.pevSequenceState==11):  
+                if (self.pevSequenceDelayCycles>0):
+                    self.pevSequenceDelayCycles-=1
+                    return
+                # modem should be ready with new key. AVLN should be established.
+                # To check this, we broadcast a software version request. All modems in the network should respond.
+                self.numberOfSoftwareVersionResponses = 0
+                self.composeGetSwReq()
+                self.addToTrace("[PEVSLAC] transmitting GetSwReq...")
+                self.transmit(self.mytransmitbuffer)
+                self.pevSequenceDelayCycles = 20
+                self.enterState(12)
+            if (self.pevSequenceState==12):  
+                if (self.pevSequenceDelayCycles>0):
+                    self.pevSequenceDelayCycles-=1
+                    return
+                # we should have received a software version response from at least two modems.
+                print("[PEVSLAC] Number of modems in the AVLN: " + str(self.numberOfSoftwareVersionResponses))
+                if (self.numberOfSoftwareVersionResponses<2):
+                    print("[PEVSLAC] ERROR: There should be at least two modems, one from car and one from charger.")
+                    self.callbackAvlnEstablished(0)
+                    self.enterState(0)
+                else:
+                    # inform the higher-level state machine, that now it can start the SDP / IPv6 communication
+                    self.callbackAvlnEstablished(1)
+                    self.enterState(13) # Final state is reached
+                return
+            if (self.pevSequenceState==13):  # AVLN is established. Nothing more to do, just wait until unplugging.
+                # Todo: if (self.isUnplugged()): self.pevSequenceState=0
+                # Or we just check the connection cyclically by sending software version requests...
+                self.pevSequenceDelayCycles = 500
+                self.enterState(11)
+                return
+            # invalid state is reached. As robustness measure, go to initial state.
+            self.enterState(0)
 
         
     def findEthernetAdaptor(self):
@@ -594,13 +792,15 @@ class pyPlcHomeplug():
         self.ipv6.enterListenMode()
         self.showStatus("LISTEN mode", "mode")        
 
-    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE, addrMan=None):
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE, addrMan=None, callbackAvlnEstablished=None):
         self.mytransmitbuffer = bytearray("Hallo das ist ein Test", 'UTF-8')
         self.nPacketsReceived = 0
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
+        self.callbackAvlnEstablished = callbackAvlnEstablished
         self.addressManager = addrMan
         self.pevSequenceState = 0
+        self.numberOfSoftwareVersionResponses = 0
         #self.sniffer = pcap.pcap(name=None, promisc=True, immediate=True, timeout_ms=50)
         # eth3 means: Third entry from back, in the list of interfaces, which is provided by pcap.findalldevs.
         #  Improvement necessary: select the interface based on the name.
@@ -622,6 +822,7 @@ class pyPlcHomeplug():
         self.NMK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
         self.pevMac = [0x55, 0x56, 0x57, 0x58, 0x59, 0x5A ] # a default pev MAC. Will be overwritten later.
+        self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.
         self.myMAC = self.addressManager.getLocalMacAddress()
         self.runningCounter=0
         self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager)
