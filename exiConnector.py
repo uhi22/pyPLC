@@ -231,8 +231,8 @@ def testReadExiFromFile():
 if __name__ == "__main__":
     nFail=0
     print("Testing exiConnector...")
-    #testReadExiFromFile()
-    #exit()
+    testReadExiFromFile()
+    exit()
     #testByteArrayConversion("123456")
     #testByteArrayConversion("1234567")
     #testByteArrayConversion("ABCDEF")

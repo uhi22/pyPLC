@@ -292,6 +292,16 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[42]=0x0 # 
         self.mytransmitbuffer[43]=0x0 #
         # rest is 00
+    
+    def composeStartAttenCharInd(self):
+        # todo
+        print("todo: implement composeStartAttenCharInd")
+        pass
+
+    def composeNmbcSoundInd(self):
+        # todo
+        print("todo: implement composeNmbcSoundInd")
+        pass
         
     def composeAttenCharInd(self):
         self.mytransmitbuffer = bytearray(129)
@@ -356,6 +366,75 @@ class pyPlcHomeplug():
         self.setNmkAt(93) # 93 to 108 NMK. We can freely choose this. Normally we should use a random number. 
         
 
+    def runPevSequencer(self):
+        # in PEV mode, initiate the SLAC sequence
+        # Todo: Timing between the states, and timeout handling to be implemented
+        if (self.iAmPev==1):
+            if (self.pevSequenceState==0): # waiting for start condition
+                # In real life we would check whether we see 5% PWM on the pilot line.
+                # Then we would maybe wait a little bit until the homeplug modems are awake.
+                # Now sending the first packet for the SLAC sequence:
+                self.composeSlacParamReq()
+                self.addToTrace("transmitting SLAC_PARAM.REQ...")
+                self.transmit(self.mytransmitbuffer)                
+                self.pevSequenceState = 1
+                return
+            if (self.pevSequenceState==1): # waiting for SLAC_PARAM.CNF
+                return
+            if (self.pevSequenceState==2): # received SLAC_PARAM.CNF
+                # todo: transmit the START_ATTEN_CHAR.IND 3 times
+                self.composeStartAttenCharInd()
+                self.addToTrace("transmitting START_ATTEN_CHAR.IND...")
+                self.transmit(self.mytransmitbuffer)                
+                self.pevSequenceState = 3
+                return
+            if (self.pevSequenceState==3):
+                # todo: transmit the START_ATTEN_CHAR.IND 3 times
+                self.composeStartAttenCharInd()
+                self.addToTrace("transmitting START_ATTEN_CHAR.IND...")
+                self.transmit(self.mytransmitbuffer)                
+                self.pevSequenceState = 4
+                return
+            if (self.pevSequenceState==4):
+                # todo: transmit the START_ATTEN_CHAR.IND 3 times
+                self.composeStartAttenCharInd()
+                self.addToTrace("transmitting START_ATTEN_CHAR.IND...")
+                self.transmit(self.mytransmitbuffer)                
+                self.pevSequenceState = 5
+                self.SoundCountDown=10
+                return
+            if (self.pevSequenceState==5): # START_ATTEN_CHAR.IND are finished. Now we send 10 MNBC_SOUND.IND
+                self.composeNmbcSoundInd()
+                self.addToTrace("transmitting MNBC_SOUND.IND...")
+                self.transmit(self.mytransmitbuffer)  
+                if (self.SoundCountDown>0):
+                    self.SoundCountDown-=1
+                else:
+                    self.pevSequenceState = 6
+                return
+            if (self.pevSequenceState==6):  # waiting for ATTEN_CHAR.IND
+                # todo: it is possible that we receive this message from multiple chargers. We need
+                # to select the charger with the loudest reported signals.
+                return
+            if (self.pevSequenceState==7):  # ATTEN_CHAR.IND was received and the nearest charger decided
+                self.composeAttenCharRsp()
+                self.addToTrace("transmitting ATTEN_CHAR.RSP...")
+                self.transmit(self.mytransmitbuffer)  
+                self.pevSequenceState = 8
+                return
+            if (self.pevSequenceState==8):  # ATTEN_CHAR.RSP was transmitted. Next is SLAC_MATCH.REQ
+                self.composeSlacMatchReq()
+                self.addToTrace("transmitting SLAC_MATCH.REQ...")
+                self.transmit(self.mytransmitbuffer)  
+                self.pevSequenceState = 9
+                return
+            if (self.pevSequenceState==9):  # waiting for SLAC_MATCH.CNF
+                return
+            if (self.pevSequenceState==10):  # SLAC is finished, KEY is set, AVLN is established.
+                # todo: inform the higher-level state machine, that now it can start the SDP
+                return
+                
+                
 
     def sendTestFrame(self, selection): 
         if (selection=="1"):
@@ -418,6 +497,12 @@ class pyPlcHomeplug():
             self.composeSlacParamCnf()
             self.addToTrace("transmitting CM_SLAC_PARAM.CNF")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+    
+    def evaluateSlacParamCnf(self):
+        # As PEV, we receive the first response from the charger.
+        if (self.iAmPev==1):
+            if (self.pevSequenceState==1): # we were waiting for the SlacParamCnf
+                self.pevSequenceState=2 # enter next state. Will be handled in the cyclic runPevSequencer
             
     def evaluateMnbcSoundInd(self):
         # We received MNBC_SOUND.IND from the PEV. Normally this happens 10times, with a countdown (remaining number of sounds)
@@ -475,6 +560,8 @@ class pyPlcHomeplug():
             self.evaluateSlacMatchCnf()
         if (mmt == CM_SLAC_PARAM + MMTYPE_REQ):
             self.evaluateSlacParamReq()
+        if (mmt == CM_SLAC_PARAM + MMTYPE_CNF):
+            self.evaluateSlacParamCnf()
         if (mmt == CM_MNBC_SOUND + MMTYPE_IND):
             self.evaluateMnbcSoundInd()
         if (mmt == CM_SET_KEY + MMTYPE_CNF):
@@ -483,11 +570,11 @@ class pyPlcHomeplug():
         
     def findEthernetAdaptor(self):
         self.strInterfaceName="eth0" # default, if the real is not found
-        print("Interfaces:\n" + '\n'.join(pcap.findalldevs()))
+        #print("Interfaces:\n" + '\n'.join(pcap.findalldevs()))
         for i in range(0, 10):
             strInterfaceName = pcap.ex_name("eth"+str(i))
             if (strInterfaceName == '\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}'):
-                print("This is the wanted Ethernet adaptor.")
+                #print("This is the wanted Ethernet adaptor.")
                 self.strInterfaceName="eth"+str(i)
             #print("eth"+ str(i) + " is " + strInterfaceName)
             
@@ -513,6 +600,7 @@ class pyPlcHomeplug():
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
         self.addressManager = addrMan
+        self.pevSequenceState = 0
         #self.sniffer = pcap.pcap(name=None, promisc=True, immediate=True, timeout_ms=50)
         # eth3 means: Third entry from back, in the list of interfaces, which is provided by pcap.findalldevs.
         #  Improvement necessary: select the interface based on the name.
@@ -567,6 +655,7 @@ class pyPlcHomeplug():
                 self.ipv6.evaluateReceivedPacket(pkt)
                 
         self.showStatus("nPacketsReceived=" + str(self.nPacketsReceived))
+        self.runPevSequencer() # run the message sequencer for the PEV side
         
     def close(self):
         self.sniffer.close()
