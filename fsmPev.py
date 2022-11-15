@@ -168,15 +168,18 @@ class fsmPev():
         self.cyclesInState = 0
         self.rxData = []
         if (not self.Tcp.isConnected):
-            self.Tcp.connect('fe80:0000:0000:0000:c690:83f3:fbcb:980e', 15118) # todo: use the EVSE IP address which was found out with SDP
+            #evseIp = 'fe80:0000:0000:0000:c690:83f3:fbcb:980e'
+            evseIp = self.addressManager.getSeccIp() # the EVSE IP address which was found out with SDP
+            self.Tcp.connect(evseIp, 15118)
             if (not self.Tcp.isConnected):
                 print("connection failed")
             else:
                 print("connected")
         
-    def __init__(self):
+    def __init__(self, addressManager):
         print("initializing fsmPev") 
         self.Tcp = pyPlcTcpSocket.pyPlcTcpClientSocket()
+        self.addressManager = addressManager
         self.state = stateNotYetInitialized
         self.cyclesInState = 0
         self.rxData = []        

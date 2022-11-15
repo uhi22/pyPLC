@@ -26,7 +26,7 @@ class pyPlcWorker():
         if (self.mode == C_EVSE_MODE):
             self.evse = fsmEvse.fsmEvse()
         if (self.mode == C_PEV_MODE):
-            self.pev = fsmPev.fsmPev()
+            self.pev = fsmPev.fsmPev(self.addressManager)
  
     def addToTrace(self, s):
         self.callbackAddToTrace(s)
@@ -66,7 +66,7 @@ class pyPlcWorker():
             self.hp.enterPevMode()
             if (not hasattr(self, 'pev')):
                 print("creating pev")
-                self.pev = fsmPev.fsmPev()
+                self.pev = fsmPev.fsmPev(self.addressManager)
             self.pev.reInit()
         if (strAction == "E"):
             print("switching to EVSE mode")

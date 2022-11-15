@@ -1,5 +1,9 @@
 
-
+#
+# Address Manager
+#
+# Keeps, provides and finds the MAC and IPv6 addresses
+#
 import subprocess
 import os
 from helpers import * # prettyMac etc
@@ -17,6 +21,8 @@ class addressManager():
         self.localIpv6Addresses=[]
         self.findLocalMacAddress()
         self.findLinkLocalIpv6Address()
+        self.pevIp=""
+        self.SeccIp=""
         pass
         
     def findLinkLocalIpv6Address(self):
@@ -89,6 +95,28 @@ class addressManager():
             self.pevIp = pevIp
         print("[addressManager] pev has IP " + self.pevIp)
 
+    def setSeccIp(self, SeccIp):
+        # During SDP, the IPv6 of the charger was found out. Store it, maybe we need it later.
+        if (type(SeccIp)==type(bytearray([0]))):
+            # the parameter was a bytearray. We want a string, so convert it.
+            # print("this is a byte array")
+            if (len(SeccIp)!=16):
+                print("[addressManager] ERROR: setSeccIp: invalid ip address len " + str(len(SeccIp)))
+                return
+            s = ""
+            for i in range(0, 16):
+                s = s + twoCharHex(SeccIp[i])
+                if (((i % 2)==1) and (i!=15)):
+                    s = s + ":"
+            self.SeccIp = s.lower()
+        else:
+            # the parameter was a string, assumingly. Just take it over.
+            self.SeccIp = SeccIp
+        print("[addressManager] EVCC has IP " + self.SeccIp)
+
+    def getSeccIp(self):
+        # The IPv6 address of the charger. Type is String.
+        return self.SeccIp
         
     def getLocalMacAddress(self):
         print("[addressManager] will give local MAC " + prettyMac(self.localMac))

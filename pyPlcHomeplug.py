@@ -643,11 +643,12 @@ class pyPlcHomeplug():
         
     def isTooLong(self):
         # The timeout handling function.
-        return (self.pevSequenceCyclesInState > 50)
+        return (self.pevSequenceCyclesInState > 500)
         
     def runPevSequencer(self):
         # in PEV mode, initiate the SLAC sequence
-        # Todo: Timing between the states, and timeout handling to be implemented
+        self.pevSequenceCyclesInState+=1
+        # Todo: timeout handling to be implemented
         if (self.iAmPev==1):
             if (self.pevSequenceState==0): # waiting for start condition
                 # In real life we would check whether we see 5% PWM on the pilot line.
@@ -659,6 +660,8 @@ class pyPlcHomeplug():
                 self.enterState(1)
                 return
             if (self.pevSequenceState==1): # waiting for SLAC_PARAM.CNF
+                if (self.isTooLong()):
+                    self.enterState(0)
                 return
             if (self.pevSequenceState==2): # received SLAC_PARAM.CNF
                 self.composeStartAttenCharInd()
@@ -704,6 +707,8 @@ class pyPlcHomeplug():
             if (self.pevSequenceState==6):  # waiting for ATTEN_CHAR.IND
                 # todo: it is possible that we receive this message from multiple chargers. We need
                 # to select the charger with the loudest reported signals.
+                if (self.isTooLong()):
+                    self.enterState(0)
                 return
             if (self.pevSequenceState==7):  # ATTEN_CHAR.IND was received and the nearest charger decided
                 self.composeAttenCharRsp()
@@ -722,6 +727,8 @@ class pyPlcHomeplug():
                 self.enterState(9)
                 return
             if (self.pevSequenceState==9):  # waiting for SLAC_MATCH.CNF
+                if (self.isTooLong()):
+                    self.enterState(0)
                 return
             if (self.pevSequenceState==10):  # SLAC is finished, SET_KEY.REQ is transmitted. Wait some time, until
                 # the homeplug modem made the reset and is ready with the new key.
@@ -741,6 +748,7 @@ class pyPlcHomeplug():
                 self.transmit(self.mytransmitbuffer)
                 self.pevSequenceDelayCycles = 20
                 self.enterState(12)
+                return
             if (self.pevSequenceState==12):  
                 if (self.pevSequenceDelayCycles>0):
                     self.pevSequenceDelayCycles-=1
@@ -749,14 +757,23 @@ class pyPlcHomeplug():
                 print("[PEVSLAC] Number of modems in the AVLN: " + str(self.numberOfSoftwareVersionResponses))
                 if (self.numberOfSoftwareVersionResponses<2):
                     print("[PEVSLAC] ERROR: There should be at least two modems, one from car and one from charger.")
-                    self.callbackAvlnEstablished(0)
+                    self.callbackAvlnEstablished(0) # report that we lost the connection
+                    self.addressManager.setSeccIp("") # forget the IPv6 of the charger
                     self.enterState(0)
                 else:
                     # inform the higher-level state machine, that now it can start the SDP / IPv6 communication
-                    self.callbackAvlnEstablished(1)
+                    self.ipv6.initiateSdpRequest()
                     self.enterState(13) # Final state is reached
                 return
-            if (self.pevSequenceState==13):  # AVLN is established. Nothing more to do, just wait until unplugging.
+            if (self.pevSequenceState==13):  # AVLN is established. SDP request was sent. Waiting for SDP response.
+                if (len(self.addressManager.getSeccIp())>0):
+                    print("[PEVSLAC] Now we know the chargers IP.")
+                    self.callbackAvlnEstablished(1)
+                    self.enterState(14)
+                if (self.isTooLong()):
+                    self.enterState(0)
+                return
+            if (self.pevSequenceState==14):  # AVLN is established. SDP finished. Nothing more to do, just wait until unplugging.
                 # Todo: if (self.isUnplugged()): self.pevSequenceState=0
                 # Or we just check the connection cyclically by sending software version requests...
                 self.pevSequenceDelayCycles = 500
@@ -800,6 +817,7 @@ class pyPlcHomeplug():
         self.callbackAvlnEstablished = callbackAvlnEstablished
         self.addressManager = addrMan
         self.pevSequenceState = 0
+        self.pevSequenceCyclesInState = 0
         self.numberOfSoftwareVersionResponses = 0
         #self.sniffer = pcap.pcap(name=None, promisc=True, immediate=True, timeout_ms=50)
         # eth3 means: Third entry from back, in the list of interfaces, which is provided by pcap.findalldevs.

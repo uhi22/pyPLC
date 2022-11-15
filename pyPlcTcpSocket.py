@@ -24,7 +24,7 @@ class pyPlcTcpClientSocket():
         
     def connect(self, host, port):
         try:
-            print("connecting...")
+            print("connecting to " + str(host) + " port " + str(port) + "...")
             # for connecting, we are still in blocking-mode because
             # otherwise we run into error "[Errno 10035] A non-blocking socket operation could not be completed immediately"
             # We set a shorter timeout, so we do not block too long if the connection is not established:
