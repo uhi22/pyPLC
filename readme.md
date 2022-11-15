@@ -26,7 +26,11 @@ In this project, we call this mode *ListenMode*.
 - Install wireshark to view the network traffic
 - Install Pcap-ct python library
 - Patch Pcap-ct to support non-blocking operation
-- Run `python pyPlc.py` and use keyboard to trigger actions
+- Get and compile the exi decoder/encoder from http://github.com/uhi22/OpenV2Gx
+- Run `python pyPlc.py` and use keyboard to trigger actions, or
+- Run `python pyPlc.py E` for EVSE (charger) mode, or
+- Run `python pyPlc.py P` for PEV mode, or
+- Run `python pyPlc.py L` for Listen mode
 
 ## Architecture
 ![architectural overview](doc/pyPlc_architecture.png)
@@ -109,7 +113,8 @@ Now, in the IDLE shall 3.10.6, the import works:
 Pcap-ct does not work with Python 3.4. After update to Python 3.8, it works.
 
 ## Example flow
-This chapter describes the start of a charging session, considering all layers.
+This chapter describes the start of a charging session, considering all layers. It is NOT the description of the currently
+implemented features, it is just a reference for understanding and further development.
 
 Precondition: On charger side, there is a homeplugGP-capable device present, which is configured as CentralCoordinator.
 1. The charger (Supply entity communication controller, SECC) creates a "random" value for NID (network ID) and
@@ -190,7 +195,10 @@ min and max current. Now, the initialization phase of the charging session is fi
 is, to adjust the chargers output voltage to match the cars battery voltage. Also a current limit (max 2A) is sent.
 48. The charger confirms with PreChargeResponse. This response contains the actual voltage on the charger.
 49. The charger adjusts its output voltage according to the requested voltage.
-50. The car measures the voltage on the inlet and on the battery. If the difference is small enough (less than 20V?), the car
+50. The car measures the voltage on the inlet and on the battery.
+51. The above steps (PreChargeRequest, PreChargeResponse, measuring physical voltage) are repeating, while the
+physical voltage did not yet reach the target voltage.
+51. If the difference is small enough (less than 20V?), the car
 closes the power relay.
 51. The car sends PowerDelivery(Start)Request.
 52. The charger confirms with PowerDeliveryResponse.
@@ -259,6 +267,20 @@ https://github.com/uhi22/pyPLC/tree/master/results.
 As summary, the concept with the python script together with the compiled EXI decoder works. Further efforts can be spent on
 completing the missing details of the V2G messages.
 
+### 2022-11-11 [*EvseMode*] Ioniq in the PreCharge loop
+The EVSE state machine, together with the EXI decoder/encoder, is able to talk to the Ioniq car until the PreCharge loop. The
+car terminates the loop after some seconds, because the intended voltage is not reached (no physical electricity connected to the
+charge port). Maybe it is possible to convince the car to close the relay, just by pretending "voltage is reached" in the
+PreCharge response. But maybe the car makes a plausibilization with the physical voltage, then further development would require
+a physical power supply.
+
+### 2022-11-15 [*PevMode*] Draft of SLAC sequencer
+In PevMode, the software runs through the SLAC sequence with a simulated Evse. After SLAC is finished, we send a software
+version request broadcast message, to find out, whether we have at least two homeplug modems in the network (one for the
+car and one for the charger). If this is fulfilled, we should use the SDP to discover the chargers IPv6 address. But this
+is not yet implemented.
+
+
 ## Biggest Challenges
 - [*ListenMode*] Find a way to enable the sniffer mode or monitor mode in the AR7420. Seems to be not included in the public qca/open-plc-utils.
 Without this mode, we see only the broadcast messages, not the TCP / UDP traffic between the EVSE and the PEV.
@@ -274,6 +296,28 @@ Any idea how to enable full-transparency of the AR7420?
 
 ## Other open topics
 - [*EvseMode*] [*PevMode*] Fill V2G messages as far as needed, to convince the car to accept it.
+- [*PevMode*] Implement SDP to get the chargers IPv6 address
 - [*PevMode*] Testing on real charger
 - improve docu (update layer diagram, improve hardware docu, add link to evse which provides the 5% PWM)
+- Resolve the todo-markers in the code
 - (and much more)
+
+## FAQ
+
+### Q1: What is the minimal setup, to catch the MAC addresses in the communication between a real charger and a real car?
+- Hardware: A TPlink TL-PA4010P homeplug adaptor, with the configuration for PEV. Modified according to the hardware manual https://github.com/uhi22/pyPLC/blob/master/doc/hardware.md
+- Software: Wireshark. Only wireshark. (The pyPlc project and the exi decoder is NOT necessary to sniff the MAC addresses.)
+
+### Q2: Is it possible to use this software, to make the car closing the relay, so that I'm able to draw energy out of the car?
+Good question. This depends on how strict the car is. This first hurdle is to convince the car, to close the relay. This is
+done after a successful PreCharge phase. And it depends on the implementation of the car, whether it needs physically correct
+voltage on the inlet before closing the relay, or whether it relies on the pretended voltage in the PreChargeResponse message.
+The second hurdle is, that the car may make a plausibilization between the expected current flow (charging) and the actually
+measured current flow (discharging). The car may stop the complete process, if the deviation is too high or/and too long.
+
+However, the software will help to explore and understand the behavior of the car.
+
+### Q3: Is it possible to use this software in a car without CCS, to make it ready for CCS charging?
+That's is definitely a goal, at it looks reachable. Of course, two aspects need to be considered:
+- This project is not a final product. Further development will be necessary to ensure compatibility with chargers, and make is flexible for practical use.
+- Some parts are not covered by this project at all, e.g. communication with the BMS, connector lock, safety considerations.
