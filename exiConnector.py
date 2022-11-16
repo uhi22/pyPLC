@@ -164,11 +164,12 @@ def exiDecode(exiHex, prefix="DH"):
     strConverterResult = result.stdout
     return strConverterResult
     
-def exiEncode(strMessageName, params=""):
+def exiEncode(strMessageName):
     # todo: handle the schema, the message name and the parameters
     # param1 = "Eh" # Eh for encode handshake, SupportedApplicationProtocolResponse
     # param1 = "EDa" # EDa for Encode, Din, SessionSetupResponse
     param1 = strMessageName
+    print("[EXICONNECTOR] exiEncode " + param1)
     result = subprocess.run([pathToOpenV2GExe, param1], capture_output=True, text=True)    
     if (len(result.stderr)>0):
         strConverterResult = "exiEncode ERROR. stderr:" + result.stderr
@@ -184,6 +185,9 @@ def exiEncode(strMessageName, params=""):
         try:
             y = json.loads(result.stdout)
             strConverterResult = y["result"]
+            strConverterError = y["error"]
+            if (len(strConverterError)>0):
+                print("[EXICONNECTOR] exiEncode error " + strConverterError)
             #print("strConverterResult is " + str(strConverterResult))
         except:
             strConverterResult = "exiEncode failed to convert json to dict."
