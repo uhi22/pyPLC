@@ -8,6 +8,7 @@ import pyPlcTcpSocket
 import time # for time.sleep()
 from helpers import prettyHexMessage
 from exiConnector import * # for EXI data handling/converting
+import json
 
 stateInitialized = 0
 stateWaitForSupportedApplicationProtocolResponse = 1
@@ -62,7 +63,14 @@ class fsmPev():
             print(strConverterResult)
             if (strConverterResult.find("SessionSetupRes")>0):
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDB")) # EDB for Encode, Din, ServiceDiscoveryRequest
+                try:
+                    y = json.loads(strConverterResult)
+                    strSessionId = y["header.SessionID"]
+                    print("[PEV] The Evse decided for SessionId " + strSessionId)
+                    self.sessionId = strSessionId
+                except:
+                    print("ERROR: Could not decode the sessionID")
+                msg = addV2GTPHeader(exiEncode("EDB_"+self.sessionId)) # EDB for Encode, Din, ServiceDiscoveryRequest
                 print("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForServiceDiscoveryResponse)
@@ -78,7 +86,7 @@ class fsmPev():
             print(strConverterResult)
             if (strConverterResult.find("ServiceDiscoveryRes")>0):
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDC")) # EDC for Encode, Din, ServicePaymentSelection
+                msg = addV2GTPHeader(exiEncode("EDC_"+self.sessionId)) # EDC for Encode, Din, ServicePaymentSelection
                 print("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForServicePaymentSelectionResponse)
@@ -94,7 +102,7 @@ class fsmPev():
             print(strConverterResult)
             if (strConverterResult.find("ServicePaymentSelectionRes")>0):
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDE")) # EDE for Encode, Din, ChargeParameterDiscovery. We ignore Authorization, not specified in DIN.
+                msg = addV2GTPHeader(exiEncode("EDE_"+self.sessionId)) # EDE for Encode, Din, ChargeParameterDiscovery. We ignore Authorization, not specified in DIN.
                 print("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForChargeParameterDiscoveryResponse)
@@ -110,7 +118,7 @@ class fsmPev():
             print(strConverterResult)
             if (strConverterResult.find("ChargeParameterDiscoveryRes")>0):
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDF")) # EDF for Encode, Din, CableCheck
+                msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
                 print("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForCableCheckResponse)
@@ -126,7 +134,7 @@ class fsmPev():
             print(strConverterResult)
             if (strConverterResult.find("CableCheckRes")>0):
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDG")) # EDG for Encode, Din, PreCharge
+                msg = addV2GTPHeader(exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
                 print("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForPreChargeResponse)
@@ -181,6 +189,7 @@ class fsmPev():
         self.Tcp = pyPlcTcpSocket.pyPlcTcpClientSocket()
         self.addressManager = addressManager
         self.state = stateNotYetInitialized
+        self.sessionId = "DEAD55AADEAD55AA"
         self.cyclesInState = 0
         self.rxData = []        
         # we do NOT call the reInit, because we want to wait with the connection until external trigger comes

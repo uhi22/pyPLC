@@ -733,7 +733,10 @@ class pyPlcHomeplug():
             if (self.pevSequenceState==10):  # SLAC is finished, SET_KEY.REQ is transmitted. Wait some time, until
                 # the homeplug modem made the reset and is ready with the new key.
                 self.addToTrace("[PEVSLAC] waiting until homeplug modem starts up with new key...")
-                self.pevSequenceDelayCycles = 200
+                if (self.isSimulationMode==0):
+                    self.pevSequenceDelayCycles = 200 # long waiting time if we have real homeplug modems
+                else:
+                    self.pevSequenceDelayCycles = 10 # short waiting in simulation
                 self.enterState(11)
                 return
             if (self.pevSequenceState==11):  
@@ -755,7 +758,7 @@ class pyPlcHomeplug():
                     return
                 # we should have received a software version response from at least two modems.
                 print("[PEVSLAC] Number of modems in the AVLN: " + str(self.numberOfSoftwareVersionResponses))
-                if (self.numberOfSoftwareVersionResponses<2):
+                if ((self.numberOfSoftwareVersionResponses<2) and (self.isSimulationMode==0)):
                     print("[PEVSLAC] ERROR: There should be at least two modems, one from car and one from charger.")
                     self.callbackAvlnEstablished(0) # report that we lost the connection
                     self.addressManager.setSeccIp("") # forget the IPv6 of the charger
@@ -809,7 +812,7 @@ class pyPlcHomeplug():
         self.ipv6.enterListenMode()
         self.showStatus("LISTEN mode", "mode")        
 
-    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE, addrMan=None, callbackAvlnEstablished=None):
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE, addrMan=None, callbackAvlnEstablished=None, isSimulationMode=0):
         self.mytransmitbuffer = bytearray("Hallo das ist ein Test", 'UTF-8')
         self.nPacketsReceived = 0
         self.callbackAddToTrace = callbackAddToTrace
@@ -819,6 +822,7 @@ class pyPlcHomeplug():
         self.pevSequenceState = 0
         self.pevSequenceCyclesInState = 0
         self.numberOfSoftwareVersionResponses = 0
+        self.isSimulationMode = isSimulationMode # simulation without homeplug modem
         #self.sniffer = pcap.pcap(name=None, promisc=True, immediate=True, timeout_ms=50)
         # eth3 means: Third entry from back, in the list of interfaces, which is provided by pcap.findalldevs.
         #  Improvement necessary: select the interface based on the name.

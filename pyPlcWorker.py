@@ -12,7 +12,7 @@ import addressManager
         
 
 class pyPlcWorker():
-    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_EVSE_MODE):
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_EVSE_MODE, isSimulationMode=0):
         print("initializing pyPlcWorker") 
         self.nMainFunctionCalls=0
         self.mode = mode
@@ -22,7 +22,8 @@ class pyPlcWorker():
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
         self.oldAvlnStatus = 0
-        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.callbackAddToTrace, self.callbackShowStatus, self.mode, self.addressManager, self.callbackAvlnEstablished)
+        self.isSimulationMode = isSimulationMode
+        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.callbackAddToTrace, self.callbackShowStatus, self.mode, self.addressManager, self.callbackAvlnEstablished, self.isSimulationMode)
         if (self.mode == C_EVSE_MODE):
             self.evse = fsmEvse.fsmEvse()
         if (self.mode == C_PEV_MODE):

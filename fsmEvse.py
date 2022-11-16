@@ -121,7 +121,8 @@ class fsmEvse():
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN               
             if (strConverterResult.find("PreChargeReq")>0):
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDg")) # EDg for Encode, Din, PreChargeResponse
+                strPresentVoltage = "345"
+                msg = addV2GTPHeader(exiEncode("EDg_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
                 print("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     

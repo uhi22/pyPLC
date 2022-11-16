@@ -48,6 +48,11 @@ if (len(sys.argv) > 1):
         if (sys.argv[1] == "E"):
             myMode = C_EVSE_MODE
 
+isSimulationMode=0
+if (len(sys.argv) > 2):
+    if (sys.argv[2] == "S"):
+        isSimulationMode=1
+
 if (myMode == C_LISTEN_MODE):
     print("starting in LISTEN_MODE")
 if (myMode == C_PEV_MODE):
@@ -71,7 +76,7 @@ lblMode.pack()
 root.bind('<Key>', storekeyname)
 cbShowStatus("initialized")
 root.update()
-worker=pyPlcWorker.pyPlcWorker(cbAddToTrace, cbShowStatus, myMode)
+worker=pyPlcWorker.pyPlcWorker(cbAddToTrace, cbShowStatus, myMode, isSimulationMode)
 
 nMainloops=0
 nKeystrokes=0
