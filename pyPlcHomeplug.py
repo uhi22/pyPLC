@@ -250,13 +250,8 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[17]=0x00 # 2 bytes fragmentation information. 0000 means: unfragmented.
         self.mytransmitbuffer[18]=0x00 # 
         self.mytransmitbuffer[19]=0x00 # 
-        self.mytransmitbuffer[20]=0x00 # 
-        self.mytransmitbuffer[21]=0x04 # runid 8 bytes
-        self.mytransmitbuffer[22]=0x65 # 
-        self.mytransmitbuffer[23]=0x65 # 
-        self.mytransmitbuffer[24]=0x00 # 
-        self.mytransmitbuffer[25]=0x64 # 
-        self.mytransmitbuffer[26]=0xC3 # 
+        self.mytransmitbuffer[20]=0x00 #
+        self.fillSourceMac(self.pevMac, 21) # 21 to 28: 8 bytes runid. The Ioniq uses the PEV mac plus 00 00.
         self.mytransmitbuffer[27]=0x00 # 
         self.mytransmitbuffer[28]=0x00 # 
         # rest is 00
@@ -312,7 +307,9 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[19]=0x00 # apptype
         self.mytransmitbuffer[20]=0x00 # sectype
         self.mytransmitbuffer[21]=0x0a # number of sounds: 10
-        self.mytransmitbuffer[22]=0x06 # timeout N*100ms
+        self.mytransmitbuffer[22]=10 # timeout N*100ms. Normally 6, means in 600ms all sounds must have been tranmitted.
+                                       # Todo: As long we are a little bit slow, lets give 1000ms instead of 600, so that the
+                                       # charger is able to catch it all.
         self.mytransmitbuffer[23]=0x01 # response type 
         self.fillSourceMac(self.myMAC, 24) # 24 to 29: sound_forwarding_sta, MAC of the PEV
         self.fillSourceMac(self.myMAC, 30) # 30 to 37: runid, filled with MAC of PEV and two bytes 00 00
@@ -425,7 +422,7 @@ class pyPlcHomeplug():
         self.fillSourceMac(self.myMAC, 40) # 40 to 45: PEV MAC
         # 46 to 62: evse_id, all 00
         self.fillDestinationMac(self.evseMac, 63) # 63 to 68: EVSE MAC
-        self.fillSourceMac(self.myMAC, 63) # 69 to 76: runid. The PEV mac, plus 00 00.
+        self.fillSourceMac(self.myMAC, 69) # 69 to 76: runid. The PEV mac, plus 00 00.
         # 77 to 84: reserved, all 00        
     
     def composeSlacMatchCnf(self):
@@ -547,7 +544,8 @@ class pyPlcHomeplug():
         self.addToTrace("received SLAC_PARAM.CNF")
         if (self.iAmPev==1):
             if (self.pevSequenceState==1): # we were waiting for the SlacParamCnf
-                self.pevSequenceState=2 # enter next state. Will be handled in the cyclic runPevSequencer
+                self.pevSequenceDelayCycles = 4 # original Ioniq is waiting 200ms
+                self.enterState(2) # enter next state. Will be handled in the cyclic runPevSequencer
             
     def evaluateMnbcSoundInd(self):
         # We received MNBC_SOUND.IND from the PEV. Normally this happens 10times, with a countdown (remaining number of sounds)
@@ -572,6 +570,11 @@ class pyPlcHomeplug():
                 for i in range(0, 6):
                     self.evseMac[i] = self.myreceivebuffer[6+i] # source MAC starts at offset 6
                 self.addressManager.setEvseMac(self.evseMac)
+                self.AttenCharIndNumberOfSounds = self.myreceivebuffer[69]
+                self.addToTrace("number of sounds reported by the EVSE (should be 10): " + str(self.AttenCharIndNumberOfSounds)) 
+                self.composeAttenCharRsp()
+                self.addToTrace("[PEVSLAC] transmitting ATTEN_CHAR.RSP...")
+                self.transmit(self.mytransmitbuffer)                 
                 self.pevSequenceState=7 # enter next state. Will be handled in the cyclic runPevSequencer
             
             
@@ -664,6 +667,10 @@ class pyPlcHomeplug():
                     self.enterState(0)
                 return
             if (self.pevSequenceState==2): # received SLAC_PARAM.CNF
+                # between the SLAC_PARAM.CNF and the first START_ATTEN_CHAR.IND the Ioniq waits 200ms
+                if (self.pevSequenceDelayCycles>0):
+                    self.pevSequenceDelayCycles-=1
+                    return
                 self.composeStartAttenCharInd()
                 self.addToTrace("[PEVSLAC] transmitting START_ATTEN_CHAR.IND...")
                 self.transmit(self.mytransmitbuffer)        
@@ -710,12 +717,9 @@ class pyPlcHomeplug():
                 if (self.isTooLong()):
                     self.enterState(0)
                 return
-            if (self.pevSequenceState==7):  # ATTEN_CHAR.IND was received and the nearest charger decided
-                self.composeAttenCharRsp()
-                self.addToTrace("[PEVSLAC] transmitting ATTEN_CHAR.RSP...")
-                self.transmit(self.mytransmitbuffer)  
+            if (self.pevSequenceState==7):  # ATTEN_CHAR.IND was received and the nearest charger decided and the ATTEN_CHAR.RSP was sent.
                 self.enterState(8)
-                self.pevSequenceDelayCycles = 15 # original from ioniq is 860ms from ATTEN_CHAR.RSP to SLAC_MATCH.REQ
+                self.pevSequenceDelayCycles = 30 # original from ioniq is 860ms to 980ms from ATTEN_CHAR.RSP to SLAC_MATCH.REQ
                 return
             if (self.pevSequenceState==8):  # ATTEN_CHAR.RSP was transmitted. Next is SLAC_MATCH.REQ
                 if (self.pevSequenceDelayCycles>0):
@@ -843,7 +847,9 @@ class pyPlcHomeplug():
         self.sniffer.setnonblock(True)
         self.NMK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
-        self.pevMac = [0x55, 0x56, 0x57, 0x58, 0x59, 0x5A ] # a default pev MAC. Will be overwritten later.
+        # self.pevMac = [0x55, 0x56, 0x57, 0x58, 0x59, 0x5A ] # a default pev MAC. Will be overwritten later.
+        #self.pevMac = [0x04, 0x65, 0x65, 0x00, 0x64, 0xC3 ] # todo: in case of PevMode, use the MAC from the OS.
+        self.pevMac = [0xDC, 0x0E, 0xA1, 0x11, 0x67, 0x08 ] # todo: in case of PevMode, use the MAC from the OS.
         self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.
         self.myMAC = self.addressManager.getLocalMacAddress()
         self.runningCounter=0
