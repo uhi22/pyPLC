@@ -764,20 +764,38 @@ class pyPlcHomeplug():
                 print("[PEVSLAC] Number of modems in the AVLN: " + str(self.numberOfSoftwareVersionResponses))
                 if ((self.numberOfSoftwareVersionResponses<2) and (self.isSimulationMode==0)):
                     print("[PEVSLAC] ERROR: There should be at least two modems, one from car and one from charger.")
-                    self.callbackAvlnEstablished(0) # report that we lost the connection
+                    self.callbackReadyForTcp(0) # report that we lost the connection
                     self.addressManager.setSeccIp("") # forget the IPv6 of the charger
                     self.enterState(0)
                 else:
-                    # inform the higher-level state machine, that now it can start the SDP / IPv6 communication
-                    self.ipv6.initiateSdpRequest()
-                    self.enterState(13) # Final state is reached
+                    # The AVLN is established, we have two modems in the network.
+                    # Next step is to discover the chargers communication controller (SECC) using discovery protocol (SDP).
+                    self.pevSequenceDelayCycles=0
+                    self.SdpRepetitionCounter = 5 # prepare the number of retries for the SDP
+                    self.enterState(13)
                 return
-            if (self.pevSequenceState==13):  # AVLN is established. SDP request was sent. Waiting for SDP response.
+                
+            if (self.pevSequenceState==13):  # SDP request transmission and waiting for SDP response.
                 if (len(self.addressManager.getSeccIp())>0):
+                    # we received an SDP response, and can start the high-level communication
                     print("[PEVSLAC] Now we know the chargers IP.")
-                    self.callbackAvlnEstablished(1)
+                    self.callbackReadyForTcp(1)
                     self.enterState(14)
+                    return
+                if (self.pevSequenceDelayCycles>0):
+                    # just waiting until next action
+                    self.pevSequenceDelayCycles-=1
+                    return
+                if (self.SdpRepetitionCounter>0):
+                    # Reference: The Ioniq waits 4.1s from the slac_match.cnf to the SDP request.
+                    # Here we send the SdpRequest. Maybe too early, but we will retry if there is no response.
+                    self.ipv6.initiateSdpRequest()
+                    self.SdpRepetitionCounter-=1
+                    self.pevSequenceDelayCycles = 30 # e.g. one second delay until re-try of the SDP
+                    self.enterState(13) # stick in the same state
+                    return
                 if (self.isTooLong()):
+                    print("[PEVSLAC] ERROR: Did not receive SDP response. Starting from the beginning.")
                     self.enterState(0)
                 return
             if (self.pevSequenceState==14):  # AVLN is established. SDP finished. Nothing more to do, just wait until unplugging.
@@ -816,12 +834,12 @@ class pyPlcHomeplug():
         self.ipv6.enterListenMode()
         self.showStatus("LISTEN mode", "mode")        
 
-    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE, addrMan=None, callbackAvlnEstablished=None, isSimulationMode=0):
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE, addrMan=None, callbackReadyForTcp=None, isSimulationMode=0):
         self.mytransmitbuffer = bytearray("Hallo das ist ein Test", 'UTF-8')
         self.nPacketsReceived = 0
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
-        self.callbackAvlnEstablished = callbackAvlnEstablished
+        self.callbackReadyForTcp = callbackReadyForTcp
         self.addressManager = addrMan
         self.pevSequenceState = 0
         self.pevSequenceCyclesInState = 0

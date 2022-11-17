@@ -102,6 +102,10 @@ class ipv6handler():
     def sendSdpResponse(self):
         # SECC Discovery Response.
         # The response from the charger to the EV, which transfers the IPv6 address of the charger to the car.
+        if (self.faultInjectionSuppressSdpResponse>0):
+            print("Fault injection: SDP response suppressed")
+            self.faultInjectionSuppressSdpResponse-=1
+            return
         self.SdpPayload = bytearray(20) # SDP response has 20 bytes
         for i in range(0, 16):
             self.SdpPayload[i] = self.SeccIp[i] # 16 bytes IP address of the charger
@@ -350,6 +354,7 @@ class ipv6handler():
         self.EvccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0x65, 0x65, 0xff, 0xfe, 0, 0x64, 0xC3 ] 
         #self.ownMac = [ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 ] # 6 bytes own MAC default. Should be overwritten before use.
         self.ownMac = self.addressManager.getLocalMacAddress()
+        self.faultInjectionSuppressSdpResponse = 0 # can be set to >0 for fault injection. Number of "lost" SDP responses.
         print("pyPlcIpv6 started with ownMac " + prettyMac(self.ownMac))
         if (self.iAmEvse):
             # If we are an charger, we need to support the SDP, which requires to know our IPv6 adrress.

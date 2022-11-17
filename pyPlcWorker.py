@@ -23,7 +23,7 @@ class pyPlcWorker():
         self.callbackShowStatus = callbackShowStatus
         self.oldAvlnStatus = 0
         self.isSimulationMode = isSimulationMode
-        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.callbackAddToTrace, self.callbackShowStatus, self.mode, self.addressManager, self.callbackAvlnEstablished, self.isSimulationMode)
+        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.callbackAddToTrace, self.callbackShowStatus, self.mode, self.addressManager, self.callbackReadyForTcp, self.isSimulationMode)
         if (self.mode == C_EVSE_MODE):
             self.evse = fsmEvse.fsmEvse()
         if (self.mode == C_PEV_MODE):
@@ -35,16 +35,16 @@ class pyPlcWorker():
     def showStatus(self, s, selection = ""):
         self.callbackShowStatus(s, selection)        
 
-    def callbackAvlnEstablished(self, status):
+    def callbackReadyForTcp(self, status):
         if (status==1):
-            print("[PLCWORKER] AVLN is formed")
+            print("[PLCWORKER] Network is established, ready for TCP.")
             if (self.oldAvlnStatus==0):
                 self.oldAvlnStatus = 1
                 if (self.mode == C_PEV_MODE):
                     self.pev.reInit()
                     
         else:
-            print("[PLCWORKER] no AVLN")
+            print("[PLCWORKER] no network")
             self.oldAvlnStatus = 0
         
     def mainfunction(self):
