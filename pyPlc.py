@@ -81,7 +81,7 @@ worker=pyPlcWorker.pyPlcWorker(cbAddToTrace, cbShowStatus, myMode, isSimulationM
 nMainloops=0
 nKeystrokes=0
 while lastKey!="x":
-    time.sleep(.05) # 'do some calculation'
+    time.sleep(.03) # 'do some calculation'
     nMainloops+=1
     # print(str(nMainloops) + " " + str(nKeystrokes)) # show something in the console window
     root.update()
