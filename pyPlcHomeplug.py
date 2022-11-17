@@ -771,7 +771,7 @@ class pyPlcHomeplug():
                     # The AVLN is established, we have two modems in the network.
                     # Next step is to discover the chargers communication controller (SECC) using discovery protocol (SDP).
                     self.pevSequenceDelayCycles=0
-                    self.SdpRepetitionCounter = 5 # prepare the number of retries for the SDP
+                    self.SdpRepetitionCounter = 50 # prepare the number of retries for the SDP. The more the better.
                     self.enterState(13)
                 return
                 
@@ -791,7 +791,7 @@ class pyPlcHomeplug():
                     # Here we send the SdpRequest. Maybe too early, but we will retry if there is no response.
                     self.ipv6.initiateSdpRequest()
                     self.SdpRepetitionCounter-=1
-                    self.pevSequenceDelayCycles = 30 # e.g. one second delay until re-try of the SDP
+                    self.pevSequenceDelayCycles = 10 # e.g. half-a-second delay until re-try of the SDP
                     self.enterState(13) # stick in the same state
                     return
                 if (self.isTooLong()):
