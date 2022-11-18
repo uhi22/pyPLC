@@ -22,6 +22,9 @@ stateWaitForPreChargeResponse = 8
 stateWaitForPowerDeliveryResponse = 9
 stateNotYetInitialized = 10
 
+dinEVSEProcessingType_Finished = "0"
+dinEVSEProcessingType_Ongoing = "1"
+
 class fsmPev():
     def enterState(self, n):
         print("from " + str(self.state) + " entering " + str(n))
@@ -30,7 +33,12 @@ class fsmPev():
         
     def isTooLong(self):
         # The timeout handling function.
-        return (self.cyclesInState > 20)
+        limit = 30 # number of call cycles until timeout
+        if (self.state==stateWaitForCableCheckResponse):
+            limit = 30*30 # CableCheck may need some time. Wait at least 30s.
+        if (self.state==stateWaitForPreChargeResponse):
+            limit = 30*30 # PreCharge may need some time. Wait at least 30s.
+        return (self.cyclesInState > limit)
         
     def stateFunctionInitialized(self):
         if (self.Tcp.isConnected):
@@ -133,11 +141,28 @@ class fsmPev():
             strConverterResult = exiDecode(exidata, "DD") # Decode DIN
             print(strConverterResult)
             if (strConverterResult.find("CableCheckRes")>0):
+                try:
+                    y = json.loads(strConverterResult)
+                    strResponseCode = y["ResponseCode"]
+                    strEVSEProcessing = y["EVSEProcessing"]
+                    print("[PEV] The CableCheck result is " + strResponseCode + " " + strEVSEProcessing)
+                except:
+                    print("ERROR: Could not decode the CableCheckRes")
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
-                print("responding " + prettyHexMessage(msg))
-                self.Tcp.transmit(msg)
-                self.enterState(stateWaitForPreChargeResponse)
+                # We have two cases here:
+                # 1) The charger says "cable check is finished and cable ok", by setting ResponseCode=OK and EVSEProcessing=Finished.
+                # 2) Else: The charger says "need more time or cable not ok". In this case, we just run into timeout and start from the beginning.
+                if ((strEVSEProcessing==dinEVSEProcessingType_Finished) and (strResponseCode=="OK")):
+                    msg = addV2GTPHeader(exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
+                    print("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    self.enterState(stateWaitForPreChargeResponse)
+                else:
+                    # cable check not yet finished or finished with bad result -> try again
+                    msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
+                    print("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    
         if (self.isTooLong()):
             self.enterState(0)
 
