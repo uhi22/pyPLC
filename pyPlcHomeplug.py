@@ -887,19 +887,23 @@ class pyPlcHomeplug():
 
     def showStatus(self, s, selection=""):
         self.callbackShowStatus(s, selection) 
-        
+
+    def receiveCallback(self, timestamp, pkt, *args):
+        self.nPacketsReceived+=1
+        # print('%d' % (ts)) # the time stamp
+        # We received an ethernet package. Determine its type, and dispatch it to the related handler.
+        etherType = self.getEtherType(pkt)
+        if (etherType == 0x88E1): # it is a HomePlug message
+            self.myreceivebuffer = pkt
+            self.evaluateReceivedHomeplugPacket()
+        if (etherType == 0x86dd): # it is an IPv6 frame
+            self.ipv6.evaluateReceivedPacket(pkt)
+
     def mainfunction(self):  
-        # print("will evaluate self.sniffer")
-        for ts, pkt in self.sniffer: # attention: for using this in non-blocking manner, we need the patch described above.
-            self.nPacketsReceived+=1
-            # print('%d' % (ts)) # the time stamp
-            # We received an ethernet package. Determine its type, and dispatch it to the related handler.
-            etherType = self.getEtherType(pkt)
-            if (etherType == 0x88E1): # it is a HomePlug message
-                self.myreceivebuffer = pkt
-                self.evaluateReceivedHomeplugPacket()
-            if (etherType == 0x86dd): # it is an IPv6 frame
-                self.ipv6.evaluateReceivedPacket(pkt)
+        # https://stackoverflow.com/questions/31305712/how-do-i-make-libpcap-pcap-loop-non-blocking
+        # Tell the sniffer to give max 100 received packets to the callback function:
+        self.sniffer.dispatch(100, self.receiveCallback, None)
+
                 
         self.showStatus("nPacketsReceived=" + str(self.nPacketsReceived))
         self.runPevSequencer() # run the message sequencer for the PEV side
