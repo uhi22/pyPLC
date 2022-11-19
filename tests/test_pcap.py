@@ -48,21 +48,20 @@ class tester():
             # print('%d' % (ts)) # the time stamp
 
     def callbackfunction(self, timestamp, pkt, *args):
-        print("the callback")
         self.nPacketsReceived+=1
-        print("#" + str(self.nPacketsReceived) + ":" + '%d' % (timestamp)) # the time stamp
+        #print("The callback #" + str(self.nPacketsReceived) + " " + str(len(pkt)) + " bytes:" + '%d' % (timestamp)) # the time stamp
         
     def mainfunction_new(self):
         # https://stackoverflow.com/questions/31305712/how-do-i-make-libpcap-pcap-loop-non-blocking
-        # Tell the sniffer to give exactly one received packet to the callback function:
-        self.sniffer.dispatch(1, self.callbackfunction, None)
+        # Tell the sniffer to give max 100 received packets to the callback function:
+        self.sniffer.dispatch(100, self.callbackfunction, None)
 
     def close(self):
         self.sniffer.close()
 
 t=tester()
 for i in range(0, 10):
-    print("Loop nr " + str(i))
+    print("Loop nr " + str(i) + " and " + str(t.nPacketsReceived) + " packets in total")
     time.sleep(0.01)
     t.mainfunction_new()
 t.close()
