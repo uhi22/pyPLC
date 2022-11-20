@@ -93,6 +93,10 @@ else:
 
 
 # Functions
+def exiprint(s):
+    # todo: print to console or log or whatever
+    pass
+
 def exiHexToByteArray(hexString):
     # input: a string with the two-byte-hex representation
     # output: a byte array with the same data.
@@ -176,7 +180,7 @@ def exiEncode(strMessageName):
     # param1 = "Eh" # Eh for encode handshake, SupportedApplicationProtocolResponse
     # param1 = "EDa" # EDa for Encode, Din, SessionSetupResponse
     param1 = strMessageName
-    print("[EXICONNECTOR] exiEncode " + param1)
+    exiprint("[EXICONNECTOR] exiEncode " + param1)
     result = subprocess.run([pathToOpenV2GExe, param1], capture_output=True, text=True)    
     if (len(result.stderr)>0):
         strConverterResult = "exiEncode ERROR. stderr:" + result.stderr
@@ -237,11 +241,32 @@ def testReadExiFromFile():
             s = s.replace("\n", "") # Remove line feeds
             #print(s)
             testDecoder(s, "DD", "")
-  
+
+def testTimeConsumption():
+    strHex = "809a001150400000c80006400000"
+    pre = "DD"
+    tStart = time.time()
+    nRuns = 100
+    for i in range(0, nRuns):
+        decoded=exiDecode(strHex, pre)
+    tStop = time.time()
+    elapsed_time = tStop - tStart
+    print("Decoder: Execution time for " + str(nRuns) + " runs:", elapsed_time, "seconds")
+
+    tStart = time.time()
+    nRuns = 100
+    for i in range(0, nRuns):
+        s = exiEncode("EDC_1122334455667788")
+    tStop = time.time()
+    elapsed_time = tStop - tStart
+    print("Encoder: Execution time for " + str(nRuns) + " runs:", elapsed_time, "seconds")
+    
 
 if __name__ == "__main__":
     nFail=0
     print("Testing exiConnector...")
+    testTimeConsumption()
+    exit()
     #testReadExiFromFile()
     #exit()
     #testByteArrayConversion("123456")
