@@ -43,6 +43,7 @@ import subprocess
 import sys
 import time
 import json
+import os
 
 # Example data:
 #   (1) From the Ioniq:
@@ -83,7 +84,13 @@ exiHexDemoSupportedApplicationProtocolRequest2="8000ebab9371d34b9b79d189a98989c1
 
 
 # Configuration of the exi converter tool
-pathToOpenV2GExe = "..\\OpenV2Gx\\Release\\OpenV2G.exe";
+if os.name == "nt":
+    # Windows: Path to the EXI decoder/encoder
+    pathToOpenV2GExe = "..\\OpenV2Gx\\Release\\OpenV2G.exe"
+else:
+    # Linux: Path to the EXI decoder/encoder
+    pathToOpenV2GExe = "../OpenV2Gx/Release/OpenV2G.exe";
+
 
 # Functions
 def exiHexToByteArray(hexString):
@@ -235,8 +242,8 @@ def testReadExiFromFile():
 if __name__ == "__main__":
     nFail=0
     print("Testing exiConnector...")
-    testReadExiFromFile()
-    exit()
+    #testReadExiFromFile()
+    #exit()
     #testByteArrayConversion("123456")
     #testByteArrayConversion("1234567")
     #testByteArrayConversion("ABCDEF")
