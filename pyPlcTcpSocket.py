@@ -28,8 +28,34 @@ class pyPlcTcpClientSocket():
             # for connecting, we are still in blocking-mode because
             # otherwise we run into error "[Errno 10035] A non-blocking socket operation could not be completed immediately"
             # We set a shorter timeout, so we do not block too long if the connection is not established:
+            print("step1")
             self.sock.settimeout(0.5)
-            self.sock.connect((host, port))
+            print("step2")
+
+            # https://stackoverflow.com/questions/71022092/python3-socket-program-udp-ipv6-bind-function-with-link-local-ip-address-gi
+            # While on Windows10 just connecting to a remote link-local-address works, under
+            # Raspbian the socket.connect says "invalid argument".
+            # host = "2003:d1:170f:d500:1744:89d:d921:b20f" # works
+            # host = "2003:d1:170f:d500:2052:326e:cef9:ad07" # works
+            # host = "fe80::c690:83f3:fbcb:980e" # invalid argument. Link local address needs an interface specified.
+            # host = "fe80::c690:83f3:fbcb:980e%eth0" # ok with socket.getaddrinfo
+            if (os.name != 'nt'):
+                # We are at the Raspberry
+                print(host[0:5].lower())
+                if (host[0:5].lower()=="fe80:"):
+                    print("This is a link local address. We need to add %eth0 at the end.")
+                    host = host + "%eth0"
+            socket_addr = socket.getaddrinfo(host,port,socket.AF_INET6,socket.SOCK_DGRAM,socket.SOL_UDP)[0][4]
+            
+            print(socket_addr)
+            print("step2b")
+            # https://stackoverflow.com/questions/5358021/establishing-an-ipv6-connection-using-sockets-in-python
+            #  (address, port, flow info, scope id) 4-tuple for AF_INET6
+            # On Raspberry, the ScopeId is important. Just giving 0 leads to "invalid argument" in case
+            # of link-local ip-address.
+            #self.sock.connect((host, port, 0, 0))
+            self.sock.connect(socket_addr)
+            print("step3")
             self.sock.setblocking(0) # make this socket non-blocking, so that the recv function will immediately return
             self.isConnected = True
         except socket.error as e:
@@ -204,20 +230,23 @@ def testServerSocket():
 def testClientSocket():
     print("Testing the pyPlcTcpClientSocket...")
     c = pyPlcTcpClientSocket()
-    c.connect('fe80::e0ad:99ac:52eb:85d3', 15118)
+    #c.connect('fe80::e0ad:99ac:52eb:85d3', 15118)
     #c.connect('fe80::e0ad:99ac:52eb:9999', 15118)
+    #c.connect('localhost', 15118)
+    c.connect('fe80::c690:83f3:fbcb:980e', 15118)
     print("connected="+str(c.isConnected))
-    print("sending something to the server")
-    c.transmit(bytes("Test", "utf-8"))
-    for i in range(0, 10):
-        print("waiting 1s")
-        time.sleep(1)
-        if (c.isRxDataAvailable()):
-            d = c.getRxData()
-            print("received " + str(d))
-        if ((i % 3)==0):
-            print("sending something to the server")
-            c.transmit(bytes("Test", "utf-8"))
+    if (c.isConnected):
+        print("sending something to the server")
+        c.transmit(bytes("Test", "utf-8"))
+        for i in range(0, 10):
+            print("waiting 1s")
+            time.sleep(1)
+            if (c.isRxDataAvailable()):
+                d = c.getRxData()
+                print("received " + str(d))
+            if ((i % 3)==0):
+                print("sending something to the server")
+                c.transmit(bytes("Test", "utf-8"))
             
     print("end")
 

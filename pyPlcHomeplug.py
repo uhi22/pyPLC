@@ -865,9 +865,7 @@ class pyPlcHomeplug():
         self.sniffer.setnonblock(True)
         self.NMK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
-        # self.pevMac = [0x55, 0x56, 0x57, 0x58, 0x59, 0x5A ] # a default pev MAC. Will be overwritten later.
-        #self.pevMac = [0x04, 0x65, 0x65, 0x00, 0x64, 0xC3 ] # todo: in case of PevMode, use the MAC from the OS.
-        self.pevMac = [0xDC, 0x0E, 0xA1, 0x11, 0x67, 0x08 ] # todo: in case of PevMode, use the MAC from the OS.
+        self.pevMac = [0xDC, 0x0E, 0xA1, 0x11, 0x67, 0x08 ] # a default pev MAC. Will be overwritten later.
         self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.
         self.myMAC = self.addressManager.getLocalMacAddress()
         self.runningCounter=0
@@ -879,6 +877,7 @@ class pyPlcHomeplug():
             self.enterEvseMode()
         if (mode == C_PEV_MODE):
             self.enterPevMode()
+            self.pevMac = self.myMAC
         self.showStatus(prettyMac(self.pevMac), "pevmac")
         print("sniffer created at " + self.strInterfaceName)
 

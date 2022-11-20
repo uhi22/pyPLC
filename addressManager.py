@@ -35,6 +35,7 @@ class addressManager():
         # If we have multiple interfaces (e.g. ethernet and WLAN), it will find multiple link-local-addresses.
         foundAddresses = []
         if os.name == 'nt':
+            # on Windows
             result = subprocess.run(["ipconfig.exe"], capture_output=True, text=True, encoding="ansi")    
             if (len(result.stderr)>0):
                 print(result.stderr)
@@ -45,6 +46,23 @@ class addressManager():
                         k = line.find(" fe80::")
                         if (k>0):
                             foundAddresses.append(line[k+1:])
+        else:
+            # on Raspberry
+            result = subprocess.run(["ifconfig"], capture_output=True, text=True)    
+            if (len(result.stderr)>0):
+                print(result.stderr)
+            else:
+                lines = result.stdout.split("\n")
+                for line in lines:
+                    if (line.find("inet6")>0):
+                        k = line.find(" fe80::") # the beginning of the IPv6
+                        if (k>0):
+                            sIpWithText = line[k+1:]
+                            x = sIpWithText.find(" ") # the space is the end of the IPv6
+                            sIp = sIpWithText[0:x]                            
+                            # print("[addressManager] IP=>" + sIp + "<")
+                            foundAddresses.append(sIp)
+            
         print("[addressManager] Found " + str(len(foundAddresses)) + " link-local IPv6 addresses.")
         for a in foundAddresses:
             print(a)
@@ -63,9 +81,39 @@ class addressManager():
     def findLocalMacAddress(self):
         # Find out the MAC address of the local ethernet interface.
         # Todo: Find this out dynamically.
-        self.localMac = MAC_LAPTOP
-        print("[addressManager] we have local MAC " + prettyMac(self.localMac) + ". Todo: find this out dynamically.")
-        
+        ba = bytearray(6) 
+        if os.name == 'nt':  
+            # on Windows
+            self.localMac = MAC_LAPTOP
+            print("[addressManager] we have local MAC " + prettyMac(self.localMac) + ". Todo: find this out dynamically.")
+        else:
+            # on raspberry
+            # We use "ifconfig", and search for the line which says "ether <mac> ..."
+            result = subprocess.run(["ifconfig"], capture_output=True, text=True)
+            if (len(result.stderr)>0):
+                print(result.stderr)
+            else:
+                lines = result.stdout.split("\n")
+                for line in lines:
+                    if (line.find(" ether ")>0) and (line.find("(Ethernet)")>0):
+                        # print(line)
+                        k = line.find(" ether ")
+                        # print(k)
+                        strMac = line[k+7:k+24]
+                        # e.g. "b8:27:eb:12:34:56"
+                        # print(strMac)
+                        # Remove all ":"
+                        strMac = strMac.replace(":", "")
+                        #print(strMac)
+                        if (len(strMac)!=12):
+                            print("[addressManager] ERROR: invalid length of MAC string. Expected be 6 bytes, means 12 hex characters. Found " + str(len(strMac)))
+                        else:
+                            for i in range(0, 6):
+                                sTwoChar = strMac[2*i : 2*i+2]
+                                ba[i] = int(sTwoChar, 16)
+                            self.localMac = ba
+                            print("[addressManager] we have local MAC " + prettyMac(self.localMac) + ".")
+            
     def setPevMac(self, pevMac):
         # During the SLAC, the MAC of the PEV was found out. Store it, maybe we need it later.
         self.pevMac = pevMac
@@ -166,6 +214,6 @@ if __name__ == "__main__":
     am = addressManager()
     #am.setPevIp(bytearray([0xfe, 0x80]))
     am.setPevIp(bytearray([0xfe, 0x80, 0x00, 0x00, 0xfe, 0x80, 0x00, 0x00, 0xfe, 0x80, 0x00, 0x00, 0xDE, 0xAD, 0xBE, 0xEF]))
-    print(am.getLinkLocalIpv6Address())
-    print(am.getLinkLocalIpv6Address(resulttype="bytearray"))
+    print("Test result: LinkLocalIpv6=" + am.getLinkLocalIpv6Address())
+    print("same as byte array: " + str(am.getLinkLocalIpv6Address(resulttype="bytearray")))
     
