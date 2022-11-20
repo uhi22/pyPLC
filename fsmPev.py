@@ -167,6 +167,9 @@ class fsmPev():
             self.enterState(0)
 
     def stateFunctionWaitForPreChargeResponse(self):
+        if (self.DelayCycles>0):
+            self.DelayCycles-=1
+            return    
         if (len(self.rxData)>0):
             print("In state WaitForPreChargeResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
@@ -176,7 +179,11 @@ class fsmPev():
             if (strConverterResult.find("PreChargeRes")>0):
                 # todo: check the request content, and fill response parameters
                 print("PreCharge aknowledge received.")
-                print("As Demo, we stay in PreCharge until the timeout elapses.")
+                print("As Demo, we stay in PreCharge forever.")
+                msg = addV2GTPHeader(exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
+                print("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)
+                self.DelayCycles=15 # wait with the next evaluation approx half a second
         if (self.isTooLong()):
             self.enterState(0)
     
@@ -216,6 +223,7 @@ class fsmPev():
         self.state = stateNotYetInitialized
         self.sessionId = "DEAD55AADEAD55AA"
         self.cyclesInState = 0
+        self.DelayCycles = 0
         self.rxData = []        
         # we do NOT call the reInit, because we want to wait with the connection until external trigger comes
                 
