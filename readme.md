@@ -110,7 +110,9 @@ Now, in the IDLE shall 3.10.6, the import works:
 ```
 
 ### Usage on Raspberry
-Pcap-ct does not work with Python 3.4. After update to Python 3.8, it works.
+Pitfall: Pcap-ct does not work with Python 3.4. After update to Python 3.8, it works.
+
+See See [Raspberry installation manual](doc/installation_on_raspberry.md)
 
 ## Example flow
 This chapter describes the start of a charging session, considering all layers. It is NOT the description of the currently
