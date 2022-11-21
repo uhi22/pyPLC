@@ -150,6 +150,37 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[18]=0xB0 # 
         self.mytransmitbuffer[19]=0x52 # 
 
+    def composeGetSwWithRamdomMac(self):
+		# GET_SW.REQ request, as used by the win10 laptop
+        self.mytransmitbuffer = bytearray(60)
+        self.cleanTransmitBuffer()
+        # Destination MAC
+        self.fillDestinationMac(MAC_BROADCAST)
+        # Source MAC
+        self.fillSourceMac(self.myMAC)
+        # patch the lower three bytes of the MAC with a random value
+        self.mytransmitbuffer[8] = self.randomMac & 0xff
+        self.mytransmitbuffer[9] = (self.randomMac>>16) & 0xff
+        self.mytransmitbuffer[10] = (self.randomMac>>8) & 0xff
+        self.mytransmitbuffer[11] = self.randomMac & 0xff
+        if (1):
+            if ((self.randomMac%16)==0):
+                self.fillSourceMac([0xb8, 0x27, 0xeb, 0xa3, 0xaf, 0x34 ])
+            if ((self.randomMac%16)==1):
+                self.fillSourceMac([0xb8, 0x27, 0xeb, 0x72, 0x66, 0x06 ])
+        self.randomMac += 1 # new MAC for the next round
+        
+        # Protocol
+        self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
+        self.mytransmitbuffer[13]=0xE1
+        self.mytransmitbuffer[14]=0x00 # version
+        self.mytransmitbuffer[15]=0x00 # GET_SW.REQ
+        self.mytransmitbuffer[16]=0xA0 # 
+        self.mytransmitbuffer[17]=0x00 # Vendor OUI
+        self.mytransmitbuffer[18]=0xB0 # 
+        self.mytransmitbuffer[19]=0x52 # 
+        
+
     def composeSetKey(self, variation=0):
 		# CM_SET_KEY.REQ request
         # From example trace from catphish https://openinverter.org/forum/viewtopic.php?p=40558&sid=9c23d8c3842e95c4cf42173996803241#p40558
@@ -480,6 +511,10 @@ class pyPlcHomeplug():
         if (selection=="G"):
             self.composeGetKey()
             self.addToTrace("transmitting GET_KEY")           
+            self.transmit(self.mytransmitbuffer)
+        if (selection=="M"):
+            self.composeGetSwWithRamdomMac()
+            self.addToTrace("transmitting GetSwWithRamdomMac")           
             self.transmit(self.mytransmitbuffer)
             
     def transmit(self, pkt):
@@ -841,6 +876,7 @@ class pyPlcHomeplug():
         self.callbackShowStatus = callbackShowStatus
         self.callbackReadyForTcp = callbackReadyForTcp
         self.addressManager = addrMan
+        self.randomMac = 0
         self.pevSequenceState = 0
         self.pevSequenceCyclesInState = 0
         self.numberOfSoftwareVersionResponses = 0
