@@ -82,4 +82,16 @@ Open a second console window, and start here the pev in simulation mode
 `sudo python pyPlc.py P S`.
 We should see how the EVSE and PEV are talking to each other.
 
+## Nice-to-have: Password-less SSH connection from the Windows notebook to the Pi
 
+https://strobelstefan.org/2019/10/16/zugriff-via-ssh-ohne-passworteingabe-anmeldung-erfolgt-durch-ausgetauschten-ssh-schluessel/
+- Windows: C:\Program Files\PuTTY\puttygen.exe
+- Windows: store the public and private key into local drive
+- Pi: create a new file in $home/.ssh, with name "authorized_keys".
+- Pi: copy the public key into this file
+- Windows: Putty
+- enter host name of the Pi
+- in connection->Data, enter user name (default: pi)
+- in connection->SSH->Auth, browse to the private key generated above.
+- in session, give a name for the session, and click "safe" to store the connection settings
+- next time, the connection to the pi works just by clicking the saved session.
