@@ -73,6 +73,21 @@ MMTYPE_CNF = 0x0001
 MMTYPE_IND = 0x0002
 MMTYPE_RSP = 0x0003
 
+STATE_INITIAL = 0
+STATE_MODEM_SEARCH_ONGOING = 1
+STATE_READY_FOR_SLAC       = 2
+STATE_WAITING_FOR_MODEM_RESTARTED = 3
+STATE_WAITING_FOR_SLAC_PARAM_CNF  = 4
+STATE_BEFORE_START_ATTEN_CHAR     = 5
+STATE_SOUNDING                    = 6
+STATE_WAIT_FOR_ATTEN_CHAR_IND     = 7
+STATE_ATTEN_CHAR_IND_RECEIVED     = 8
+STATE_DELAY_BEFORE_MATCH          = 9
+STATE_WAITING_FOR_SLAC_MATCH_CNF  = 10
+STATE_WAITING_FOR_RESTART2        = 11
+STATE_FIND_MODEMS2         = 12
+STATE_WAITING_FOR_RESTART2 = 13
+STATE_SDP                  = 14
 
  
 class pyPlcHomeplug():    
@@ -578,9 +593,9 @@ class pyPlcHomeplug():
         # As PEV, we receive the first response from the charger.
         self.addToTrace("received SLAC_PARAM.CNF")
         if (self.iAmPev==1):
-            if (self.pevSequenceState==1): # we were waiting for the SlacParamCnf
+            if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_PARAM_CNF): # we were waiting for the SlacParamCnf
                 self.pevSequenceDelayCycles = 4 # original Ioniq is waiting 200ms
-                self.enterState(2) # enter next state. Will be handled in the cyclic runPevSequencer
+                self.enterState(self.pevSequenceState+1) # enter next state. Will be handled in the cyclic runPevSequencer
             
     def evaluateMnbcSoundInd(self):
         # We received MNBC_SOUND.IND from the PEV. Normally this happens 10times, with a countdown (remaining number of sounds)
@@ -598,7 +613,7 @@ class pyPlcHomeplug():
         self.addToTrace("received ATTEN_CHAR.IND")    
         if (self.iAmPev==1):
             self.addToTrace("[PEVSLAC] received AttenCharInd in state " + str(self.pevSequenceState))
-            if (self.pevSequenceState==6): # we were waiting for the AttenCharInd
+            if (self.pevSequenceState==STATE_WAIT_FOR_ATTEN_CHAR_IND): # we were waiting for the AttenCharInd
                 # todo: Handle the case when we receive multiple responses from different chargers.
                 #       Wait a certain time, and compare the attenuation profiles. Decide for the nearest charger.
                 # Take the MAC of the charger from the frame, and store it for later use.
@@ -606,11 +621,11 @@ class pyPlcHomeplug():
                     self.evseMac[i] = self.myreceivebuffer[6+i] # source MAC starts at offset 6
                 self.addressManager.setEvseMac(self.evseMac)
                 self.AttenCharIndNumberOfSounds = self.myreceivebuffer[69]
-                self.addToTrace("number of sounds reported by the EVSE (should be 10): " + str(self.AttenCharIndNumberOfSounds)) 
+                self.addToTrace("[PEVSLAC] number of sounds reported by the EVSE (should be 10): " + str(self.AttenCharIndNumberOfSounds)) 
                 self.composeAttenCharRsp()
                 self.addToTrace("[PEVSLAC] transmitting ATTEN_CHAR.RSP...")
                 self.transmit(self.mytransmitbuffer)                 
-                self.pevSequenceState=7 # enter next state. Will be handled in the cyclic runPevSequencer
+                self.pevSequenceState=STATE_ATTEN_CHAR_IND_RECEIVED # enter next state. Will be handled in the cyclic runPevSequencer
             
             
     def evaluateSlacMatchReq(self):
@@ -648,8 +663,8 @@ class pyPlcHomeplug():
             self.composeSetKey(0)
             self.addToTrace("transmitting CM_SET_KEY.REQ")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
-            if (self.pevSequenceState==9): # we were waiting for finishing the SLAC_MATCH.CNF and SET_KEY.REQ
-                self.pevSequenceState=10
+            if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_MATCH_CNF): # we were waiting for finishing the SLAC_MATCH.CNF and SET_KEY.REQ
+                self.enterState(STATE_WAITING_FOR_RESTART2)
     
     def evaluateReceivedHomeplugPacket(self):
         mmt = self.getManagementMessageType()
@@ -673,7 +688,9 @@ class pyPlcHomeplug():
         if (mmt == CM_GET_SW + MMTYPE_CNF):
             self.evaluateGetSwCnf()
 
-
+    def isEvseModemFound(self):
+        return 0 # todo: look whether the MAC of the EVSE modem is in the list of detected modems
+        
     def enterState(self, n):
         print("[PEVSLAC] from " + str(self.pevSequenceState) + " entering " + str(n))
         self.pevSequenceState = n
@@ -682,165 +699,206 @@ class pyPlcHomeplug():
     def isTooLong(self):
         # The timeout handling function.
         return (self.pevSequenceCyclesInState > 500)
-        
+
     def runPevSequencer(self):
-        # in PEV mode, initiate the SLAC sequence
+        # in PevMode, check whether homeplug modem is connected, run the SLAC and SDP
         self.pevSequenceCyclesInState+=1
-        # Todo: timeout handling to be implemented
-        if (self.iAmPev==1):
-            if (self.pevSequenceState==0): # waiting for start condition
-                # In real life we would check whether we see 5% PWM on the pilot line.
-                # Then we would maybe wait a little bit until the homeplug modems are awake.
-                # Now sending the first packet for the SLAC sequence:
-                self.composeSlacParamReq()
-                self.addToTrace("[PEVSLAC] transmitting SLAC_PARAM.REQ...")
-                self.transmit(self.mytransmitbuffer)                
-                self.enterState(1)
-                return
-            if (self.pevSequenceState==1): # waiting for SLAC_PARAM.CNF
-                if (self.isTooLong()):
-                    self.enterState(0)
-                return
-            if (self.pevSequenceState==2): # received SLAC_PARAM.CNF
-                # between the SLAC_PARAM.CNF and the first START_ATTEN_CHAR.IND the Ioniq waits 200ms
-                if (self.pevSequenceDelayCycles>0):
-                    self.pevSequenceDelayCycles-=1
+        if (self.pevSequenceState==STATE_INITIAL): # Initial state.
+            # In real life we would check whether we see 5% PWM on the pilot line. We skip this check.
+            self.isSimulationMode = 0
+            self.isSDPDone = 0
+            self.numberOfFoundModems = 0
+            self.nEvseModemMissingCounter = 0
+            # First action: find the connected homeplug modems, by sending a GET_KEY
+            self.composeGetKey()
+            self.addToTrace("[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...")
+            self.transmit(self.mytransmitbuffer)                
+            self.enterState(STATE_MODEM_SEARCH_ONGOING)
+            return
+        if (self.pevSequenceState==STATE_MODEM_SEARCH_ONGOING): # Waiting for the modems to answer.
+            print("test")
+            if (self.pevSequenceCyclesInState>=10):
+                # It was sufficient time to get the answers from the modems.
+                self.addToTrace("[PEVSLAC] It was sufficient time to get the answers from the modems.")
+                # Let's see what we received.
+                if (self.numberOfFoundModems==0):
+                    self.addToTrace("[PEVSLAC] No modem connected. We assume, we run in a simulation environment.")
+                    self.isSimulationMode = 1
+                    self.enterState(STATE_READY_FOR_SLAC)
                     return
+                else:
+                    # we have at least a local modem. Maybe more remote.
+                    # We want to make sure, that the local modem is set to the "default key", so that
+                    # it is possible to connect to the PLC network for development purposes.
+                    # That's why we check the key, and if it is not the intended, we set the default.
+                    if (self.isDefaultLocalKey):
+                        self.enterState(STATE_READY_FOR_SLAC)
+                        return
+                    else:
+                        self.composeSetKey() # set the default ("developer") key
+                        self.addToTrace("[PEVSLAC] setting the default developer key...")
+                        self.transmit(self.mytransmitbuffer)        
+                        self.enterState(STATE_WAITING_FOR_MODEM_RESTARTED)
+                        return
+            return            
+        if (self.pevSequenceState==STATE_WAITING_FOR_MODEM_RESTARTED): # Waiting for the modem to restart after SetKey.
+            if (self.pevSequenceCyclesInState>=100):
+                self.addToTrace("[PEVSLAC] Assuming the modem is up again.")
+                self.enterState(STATE_READY_FOR_SLAC)
+            return
+        if (self.pevSequenceState==STATE_READY_FOR_SLAC):
+            self.addToTrace("[PEVSLAC] Sending SLAC_PARAM.REQ...")
+            self.composeSlacParamReq()
+            self.transmit(self.mytransmitbuffer)                
+            self.enterState(STATE_WAITING_FOR_SLAC_PARAM_CNF)
+            return
+        if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_PARAM_CNF): # Waiting for slac_param confirmation.
+            self.pevSequenceDelayCycles = 6 # 6*30=180ms as preparation for the next state.
+                                            # Between the SLAC_PARAM.CNF and the first START_ATTEN_CHAR.IND the Ioniq waits 200ms.
+            self.nRemainingStartAttenChar = 3 # There shall be 3 START_ATTEN_CHAR messages.
+            if (self.pevSequenceCyclesInState>=30):
+                # No response for 1s, this is an error.
+                self.addToTrace("[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF")
+                self.enterState(STATE_INITIAL)
+            # (the normal state transition is done in the reception handler)
+            return
+        if (self.pevSequenceState==STATE_BEFORE_START_ATTEN_CHAR): # received SLAC_PARAM.CNF. Multiple transmissions of START_ATTEN_CHAR.                
+            if (self.pevSequenceDelayCycles>0):
+                self.pevSequenceDelayCycles-=1
+                return
+            # The delay time is over. Let's transmit.
+            if (self.nRemainingStartAttenChar>0):
+                self.nRemainingStartAttenChar-=1
                 self.composeStartAttenCharInd()
                 self.addToTrace("[PEVSLAC] transmitting START_ATTEN_CHAR.IND...")
                 self.transmit(self.mytransmitbuffer)        
-                self.enterState(3)
-                self.pevSequenceDelayCycles = 0
+                self.pevSequenceDelayCycles = 0 # original from ioniq is 20ms between the START_ATTEN_CHAR
                 return
-            if (self.pevSequenceState==3):
-                if (self.pevSequenceDelayCycles>0):
-                    self.pevSequenceDelayCycles-=1
-                    return
-                self.composeStartAttenCharInd()
-                self.addToTrace("[PEVSLAC] transmitting START_ATTEN_CHAR.IND...") # original from ioniq is 20ms after the first
-                self.transmit(self.mytransmitbuffer)                
-                self.enterState(4)
-                self.pevSequenceDelayCycles = 0
+            else:
+                # all three START_ATTEN_CHAR.IND are finished. Now we send 10 MNBC_SOUND.IND
+                self.pevSequenceDelayCycles = 1 # original from ioniq is 40ms after the last START_ATTEN_CHAR.IND
+                self.remainingNumberOfSounds = 10 # We shall transmit 10 sound messages.
+                self.enterState(STATE_SOUNDING)
+            return
+        if (self.pevSequenceState==STATE_SOUNDING): # Multiple transmissions of MNBC_SOUND.IND.                
+            if (self.pevSequenceDelayCycles>0):
+                self.pevSequenceDelayCycles-=1
                 return
-            if (self.pevSequenceState==4):
-                if (self.pevSequenceDelayCycles>0):
-                    self.pevSequenceDelayCycles-=1
-                    return
-                self.composeStartAttenCharInd()
-                self.addToTrace("[PEVSLAC] transmitting START_ATTEN_CHAR.IND...") # original from ioniq is 20ms after the second
-                self.transmit(self.mytransmitbuffer)                
-                self.enterState(5)
-                self.pevSequenceDelayCycles = 1
-                self.remainingNumberOfSounds = 10
-                return
-            if (self.pevSequenceState==5): # START_ATTEN_CHAR.IND are finished. Now we send 10 MNBC_SOUND.IND
-                if (self.pevSequenceDelayCycles>0):
-                    self.pevSequenceDelayCycles-=1
-                    return
-                if (self.remainingNumberOfSounds>0):
-                    self.remainingNumberOfSounds-=1
-                    self.composeNmbcSoundInd()
-                    self.addToTrace("[PEVSLAC] transmitting MNBC_SOUND.IND...") # original from ioniq is 40ms after the last START_ATTEN_CHAR.IND
-                    self.transmit(self.mytransmitbuffer)
-                    if (self.remainingNumberOfSounds==0):
-                        self.enterState(6) # move fast to the next state, so that a fast response is catched in the correct state
-                    self.pevSequenceDelayCycles = 0 # original from ioniq is 20ms between the messages
-                return
-            if (self.pevSequenceState==6):  # waiting for ATTEN_CHAR.IND
-                # todo: it is possible that we receive this message from multiple chargers. We need
-                # to select the charger with the loudest reported signals.
-                if (self.isTooLong()):
-                    self.enterState(0)
-                return
-            if (self.pevSequenceState==7):  # ATTEN_CHAR.IND was received and the nearest charger decided and the ATTEN_CHAR.RSP was sent.
-                self.enterState(8)
-                self.pevSequenceDelayCycles = 30 # original from ioniq is 860ms to 980ms from ATTEN_CHAR.RSP to SLAC_MATCH.REQ
-                return
-            if (self.pevSequenceState==8):  # ATTEN_CHAR.RSP was transmitted. Next is SLAC_MATCH.REQ
-                if (self.pevSequenceDelayCycles>0):
-                    self.pevSequenceDelayCycles-=1
-                    return
-                self.composeSlacMatchReq()
-                self.addToTrace("[PEVSLAC] transmitting SLAC_MATCH.REQ...")
-                self.transmit(self.mytransmitbuffer)  
-                self.enterState(9)
-                return
-            if (self.pevSequenceState==9):  # waiting for SLAC_MATCH.CNF
-                if (self.isTooLong()):
-                    self.enterState(0)
-                return
-            if (self.pevSequenceState==10):  # SLAC is finished, SET_KEY.REQ is transmitted. Wait some time, until
-                # the homeplug modem made the reset and is ready with the new key.
-                self.addToTrace("[PEVSLAC] waiting until homeplug modem starts up with new key...")
-                if (self.isSimulationMode==0):
-                    self.pevSequenceDelayCycles = 200 # long waiting time if we have real homeplug modems
-                else:
-                    self.pevSequenceDelayCycles = 10 # short waiting in simulation
-                self.enterState(11)
-                return
-            if (self.pevSequenceState==11):  
-                if (self.pevSequenceDelayCycles>0):
-                    self.pevSequenceDelayCycles-=1
-                    return
-                # modem should be ready with new key. AVLN should be established.
-                # To check this, we broadcast a software version request. All modems in the network should respond.
-                self.numberOfSoftwareVersionResponses = 0
-                self.composeGetSwReq()
-                self.addToTrace("[PEVSLAC] transmitting GetSwReq...")
+            if (self.remainingNumberOfSounds>0):
+                self.remainingNumberOfSounds-=1
+                self.composeNmbcSoundInd()
+                self.addToTrace("[PEVSLAC] transmitting MNBC_SOUND.IND...") # original from ioniq is 40ms after the last START_ATTEN_CHAR.IND
                 self.transmit(self.mytransmitbuffer)
-                self.pevSequenceDelayCycles = 20
-                self.enterState(12)
+                if (self.remainingNumberOfSounds==0):
+                    self.enterState(STATE_WAIT_FOR_ATTEN_CHAR_IND) # move fast to the next state, so that a fast response is catched in the correct state
+                self.pevSequenceDelayCycles = 0 # original from ioniq is 20ms between the messages
+            return
+        if (self.pevSequenceState==STATE_WAIT_FOR_ATTEN_CHAR_IND):  # waiting for ATTEN_CHAR.IND
+            # todo: it is possible that we receive this message from multiple chargers. We need
+            # to select the charger with the loudest reported signals.
+            if (self.isTooLong()):
+                self.enterState(STATE_INITIAL)
+            return
+            #(the normal state transition is done in the reception handler)
+        if (self.pevSequenceState==STATE_ATTEN_CHAR_IND_RECEIVED):  # ATTEN_CHAR.IND was received and the
+                                                                    # nearest charger decided and the 
+                                                                    # ATTEN_CHAR.RSP was sent.
+            self.enterState(STATE_DELAY_BEFORE_MATCH)
+            self.pevSequenceDelayCycles = 30 # original from ioniq is 860ms to 980ms from ATTEN_CHAR.RSP to SLAC_MATCH.REQ
+            return
+        if (self.pevSequenceState==STATE_DELAY_BEFORE_MATCH): # Waiting time before SLAC_MATCH.REQ
+            if (self.pevSequenceDelayCycles>0):
+                self.pevSequenceDelayCycles-=1
                 return
-            if (self.pevSequenceState==12):  
-                if (self.pevSequenceDelayCycles>0):
-                    self.pevSequenceDelayCycles-=1
+            self.composeSlacMatchReq()
+            self.addToTrace("[PEVSLAC] transmitting SLAC_MATCH.REQ...")
+            self.transmit(self.mytransmitbuffer)  
+            self.enterState(STATE_WAITING_FOR_SLAC_MATCH_CNF)
+            return
+        if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_MATCH_CNF):  # waiting for SLAC_MATCH.CNF
+            if (self.isTooLong()):
+                self.enterState(STATE_INITIAL)
+                return
+            self.pevSequenceDelayCycles = 100 # 3s reset wait time (may be a little bit too short, need a retry)
+            # (the normal state transition is done in the receive handler of SLAC_MATCH.CNF,
+            # including the transmission of SET_KEY.REQ)
+            return
+        if (self.pevSequenceState==STATE_WAITING_FOR_RESTART2):  # SLAC is finished, SET_KEY.REQ is 
+                                                                 # transmitted. The homeplug modem makes
+                                                                 # the reset and we need to wait until it
+                                                                 # is up with the new key.
+            if (self.pevSequenceDelayCycles>0):
+                self.pevSequenceDelayCycles-=1
+                return
+            self.addToTrace("[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...")
+            self.composeGetKey()
+            self.transmit(self.mytransmitbuffer)                
+            self.enterState(STATE_FIND_MODEMS2)
+            return
+        if (self.pevSequenceState==STATE_FIND_MODEMS2): # Waiting for the modems to answer.
+            if (self.pevSequenceCyclesInState>=10):
+                # It was sufficient time to get the answers from the modems.
+                # Let's see what we received.
+                if (not self.isEvseModemFound()):
+                    self.nEvseModemMissingCounter+=1
+                    if (self.nEvseModemMissingCounter>5):
+                        if (self.isSimulationMode):
+                            self.addToTrace("[PEVSLAC] No EVSE modem. But this is fine, we are in SimulationMode.")
+                        else:
+                            # We lost the connection to the EVSE modem. Back to the beginning.
+                            self.addToTrace("[PEVSLAC] We lost the connection to the EVSE modem. Back to the beginning.")
+                            self.enterState(STATE_INITIAL)
+                            return
+                    # The EVSE modem is (shortly) not seen. Ask again.
+                    self.pevSequenceDelayCycles=30
+                    self.enterState(STATE_WAITING_FOR_RESTART2)
                     return
-                # we should have received a software version response from at least two modems.
-                print("[PEVSLAC] Number of modems in the AVLN: " + str(self.numberOfSoftwareVersionResponses))
-                if ((self.numberOfSoftwareVersionResponses<2) and (self.isSimulationMode==0)):
-                    print("[PEVSLAC] ERROR: There should be at least two modems, one from car and one from charger.")
-                    self.callbackReadyForTcp(0) # report that we lost the connection
-                    self.addressManager.setSeccIp("") # forget the IPv6 of the charger
-                    self.enterState(0)
-                else:
-                    # The AVLN is established, we have two modems in the network.
-                    # Next step is to discover the chargers communication controller (SECC) using discovery protocol (SDP).
-                    self.pevSequenceDelayCycles=0
-                    self.SdpRepetitionCounter = 50 # prepare the number of retries for the SDP. The more the better.
-                    self.enterState(13)
-                return
+                # The EVSE modem is present.
+                self.nEvseModemMissingCounter=0
+                # The AVLN is established, we have at least two modems in the network.
+                # If we did not SDP up to now, let's do it.
+                if (self.isSDPDone):
+                    # SDP is already done. No need to do it again. We are finished for the normal case.
+                    # But we want to check whether the connection is still alive, so we start the
+                    # modem-search from time to time.
+                    self.pevSequenceDelayCycles = 300 # e.g. 10s
+                    self.enterState(STATE_WAITING_FOR_RESTART2)
+                    return
+                # SDP was not done yet. Now we start it.
+                # Next step is to discover the chargers communication controller (SECC) using discovery protocol (SDP).
+                self.pevSequenceDelayCycles=0
+                self.SdpRepetitionCounter = 50 # prepare the number of retries for the SDP. The more the better.
+                self.enterState(STATE_SDP)
+            return
                 
-            if (self.pevSequenceState==13):  # SDP request transmission and waiting for SDP response.
-                if (len(self.addressManager.getSeccIp())>0):
-                    # we received an SDP response, and can start the high-level communication
-                    print("[PEVSLAC] Now we know the chargers IP.")
-                    self.callbackReadyForTcp(1)
-                    self.enterState(14)
-                    return
-                if (self.pevSequenceDelayCycles>0):
-                    # just waiting until next action
-                    self.pevSequenceDelayCycles-=1
-                    return
-                if (self.SdpRepetitionCounter>0):
-                    # Reference: The Ioniq waits 4.1s from the slac_match.cnf to the SDP request.
-                    # Here we send the SdpRequest. Maybe too early, but we will retry if there is no response.
-                    self.ipv6.initiateSdpRequest()
-                    self.SdpRepetitionCounter-=1
-                    self.pevSequenceDelayCycles = 10 # e.g. half-a-second delay until re-try of the SDP
-                    self.enterState(13) # stick in the same state
-                    return
-                if (self.isTooLong()):
-                    print("[PEVSLAC] ERROR: Did not receive SDP response. Starting from the beginning.")
-                    self.enterState(0)
+        if (self.pevSequenceState==STATE_SDP):  # SDP request transmission and waiting for SDP response.
+            if (len(self.addressManager.getSeccIp())>0):
+                # we received an SDP response, and can start the high-level communication
+                print("[PEVSLAC] Now we know the chargers IP.")
+                self.isSDPDone = 1
+                self.callbackReadyForTcp(1)
+                # Continue with checking the connection, for the case somebody pulls the plug.
+                self.pevSequenceDelayCycles = 300 # e.g. 10s
+                self.enterState(STATE_WAITING_FOR_RESTART2)
                 return
-            if (self.pevSequenceState==14):  # AVLN is established. SDP finished. Nothing more to do, just wait until unplugging.
-                # Todo: if (self.isUnplugged()): self.pevSequenceState=0
-                # Or we just check the connection cyclically by sending software version requests...
-                self.pevSequenceDelayCycles = 500
-                self.enterState(11)
+            if (self.pevSequenceDelayCycles>0):
+                # just waiting until next action
+                self.pevSequenceDelayCycles-=1
                 return
-            # invalid state is reached. As robustness measure, go to initial state.
-            self.enterState(0)
+            if (self.SdpRepetitionCounter>0):
+                # Reference: The Ioniq waits 4.1s from the slac_match.cnf to the SDP request.
+                # Here we send the SdpRequest. Maybe too early, but we will retry if there is no response.
+                self.ipv6.initiateSdpRequest()
+                self.SdpRepetitionCounter-=1
+                self.pevSequenceDelayCycles = 15 # e.g. half-a-second delay until re-try of the SDP
+                self.enterState(STATE_SDP) # stick in the same state
+                return
+            # All repetitions are over, no SDP response was seen. Back to the beginning.    
+            print("[PEVSLAC] ERROR: Did not receive SDP response. Starting from the beginning.")
+            self.enterState(STATE_INITIAL)
+            return
+        # invalid state is reached. As robustness measure, go to initial state.
+        self.enterState(STATE_INITIAL)
 
         
     def findEthernetAdaptor(self):
@@ -937,11 +995,10 @@ class pyPlcHomeplug():
     def mainfunction(self):  
         # https://stackoverflow.com/questions/31305712/how-do-i-make-libpcap-pcap-loop-non-blocking
         # Tell the sniffer to give max 100 received packets to the callback function:
-        self.sniffer.dispatch(100, self.receiveCallback, None)
-
-                
+        self.sniffer.dispatch(100, self.receiveCallback, None)                
         self.showStatus("nPacketsReceived=" + str(self.nPacketsReceived))
-        self.runPevSequencer() # run the message sequencer for the PEV side
+        if (self.iAmPev==1):
+            self.runPevSequencer() # run the message sequencer for the PEV side
         
     def close(self):
         self.sniffer.close()
