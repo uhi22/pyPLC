@@ -78,16 +78,17 @@ STATE_MODEM_SEARCH_ONGOING = 1
 STATE_READY_FOR_SLAC       = 2
 STATE_WAITING_FOR_MODEM_RESTARTED = 3
 STATE_WAITING_FOR_SLAC_PARAM_CNF  = 4
-STATE_BEFORE_START_ATTEN_CHAR     = 5
-STATE_SOUNDING                    = 6
-STATE_WAIT_FOR_ATTEN_CHAR_IND     = 7
-STATE_ATTEN_CHAR_IND_RECEIVED     = 8
-STATE_DELAY_BEFORE_MATCH          = 9
-STATE_WAITING_FOR_SLAC_MATCH_CNF  = 10
-STATE_WAITING_FOR_RESTART2        = 11
-STATE_FIND_MODEMS2         = 12
-STATE_WAITING_FOR_RESTART2 = 13
-STATE_SDP                  = 14
+STATE_SLAC_PARAM_CNF_RECEIVED     = 5
+STATE_BEFORE_START_ATTEN_CHAR     = 6
+STATE_SOUNDING                    = 7
+STATE_WAIT_FOR_ATTEN_CHAR_IND     = 8
+STATE_ATTEN_CHAR_IND_RECEIVED     = 9
+STATE_DELAY_BEFORE_MATCH          = 10
+STATE_WAITING_FOR_SLAC_MATCH_CNF  = 11
+STATE_WAITING_FOR_RESTART2        = 12
+STATE_FIND_MODEMS2         = 13
+STATE_WAITING_FOR_RESTART2 = 14
+STATE_SDP                  = 15
 
  
 class pyPlcHomeplug():    
@@ -536,14 +537,55 @@ class pyPlcHomeplug():
         self.sniffer.sendpacket(bytes(pkt))
       
     def evaluateGetKeyCnf(self):
-        # The getkey response contains the Network ID (NID), even if the request was rejected. We store the NID,
-        # to have it available for the next request.
         self.addToTrace("received GET_KEY.CNF")
+        self.numberOfFoundModems += 1
+        sourceMac=bytearray(6)
+        for i in range(0, 6):
+            sourceMac[i] = self.myreceivebuffer[6+i]
+        strMac=prettyMac(sourceMac)
+        result = self.myreceivebuffer[19] # 0 in case of success
+        if (result==0):
+            strResult="(OK)"
+        else:
+            strResult="(NOK)"
+        self.addToTrace("Modem #" + str(self.numberOfFoundModems) + " has " + strMac + " and result code is " + str(result) + strResult)        
+        if (self.numberOfFoundModems>1):
+            self.addToTrace("Info: NOK is normal for remote modems.")
+            
+        # We observed the following cases:
+        # (A) Result=1 (NOK), NID all 00, key all 00: We requested the key with the wrong NID.
+        # (B) Result=0 (OK), NID all 00, key non-zero: We used the correct NID for the request.
+        #            It is the local TPlink adaptor. A fresh started non-coordinator, like the PEV side.
+        # (C) Result=0 (OK), NID non-zero, key non-zero: We used the correct NID for the request.
+        #            It is the local TPlink adaptor.
+        # (D) Result=1 (NOK), NID non-zero, key all 00: It was a remote device. They are rejecting the GET_KEY.
+        if (result==0):
+            # The ok case is for sure the local modem. Let's store its data.
+            self.localModemMac = sourceMac
+            self.localModemCurrentKey=bytearray(16)
+            s=""
+            for i in range(0, 16): # NMK has 16 bytes
+                self.localModemCurrentKey[i] = self.myreceivebuffer[41+i]
+                s=s+hex(self.localModemCurrentKey[i])+ " "
+            self.addToTrace("The local modem has key " + s)
+            if (self.localModemCurrentKey == bytearray(self.NMKdevelopment)):
+                self.addToTrace("This is the developer NMK.")
+                self.isDeveloperLocalKey = 1
+            else:
+                self.addToTrace("This is NOT the developer NMK.")            
+            self.localModemFound=1 
         s = ""
+        # The getkey response contains the Network ID (NID), even if the request was rejected. We store the NID,
+        # to have it available for the next request. Use case: A fresh started, unconnected non-Coordinator
+        # modem has the default-NID all 00. On the other hand, a fresh started coordinator has the
+        # NID which he was configured before. We want to be able to cover both cases. That's why we
+        # ask GET_KEY, it will tell the NID (even if response code is 1 (NOK), and we will use this
+        # received NID for the next request. This will be ansered positive (for the local modem).
         for i in range(0, 7): # NID has 7 bytes
             self.NID[i] = self.myreceivebuffer[29+i]
             s=s+hex(self.NID[i])+ " "
         print("From GetKeyCnf, got network ID (NID) " + s)
+        
 
     def evaluateSetKeyCnf(self):
         # The Setkey confirmation
@@ -552,7 +594,7 @@ class pyPlcHomeplug():
         self.addToTrace("received SET_KEY.CNF")
         result = self.myreceivebuffer[19]
         if (result == 0):
-            self.addToTrace("SetKeyCnf says 0, this is a bad sign")
+            self.addToTrace("SetKeyCnf says 0, this would be a bad sign for local modem, but normal for remote.")
         else:
             self.addToTrace("SetKeyCnf says " + str(result) + ", this is formally 'rejected', but indeed ok.")
 
@@ -595,7 +637,7 @@ class pyPlcHomeplug():
         if (self.iAmPev==1):
             if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_PARAM_CNF): # we were waiting for the SlacParamCnf
                 self.pevSequenceDelayCycles = 4 # original Ioniq is waiting 200ms
-                self.enterState(self.pevSequenceState+1) # enter next state. Will be handled in the cyclic runPevSequencer
+                self.enterState(STATE_SLAC_PARAM_CNF_RECEIVED) # enter next state. Will be handled in the cyclic runPevSequencer
             
     def evaluateMnbcSoundInd(self):
         # We received MNBC_SOUND.IND from the PEV. Normally this happens 10times, with a countdown (remaining number of sounds)
@@ -689,7 +731,8 @@ class pyPlcHomeplug():
             self.evaluateGetSwCnf()
 
     def isEvseModemFound(self):
-        return 0 # todo: look whether the MAC of the EVSE modem is in the list of detected modems
+        #return 0 # todo: look whether the MAC of the EVSE modem is in the list of detected modems
+        return self.numberOfFoundModems>1
         
     def enterState(self, n):
         print("[PEVSLAC] from " + str(self.pevSequenceState) + " entering " + str(n))
@@ -708,6 +751,8 @@ class pyPlcHomeplug():
             self.isSimulationMode = 0
             self.isSDPDone = 0
             self.numberOfFoundModems = 0
+            self.localModemFound = 0
+            self.isDeveloperLocalKey = 0
             self.nEvseModemMissingCounter = 0
             # First action: find the connected homeplug modems, by sending a GET_KEY
             self.composeGetKey()
@@ -727,19 +772,33 @@ class pyPlcHomeplug():
                     self.enterState(STATE_READY_FOR_SLAC)
                     return
                 else:
-                    # we have at least a local modem. Maybe more remote.
-                    # We want to make sure, that the local modem is set to the "default key", so that
-                    # it is possible to connect to the PLC network for development purposes.
-                    # That's why we check the key, and if it is not the intended, we set the default.
-                    if (self.isDefaultLocalKey):
-                        self.enterState(STATE_READY_FOR_SLAC)
-                        return
+                    if (self.localModemFound):
+                        # we have at least a local modem. Maybe more remote.
+                        # We want to make sure, that the local modem is set to the "default key", so that
+                        # it is possible to connect to the PLC network for development purposes.
+                        # That's why we check the key, and if it is not the intended, we set the default.
+                        if (self.isDeveloperLocalKey):
+                            self.enterState(STATE_READY_FOR_SLAC)
+                            return
+                        else:
+                            self.composeSetKey() # set the default ("developer") key
+                            self.addToTrace("[PEVSLAC] setting the default developer key...")
+                            self.transmit(self.mytransmitbuffer)        
+                            self.enterState(STATE_WAITING_FOR_MODEM_RESTARTED)
+                            return
                     else:
-                        self.composeSetKey() # set the default ("developer") key
-                        self.addToTrace("[PEVSLAC] setting the default developer key...")
-                        self.transmit(self.mytransmitbuffer)        
-                        self.enterState(STATE_WAITING_FOR_MODEM_RESTARTED)
+                        # we found modems, but non of it could be identified as the local modem. This happens
+                        # when we do not use the matching NID for the request. We try again, because in the
+                        # first response we got a better NID in the meanwhile.
+                        self.addToTrace("[PEVSLAC] local modem not yet identified.")
+                        self.numberOfFoundModems = 0
+                        # find the connected homeplug modems, by sending a GET_KEY
+                        self.composeGetKey()
+                        self.addToTrace("[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...")
+                        self.transmit(self.mytransmitbuffer)                
+                        self.enterState(STATE_MODEM_SEARCH_ONGOING)
                         return
+                        
             return            
         if (self.pevSequenceState==STATE_WAITING_FOR_MODEM_RESTARTED): # Waiting for the modem to restart after SetKey.
             if (self.pevSequenceCyclesInState>=100):
@@ -753,14 +812,17 @@ class pyPlcHomeplug():
             self.enterState(STATE_WAITING_FOR_SLAC_PARAM_CNF)
             return
         if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_PARAM_CNF): # Waiting for slac_param confirmation.
-            self.pevSequenceDelayCycles = 6 # 6*30=180ms as preparation for the next state.
-                                            # Between the SLAC_PARAM.CNF and the first START_ATTEN_CHAR.IND the Ioniq waits 200ms.
-            self.nRemainingStartAttenChar = 3 # There shall be 3 START_ATTEN_CHAR messages.
             if (self.pevSequenceCyclesInState>=30):
                 # No response for 1s, this is an error.
                 self.addToTrace("[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF")
                 self.enterState(STATE_INITIAL)
             # (the normal state transition is done in the reception handler)
+            return
+        if (self.pevSequenceState==STATE_SLAC_PARAM_CNF_RECEIVED): # slac_param confirmation was received.
+            self.pevSequenceDelayCycles = 6 # 6*30=180ms as preparation for the next state.
+                                            # Between the SLAC_PARAM.CNF and the first START_ATTEN_CHAR.IND the Ioniq waits 200ms.
+            self.nRemainingStartAttenChar = 3 # There shall be 3 START_ATTEN_CHAR messages.
+            self.enterState(STATE_BEFORE_START_ATTEN_CHAR)
             return
         if (self.pevSequenceState==STATE_BEFORE_START_ATTEN_CHAR): # received SLAC_PARAM.CNF. Multiple transmissions of START_ATTEN_CHAR.                
             if (self.pevSequenceDelayCycles>0):
@@ -831,6 +893,7 @@ class pyPlcHomeplug():
                 self.pevSequenceDelayCycles-=1
                 return
             self.addToTrace("[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...")
+            self.numberOfFoundModems = 0 # reset the number, we want to count the modems newly.
             self.composeGetKey()
             self.transmit(self.mytransmitbuffer)                
             self.enterState(STATE_FIND_MODEMS2)
@@ -838,9 +901,11 @@ class pyPlcHomeplug():
         if (self.pevSequenceState==STATE_FIND_MODEMS2): # Waiting for the modems to answer.
             if (self.pevSequenceCyclesInState>=10):
                 # It was sufficient time to get the answers from the modems.
+                self.addToTrace("[PEVSLAC] It was sufficient time to get the answers from the modems.")
                 # Let's see what we received.
-                if (not self.isEvseModemFound()):
+                if ((not self.isEvseModemFound()) and (not self.isSimulationMode)):
                     self.nEvseModemMissingCounter+=1
+                    self.addToTrace("[PEVSLAC] No EVSE seen (yet). Still waiting for it.")
                     if (self.nEvseModemMissingCounter>5):
                         if (self.isSimulationMode):
                             self.addToTrace("[PEVSLAC] No EVSE modem. But this is fine, we are in SimulationMode.")
@@ -854,6 +919,7 @@ class pyPlcHomeplug():
                     self.enterState(STATE_WAITING_FOR_RESTART2)
                     return
                 # The EVSE modem is present.
+                self.addToTrace("[PEVSLAC] EVSE is up, pairing successful.")
                 self.nEvseModemMissingCounter=0
                 # The AVLN is established, we have at least two modems in the network.
                 # If we did not SDP up to now, let's do it.
@@ -865,6 +931,7 @@ class pyPlcHomeplug():
                     self.enterState(STATE_WAITING_FOR_RESTART2)
                     return
                 # SDP was not done yet. Now we start it.
+                self.addToTrace("[PEVSLAC] SDP was not done yet. Now we start it.")
                 # Next step is to discover the chargers communication controller (SECC) using discovery protocol (SDP).
                 self.pevSequenceDelayCycles=0
                 self.SdpRepetitionCounter = 50 # prepare the number of retries for the SDP. The more the better.
@@ -957,7 +1024,8 @@ class pyPlcHomeplug():
         self.findEthernetAdaptor()
         self.sniffer = pcap.pcap(name=self.strInterfaceName, promisc=True, immediate=True, timeout_ms=50)
         self.sniffer.setnonblock(True)
-        self.NMK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key
+        self.NMKdevelopment = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key        
+        self.NMK = self.NMKdevelopment # a default network key
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
         self.pevMac = [0xDC, 0x0E, 0xA1, 0x11, 0x67, 0x08 ] # a default pev MAC. Will be overwritten later.
         self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.
