@@ -27,7 +27,7 @@ dinEVSEProcessingType_Ongoing = "1"
 
 class fsmPev():
     def addToTrace(self, s):
-        self.callbackAddToTrace(s)
+        self.callbackAddToTrace("[PEV] " + s)
         
     def enterState(self, n):
         print("from " + str(self.state) + " entering " + str(n))

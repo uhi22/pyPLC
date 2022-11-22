@@ -21,7 +21,7 @@ stateWaitForPowerDeliveryRequest = 8
 
 class fsmEvse():
     def addToTrace(self, s):
-        self.callbackAddToTrace(s)
+        self.callbackAddToTrace("[EVSE] " + s)
         
     def enterState(self, n):
         self.addToTrace("from " + str(self.state) + " entering " + str(n))
@@ -184,7 +184,7 @@ class fsmEvse():
     def __init__(self, callbackAddToTrace):
         self.callbackAddToTrace = callbackAddToTrace
         self.addToTrace("initializing fsmEvse") 
-        self.Tcp = pyPlcTcpSocket.pyPlcTcpServerSocket()
+        self.Tcp = pyPlcTcpSocket.pyPlcTcpServerSocket(self.callbackAddToTrace)
         self.state = 0
         self.cyclesInState = 0
         self.rxData = []

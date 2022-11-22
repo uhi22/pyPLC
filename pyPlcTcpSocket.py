@@ -192,7 +192,7 @@ class pyPlcTcpServerSocket():
                 client_socket, address = self.ourSocket.accept()
                 # and we append this new socket to the list of sockets, which in the next loop will be handled by the select.
                 self.read_list.append(client_socket)
-                self.addToTrace("Connection from", address)
+                self.addToTrace("Connection from " + str(address))
             else:
                 # It is not the "listener socket", it is an above created "client socket" for talking with a client.
                 # Let's take the data from it:
