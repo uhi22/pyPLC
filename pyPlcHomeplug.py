@@ -35,6 +35,8 @@
 
 import pcap
 import pyPlcIpv6
+import udplog
+import time
 from helpers import * # prettyMac etc
 from pyPlcModes import *
 
@@ -918,8 +920,10 @@ class pyPlcHomeplug():
                     self.pevSequenceDelayCycles=30
                     self.enterState(STATE_WAITING_FOR_RESTART2)
                     return
-                # The EVSE modem is present.
+                # The EVSE modem is present (or we are simulating)
                 self.addToTrace("[PEVSLAC] EVSE is up, pairing successful.")
+                if (self.isSimulationMode):
+                    self.addToTrace("[PEVSLAC] But this is only simulated.")
                 self.nEvseModemMissingCounter=0
                 # The AVLN is established, we have at least two modems in the network.
                 # If we did not SDP up to now, let's do it.
@@ -992,7 +996,10 @@ class pyPlcHomeplug():
         self.iAmEvse = 0 # not emulating a charging station
         self.iAmPev = 0 # not emulating a vehicle
         self.ipv6.enterListenMode()
-        self.showStatus("LISTEN mode", "mode")        
+        self.showStatus("LISTEN mode", "mode")
+
+    def printToUdp(self, s):
+        self.udplog.log(s)
 
     def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE, addrMan=None, callbackReadyForTcp=None, isSimulationMode=0):
         self.mytransmitbuffer = bytearray("Hallo das ist ein Test", 'UTF-8')
@@ -1033,6 +1040,10 @@ class pyPlcHomeplug():
         self.runningCounter=0
         self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager)
         self.ipv6.ownMac = self.myMAC
+        self.udplog = udplog.udplog(self.transmit, self.addressManager)
+        for k in range(0, 10):
+            self.udplog.log("Test message number " + str(k))
+            time.sleep(0.1)
         if (mode == C_LISTEN_MODE):
             self.enterListenMode()
         if (mode == C_EVSE_MODE):

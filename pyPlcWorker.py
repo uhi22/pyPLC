@@ -23,28 +23,33 @@ class pyPlcWorker():
         self.callbackShowStatus = callbackShowStatus
         self.oldAvlnStatus = 0
         self.isSimulationMode = isSimulationMode
-        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.callbackAddToTrace, self.callbackShowStatus, self.mode, self.addressManager, self.callbackReadyForTcp, self.isSimulationMode)
+        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.workerAddToTrace, self.callbackShowStatus, self.mode, self.addressManager, self.callbackReadyForTcp, self.isSimulationMode)
+        self.hp.printToUdp("pyPlcWorker init")
         if (self.mode == C_EVSE_MODE):
-            self.evse = fsmEvse.fsmEvse()
+            self.evse = fsmEvse.fsmEvse(self.workerAddToTrace)
         if (self.mode == C_PEV_MODE):
-            self.pev = fsmPev.fsmPev(self.addressManager)
+            self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace)
  
-    def addToTrace(self, s):
-        self.callbackAddToTrace(s)
+    def workerAddToTrace(self, s):
+        # The central logging function. All logging messages from the different parts of the project
+        # shall come here.
+        #print("workerAddToTrace " + s)
+        self.callbackAddToTrace(s) # give the message to the upper level, eg for console log.
+        self.hp.printToUdp(s) # give the message to the udp for remote logging.
         
     def showStatus(self, s, selection = ""):
         self.callbackShowStatus(s, selection)        
 
     def callbackReadyForTcp(self, status):
         if (status==1):
-            print("[PLCWORKER] Network is established, ready for TCP.")
+            self.workerAddToTrace("[PLCWORKER] Network is established, ready for TCP.")
             if (self.oldAvlnStatus==0):
                 self.oldAvlnStatus = 1
                 if (self.mode == C_PEV_MODE):
                     self.pev.reInit()
                     
         else:
-            print("[PLCWORKER] no network")
+            self.workerAddToTrace("[PLCWORKER] no network")
             self.oldAvlnStatus = 0
         
     def mainfunction(self):
@@ -67,7 +72,7 @@ class pyPlcWorker():
             self.hp.enterPevMode()
             if (not hasattr(self, 'pev')):
                 print("creating pev")
-                self.pev = fsmPev.fsmPev(self.addressManager)
+                self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace)
             self.pev.reInit()
         if (strAction == "E"):
             print("switching to EVSE mode")
@@ -78,7 +83,7 @@ class pyPlcWorker():
             self.hp.enterEvseMode()
             if (not hasattr(self, 'evse')):
                 print("creating fsmEvse")
-                self.evse = fsmEvse.fsmEvse()
+                self.evse = fsmEvse.fsmEvse(self.workerAddToTrace)
             self.evse.reInit()
         if (strAction == "L"):
             print("switching to LISTEN mode")

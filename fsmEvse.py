@@ -20,8 +20,11 @@ stateWaitForPreChargeRequest = 7
 stateWaitForPowerDeliveryRequest = 8
 
 class fsmEvse():
+    def addToTrace(self, s):
+        self.callbackAddToTrace(s)
+        
     def enterState(self, n):
-        print("from " + str(self.state) + " entering " + str(n))
+        self.addToTrace("from " + str(self.state) + " entering " + str(n))
         self.state = n
         self.cyclesInState = 0
         
@@ -32,31 +35,31 @@ class fsmEvse():
         
     def stateFunctionWaitForSupportedApplicationProtocolRequest(self):
         if (len(self.rxData)>0):
-            print("In state WaitForSupportedApplicationProtocolRequest, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForSupportedApplicationProtocolRequest, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DH") # Decode Handshake-request
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("ProtocolNamespace=urn:din")>0):
                 # todo: of course we should care for schemaID and prio also here
-                print("Detected DIN")
+                self.addToTrace("Detected DIN")
                 # Eh for encode handshake, SupportedApplicationProtocolResponse
                 msg = addV2GTPHeader(exiEncode("Eh"))
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForSessionSetupRequest)
         
     def stateFunctionWaitForSessionSetupRequest(self):
         if (len(self.rxData)>0):
-            print("In state stateFunctionWaitForSessionSetupRequest, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state stateFunctionWaitForSessionSetupRequest, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD")
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("SessionSetupReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDa")) # EDa for Encode, Din, SessionSetupResponse
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForServiceDiscoveryRequest)
         if (self.isTooLong()):
@@ -64,15 +67,15 @@ class fsmEvse():
             
     def stateFunctionWaitForServiceDiscoveryRequest(self):
         if (len(self.rxData)>0):
-            print("In state WaitForServiceDiscoveryRequest, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForServiceDiscoveryRequest, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD")
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServiceDiscoveryReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDb")) # EDb for Encode, Din, ServiceDiscoveryResponse
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForServicePaymentSelectionRequest)
         if (self.isTooLong()):
@@ -80,15 +83,15 @@ class fsmEvse():
             
     def stateFunctionWaitForServicePaymentSelectionRequest(self):
         if (len(self.rxData)>0):
-            print("In state WaitForServicePaymentSelectionRequest, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForServicePaymentSelectionRequest, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD")
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServicePaymentSelectionReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDc")) # EDc for Encode, Din, ServicePaymentSelectionResponse
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified. The Ioniq sends PowerDeliveryReq as next.
         if (self.isTooLong()):
@@ -96,40 +99,40 @@ class fsmEvse():
             
     def stateFunctionWaitForFlexibleRequest(self):
         if (len(self.rxData)>0):
-            print("In state WaitForFlexibleRequest, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForFlexibleRequest, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD")
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("PowerDeliveryReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDh")) # EDh for Encode, Din, PowerDeliveryResponse
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("ChargeParameterDiscoveryReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDe")) # EDe for Encode, Din, ChargeParameterDiscoveryResponse
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN               
             if (strConverterResult.find("CableCheckReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDf")) # EDf for Encode, Din, CableCheckResponse
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN               
             if (strConverterResult.find("PreChargeReq")>0):
                 # todo: check the request content, and fill response parameters
                 strPresentVoltage = "345"
                 msg = addV2GTPHeader(exiEncode("EDg_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
             if (strConverterResult.find("ContractAuthenticationReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDl")) # EDl for Encode, Din, ContractAuthenticationResponse
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
 
@@ -152,8 +155,8 @@ class fsmEvse():
             
     def stateFunctionWaitForPowerDeliveryRequest(self):
         if (len(self.rxData)>0):
-            print("In state WaitForPowerDeliveryRequest, received " + prettyHexMessage(self.rxData))
-            print("Todo: Reaction in state WaitForPowerDeliveryRequest is not implemented yet.")
+            self.addToTrace("In state WaitForPowerDeliveryRequest, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("Todo: Reaction in state WaitForPowerDeliveryRequest is not implemented yet.")
             self.rxData = []
             self.enterState(0)
         if (self.isTooLong()):
@@ -173,13 +176,14 @@ class fsmEvse():
         }
         
     def reInit(self):
-        print("re-initializing fsmEvse") 
+        self.addToTrace("re-initializing fsmEvse") 
         self.state = 0
         self.cyclesInState = 0
         self.rxData = []
 
-    def __init__(self):
-        print("initializing fsmEvse") 
+    def __init__(self, callbackAddToTrace):
+        self.callbackAddToTrace = callbackAddToTrace
+        self.addToTrace("initializing fsmEvse") 
         self.Tcp = pyPlcTcpSocket.pyPlcTcpServerSocket()
         self.state = 0
         self.cyclesInState = 0
@@ -189,7 +193,7 @@ class fsmEvse():
         self.Tcp.mainfunction() # call the lower-level worker
         if (self.Tcp.isRxDataAvailable()):
                 self.rxData = self.Tcp.getRxData()
-                #print("received " + str(self.rxData))
+                #self.addToTrace("received " + str(self.rxData))
         # run the state machine:
         self.cyclesInState += 1 # for timeout handling, count how long we are in a state
         self.stateFunctions[self.state](self)

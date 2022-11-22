@@ -17,20 +17,24 @@ import os
 import subprocess
 
 class pyPlcTcpClientSocket():
-    def __init__(self):
+    def __init__(self, callbackAddToTrace):
+        self.callbackAddToTrace = callbackAddToTrace
         self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         self.isConnected = False
         self.rxData = []
+
+    def addToTrace(self, s):
+        self.callbackAddToTrace(s)
         
     def connect(self, host, port):
         try:
-            print("connecting to " + str(host) + " port " + str(port) + "...")
+            self.addToTrace("connecting to " + str(host) + " port " + str(port) + "...")
             # for connecting, we are still in blocking-mode because
             # otherwise we run into error "[Errno 10035] A non-blocking socket operation could not be completed immediately"
             # We set a shorter timeout, so we do not block too long if the connection is not established:
-            print("step1")
+            #print("step1")
             self.sock.settimeout(0.5)
-            print("step2")
+            #print("step2")
 
             # https://stackoverflow.com/questions/71022092/python3-socket-program-udp-ipv6-bind-function-with-link-local-ip-address-gi
             # While on Windows10 just connecting to a remote link-local-address works, under
@@ -41,25 +45,25 @@ class pyPlcTcpClientSocket():
             # host = "fe80::c690:83f3:fbcb:980e%eth0" # ok with socket.getaddrinfo
             if (os.name != 'nt'):
                 # We are at the Raspberry
-                print(host[0:5].lower())
+                #print(host[0:5].lower())
                 if (host[0:5].lower()=="fe80:"):
-                    print("This is a link local address. We need to add %eth0 at the end.")
+                    #print("This is a link local address. We need to add %eth0 at the end.")
                     host = host + "%eth0"
             socket_addr = socket.getaddrinfo(host,port,socket.AF_INET6,socket.SOCK_DGRAM,socket.SOL_UDP)[0][4]
             
-            print(socket_addr)
-            print("step2b")
+            #print(socket_addr)
+            #print("step2b")
             # https://stackoverflow.com/questions/5358021/establishing-an-ipv6-connection-using-sockets-in-python
             #  (address, port, flow info, scope id) 4-tuple for AF_INET6
             # On Raspberry, the ScopeId is important. Just giving 0 leads to "invalid argument" in case
             # of link-local ip-address.
             #self.sock.connect((host, port, 0, 0))
             self.sock.connect(socket_addr)
-            print("step3")
+            #print("step3")
             self.sock.setblocking(0) # make this socket non-blocking, so that the recv function will immediately return
             self.isConnected = True
         except socket.error as e:
-            print("connection failed", e)
+            self.addToTrace("connection failed", e)
             self.isConnected = False
             
     def transmit(self, msg):
@@ -73,7 +77,7 @@ class pyPlcTcpClientSocket():
                 sent = self.sock.send(msg[totalsent:])
                 if sent == 0:
                     self.isConnected = False
-                    print("socket connection broken")
+                    self.addToTrace("socket connection broken")
                     return -1
                 totalsent = totalsent + sent
             except:
@@ -116,7 +120,8 @@ class pyPlcTcpClientSocket():
         return d 
 
 class pyPlcTcpServerSocket():
-    def __init__(self):
+    def __init__(self, callbackAddToTrace):
+        self.callbackAddToTrace = callbackAddToTrace
         # Todo: find the link-local IPv6 address automatically.
         #self.ipAdress = 'fe80::e0ad:99ac:52eb:85d3'
         #self.ipAdress = 'fe80::c690:83f3:fbcb:980e%15'
@@ -133,19 +138,22 @@ class pyPlcTcpServerSocket():
         self.ourSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.ourSocket.bind((self.ipAdress, self.tcpPort))
         self.ourSocket.listen(1)
-        print("pyPlcTcpSocket listening on port " + str(self.tcpPort))
+        self.addToTrace("pyPlcTcpSocket listening on port " + str(self.tcpPort))
         hostname=socket.gethostname()
         IPAddr=socket.gethostbyname(hostname)
         addressInfo = socket.getaddrinfo(hostname, None, socket.AF_INET6)
         #print("Your Computer Name is:"+hostname)
-        print("The socket is linked the following IP addresses:")
+        self.addToTrace("The socket is linked the following IP addresses:")
         for i in range(0, len(addressInfo)):
             #fe80::4c46:fea5:b6c9:25a9
             IPv6Addr = addressInfo[i][4][0]
-            print(IPv6Addr)
+            self.addToTrace(IPv6Addr)
         self.read_list = [self.ourSocket]
         self.rxData = []
         
+    def addToTrace(self, s):
+        self.callbackAddToTrace(s)
+
     def isRxDataAvailable(self):
         return (len(self.rxData)>0)
         
@@ -167,7 +175,7 @@ class pyPlcTcpServerSocket():
         while totalsent < MSGLEN:
             sent = self.read_list[1].send(txMessage[totalsent:])
             if sent == 0:
-                print("socket connection broken")
+                self.addToTrace("socket connection broken")
                 return -1
             totalsent = totalsent + sent
         return 0 # success
@@ -184,7 +192,7 @@ class pyPlcTcpServerSocket():
                 client_socket, address = self.ourSocket.accept()
                 # and we append this new socket to the list of sockets, which in the next loop will be handled by the select.
                 self.read_list.append(client_socket)
-                print("Connection from", address)
+                self.addToTrace("Connection from", address)
             else:
                 # It is not the "listener socket", it is an above created "client socket" for talking with a client.
                 # Let's take the data from it:
@@ -198,7 +206,7 @@ class pyPlcTcpServerSocket():
                     # print("received data:", data)
                     self.rxData = data
                 else:
-                    print("connection closed")
+                    self.addToTrace("connection closed")
                     s.close()
                     self.read_list.remove(s)    
 

@@ -26,6 +26,9 @@ dinEVSEProcessingType_Finished = "0"
 dinEVSEProcessingType_Ongoing = "1"
 
 class fsmPev():
+    def addToTrace(self, s):
+        self.callbackAddToTrace(s)
+        
     def enterState(self, n):
         print("from " + str(self.state) + " entering " + str(n))
         self.state = n
@@ -48,15 +51,15 @@ class fsmPev():
         
     def stateFunctionWaitForSupportedApplicationProtocolResponse(self):
         if (len(self.rxData)>0):
-            print("In state WaitForSupportedApplicationProtocolResponse, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForSupportedApplicationProtocolResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "Dh") # Decode Handshake-response
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("supportedAppProtocolRes")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDA")) # EDA for Encode, Din, SessionSetupReq
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForSessionSetupResponse)
         if (self.isTooLong()):
@@ -64,22 +67,22 @@ class fsmPev():
             
     def stateFunctionWaitForSessionSetupResponse(self):
         if (len(self.rxData)>0):
-            print("In state WaitForSessionSetupResponse, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForSessionSetupResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD") # Decode DIN
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("SessionSetupRes")>0):
                 # todo: check the request content, and fill response parameters
                 try:
                     y = json.loads(strConverterResult)
                     strSessionId = y["header.SessionID"]
-                    print("[PEV] The Evse decided for SessionId " + strSessionId)
+                    self.addToTrace("[PEV] The Evse decided for SessionId " + strSessionId)
                     self.sessionId = strSessionId
                 except:
-                    print("ERROR: Could not decode the sessionID")
+                    self.addToTrace("ERROR: Could not decode the sessionID")
                 msg = addV2GTPHeader(exiEncode("EDB_"+self.sessionId)) # EDB for Encode, Din, ServiceDiscoveryRequest
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForServiceDiscoveryResponse)
         if (self.isTooLong()):
@@ -87,15 +90,15 @@ class fsmPev():
 
     def stateFunctionWaitForServiceDiscoveryResponse(self):
         if (len(self.rxData)>0):
-            print("In state WaitForServiceDiscoveryResponse, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForServiceDiscoveryResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD") # Decode DIN
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServiceDiscoveryRes")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDC_"+self.sessionId)) # EDC for Encode, Din, ServicePaymentSelection
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForServicePaymentSelectionResponse)
         if (self.isTooLong()):
@@ -103,15 +106,15 @@ class fsmPev():
 
     def stateFunctionWaitForServicePaymentSelectionResponse(self):
         if (len(self.rxData)>0):
-            print("In state WaitForServicePaymentSelectionResponse, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForServicePaymentSelectionResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD") # Decode DIN
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServicePaymentSelectionRes")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDE_"+self.sessionId)) # EDE for Encode, Din, ChargeParameterDiscovery. We ignore Authorization, not specified in DIN.
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForChargeParameterDiscoveryResponse)
         if (self.isTooLong()):
@@ -119,15 +122,15 @@ class fsmPev():
         
     def stateFunctionWaitForChargeParameterDiscoveryResponse(self):
         if (len(self.rxData)>0):
-            print("In state WaitForChargeParameterDiscoveryResponse, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForChargeParameterDiscoveryResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD") # Decode DIN
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("ChargeParameterDiscoveryRes")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForCableCheckResponse)
         if (self.isTooLong()):
@@ -135,32 +138,32 @@ class fsmPev():
 
     def stateFunctionWaitForCableCheckResponse(self):
         if (len(self.rxData)>0):
-            print("In state WaitForCableCheckResponse, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForCableCheckResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD") # Decode DIN
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("CableCheckRes")>0):
                 try:
                     y = json.loads(strConverterResult)
                     strResponseCode = y["ResponseCode"]
                     strEVSEProcessing = y["EVSEProcessing"]
-                    print("[PEV] The CableCheck result is " + strResponseCode + " " + strEVSEProcessing)
+                    self.addToTrace("[PEV] The CableCheck result is " + strResponseCode + " " + strEVSEProcessing)
                 except:
-                    print("ERROR: Could not decode the CableCheckRes")
+                    self.addToTrace("ERROR: Could not decode the CableCheckRes")
                 # todo: check the request content, and fill response parameters
                 # We have two cases here:
                 # 1) The charger says "cable check is finished and cable ok", by setting ResponseCode=OK and EVSEProcessing=Finished.
                 # 2) Else: The charger says "need more time or cable not ok". In this case, we just run into timeout and start from the beginning.
                 if ((strEVSEProcessing==dinEVSEProcessingType_Finished) and (strResponseCode=="OK")):
                     msg = addV2GTPHeader(exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
-                    print("responding " + prettyHexMessage(msg))
+                    self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
                     self.enterState(stateWaitForPreChargeResponse)
                 else:
                     # cable check not yet finished or finished with bad result -> try again
                     msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
-                    print("responding " + prettyHexMessage(msg))
+                    self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
                     
         if (self.isTooLong()):
@@ -171,17 +174,17 @@ class fsmPev():
             self.DelayCycles-=1
             return    
         if (len(self.rxData)>0):
-            print("In state WaitForPreChargeResponse, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForPreChargeResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD") # Decode DIN
-            print(strConverterResult)
+            self.addToTrace(strConverterResult)
             if (strConverterResult.find("PreChargeRes")>0):
                 # todo: check the request content, and fill response parameters
-                print("PreCharge aknowledge received.")
-                print("As Demo, we stay in PreCharge forever.")
+                self.addToTrace("PreCharge aknowledge received.")
+                self.addToTrace("As Demo, we stay in PreCharge forever.")
                 msg = addV2GTPHeader(exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
-                print("responding " + prettyHexMessage(msg))
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.DelayCycles=15 # wait with the next evaluation approx half a second
         if (self.isTooLong()):
@@ -203,7 +206,7 @@ class fsmPev():
         }
 
     def reInit(self):
-        print("re-initializing fsmPev") 
+        self.addToTrace("re-initializing fsmPev") 
         self.state = stateInitialized
         self.cyclesInState = 0
         self.rxData = []
@@ -212,13 +215,14 @@ class fsmPev():
             evseIp = self.addressManager.getSeccIp() # the EVSE IP address which was found out with SDP
             self.Tcp.connect(evseIp, 15118)
             if (not self.Tcp.isConnected):
-                print("connection failed")
+                self.addToTrace("connection failed")
             else:
-                print("connected")
+                self.addToTrace("connected")
         
-    def __init__(self, addressManager):
-        print("initializing fsmPev") 
-        self.Tcp = pyPlcTcpSocket.pyPlcTcpClientSocket()
+    def __init__(self, addressManager, callbackAddToTrace):
+        self.callbackAddToTrace = callbackAddToTrace
+        self.addToTrace("initializing fsmPev") 
+        self.Tcp = pyPlcTcpSocket.pyPlcTcpClientSocket(self.callbackAddToTrace)
         self.addressManager = addressManager
         self.state = stateNotYetInitialized
         self.sessionId = "DEAD55AADEAD55AA"
@@ -231,7 +235,7 @@ class fsmPev():
         #self.Tcp.mainfunction() # call the lower-level worker
         if (self.Tcp.isRxDataAvailable()):
                 self.rxData = self.Tcp.getRxData()
-                #print("received " + prettyHexMessage(self.rxData))
+                #self.addToTrace("received " + prettyHexMessage(self.rxData))
         # run the state machine:
         self.cyclesInState += 1 # for timeout handling, count how long we are in a state
         self.stateFunctions[self.state](self)
