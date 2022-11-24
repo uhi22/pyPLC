@@ -10,12 +10,17 @@ class udplog():
             
                           
     def log(self, s):
+        # The frame format follows the Syslog protocol, https://en.wikipedia.org/wiki/Syslog
+        # Level consists of
+        #  Facility = 1 = "user"
+        #  Severity = 7 = "debug"
         strLevel="<15>"
+        # The String to be logged. Terminated by 00.
         strMessage=s+"\0"
       
-        lenPayLoad = 4 + len(strMessage)
+        lenPayLoad = 4 + len(strMessage) # length of level is 4
         
-        buffer=bytearray(lenPayLoad+28)
+        buffer=bytearray(lenPayLoad+28) # prepare the IPv4 buffer. Including 28 bytes IP header.
         # syslog level (4 characters)
         for i in range(0, len(strLevel)):
             buffer[28+i] = ord(strLevel[i])
@@ -41,8 +46,8 @@ class udplog():
         # source ip 4 bytes
         buffer[12] = 192 # does this really matter?
         buffer[13] = 168
-        buffer[14] = 2
-        buffer[15] = 222
+        buffer[14] = self.ownMac[4] # quick&dirty: we just fill the last two bytes of the MAC here.
+        buffer[15] = self.ownMac[5] #
         # destination ip 4 bytes: broadcast
         buffer[16] = 0xff
         buffer[17] = 0xff
@@ -51,13 +56,13 @@ class udplog():
         # source port
         buffer[20] = 0xff
         buffer[21] = 0x95
-        # destination port
+        # destination port. 0x0202 = 514 = the official Syslog UDP port
         buffer[22] = 0x02
         buffer[23] = 0x02
         udplen = lenPayLoad + 8 # payload plus 8 byte udp header
         buffer[24] = udplen >> 8
         buffer[25] = (udplen & 0xff)
-        udpchecksum = 0
+        udpchecksum = 0 # checksum 0 has the special meaning: no checksum. Receiver ignores it.
         buffer[26] = udpchecksum >> 8
         buffer[27] = (udpchecksum & 0xff)
         
@@ -78,9 +83,9 @@ class udplog():
         self.fillMac(self.ownMac) # bytes 6 to 11 are the source MAC
         self.EthTxFrame[12] = 0x08 # 0800 is IPv4
         self.EthTxFrame[13] = 0x00
-        for i in range(0, len(buffer)):
+        for i in range(0, len(buffer)): # copy the IPv4 buffer content into the Ethernet buffer
             self.EthTxFrame[14+i] = buffer[i]
-        self.transmit(self.EthTxFrame)
+        self.transmit(self.EthTxFrame) # and finally transmit the Ethernet frame
 
                         
     def __init__(self, transmitCallback, addressManager):

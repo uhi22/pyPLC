@@ -46,6 +46,7 @@ class fsmPev():
     def stateFunctionInitialized(self):
         if (self.Tcp.isConnected):
             # we just use the initial request message from the Ioniq. It contains one entry: DIN.
+            self.addToTrace("Sending the initial SupportedApplicationProtocolReq")
             self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestIoniq)))
             self.enterState(stateWaitForSupportedApplicationProtocolResponse)
         
@@ -58,6 +59,7 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("supportedAppProtocolRes")>0):
                 # todo: check the request content, and fill response parameters
+                self.addToTrace("Will send SessionSetupReq")
                 msg = addV2GTPHeader(exiEncode("EDA")) # EDA for Encode, Din, SessionSetupReq
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
@@ -77,10 +79,11 @@ class fsmPev():
                 try:
                     y = json.loads(strConverterResult)
                     strSessionId = y["header.SessionID"]
-                    self.addToTrace("[PEV] The Evse decided for SessionId " + strSessionId)
+                    self.addToTrace("The Evse decided for SessionId " + strSessionId)
                     self.sessionId = strSessionId
                 except:
                     self.addToTrace("ERROR: Could not decode the sessionID")
+                self.addToTrace("Will send ServiceDiscoveryReq")
                 msg = addV2GTPHeader(exiEncode("EDB_"+self.sessionId)) # EDB for Encode, Din, ServiceDiscoveryRequest
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
@@ -97,6 +100,7 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServiceDiscoveryRes")>0):
                 # todo: check the request content, and fill response parameters
+                self.addToTrace("Will send ServicePaymentSelectionReq")
                 msg = addV2GTPHeader(exiEncode("EDC_"+self.sessionId)) # EDC for Encode, Din, ServicePaymentSelection
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
@@ -113,6 +117,7 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServicePaymentSelectionRes")>0):
                 # todo: check the request content, and fill response parameters
+                self.addToTrace("Will send ChargeParameterDiscoveryReq")
                 msg = addV2GTPHeader(exiEncode("EDE_"+self.sessionId)) # EDE for Encode, Din, ChargeParameterDiscovery. We ignore Authorization, not specified in DIN.
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
@@ -129,6 +134,7 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ChargeParameterDiscoveryRes")>0):
                 # todo: check the request content, and fill response parameters
+                self.addToTrace("Will send CableCheckReq")
                 msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
@@ -156,12 +162,15 @@ class fsmPev():
                 # 1) The charger says "cable check is finished and cable ok", by setting ResponseCode=OK and EVSEProcessing=Finished.
                 # 2) Else: The charger says "need more time or cable not ok". In this case, we just run into timeout and start from the beginning.
                 if ((strEVSEProcessing==dinEVSEProcessingType_Finished) and (strResponseCode=="OK")):
+                    self.addToTrace("The EVSE says that the CableCheck is finished and ok.")
+                    self.addToTrace("Will send PreChargeReq")
                     msg = addV2GTPHeader(exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
                     self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
                     self.enterState(stateWaitForPreChargeResponse)
                 else:
                     # cable check not yet finished or finished with bad result -> try again
+                    self.addToTrace("Will again send CableCheckReq")
                     msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
                     self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
