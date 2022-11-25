@@ -63,7 +63,7 @@ class pyPlcTcpClientSocket():
             self.sock.setblocking(0) # make this socket non-blocking, so that the recv function will immediately return
             self.isConnected = True
         except socket.error as e:
-            self.addToTrace("connection failed", e)
+            self.addToTrace("connection failed" + str(e))
             self.isConnected = False
             
     def transmit(self, msg):

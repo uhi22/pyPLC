@@ -908,7 +908,9 @@ class pyPlcHomeplug():
                 if ((not self.isEvseModemFound()) and (not self.isSimulationMode)):
                     self.nEvseModemMissingCounter+=1
                     self.addToTrace("[PEVSLAC] No EVSE seen (yet). Still waiting for it.")
-                    if (self.nEvseModemMissingCounter>5):
+                    # At the Alpitronic we measured, that it takes 7s between the SlacMatchResponse and
+                    # the chargers modem reacts to GetKeyRequest. So we should wait here at least 10s.
+                    if (self.nEvseModemMissingCounter>10):
                         if (self.isSimulationMode):
                             self.addToTrace("[PEVSLAC] No EVSE modem. But this is fine, we are in SimulationMode.")
                         else:

@@ -249,6 +249,8 @@ class ipv6handler():
         self.IpRequest[5] = plen & 0xFF
         self.IpRequest[6] = 0x11 # next level protocol, 0x11 = UDP in this case
         self.IpRequest[7] = 0x0A # hop limit
+        # We are the PEV. So the EvccIp is our own link-local IP address.
+        self.EvccIp = self.addressManager.getLinkLocalIpv6Address("bytearray")
         for i in range(0, 16):
             self.IpRequest[8+i] = self.EvccIp[i] # source IP address
         for i in range(0, 16):
@@ -351,6 +353,7 @@ class ipv6handler():
         # self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0xe0, 0xad, 0x99, 0xac, 0x52, 0xeb, 0x85, 0xd3 ]
         # 16 bytes, a default IPv6 address for the vehicle
         # todo: On EVSE side, extract the vehicles IP address from the SDP communication
+        # Just a default, will be overwritten later:
         self.EvccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0x65, 0x65, 0xff, 0xfe, 0, 0x64, 0xC3 ] 
         #self.ownMac = [ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 ] # 6 bytes own MAC default. Should be overwritten before use.
         self.ownMac = self.addressManager.getLocalMacAddress()

@@ -282,6 +282,15 @@ version request broadcast message, to find out, whether we have at least two hom
 car and one for the charger). If this is fulfilled, we should use the SDP to discover the chargers IPv6 address. But this
 is not yet implemented.
 
+### 2022-11-25 v0.2 On ABB charger until ChargeParamDiscoveryRequest
+- With Win10 notebook in PevMode, tested on Alpitronics HPC and ABB Triple charger. On the Alpi, the SLAC and SDP works. The TCP connection fails. On ABB, the SLAC, SDP and TCP works. Also the protocol negotiation works. We come until ChargeParamDiscoveryReqest.
+- Log messages are sent via UDP port 514 as broadcast, like Syslog messages. The Wireshark shows them as readable text, so we have the actual communication between car and charger in the trace and also the debug log.
+- Example pcap in results/2022-11-25_v0.2_ABB_until_ChargeParamDiscovery.pcapng
+- With Win10 notebook in EvseMode, tested on the Ioniq car. It comes until the CurrentDemandRequest.
+- For using Raspberry in PevMode without display, there is now the pevNoGui.py, which can be auto-started by configuring a service which calls starter.sh, and this calls starter.py (this is still expermental).
+- The old Raspberry model B needs 90s from power-on until it sends the first log messages. Means, the boot is quite slow.
+- Raspberry in PevMode and Win10 notebook in EvseMode work well together until the PreCharge.
+
 
 ## Biggest Challenges
 - [*ListenMode*] Find a way to enable the sniffer mode or monitor mode in the AR7420. Seems to be not included in the public qca/open-plc-utils.
@@ -294,12 +303,10 @@ functions Monitor() and Sniffer(), but these are included from a path ../nda/ wh
 
 Any idea how to enable full-transparency of the AR7420?
 
-- [all modes] replace the fix-configured addresses (MAC, IP) in the python script by the real one from the operating system
-
 ## Other open topics
 - [*EvseMode*] [*PevMode*] Fill V2G messages as far as needed, to convince the car to accept it.
-- [*PevMode*] Implement SDP to get the chargers IPv6 address
-- [*PevMode*] Testing on real charger
+- [*PevMode*] Find out TCP connection issue on Alpitronics
+- [*PevMode*] Implement TCP connection retry 
 - improve docu (update layer diagram, improve hardware docu, add link to evse which provides the 5% PWM)
 - Resolve the todo-markers in the code
 - (and much more)

@@ -9,6 +9,7 @@ import fsmEvse
 import fsmPev
 from pyPlcModes import *
 import addressManager
+import time
         
 
 class pyPlcWorker():
@@ -43,6 +44,9 @@ class pyPlcWorker():
     def callbackReadyForTcp(self, status):
         if (status==1):
             self.workerAddToTrace("[PLCWORKER] Network is established, ready for TCP.")
+            self.workerAddToTrace("[PLCWORKER] Waiting....")            
+            time.sleep(5)
+            self.workerAddToTrace("[PLCWORKER] now...")            
             if (self.oldAvlnStatus==0):
                 self.oldAvlnStatus = 1
                 if (self.mode == C_PEV_MODE):
