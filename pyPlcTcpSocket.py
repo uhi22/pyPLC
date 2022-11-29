@@ -20,6 +20,10 @@ class pyPlcTcpClientSocket():
     def __init__(self, callbackAddToTrace):
         self.callbackAddToTrace = callbackAddToTrace
         self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+        # https://stackoverflow.com/questions/29217502/socket-error-address-already-in-use
+        # The SO_REUSEADDR flag tells the kernel to reuse a local socket in TIME_WAIT state, without
+        # waiting for its natural timeout to expire.
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.isConnected = False
         self.rxData = []
 
@@ -32,9 +36,9 @@ class pyPlcTcpClientSocket():
             # for connecting, we are still in blocking-mode because
             # otherwise we run into error "[Errno 10035] A non-blocking socket operation could not be completed immediately"
             # We set a shorter timeout, so we do not block too long if the connection is not established:
-            #print("step1")
+            print("step1")
             self.sock.settimeout(0.5)
-            #print("step2")
+            print("step2")
 
             # https://stackoverflow.com/questions/71022092/python3-socket-program-udp-ipv6-bind-function-with-link-local-ip-address-gi
             # While on Windows10 just connecting to a remote link-local-address works, under
@@ -52,19 +56,39 @@ class pyPlcTcpClientSocket():
             socket_addr = socket.getaddrinfo(host,port,socket.AF_INET6,socket.SOCK_DGRAM,socket.SOL_UDP)[0][4]
             
             #print(socket_addr)
-            #print("step2b")
+            print("step2b")
             # https://stackoverflow.com/questions/5358021/establishing-an-ipv6-connection-using-sockets-in-python
             #  (address, port, flow info, scope id) 4-tuple for AF_INET6
             # On Raspberry, the ScopeId is important. Just giving 0 leads to "invalid argument" in case
             # of link-local ip-address.
             #self.sock.connect((host, port, 0, 0))
             self.sock.connect(socket_addr)
-            #print("step3")
+            print("step3")
             self.sock.setblocking(0) # make this socket non-blocking, so that the recv function will immediately return
             self.isConnected = True
         except socket.error as e:
             self.addToTrace("connection failed" + str(e))
             self.isConnected = False
+
+    def disconnect(self):
+        # When connection is broken, the OS may still keep the information of socket usage in the background,
+        # and this could raise the error "A connect request was made on an already connected socket" when
+        # we try a simple connect again. 
+        # This is explained here:
+        # https://www.codeproject.com/Questions/1187207/A-connect-request-was-made-on-an-already-connected
+        try:
+            self.sock.close() # Close is not just closing. It means destroying the socket object. So we
+            # need a new one:
+            self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+            # https://stackoverflow.com/questions/29217502/socket-error-address-already-in-use
+            # The SO_REUSEADDR flag tells the kernel to reuse a local socket in TIME_WAIT state, without
+            # waiting for its natural timeout to expire.
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)            
+            pass
+        except socket.error as e:
+            # if it was already closed, it is also fine.
+            pass
+        self.isConnected = False
             
     def transmit(self, msg):
         if (self.isConnected == False):

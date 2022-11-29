@@ -184,6 +184,10 @@ class fsmEvse():
     def __init__(self, callbackAddToTrace):
         self.callbackAddToTrace = callbackAddToTrace
         self.addToTrace("initializing fsmEvse") 
+        self.faultInjectionDelayUntilSocketOpen_s = 0
+        if (self.faultInjectionDelayUntilSocketOpen_s>0):
+            self.addToTrace("Fault injection: waiting " + str(self.faultInjectionDelayUntilSocketOpen_s) + " s until opening the TCP socket.")
+            time.sleep(self.faultInjectionDelayUntilSocketOpen_s)
         self.Tcp = pyPlcTcpSocket.pyPlcTcpServerSocket(self.callbackAddToTrace)
         self.state = 0
         self.cyclesInState = 0

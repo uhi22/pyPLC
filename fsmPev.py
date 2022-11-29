@@ -10,17 +10,20 @@ from helpers import prettyHexMessage
 from exiConnector import * # for EXI data handling/converting
 import json
 
-stateInitialized = 0
-stateWaitForSupportedApplicationProtocolResponse = 1
-stateWaitForSessionSetupResponse = 2
-stateWaitForServiceDiscoveryResponse = 3
-stateWaitForServicePaymentSelectionResponse = 4
-stateWaitForAuthorizationResponse = 5
-stateWaitForChargeParameterDiscoveryResponse = 6
-stateWaitForCableCheckResponse = 7
-stateWaitForPreChargeResponse = 8
-stateWaitForPowerDeliveryResponse = 9
-stateNotYetInitialized = 10
+stateNotYetInitialized = 0
+stateConnecting = 1
+stateConnected = 2
+stateWaitForSupportedApplicationProtocolResponse = 3
+stateWaitForSessionSetupResponse = 4
+stateWaitForServiceDiscoveryResponse = 5
+stateWaitForServicePaymentSelectionResponse = 6
+stateWaitForAuthorizationResponse = 7
+stateWaitForChargeParameterDiscoveryResponse = 8
+stateWaitForCableCheckResponse = 9
+stateWaitForPreChargeResponse = 10
+stateWaitForPowerDeliveryResponse = 11
+stateSequenceTimeout = 99
+
 
 dinEVSEProcessingType_Finished = "0"
 dinEVSEProcessingType_Ongoing = "1"
@@ -43,12 +46,33 @@ class fsmPev():
             limit = 30*30 # PreCharge may need some time. Wait at least 30s.
         return (self.cyclesInState > limit)
         
-    def stateFunctionInitialized(self):
-        if (self.Tcp.isConnected):
-            # we just use the initial request message from the Ioniq. It contains one entry: DIN.
-            self.addToTrace("Sending the initial SupportedApplicationProtocolReq")
-            self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestIoniq)))
-            self.enterState(stateWaitForSupportedApplicationProtocolResponse)
+    def stateFunctionNotYetInitialized(self):
+        pass # nothing to do, just wait for external event for re-initialization
+
+    def stateFunctionConnecting(self):
+        if (self.cyclesInState<30): # The first second in the state just do nothing.
+            return
+        evseIp = self.addressManager.getSeccIp() # the EVSE IP address which was found out with SDP
+        self.Tcp.connect(evseIp, 15118) # This is a blocking call. If we come back, we are connected, or not.
+        if (not self.Tcp.isConnected):
+            # Bad case: Connection did not work. May happen if we are too fast and the charger needs more
+            # time until the socket is ready. Or the charger is defective. Or somebody pulled the plug.
+            # No matter what is the reason, we just try again and again. What else would make sense?
+            self.addToTrace("Connection failed. Will try again.")
+            self.reInit() # stay in same state, reset the cyclesInState and try again
+            return
+        else:
+            # Good case: We are connected. Change to the next state.
+            self.addToTrace("connected")
+            self.enterState(stateConnected)
+            return
+    
+    def stateFunctionConnected(self):
+        # We have a freshly established TCP channel. We start the V2GTP/EXI communication now.
+        # We just use the initial request message from the Ioniq. It contains one entry: DIN.
+        self.addToTrace("Sending the initial SupportedApplicationProtocolReq")
+        self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestIoniq)))
+        self.enterState(stateWaitForSupportedApplicationProtocolResponse)
         
     def stateFunctionWaitForSupportedApplicationProtocolResponse(self):
         if (len(self.rxData)>0):
@@ -65,7 +89,7 @@ class fsmPev():
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForSessionSetupResponse)
         if (self.isTooLong()):
-            self.enterState(0)
+            self.enterState(stateSequenceTimeout)
             
     def stateFunctionWaitForSessionSetupResponse(self):
         if (len(self.rxData)>0):
@@ -89,7 +113,7 @@ class fsmPev():
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForServiceDiscoveryResponse)
         if (self.isTooLong()):
-            self.enterState(0)
+            self.enterState(stateSequenceTimeout)
 
     def stateFunctionWaitForServiceDiscoveryResponse(self):
         if (len(self.rxData)>0):
@@ -106,7 +130,7 @@ class fsmPev():
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForServicePaymentSelectionResponse)
         if (self.isTooLong()):
-            self.enterState(0)
+            self.enterState(stateSequenceTimeout)
 
     def stateFunctionWaitForServicePaymentSelectionResponse(self):
         if (len(self.rxData)>0):
@@ -123,7 +147,7 @@ class fsmPev():
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForChargeParameterDiscoveryResponse)
         if (self.isTooLong()):
-            self.enterState(0)
+            self.enterState(stateSequenceTimeout)
         
     def stateFunctionWaitForChargeParameterDiscoveryResponse(self):
         if (len(self.rxData)>0):
@@ -140,7 +164,7 @@ class fsmPev():
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForCableCheckResponse)
         if (self.isTooLong()):
-            self.enterState(0)
+            self.enterState(stateSequenceTimeout)
 
     def stateFunctionWaitForCableCheckResponse(self):
         if (len(self.rxData)>0):
@@ -176,7 +200,7 @@ class fsmPev():
                     self.Tcp.transmit(msg)
                     
         if (self.isTooLong()):
-            self.enterState(0)
+            self.enterState(stateSequenceTimeout)
 
     def stateFunctionWaitForPreChargeResponse(self):
         if (self.DelayCycles>0):
@@ -197,13 +221,20 @@ class fsmPev():
                 self.Tcp.transmit(msg)
                 self.DelayCycles=15 # wait with the next evaluation approx half a second
         if (self.isTooLong()):
-            self.enterState(0)
+            self.enterState(stateSequenceTimeout)
+            
+    def stateFunctionSequenceTimeout(self):
+        # Here we end, if we run into a timeout in the state machine. This is an error case, and
+        # we should re-initalize and try again to get a communication.
+        # Todo: Maybe we want even inform the pyPlcHomeplug to do a new SLAC.
+        # For the moment, we just re-establish the TCP connection.
+        self.reInit()
     
-    def stateFunctionNotYetInitialized(self):
-        pass # nothing to do, just wait for external event for re-initialization
         
     stateFunctions = { 
-            stateInitialized: stateFunctionInitialized,
+            stateNotYetInitialized: stateFunctionNotYetInitialized,
+            stateConnecting: stateFunctionConnecting,
+            stateConnected: stateFunctionConnected,
             stateWaitForSupportedApplicationProtocolResponse: stateFunctionWaitForSupportedApplicationProtocolResponse,
             stateWaitForSessionSetupResponse: stateFunctionWaitForSessionSetupResponse,
             stateWaitForServiceDiscoveryResponse: stateFunctionWaitForServiceDiscoveryResponse,
@@ -211,22 +242,15 @@ class fsmPev():
             stateWaitForChargeParameterDiscoveryResponse: stateFunctionWaitForChargeParameterDiscoveryResponse,
             stateWaitForCableCheckResponse: stateFunctionWaitForCableCheckResponse,
             stateWaitForPreChargeResponse: stateFunctionWaitForPreChargeResponse,
-            stateNotYetInitialized: stateFunctionNotYetInitialized
+            stateSequenceTimeout: stateFunctionSequenceTimeout
         }
 
     def reInit(self):
         self.addToTrace("re-initializing fsmPev") 
-        self.state = stateInitialized
+        self.Tcp.disconnect()
+        self.state = stateConnecting
         self.cyclesInState = 0
         self.rxData = []
-        if (not self.Tcp.isConnected):
-            #evseIp = 'fe80:0000:0000:0000:c690:83f3:fbcb:980e'
-            evseIp = self.addressManager.getSeccIp() # the EVSE IP address which was found out with SDP
-            self.Tcp.connect(evseIp, 15118)
-            if (not self.Tcp.isConnected):
-                self.addToTrace("connection failed")
-            else:
-                self.addToTrace("connected")
         
     def __init__(self, addressManager, callbackAddToTrace):
         self.callbackAddToTrace = callbackAddToTrace
