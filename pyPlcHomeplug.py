@@ -88,9 +88,10 @@ STATE_ATTEN_CHAR_IND_RECEIVED     = 9
 STATE_DELAY_BEFORE_MATCH          = 10
 STATE_WAITING_FOR_SLAC_MATCH_CNF  = 11
 STATE_WAITING_FOR_RESTART2        = 12
-STATE_FIND_MODEMS2         = 13
-STATE_WAITING_FOR_RESTART2 = 14
-STATE_SDP                  = 15
+STATE_FIND_MODEMS2                = 13
+STATE_WAITING_FOR_SW_VERSIONS     = 14
+STATE_READY_FOR_SDP               = 15
+STATE_SDP                         = 16
 
  
 class pyPlcHomeplug():    
@@ -603,7 +604,7 @@ class pyPlcHomeplug():
     def evaluateGetSwCnf(self):
         # The GET_SW confirmation. This contains the software version of the homeplug modem.
         # Reference: see wireshark interpreted frame from TPlink, Ioniq and Alpitronic charger
-        self.addToTrace("received GET_SW.CNF")
+        self.addToTrace("[SNIFFER] received GET_SW.CNF")
         self.numberOfSoftwareVersionResponses+=1
         sourceMac=bytearray(6)
         for i in range(0, 6):
@@ -617,7 +618,7 @@ class pyPlcHomeplug():
                 if (x<0x20):
                     x=0x20 # make unprintable character to space.
                 strVersion+=chr(x) # convert ASCII code to string
-        self.addToTrace("For " + strMac + " the software version is " + strVersion)
+        self.addToTrace("[SNIFFER] For " + strMac + " the software version is " + strVersion)
         
     def evaluateSlacParamReq(self):
         # We received a SLAC_PARAM request from the PEV. This is the initiation of a SLAC procedure.
@@ -763,7 +764,6 @@ class pyPlcHomeplug():
             self.enterState(STATE_MODEM_SEARCH_ONGOING)
             return
         if (self.pevSequenceState==STATE_MODEM_SEARCH_ONGOING): # Waiting for the modems to answer.
-            print("test")
             if (self.pevSequenceCyclesInState>=10):
                 # It was sufficient time to get the answers from the modems.
                 self.addToTrace("[PEVSLAC] It was sufficient time to get the answers from the modems.")
@@ -887,7 +887,7 @@ class pyPlcHomeplug():
             # (the normal state transition is done in the receive handler of SLAC_MATCH.CNF,
             # including the transmission of SET_KEY.REQ)
             return
-        if (self.pevSequenceState==STATE_WAITING_FOR_RESTART2):  # SLAC is finished, SET_KEY.REQ is 
+        if (self.pevSequenceState==STATE_WAITING_FOR_RESTART2):  # SLAC is finished, SET_KEY.REQ was 
                                                                  # transmitted. The homeplug modem makes
                                                                  # the reset and we need to wait until it
                                                                  # is up with the new key.
@@ -927,21 +927,35 @@ class pyPlcHomeplug():
                 if (self.isSimulationMode):
                     self.addToTrace("[PEVSLAC] But this is only simulated.")
                 self.nEvseModemMissingCounter=0
-                # The AVLN is established, we have at least two modems in the network.
-                # If we did not SDP up to now, let's do it.
-                if (self.isSDPDone):
-                    # SDP is already done. No need to do it again. We are finished for the normal case.
-                    # But we want to check whether the connection is still alive, so we start the
-                    # modem-search from time to time.
-                    self.pevSequenceDelayCycles = 300 # e.g. 10s
-                    self.enterState(STATE_WAITING_FOR_RESTART2)
-                    return
-                # SDP was not done yet. Now we start it.
-                self.addToTrace("[PEVSLAC] SDP was not done yet. Now we start it.")
-                # Next step is to discover the chargers communication controller (SECC) using discovery protocol (SDP).
                 self.pevSequenceDelayCycles=0
-                self.SdpRepetitionCounter = 50 # prepare the number of retries for the SDP. The more the better.
-                self.enterState(STATE_SDP)
+                self.composeGetSwReq()
+                self.addToTrace("[PEVSLAC] Requesting SW versions from the modems...")
+                self.transmit(self.mytransmitbuffer)
+                self.enterState(STATE_WAITING_FOR_SW_VERSIONS)
+            return
+        if (self.pevSequenceState==STATE_WAITING_FOR_SW_VERSIONS):
+            if (self.pevSequenceCyclesInState>=2): # 2 cycles = 60ms are more than sufficient.
+                # Measured: The local modem answers in less than 1ms. The remote modem in ~5ms.
+                # It was sufficient time to get the answers from the modems.
+                self.addToTrace("[PEVSLAC] It was sufficient time to get the SW versions from the modems.")
+                self.enterState(STATE_READY_FOR_SDP)
+            return
+        if (self.pevSequenceState==STATE_READY_FOR_SDP):
+            # The AVLN is established, we have at least two modems in the network.
+            # If we did not SDP up to now, let's do it.
+            if (self.isSDPDone):
+                # SDP is already done. No need to do it again. We are finished for the normal case.
+                # But we want to check whether the connection is still alive, so we start the
+                # modem-search from time to time.
+                self.pevSequenceDelayCycles = 300 # e.g. 10s
+                self.enterState(STATE_WAITING_FOR_RESTART2)
+                return
+            # SDP was not done yet. Now we start it.
+            self.addToTrace("[PEVSLAC] SDP was not done yet. Now we start it.")
+            # Next step is to discover the chargers communication controller (SECC) using discovery protocol (SDP).
+            self.pevSequenceDelayCycles=0
+            self.SdpRepetitionCounter = 50 # prepare the number of retries for the SDP. The more the better.
+            self.enterState(STATE_SDP)
             return
                 
         if (self.pevSequenceState==STATE_SDP):  # SDP request transmission and waiting for SDP response.
