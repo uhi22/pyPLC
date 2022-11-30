@@ -1,6 +1,8 @@
 # Worker for the pyPLC
 #
-# Tested on Windows10 with python 3.9
+# Tested on
+#   - Windows10 with python 3.9 and
+#   - Raspbian with python 3.9
 #
 
 #------------------------------------------------------------
@@ -10,6 +12,7 @@ import fsmPev
 from pyPlcModes import *
 import addressManager
 import time
+import subprocess
         
 
 class pyPlcWorker():
@@ -26,6 +29,13 @@ class pyPlcWorker():
         self.isSimulationMode = isSimulationMode
         self.hp = pyPlcHomeplug.pyPlcHomeplug(self.workerAddToTrace, self.callbackShowStatus, self.mode, self.addressManager, self.callbackReadyForTcp, self.isSimulationMode)
         self.hp.printToUdp("pyPlcWorker init")
+        # Find out the version number, using git.
+        # see https://stackoverflow.com/questions/14989858/get-the-current-git-hash-in-a-python-script
+        try:
+            strLabel = str(subprocess.check_output(["git", "describe", "--tags"], text=True).strip())
+        except:
+            strLabel = "(unknown version. 'git describe --tags' failed.)"
+        self.workerAddToTrace("[pyPlcWorker] Software version " + strLabel)  
         if (self.mode == C_EVSE_MODE):
             self.evse = fsmEvse.fsmEvse(self.workerAddToTrace)
         if (self.mode == C_PEV_MODE):
