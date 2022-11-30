@@ -25,7 +25,6 @@ In this project, we call this mode *ListenMode*.
 - Modify the configuration of the PLC adaptor, that it supports HomePlug Green Phy including the SLAC.
 - Install wireshark to view the network traffic
 - Install Pcap-ct python library
-- Patch Pcap-ct to support non-blocking operation
 - Get and compile the exi decoder/encoder from http://github.com/uhi22/OpenV2Gx
 - Run `python pyPlc.py` and use keyboard to trigger actions, or
 - Run `python pyPlc.py E` for EVSE (charger) mode, or
@@ -97,17 +96,6 @@ We use the last one.
 This is fighting against the Libpcap-installation, so we need to deinstall the second:
     python -m pip uninstall libpcap
 Then again install pcap-ct, and finally add in the libpcap\_platform\__init__py the missing is_osx = False. (Is in the meanwhile fixed in the github repository.)
-
-Finally, we need to patch the Pcap-ct, because the python script needs a non-blocking version. This is discussed in https://github.com/karpierz/pcap-ct/issues/9
-
-Now, in the IDLE shall 3.10.6, the import works:
-```
-	import pcap
-	sniffer = pcap.pcap(name=None, promisc=True, immediate=True, timeout_ms=50)
-	addr = lambda pkt, offset: '.'.join(str(pkt[i]) for i in range(offset, offset + 4))
-	for ts, pkt in sniffer:
-		print('%d\tSRC %-16s\tDST %-16s' % (ts, addr(pkt, sniffer.dloff + 12), addr(pkt, sniffer.dloff + 16)))
-```
 
 ### Usage on Raspberry
 Pitfall: Pcap-ct does not work with Python 3.4. After update to Python 3.8, it works.
