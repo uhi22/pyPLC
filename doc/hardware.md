@@ -54,3 +54,18 @@ How to modify:
 - connect cables to supply the device. Works with 12V, also works with 5V from an USB power bank.
 - connect cables and circuit (1nF and 150ohms in series) for connecting to the pilot line.
 
+## Electric vehicle simulator
+
+This device is able to convince an AC charger to deliver power, and also is needed to tell an DC charger, that a car is connected. By closing the "vehicle detected" switch, we pull the CP from 12V to 9V, and the charger will switch to the 5% PWM and starts listening to SLAC parameter request messages.
+
+![image](https://user-images.githubusercontent.com/98478946/204749022-764c57f1-cd15-441e-ad7a-df01043a341b.png)
+![image](https://user-images.githubusercontent.com/98478946/204749197-4f1b0fb8-6dbb-4cca-bbec-aa26b327d9b7.png)
+
+## Combination of EV simulator, HomePlug modem and Raspberry
+
+![image](https://user-images.githubusercontent.com/98478946/204752020-080b20a8-4f11-400a-9757-fc5ac8246fee.png)
+
+## Connecting to a real-world charger
+![image](https://user-images.githubusercontent.com/98478946/204752452-b727f11b-5f39-44ed-ba20-6fd93a4d9a13.png)
+
+
