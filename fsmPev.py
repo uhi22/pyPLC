@@ -52,8 +52,9 @@ class fsmPev():
     def stateFunctionConnecting(self):
         if (self.cyclesInState<30): # The first second in the state just do nothing.
             return
-        evseIp = self.addressManager.getSeccIp() # the EVSE IP address which was found out with SDP
-        self.Tcp.connect(evseIp, 15118) # This is a blocking call. If we come back, we are connected, or not.
+        evseIp = self.addressManager.getSeccIp() # the chargers IP address which was announced in SDP
+        seccTcpPort = self.addressManager.getSeccTcpPort() # the chargers TCP port which was announced in SDP
+        self.Tcp.connect(evseIp, seccTcpPort) # This is a blocking call. If we come back, we are connected, or not.
         if (not self.Tcp.isConnected):
             # Bad case: Connection did not work. May happen if we are too fast and the charger needs more
             # time until the socket is ready. Or the charger is defective. Or somebody pulled the plug.

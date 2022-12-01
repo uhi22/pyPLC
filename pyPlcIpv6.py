@@ -109,8 +109,14 @@ class ipv6handler():
         self.SdpPayload = bytearray(20) # SDP response has 20 bytes
         for i in range(0, 16):
             self.SdpPayload[i] = self.SeccIp[i] # 16 bytes IP address of the charger
-        self.SdpPayload[16] = 15118 >> 8 # SECC port high byte. Port is always 15118.
-        self.SdpPayload[17] = 15118 & 0xFF # SECC port low byte. Port is always 15118.
+        # Here the charger decides, on which port he will listen for the TCP communication.
+        # We use port 15118, same as for the SDP. But also dynamically assigned port would be ok.
+        # The alpitronics seems to use different ports on different chargers, e.g. 0xC7A7 and 0xC7A6.
+        # The ABB Triple and ABB HPC are reporting port 0xD121, but in fact (also?) listening
+        # to the port 15118.
+        seccPort = 15118
+        self.SdpPayload[16] = seccPort >> 8 # SECC port high byte.
+        self.SdpPayload[17] = seccPort & 0xFF # SECC port low byte. 
         self.SdpPayload[18] = 0x10 # security. We only support "no transport layer security, 0x10".
         self.SdpPayload[19] = 0x00 # transport protocol. We only support "TCP, 0x00".
         showAsHex(self.SdpPayload, "SDP payload ")
@@ -178,7 +184,10 @@ class ipv6handler():
                             # at byte 8 of the UDP payload starts the IPv6 address of the charger.
                             for i in range(0, 16):
                                 self.SeccIp[i] = self.udpPayload[8+i] # 16 bytes IP address of the charger
+                            # Extract the TCP port, on which the charger will listen:
+                            seccTcpPort = (self.udpPayload[8+16]*256) + self.udpPayload[8+16+1]
                             self.addressManager.setSeccIp(self.SeccIp)
+                            self.addressManager.setSeccTcpPort(seccTcpPort)
                     return    
                 print("v2gptPayloadType " + hex(v2gptPayloadType) + " not supported")
                     

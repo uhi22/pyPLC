@@ -23,6 +23,7 @@ class addressManager():
         self.findLinkLocalIpv6Address()
         self.pevIp=""
         self.SeccIp=""
+        self.SeccTcpPort = 15118 # just a default. Will be overwritten during SDP if we are pev.
         pass
         
     def findLinkLocalIpv6Address(self):
@@ -160,11 +161,21 @@ class addressManager():
         else:
             # the parameter was a string, assumingly. Just take it over.
             self.SeccIp = SeccIp
-        print("[addressManager] EVCC has IP " + self.SeccIp)
+        print("[addressManager] charger has IP " + self.SeccIp)
 
     def getSeccIp(self):
         # The IPv6 address of the charger. Type is String.
         return self.SeccIp
+
+    def setSeccTcpPort(self, SeccTcpPort):
+        # During SDP, the TCP port of the charger was found out. Store it, we need it later.
+        self.SeccTcpPort = SeccTcpPort
+        print("[addressManager] charger has TCP port " + str(self.SeccTcpPort))
+        
+    def getSeccTcpPort(self):
+        # The chargers TCP port, which it announced in the SDP response.
+        return self.SeccTcpPort
+
         
     def getLocalMacAddress(self):
         print("[addressManager] will give local MAC " + prettyMac(self.localMac))
