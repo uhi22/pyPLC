@@ -821,8 +821,12 @@ class pyPlcHomeplug():
             # (the normal state transition is done in the reception handler)
             return
         if (self.pevSequenceState==STATE_SLAC_PARAM_CNF_RECEIVED): # slac_param confirmation was received.
-            self.pevSequenceDelayCycles = 6 # 6*30=180ms as preparation for the next state.
-                                            # Between the SLAC_PARAM.CNF and the first START_ATTEN_CHAR.IND the Ioniq waits 200ms.
+            self.pevSequenceDelayCycles = 1 # 1*30=30ms as preparation for the next state.
+                                            # Between the SLAC_PARAM.CNF and the first START_ATTEN_CHAR.IND the Ioniq waits 100ms.
+                                            # The allowed time TP_match_sequence is 0 to 100ms.
+                                            # Alpitronic and ABB chargers are more tolerant, they worked with a delay of approx
+                                            # 250ms. In contrast, Supercharger and Compleo do not respond anymore if we
+                                            # wait so long.
             self.nRemainingStartAttenChar = 3 # There shall be 3 START_ATTEN_CHAR messages.
             self.enterState(STATE_BEFORE_START_ATTEN_CHAR)
             return
@@ -836,11 +840,12 @@ class pyPlcHomeplug():
                 self.composeStartAttenCharInd()
                 self.addToTrace("[PEVSLAC] transmitting START_ATTEN_CHAR.IND...")
                 self.transmit(self.mytransmitbuffer)        
-                self.pevSequenceDelayCycles = 0 # original from ioniq is 20ms between the START_ATTEN_CHAR
+                self.pevSequenceDelayCycles = 0 # original from ioniq is 20ms between the START_ATTEN_CHAR. Shall be 20ms to 50ms. So we set to 0 and the normal 30ms call cycle is perfect.
                 return
             else:
                 # all three START_ATTEN_CHAR.IND are finished. Now we send 10 MNBC_SOUND.IND
-                self.pevSequenceDelayCycles = 1 # original from ioniq is 40ms after the last START_ATTEN_CHAR.IND
+                self.pevSequenceDelayCycles = 0 # original from ioniq is 40ms after the last START_ATTEN_CHAR.IND.
+                                                # Shall be 20ms to 50ms. So we set to 0 and the normal 30ms call cycle is perfect.
                 self.remainingNumberOfSounds = 10 # We shall transmit 10 sound messages.
                 self.enterState(STATE_SOUNDING)
             return
@@ -855,7 +860,8 @@ class pyPlcHomeplug():
                 self.transmit(self.mytransmitbuffer)
                 if (self.remainingNumberOfSounds==0):
                     self.enterState(STATE_WAIT_FOR_ATTEN_CHAR_IND) # move fast to the next state, so that a fast response is catched in the correct state
-                self.pevSequenceDelayCycles = 0 # original from ioniq is 20ms between the messages
+                self.pevSequenceDelayCycles = 0 # original from ioniq is 20ms between the messages.
+                                                # Shall be 20ms to 50ms. So we set to 0 and the normal 30ms call cycle is perfect.
             return
         if (self.pevSequenceState==STATE_WAIT_FOR_ATTEN_CHAR_IND):  # waiting for ATTEN_CHAR.IND
             # todo: it is possible that we receive this message from multiple chargers. We need
