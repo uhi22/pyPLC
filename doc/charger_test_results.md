@@ -44,7 +44,8 @@ Test results of version v0.2
 
 Test site: e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Koesching/EDEKA-Ingolstaedter-Strasse-114/62619/
 
-Test results tbd
+Test results
+- [ ] SLAC: fails. It sends SLAC_PARAM_CNF, but nothing more.
 
 ## Efacec QC45 Triple Charger
 
@@ -74,4 +75,6 @@ Test results tbd
 
 Test site e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Koesching/Supercharger-Car-Wash-Ruppertswies-4/69557/
 
-Test results tbd
+Test results
+- [ ] SLAC: fails. It sends SLAC_PARAM_CNF, but nothing more.
+

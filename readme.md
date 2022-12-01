@@ -136,7 +136,7 @@ traffic can only be decoded by participants who are using the same NID and NMK.
 approach is used: SDP, which is the SECC discovery protocol. The DHCP may be also supported as fallback.
 20. The car sends a broadcast message "Is here a charger in this network?". Technically, it is an IPv6.UDP.V2GTP.SDP message
 with 2 bytes payload, which defines the security level expected by the car. In usual case, the car says "I want unprotected TCP.".
-21. The charger receives the SDP request, and sends a SDP response "My IP address is xy, and I support unprotected TCP."
+21. The charger receives the SDP request, and sends a SDP response "My IP address is xy, I will listen on port abc, and I support unprotected TCP."
 22. The car wants to make sure, that the IP addresses are unique and the relation between IP address and MAC address is clear. For
 this, it sends a "Neighbour solicitation". (This looks a little bit oversized, because only two participants are in the local network, and
 their addresses have already been exchanged in the above steps. But ICMP is standard technology.)
@@ -145,8 +145,8 @@ In the case, we use this pyPLC project as charger (*EvseMode*), we rely on the o
 this works perfectly, the only thing we must make sure, that the MAC and IPv6 of the ethernet port are correctly configured in the
 python script. Use `ipconfig -all` on Windows, to find out the addresses.
 24. Now, the car and the charger have a clear view about addressing (MAC adresses, IPv6 addresses).
-25. The car requests to open a TCP connection to charger at port 15118.
-26. The charger, which was listening on port 15118, confirms the TCP channel.
+25. The car requests to open a TCP connection to charger at the port which was announced on the SDP response. This may be 15118 or may be a different port, depending on the chargers implementation.
+26. The charger, which was listening on that port, confirms the TCP channel.
 27. Now, the car and the charger have a reliable, bidirectional TCP channel.
 28. The car and the charger use the TCP channel, to exchange V2GTP messages, with EXI content.
 29. The charger is the "server" for the EXI, it is just waiting for requests from the car. The car is the "client", it actively
@@ -278,7 +278,18 @@ is not yet implemented.
 - For using Raspberry in PevMode without display, there is now the pevNoGui.py, which can be auto-started by configuring a service which calls starter.sh, and this calls starter.py (this is still expermental).
 - The old Raspberry model B needs 90s from power-on until it sends the first log messages. Means, the boot is quite slow.
 - Raspberry in PevMode and Win10 notebook in EvseMode work well together until the PreCharge.
+- Known issues:
+	- The TCP port, which is announced in the SDP response, is ignored. This can be the root cause of failing TCP connection on Alpitronics.
+	- The SLAC timing includes too long wait times. This may be the root cause for failing SLAC on Supercharger and Compleo.
 
+### Ongoing improvements
+
+- SLAC timing: improvement to be tested.
+- TCP port from SDP response: bugfix to be tested.
+
+### Test results on real-world chargers
+
+See [charger_test_results.md](doc/charger_test_results.md)
 
 ## Biggest Challenges
 - [*ListenMode*] Find a way to enable the sniffer mode or monitor mode in the AR7420. Seems to be not included in the public qca/open-plc-utils.
@@ -294,8 +305,9 @@ Any idea how to enable full-transparency of the AR7420?
 ## Other open topics
 - [*EvseMode*] [*PevMode*] Fill V2G messages as far as needed, to convince the car to accept it.
 - [*PevMode*] Find out TCP connection issue on Alpitronics
-- [*PevMode*] Implement TCP connection retry 
+- [*PevMode*] Find out the SLAC issue on Supercharger and Compleo.
 - improve docu (update layer diagram, improve hardware docu, add link to evse which provides the 5% PWM)
+- in addressManager, replace the print by addToTrace
 - Resolve the todo-markers in the code
 - (and much more)
 
