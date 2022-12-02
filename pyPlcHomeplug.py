@@ -357,7 +357,7 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[19]=0x00 # apptype
         self.mytransmitbuffer[20]=0x00 # sectype
         self.mytransmitbuffer[21]=0x0a # number of sounds: 10
-        self.mytransmitbuffer[22]=10 # timeout N*100ms. Normally 6, means in 600ms all sounds must have been tranmitted.
+        self.mytransmitbuffer[22]=6 # timeout N*100ms. Normally 6, means in 600ms all sounds must have been tranmitted.
                                        # Todo: As long we are a little bit slow, lets give 1000ms instead of 600, so that the
                                        # charger is able to catch it all.
         self.mytransmitbuffer[23]=0x01 # response type 
