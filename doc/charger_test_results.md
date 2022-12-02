@@ -27,15 +27,16 @@ Test results tbd
 
 Test site: e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Ingolstadt/Dehner-Garten-Center-Degenhartstrasse-Degenhartstrasse-2/71112/
 
-Test results of version v0.2
+Test results of version v0.3
 - [x] SLAC
 - [x] SDP
-- [ ] TCP connection
-- [ ] EXI
-    - [ ] DIN SupportedApplicationProtocol
-	- [ ] DIN SessionSetup
-	- [ ] DIN ServiceDiscovery
-	- [ ] DIN ChargeParameterDiscovery
+- [x] TCP connection
+- [x] EXI
+    - [x] DIN SupportedApplicationProtocol
+	- [x] DIN SessionSetup
+	- [x] DIN ServiceDiscovery
+	- [x] DIN ChargeParameterDiscovery
+	- [x] DIN ContractAuthentication
 	- [ ] DIN CableCheck
 	- [ ] DIN PreCharge
 	- [ ] DIN PowerDelivery, CurrentDemand

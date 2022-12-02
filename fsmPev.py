@@ -17,7 +17,7 @@ stateWaitForSupportedApplicationProtocolResponse = 3
 stateWaitForSessionSetupResponse = 4
 stateWaitForServiceDiscoveryResponse = 5
 stateWaitForServicePaymentSelectionResponse = 6
-stateWaitForAuthorizationResponse = 7
+stateWaitForContractAuthenticationResponse = 7
 stateWaitForChargeParameterDiscoveryResponse = 8
 stateWaitForCableCheckResponse = 9
 stateWaitForPreChargeResponse = 10
@@ -142,12 +142,50 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServicePaymentSelectionRes")>0):
                 # todo: check the request content, and fill response parameters
-                self.addToTrace("Will send ChargeParameterDiscoveryReq")
-                msg = addV2GTPHeader(exiEncode("EDE_"+self.sessionId)) # EDE for Encode, Din, ChargeParameterDiscovery. We ignore Authorization, not specified in DIN.
+                self.addToTrace("Will send ContractAuthenticationReq")
+                msg = addV2GTPHeader(exiEncode("EDL_"+self.sessionId)) # EDL for Encode, Din, ContractAuthenticationReq.
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
-                self.enterState(stateWaitForChargeParameterDiscoveryResponse)
+                self.numberOfContractAuthenticationReq = 1 # This is the first request.
+                self.enterState(stateWaitForContractAuthenticationResponse)
         if (self.isTooLong()):
+            self.enterState(stateSequenceTimeout)
+                
+    def stateFunctionWaitForContractAuthenticationResponse(self):
+        if (self.cyclesInState<30): # The first second in the state just do nothing.
+            return
+        if (len(self.rxData)>0):
+            self.addToTrace("In state WaitForContractAuthentication, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            self.rxData = []
+            strConverterResult = exiDecode(exidata, "DD") # Decode DIN
+            self.addToTrace(strConverterResult)
+            if (strConverterResult.find("ContractAuthenticationRes")>0):
+                # In normal case, we can have two results here: either the Authentication is needed (the user
+                # needs to authorize by RFID card or app, or something like this.
+                # Or, the authorization is finished. This is shown by EVSEProcessing=Finished.
+                if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):                
+                    self.addToTrace("It is Finished. Will send ChargeParameterDiscoveryReq")
+                    msg = addV2GTPHeader(exiEncode("EDE_"+self.sessionId)) # EDE for Encode, Din, ChargeParameterDiscovery.
+                    self.addToTrace("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    self.enterState(stateWaitForChargeParameterDiscoveryResponse)
+                else:
+                    # Not (yet) finished.
+                    if (self.numberOfContractAuthenticationReq>=120): # approx 120 seconds, maybe the user searches two minutes for his RFID card...
+                        self.addToTrace("Authentication lasted too long. " + str(self.numberOfContractAuthenticationReq) + " Giving up.")
+                        self.enterState(stateSequenceTimeout)
+                    else:
+                         # Try again.
+                        self.numberOfContractAuthenticationReq += 1 # count the number of tries.
+                        self.addToTrace("Not (yet) finished. Will again send ContractAuthenticationReq #" + str(self.numberOfContractAuthenticationReq))
+                        msg = addV2GTPHeader(exiEncode("EDL_"+self.sessionId)) # EDL for Encode, Din, ContractAuthenticationReq.
+                        self.addToTrace("responding " + prettyHexMessage(msg))
+                        self.Tcp.transmit(msg)
+                        # We just stay in the same state, until the timeout elapses.
+                        self.enterState(stateWaitForContractAuthenticationResponse) 
+        if (self.isTooLong()):
+            # The timeout in case if nothing is received at all.
             self.enterState(stateSequenceTimeout)
         
     def stateFunctionWaitForChargeParameterDiscoveryResponse(self):
@@ -159,6 +197,8 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ChargeParameterDiscoveryRes")>0):
                 # todo: check the request content, and fill response parameters
+                # todo: if the response is "OK", pull the CP line to state C here.
+                # self.hardwareInterface.changeToStateC()
                 self.addToTrace("Will send CableCheckReq")
                 msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
                 self.addToTrace("responding " + prettyHexMessage(msg))
@@ -240,6 +280,7 @@ class fsmPev():
             stateWaitForSessionSetupResponse: stateFunctionWaitForSessionSetupResponse,
             stateWaitForServiceDiscoveryResponse: stateFunctionWaitForServiceDiscoveryResponse,
             stateWaitForServicePaymentSelectionResponse: stateFunctionWaitForServicePaymentSelectionResponse,
+            stateWaitForContractAuthenticationResponse: stateFunctionWaitForContractAuthenticationResponse,
             stateWaitForChargeParameterDiscoveryResponse: stateFunctionWaitForChargeParameterDiscoveryResponse,
             stateWaitForCableCheckResponse: stateFunctionWaitForCableCheckResponse,
             stateWaitForPreChargeResponse: stateFunctionWaitForPreChargeResponse,

@@ -168,11 +168,14 @@ a new, non-zero SessionID. This SessionID is used in all the upcoming messages f
 36. The charger confirms with ServiceDiscoveryResponse. This contains the offered services and payment options. Usually it says which type
 of charging the charger supports (e.g. AC 1phase, AC 3phase, or DC according CCS https://en.wikipedia.org/wiki/IEC_62196#FF), and that
 the payment should be handled externally by the user, or by the car.
-37. The car sends PaymentServiceSelectionRequest. Usually (in non-plug-and-charge case), the car says "I cannot pay, something else should
+37. The car sends ServicePaymentSelectionRequest. Usually (in non-plug-and-charge case), the car says "I cannot pay, something else should
 handle the payment", by setting paymentOption=ExternalPayment. Optionally it could announce other services than charging, e.g. internet access.
-38. The charger confirms with PaymentServiceSelectionResponse.
-39. The car sends AuthorizationRequest. In non-plug-and-charge case this is most likely not containing relevant data.
-40. The charger confirms with AuthorizationResponse.
+38. The charger confirms with ServicePaymentSelectionResponse.
+39. The car sends ContractAuthenticationRequest. In non-plug-and-charge case this is most likely not containing relevant data.
+40. The charger confirms with ContractAuthenticationResponse. In case, the user needs to authenticate before charging, this
+response does NOT yet say EVSEProcessing=Finished. The car repeats the request.
+41. The user authorizes, e.g. with RFID card or app or however.
+42. The charger sends ContractAuthenticationResponse with EVSEProcessing=Finished.
 41. The car sends ChargeParameterRequest. This contains the wanted RequestedEnergyTransferMode, e.g. to select
 DC or AC and which power pins are used. The car announces the maximum current limit and the maximum voltage limit.
 42. The charger confirms with ChargeParameterResponse. The contains the limits from charger side, e.g. min and max voltage,
@@ -282,10 +285,13 @@ is not yet implemented.
 	- The TCP port, which is announced in the SDP response, is ignored. This can be the root cause of failing TCP connection on Alpitronics.
 	- The SLAC timing includes too long wait times. This may be the root cause for failing SLAC on Supercharger and Compleo.
 
+### 2022-12-02 v0.3 On Alpitonics until ChargeParameterDiscovery
+- TCP connection works now on Alpitronics charger
+- ContractAuthentication loop works
+
 ### Ongoing improvements
 
 - SLAC timing: improvement to be tested.
-- TCP port from SDP response: bugfix to be tested.
 
 ### Test results on real-world chargers
 

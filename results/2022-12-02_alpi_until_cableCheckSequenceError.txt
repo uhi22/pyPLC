@@ -1,0 +1,1366 @@
+
+C:\UwesTechnik\pyPLC>python pyPlc.py P
+starting in PEV_MODE
+initializing pyPlcWorker
+[addressManager] we have local MAC DC:0E:A1:11:67:08. Todo: find this out dynamically.
+[addressManager] Found 1 link-local IPv6 addresses.
+fe80::c690:83f3:fbcb:980e%15
+[addressManager] Local IPv6 is fe80::c690:83f3:fbcb:980e%15
+[addressManager] Found 1 link-local IPv6 addresses.
+fe80::c690:83f3:fbcb:980e%15
+[addressManager] Local IPv6 is fe80::c690:83f3:fbcb:980e%15
+index match at 0 dev name=b'\\Device\\NPF_Loopback' dev.description=b'Adapter for loopback traffic capture'
+index match at 1 dev name=b'\\Device\\NPF_{0DFD428E-B132-4188-8EBC-38C13B0C89CF}' dev.description=b'Broadcom 802.11n-Netzwerkadapter'
+index match at 2 dev name=b'\\Device\\NPF_{A541C45F-EDAC-4242-ABF6-B4337228BBFF}' dev.description=b'Microsoft Wi-Fi Direct Virtual Adapter'
+index match at 3 dev name=b'\\Device\\NPF_{68936D7B-F0E7-46E7-A047-3C07A24E03B9}' dev.description=b'Microsoft Wi-Fi Direct Virtual Adapter #2'
+index match at 4 dev name=b'\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}' dev.description=b'Broadcom NetLink (TM) Gigabit Ethernet'
+index match at 5 dev name=b'\\Device\\NPF_{F2DFA311-B486-461A-A3F4-0DBA998BF9F9}' dev.description=b'WAN Miniport (IP)'
+index match at 6 dev name=b'\\Device\\NPF_{7105741E-F8FC-46AD-9BCD-95F7CDCC76B0}' dev.description=b'WAN Miniport (IPv6)'
+index match at 7 dev name=b'\\Device\\NPF_{CF245078-25B1-4487-AE2A-1763158ACD5F}' dev.description=b'WAN Miniport (Network Monitor)'
+index match at 4 dev name=b'\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}' dev.description=b'Broadcom NetLink (TM) Gigabit Ethernet'
+[addressManager] will give local MAC DC:0E:A1:11:67:08
+[addressManager] will give local MAC DC:0E:A1:11:67:08
+pyPlcIpv6 started with ownMac DC:0E:A1:11:67:08
+[addressManager] will give local MAC DC:0E:A1:11:67:08
+udplog started with ownMac DC:0E:A1:11:67:08
+sniffer created at eth4
+[pyPlcWorker] Software version v0.2-9-ga9b6e82
+[PEV] initializing fsmPev
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 1(NOK)
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] local modem not yet identified.
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 1 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x31 0x75 0x6b 0xe8 0xd2 0x3f 0x71 0x6e 0x58 0xf4 0xc2 0xef 0x73 0x5a 0xd2 0xd4
+This is NOT the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] setting the default developer key...
+[PEVSLAC] from 1 entering 3
+received SET_KEY.CNF
+SetKeyCnf says 1, this is formally 'rejected', but indeed ok.
+[PEVSLAC] Assuming the modem is up again.
+[PEVSLAC] from 3 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 1(NOK)
+From GetKeyCnf, got network ID (NID) 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] local modem not yet identified.
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 1 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 1(NOK)
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] local modem not yet identified.
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 1 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xb4 0x99 0x60 0xd8 0x8b 0xe0 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+
+C:\UwesTechnik\pyPLC>python pyPlc.py P
+starting in PEV_MODE
+initializing pyPlcWorker
+[addressManager] we have local MAC DC:0E:A1:11:67:08. Todo: find this out dynamically.
+[addressManager] Found 1 link-local IPv6 addresses.
+fe80::c690:83f3:fbcb:980e%15
+[addressManager] Local IPv6 is fe80::c690:83f3:fbcb:980e%15
+[addressManager] Found 1 link-local IPv6 addresses.
+fe80::c690:83f3:fbcb:980e%15
+[addressManager] Local IPv6 is fe80::c690:83f3:fbcb:980e%15
+index match at 0 dev name=b'\\Device\\NPF_Loopback' dev.description=b'Adapter for loopback traffic capture'
+index match at 1 dev name=b'\\Device\\NPF_{0DFD428E-B132-4188-8EBC-38C13B0C89CF}' dev.description=b'Broadcom 802.11n-Netzwerkadapter'
+index match at 2 dev name=b'\\Device\\NPF_{A541C45F-EDAC-4242-ABF6-B4337228BBFF}' dev.description=b'Microsoft Wi-Fi Direct Virtual Adapter'
+index match at 3 dev name=b'\\Device\\NPF_{68936D7B-F0E7-46E7-A047-3C07A24E03B9}' dev.description=b'Microsoft Wi-Fi Direct Virtual Adapter #2'
+index match at 4 dev name=b'\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}' dev.description=b'Broadcom NetLink (TM) Gigabit Ethernet'
+index match at 5 dev name=b'\\Device\\NPF_{F2DFA311-B486-461A-A3F4-0DBA998BF9F9}' dev.description=b'WAN Miniport (IP)'
+index match at 6 dev name=b'\\Device\\NPF_{7105741E-F8FC-46AD-9BCD-95F7CDCC76B0}' dev.description=b'WAN Miniport (IPv6)'
+index match at 7 dev name=b'\\Device\\NPF_{CF245078-25B1-4487-AE2A-1763158ACD5F}' dev.description=b'WAN Miniport (Network Monitor)'
+index match at 4 dev name=b'\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}' dev.description=b'Broadcom NetLink (TM) Gigabit Ethernet'
+[addressManager] will give local MAC DC:0E:A1:11:67:08
+[addressManager] will give local MAC DC:0E:A1:11:67:08
+pyPlcIpv6 started with ownMac DC:0E:A1:11:67:08
+[addressManager] will give local MAC DC:0E:A1:11:67:08
+udplog started with ownMac DC:0E:A1:11:67:08
+sniffer created at eth4
+[pyPlcWorker] Software version v0.2-9-ga9b6e82
+[PEV] initializing fsmPev
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+[PEVSLAC] Timeout while waiting for SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 0
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No modem connected. We assume, we run in a simulation environment.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+
+C:\UwesTechnik\pyPLC>python pyPlc.py P
+starting in PEV_MODE
+initializing pyPlcWorker
+[addressManager] we have local MAC DC:0E:A1:11:67:08. Todo: find this out dynamically.
+[addressManager] Found 1 link-local IPv6 addresses.
+fe80::c690:83f3:fbcb:980e%15
+[addressManager] Local IPv6 is fe80::c690:83f3:fbcb:980e%15
+[addressManager] Found 1 link-local IPv6 addresses.
+fe80::c690:83f3:fbcb:980e%15
+[addressManager] Local IPv6 is fe80::c690:83f3:fbcb:980e%15
+index match at 0 dev name=b'\\Device\\NPF_Loopback' dev.description=b'Adapter for loopback traffic capture'
+index match at 1 dev name=b'\\Device\\NPF_{0DFD428E-B132-4188-8EBC-38C13B0C89CF}' dev.description=b'Broadcom 802.11n-Netzwerkadapter'
+index match at 2 dev name=b'\\Device\\NPF_{A541C45F-EDAC-4242-ABF6-B4337228BBFF}' dev.description=b'Microsoft Wi-Fi Direct Virtual Adapter'
+index match at 3 dev name=b'\\Device\\NPF_{68936D7B-F0E7-46E7-A047-3C07A24E03B9}' dev.description=b'Microsoft Wi-Fi Direct Virtual Adapter #2'
+index match at 4 dev name=b'\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}' dev.description=b'Broadcom NetLink (TM) Gigabit Ethernet'
+index match at 5 dev name=b'\\Device\\NPF_{F2DFA311-B486-461A-A3F4-0DBA998BF9F9}' dev.description=b'WAN Miniport (IP)'
+index match at 6 dev name=b'\\Device\\NPF_{7105741E-F8FC-46AD-9BCD-95F7CDCC76B0}' dev.description=b'WAN Miniport (IPv6)'
+index match at 7 dev name=b'\\Device\\NPF_{CF245078-25B1-4487-AE2A-1763158ACD5F}' dev.description=b'WAN Miniport (Network Monitor)'
+index match at 4 dev name=b'\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}' dev.description=b'Broadcom NetLink (TM) Gigabit Ethernet'
+[addressManager] will give local MAC DC:0E:A1:11:67:08
+[addressManager] will give local MAC DC:0E:A1:11:67:08
+pyPlcIpv6 started with ownMac DC:0E:A1:11:67:08
+[addressManager] will give local MAC DC:0E:A1:11:67:08
+udplog started with ownMac DC:0E:A1:11:67:08
+sniffer created at eth4
+[pyPlcWorker] Software version v0.2-9-ga9b6e82
+[PEV] initializing fsmPev
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 0 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 1(NOK)
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] local modem not yet identified.
+[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...
+[PEVSLAC] from 1 entering 1
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] from 1 entering 2
+[PEVSLAC] Sending SLAC_PARAM.REQ...
+[PEVSLAC] from 2 entering 4
+received SLAC_PARAM.REQ
+[addressManager] pev has MAC DC:0E:A1:11:67:08
+received SLAC_PARAM.CNF
+[PEVSLAC] from 4 entering 5
+[PEVSLAC] from 5 entering 6
+[PEVSLAC] transmitting START_ATTEN_CHAR.IND...
+[PEVSLAC] transmitting START_ATTEN_CHAR.IND...
+[PEVSLAC] transmitting START_ATTEN_CHAR.IND...
+[PEVSLAC] from 6 entering 7
+[PEVSLAC] transmitting MNBC_SOUND.IND...
+received MNBC_SOUND.IND
+[PEVSLAC] transmitting MNBC_SOUND.IND...
+received MNBC_SOUND.IND
+[PEVSLAC] transmitting MNBC_SOUND.IND...
+received MNBC_SOUND.IND
+[PEVSLAC] transmitting MNBC_SOUND.IND...
+received MNBC_SOUND.IND
+[PEVSLAC] transmitting MNBC_SOUND.IND...
+received MNBC_SOUND.IND
+[PEVSLAC] transmitting MNBC_SOUND.IND...
+received MNBC_SOUND.IND
+[PEVSLAC] transmitting MNBC_SOUND.IND...
+received MNBC_SOUND.IND
+[PEVSLAC] transmitting MNBC_SOUND.IND...
+received MNBC_SOUND.IND
+[PEVSLAC] transmitting MNBC_SOUND.IND...
+received MNBC_SOUND.IND
+[PEVSLAC] transmitting MNBC_SOUND.IND...
+[PEVSLAC] from 7 entering 8
+received MNBC_SOUND.IND
+received ATTEN_CHAR.IND
+[PEVSLAC] received AttenCharInd in state 8
+[addressManager] evse has MAC 06:48:0E:3B:13:30
+[PEVSLAC] number of sounds reported by the EVSE (should be 10): 10
+[PEVSLAC] transmitting ATTEN_CHAR.RSP...
+[PEVSLAC] from 9 entering 10
+[PEVSLAC] transmitting SLAC_MATCH.REQ...
+[PEVSLAC] from 10 entering 11
+received SLAC_MATCH.REQ
+received SLAC_MATCH.CNF
+From SlacMatchCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+From SlacMatchCnf, got network membership key (NMK) 0x4c 0xba 0x19 0x2c 0xe4 0x72 0xfe 0xdc 0x37 0xf4 0x12 0xa 0xcf 0x10 0x39 0x26
+transmitting CM_SET_KEY.REQ
+[PEVSLAC] from 11 entering 12
+[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...
+[PEVSLAC] from 12 entering 13
+received SET_KEY.CNF
+SetKeyCnf says 1, this is formally 'rejected', but indeed ok.
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is NOT the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No EVSE seen (yet). Still waiting for it.
+[PEVSLAC] from 13 entering 12
+[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...
+[PEVSLAC] from 12 entering 13
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is NOT the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No EVSE seen (yet). Still waiting for it.
+[PEVSLAC] from 13 entering 12
+[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...
+[PEVSLAC] from 12 entering 13
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x1 0x2 0x3 0x4 0x5 0x6 0x7 0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf 0x10
+This is NOT the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No EVSE seen (yet). Still waiting for it.
+[PEVSLAC] from 13 entering 12
+[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...
+[PEVSLAC] from 12 entering 13
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No EVSE seen (yet). Still waiting for it.
+[PEVSLAC] from 13 entering 12
+[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...
+[PEVSLAC] from 12 entering 13
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x4c 0xba 0x19 0x2c 0xe4 0x72 0xfe 0xdc 0x37 0xf4 0x12 0xa 0xcf 0x10 0x39 0x26
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] No EVSE seen (yet). Still waiting for it.
+[PEVSLAC] from 13 entering 12
+[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...
+[PEVSLAC] from 12 entering 13
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x4c 0xba 0x19 0x2c 0xe4 0x72 0xfe 0xdc 0x37 0xf4 0x12 0xa 0xcf 0x10 0x39 0x26
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+received GET_KEY.CNF
+Modem #2 has BC:F2:AF:F3:05:25 and result code is 1(NOK)
+Info: NOK is normal for remote modems.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] EVSE is up, pairing successful.
+[PEVSLAC] Requesting SW versions from the modems...
+[PEVSLAC] from 13 entering 14
+[SNIFFER] received GET_SW.CNF
+[SNIFFER] For 98:48:27:5A:3C:E6 the software version is MAC-QCA7420-1.4.0.20-00-20171027-CS
+[SNIFFER] received GET_SW.CNF
+[SNIFFER] For BC:F2:AF:F3:05:25 the software version is MAC-QCA7000-1.1.0.727-02-20130826-FINAL
+[PEVSLAC] It was sufficient time to get the SW versions from the modems.
+[PEVSLAC] from 14 entering 15
+[PEVSLAC] SDP was not done yet. Now we start it.
+[PEVSLAC] from 15 entering 16
+[PEV] initiating SDP request
+[PEVSLAC] from 16 entering 16
+V2GTP (10bytes) = 01 FE 90 00 00 00 00 02 10 00
+[PEV] initiating SDP request
+[PEVSLAC] from 16 entering 16
+V2GTP (10bytes) = 01 FE 90 00 00 00 00 02 10 00
+V2GTP (28bytes) = 01 FE 90 01 00 00 00 14 FE 80 00 00 00 00 00 00 04 48 0E FF FE 3B 13 30 C7 A7 10 00
+[PEV] Received SDP response
+[addressManager] charger has IP fe80:0000:0000:0000:0448:0eff:fe3b:1330
+[addressManager] charger has TCP port 51111
+[PEVSLAC] Now we know the chargers IP.
+[PLCWORKER] Network is established, ready for TCP.
+[PEV] re-initializing fsmPev
+[PEVSLAC] from 16 entering 12
+connecting to fe80:0000:0000:0000:0448:0eff:fe3b:1330 port 51111...
+step1
+step2
+step2b
+step3
+[PEV] connected
+from 1 entering 2
+[PEV] Sending the initial SupportedApplicationProtocolReq
+from 2 entering 3
+[PEV] In state WaitForSupportedApplicationProtocolResponse, received (12bytes) = 01 FE 80 01 00 00 00 04 80 40 00 40
+[PEV] {
+"msgName": "supportedAppProtocolRes",
+"info": "4 bytes to convert",
+"error": "",
+"result": "ResponseCode 0, SchemaID_isUsed 1, SchemaID 1",
+"schema": "appHandshake",
+"debug": ""
+}
+[PEV] Will send SessionSetupReq
+[PEV] responding (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 00 00 00 00 11 D0 00 00
+from 3 entering 4
+[PEV] In state WaitForSessionSetupResponse, received (30bytes) = 01 FE 80 01 00 00 00 16 80 9A 02 00 00 00 00 03 1F DC 8B D1 E0 20 04 00 1C F0 14 F3 80 C0
+[PEV] {
+"msgName": "SessionSetupRes",
+"info": "22 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK_NewSessionEstablished",
+"EVSEID.bytesLen": "1",
+"EVSEID": "00",
+"debug": "Line538"
+}
+[PEV] The Evse decided for SessionId 000000000c7f722f
+[PEV] Will send ServiceDiscoveryReq
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D1 98
+from 4 entering 5
+[PEV] In state WaitForServiceDiscoveryResponse, received (27bytes) = 01 FE 80 01 00 00 00 13 80 9A 02 00 00 00 00 03 1F DC 8B D1 A0 01 20 02 41 00 C4
+[PEV] {
+"msgName": "ServiceDiscoveryRes",
+"info": "19 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"debug": "Line514"
+}
+[PEV] Will send ServicePaymentSelectionReq
+[PEV] responding (24bytes) = 01 FE 80 01 00 00 00 10 80 9A 02 00 00 00 00 03 1F DC 8B D1 B2 00 12 80
+from 5 entering 6
+[PEV] In state WaitForServicePaymentSelectionResponse, received (22bytes) = 01 FE 80 01 00 00 00 0E 80 9A 02 00 00 00 00 03 1F DC 8B D1 C0 00
+[PEV] {
+"msgName": "ServicePaymentSelectionRes",
+"info": "14 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"debug": "Line526"
+}
+[PEV] Will send ContractAuthenticationReq
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 6 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #2
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #3
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #4
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #5
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #6
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #7
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #8
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #9
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...
+[PEVSLAC] from 12 entering 13
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x4c 0xba 0x19 0x2c 0xe4 0x72 0xfe 0xdc 0x37 0xf4 0x12 0xa 0xcf 0x10 0x39 0x26
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+received GET_KEY.CNF
+Modem #2 has BC:F2:AF:F3:05:25 and result code is 1(NOK)
+Info: NOK is normal for remote modems.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #10
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] EVSE is up, pairing successful.
+[PEVSLAC] Requesting SW versions from the modems...
+[PEVSLAC] from 13 entering 14
+[SNIFFER] received GET_SW.CNF
+[SNIFFER] For 98:48:27:5A:3C:E6 the software version is MAC-QCA7420-1.4.0.20-00-20171027-CS
+[SNIFFER] received GET_SW.CNF
+[SNIFFER] For BC:F2:AF:F3:05:25 the software version is MAC-QCA7000-1.1.0.727-02-20130826-FINAL
+[PEVSLAC] It was sufficient time to get the SW versions from the modems.
+[PEVSLAC] from 14 entering 15
+[PEVSLAC] from 15 entering 12
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #11
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #12
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #13
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #14
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #15
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #16
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #17
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #18
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #19
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #20
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...
+[PEVSLAC] from 12 entering 13
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x4c 0xba 0x19 0x2c 0xe4 0x72 0xfe 0xdc 0x37 0xf4 0x12 0xa 0xcf 0x10 0x39 0x26
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+received GET_KEY.CNF
+Modem #2 has BC:F2:AF:F3:05:25 and result code is 1(NOK)
+Info: NOK is normal for remote modems.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] EVSE is up, pairing successful.
+[PEVSLAC] Requesting SW versions from the modems...
+[PEVSLAC] from 13 entering 14
+[SNIFFER] received GET_SW.CNF
+[SNIFFER] For 98:48:27:5A:3C:E6 the software version is MAC-QCA7420-1.4.0.20-00-20171027-CS
+[SNIFFER] received GET_SW.CNF
+[SNIFFER] For BC:F2:AF:F3:05:25 the software version is MAC-QCA7000-1.1.0.727-02-20130826-FINAL
+[PEVSLAC] It was sufficient time to get the SW versions from the modems.
+[PEVSLAC] from 14 entering 15
+[PEVSLAC] from 15 entering 12
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #21
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #22
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #23
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #24
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #25
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #26
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #27
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #28
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #29
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #30
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...
+[PEVSLAC] from 12 entering 13
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x4c 0xba 0x19 0x2c 0xe4 0x72 0xfe 0xdc 0x37 0xf4 0x12 0xa 0xcf 0x10 0x39 0x26
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+received GET_KEY.CNF
+Modem #2 has BC:F2:AF:F3:05:25 and result code is 1(NOK)
+Info: NOK is normal for remote modems.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #31
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] EVSE is up, pairing successful.
+[PEVSLAC] Requesting SW versions from the modems...
+[PEVSLAC] from 13 entering 14
+[SNIFFER] received GET_SW.CNF
+[SNIFFER] For 98:48:27:5A:3C:E6 the software version is MAC-QCA7420-1.4.0.20-00-20171027-CS
+[SNIFFER] received GET_SW.CNF
+[SNIFFER] For BC:F2:AF:F3:05:25 the software version is MAC-QCA7000-1.1.0.727-02-20130826-FINAL
+[PEVSLAC] It was sufficient time to get the SW versions from the modems.
+[PEVSLAC] from 14 entering 15
+[PEVSLAC] from 15 entering 12
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #32
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 02 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+[PEV] Not (yet) finished. Will again send ContractAuthenticationReq #33
+[PEV] responding (21bytes) = 01 FE 80 01 00 00 00 0D 80 9A 02 00 00 00 00 03 1F DC 8B D0 B8
+from 7 entering 7
+[PEV] In state WaitForContractAuthentication, received (23bytes) = 01 FE 80 01 00 00 00 0F 80 9A 02 00 00 00 00 03 1F DC 8B D0 C0 00 00
+[PEV] {
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Finished",
+"debug": "Line430"
+}
+[PEV] It is Finished. Will send ChargeParameterDiscoveryReq
+[PEV] responding (32bytes) = 01 FE 80 01 00 00 00 18 80 9A 02 00 00 00 00 03 1F DC 8B D0 71 91 40 0D C0 C8 C8 23 24 70 19 00
+from 7 entering 8
+[PEV] In state WaitForChargeParameterDiscoveryResponse, received (57bytes) = 01 FE 80 01 00 00 00 31 80 9A 02 00 00 00 00 03 1F DC 8B D0 80 02 00 00 00 00 00 10 00 2A 80 04 00 00 14 0C 00 40 80 E1 8A 3A 0A 0A 00 A0 60 60 00 08 0A 01 E2 30 30 06 10
+[PEV] {
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "49 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"debug": "Line406"
+}
+[PEV] Will send CableCheckReq
+[PEV] responding (24bytes) = 01 FE 80 01 00 00 00 10 80 9A 02 00 00 00 00 03 1F DC 8B D0 10 40 00 00
+from 8 entering 9
+[PEV] In state WaitForCableCheckResponse, received (27bytes) = 01 FE 80 01 00 00 00 13 80 9A 02 00 00 00 00 03 1F DC 8B D0 20 A0 00 80 00 04 00
+[PEV] {
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert",
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000000c7f722f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_SequenceError",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "1",
+"debug": "Line370"
+}
+[PEV] [PEV] The CableCheck result is FAILED_SequenceError 1
+[PEV] Will again send CableCheckReq
+[PEV] responding (24bytes) = 01 FE 80 01 00 00 00 10 80 9A 02 00 00 00 00 03 1F DC 8B D0 10 40 00 00
+[PEVSLAC] Checking whether the pairing worked, by GET_KEY.REQ...
+[PEVSLAC] from 12 entering 13
+received GET_KEY.CNF
+Modem #1 has 98:48:27:5A:3C:E6 and result code is 0(OK)
+The local modem has key 0x4c 0xba 0x19 0x2c 0xe4 0x72 0xfe 0xdc 0x37 0xf4 0x12 0xa 0xcf 0x10 0x39 0x26
+This is the developer NMK.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+received GET_KEY.CNF
+Modem #2 has BC:F2:AF:F3:05:25 and result code is 1(NOK)
+Info: NOK is normal for remote modems.
+From GetKeyCnf, got network ID (NID) 0xfb 0x4 0xc3 0x6c 0x12 0x32 0x1
+[PEVSLAC] It was sufficient time to get the answers from the modems.
+[PEVSLAC] EVSE is up, pairing successful.
+[PEVSLAC] Requesting SW versions from the modems...
+[PEVSLAC] from 13 entering 14
+[SNIFFER] received GET_SW.CNF
+[SNIFFER] For 98:48:27:5A:3C:E6 the software version is MAC-QCA7420-1.4.0.20-00-20171027-CS
+[SNIFFER] received GET_SW.CNF
+[SNIFFER] For BC:F2:AF:F3:05:25 the software version is MAC-QCA7000-1.1.0.727-02-20130826-FINAL
+[PEVSLAC] It was sufficient time to get the SW versions from the modems.
+[PEVSLAC] from 14 entering 15
+[PEVSLAC] from 15 entering 12
+
+C:\UwesTechnik\pyPLC>
