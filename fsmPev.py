@@ -169,6 +169,7 @@ class fsmPev():
                     msg = addV2GTPHeader(exiEncode("EDE_"+self.sessionId)) # EDE for Encode, Din, ChargeParameterDiscovery.
                     self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
+                    self.numberOfChargeParameterDiscoveryReq = 1 # first message
                     self.enterState(stateWaitForChargeParameterDiscoveryResponse)
                 else:
                     # Not (yet) finished.
@@ -189,6 +190,8 @@ class fsmPev():
             self.enterState(stateSequenceTimeout)
         
     def stateFunctionWaitForChargeParameterDiscoveryResponse(self):
+        if (self.cyclesInState<30): # The first second in the state just do nothing.
+            return    
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForChargeParameterDiscoveryResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
@@ -196,18 +199,38 @@ class fsmPev():
             strConverterResult = exiDecode(exidata, "DD") # Decode DIN
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ChargeParameterDiscoveryRes")>0):
-                # todo: check the request content, and fill response parameters
-                # todo: if the response is "OK", pull the CP line to state C here.
-                # self.hardwareInterface.changeToStateC()
-                self.addToTrace("Will send CableCheckReq")
-                msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
-                self.addToTrace("responding " + prettyHexMessage(msg))
-                self.Tcp.transmit(msg)
-                self.enterState(stateWaitForCableCheckResponse)
+                # We can have two cases here:
+                # (A) The charger needs more time to show the charge parameters.
+                # (B) The charger finished to tell the charge parameters.
+                if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):                
+                    self.addToTrace("It is Finished. Will change to state C and send CableCheckReq.")
+                    # todo: pull the CP line to state C here.
+                    # self.hardwareInterface.changeToStateC()
+                    msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
+                    self.addToTrace("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    self.numberOfCableCheckReq = 1 # This is the first request.
+                    self.enterState(stateWaitForCableCheckResponse)
+                else:
+                    # Not (yet) finished.
+                    if (self.numberOfChargeParameterDiscoveryReq>=20): # approx 20 seconds, should be sufficient for the charger to find its parameters...
+                        self.addToTrace("ChargeParameterDiscovery lasted too long. " + str(self.numberOfChargeParameterDiscoveryReq) + " Giving up.")
+                        self.enterState(stateSequenceTimeout)
+                    else:
+                         # Try again.
+                        self.numberOfChargeParameterDiscoveryReq += 1 # count the number of tries.
+                        self.addToTrace("Not (yet) finished. Will again send ChargeParameterDiscoveryReq #" + str(self.numberOfChargeParameterDiscoveryReq))
+                        msg = addV2GTPHeader(exiEncode("EDE_"+self.sessionId)) # EDE for Encode, Din, ChargeParameterDiscovery.
+                        self.addToTrace("responding " + prettyHexMessage(msg))
+                        self.Tcp.transmit(msg)
+                        # we stay in the same state
+                        self.enterState(stateWaitForChargeParameterDiscoveryResponse)                
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
 
     def stateFunctionWaitForCableCheckResponse(self):
+        if (self.cyclesInState<30): # The first second in the state just do nothing.
+            return     
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForCableCheckResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
@@ -234,11 +257,18 @@ class fsmPev():
                     self.Tcp.transmit(msg)
                     self.enterState(stateWaitForPreChargeResponse)
                 else:
-                    # cable check not yet finished or finished with bad result -> try again
-                    self.addToTrace("Will again send CableCheckReq")
-                    msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
-                    self.addToTrace("responding " + prettyHexMessage(msg))
-                    self.Tcp.transmit(msg)
+                    if (self.numberOfCableCheckReq>30): # approx 30s should be sufficient for cable check
+                        self.addToTrace("CableCheck lasted too long. " + str(self.numberOfCableCheckReq) + " Giving up.")
+                        self.enterState(stateSequenceTimeout)
+                    else:    
+                        # cable check not yet finished or finished with bad result -> try again
+                        self.numberOfCableCheckReq += 1
+                        self.addToTrace("Will again send CableCheckReq")
+                        msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
+                        self.addToTrace("responding " + prettyHexMessage(msg))
+                        self.Tcp.transmit(msg)
+                        # stay in the same state
+                        self.enterState(stateWaitForCableCheckResponse)
                     
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
