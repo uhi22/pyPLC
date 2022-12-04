@@ -249,7 +249,7 @@ class fsmPev():
                 # We have two cases here:
                 # 1) The charger says "cable check is finished and cable ok", by setting ResponseCode=OK and EVSEProcessing=Finished.
                 # 2) Else: The charger says "need more time or cable not ok". In this case, we just run into timeout and start from the beginning.
-                if ((strEVSEProcessing==dinEVSEProcessingType_Finished) and (strResponseCode=="OK")):
+                if ((strEVSEProcessing=="Finished") and (strResponseCode=="OK")):
                     self.addToTrace("The EVSE says that the CableCheck is finished and ok.")
                     self.addToTrace("Will send PreChargeReq")
                     msg = addV2GTPHeader(exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
