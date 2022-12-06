@@ -204,8 +204,8 @@ class fsmPev():
                 # (B) The charger finished to tell the charge parameters.
                 if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):                
                     self.addToTrace("It is Finished. Will change to state C and send CableCheckReq.")
-                    # todo: pull the CP line to state C here.
-                    # self.hardwareInterface.changeToStateC()
+                    # pull the CP line to state C here:
+                    self.hardwareInterface.setStateC()
                     msg = addV2GTPHeader(exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
                     self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
@@ -320,15 +320,17 @@ class fsmPev():
     def reInit(self):
         self.addToTrace("re-initializing fsmPev") 
         self.Tcp.disconnect()
+        self.hardwareInterface.setStateB()
         self.state = stateConnecting
         self.cyclesInState = 0
         self.rxData = []
         
-    def __init__(self, addressManager, callbackAddToTrace):
+    def __init__(self, addressManager, callbackAddToTrace, hardwareInterface):
         self.callbackAddToTrace = callbackAddToTrace
         self.addToTrace("initializing fsmPev") 
         self.Tcp = pyPlcTcpSocket.pyPlcTcpClientSocket(self.callbackAddToTrace)
         self.addressManager = addressManager
+        self.hardwareInterface = hardwareInterface
         self.state = stateNotYetInitialized
         self.sessionId = "DEAD55AADEAD55AA"
         self.cyclesInState = 0

@@ -13,6 +13,7 @@ from pyPlcModes import *
 import addressManager
 import time
 import subprocess
+import hardwareInterface
         
 
 class pyPlcWorker():
@@ -28,6 +29,7 @@ class pyPlcWorker():
         self.oldAvlnStatus = 0
         self.isSimulationMode = isSimulationMode
         self.hp = pyPlcHomeplug.pyPlcHomeplug(self.workerAddToTrace, self.callbackShowStatus, self.mode, self.addressManager, self.callbackReadyForTcp, self.isSimulationMode)
+        self.hardwareInterface = hardwareInterface.hardwareInterface(self.workerAddToTrace)
         self.hp.printToUdp("pyPlcWorker init")
         # Find out the version number, using git.
         # see https://stackoverflow.com/questions/14989858/get-the-current-git-hash-in-a-python-script
@@ -39,7 +41,7 @@ class pyPlcWorker():
         if (self.mode == C_EVSE_MODE):
             self.evse = fsmEvse.fsmEvse(self.workerAddToTrace)
         if (self.mode == C_PEV_MODE):
-            self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace)
+            self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace, self.hardwareInterface)
  
     def workerAddToTrace(self, s):
         # The central logging function. All logging messages from the different parts of the project
@@ -69,7 +71,8 @@ class pyPlcWorker():
     def mainfunction(self):
         self.nMainFunctionCalls+=1
         #self.showStatus("pyPlcWorker loop " + str(self.nMainFunctionCalls))
-        self.hp.mainfunction() # call the lower-level worker
+        self.hp.mainfunction() # call the lower-level workers
+        self.hardwareInterface.mainfunction()
         if (self.mode == C_EVSE_MODE):
             self.evse.mainfunction() # call the evse state machine
         if (self.mode == C_PEV_MODE):
@@ -86,7 +89,7 @@ class pyPlcWorker():
             self.hp.enterPevMode()
             if (not hasattr(self, 'pev')):
                 print("creating pev")
-                self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace)
+                self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace, self.hardwareInterface)
             self.pev.reInit()
         if (strAction == "E"):
             print("switching to EVSE mode")
