@@ -36,16 +36,47 @@ class hardwareInterface():
 
     def setStateB(self):
         self.addToTrace("Setting CP line into state B.")
-        self.outvalue = 0
+        self.outvalue &= ~1
         
     def setStateC(self):
         self.addToTrace("Setting CP line into state C.")
-        self.outvalue = 1
+        self.outvalue |= 1
+        
+    def setPowerRelayOn(self):
+        self.addToTrace("Switching PowerRelay ON.")
+        self.outvalue |= 2
+
+    def setPowerRelayOff(self):
+        self.addToTrace("Switching PowerRelay OFF.")
+        self.outvalue &= ~2
+        
+    def getInletVoltage(self):
+        #todo: get real measured voltage from the inlet
+        self.inletVoltage = 230
+        return self.inletVoltage
+        
+    def getAccuVoltage(self):
+        #todo: get real measured voltage from the accu
+        self.accuVoltage = 230
+        return self.accuVoltage
+
+    def getAccuMaxCurrent(self):
+        #todo: get max charging current from the BMS
+        self.accuMaxCurrent = 10
+        return self.accuMaxCurrent
+
+    def getIsAccuFull(self):
+        #todo: get "full" indication from the BMS
+        self.IsAccuFull = (self.simulatedSoc >= 98)
+        return self.IsAccuFull
+        
         
     def __init__(self, callbackAddToTrace=None):
         self.callbackAddToTrace = callbackAddToTrace
         self.loopcounter = 0
         self.outvalue = 0
+        self.simulatedSoc = 20.0 # percent
+        self.inletVoltage = 0.0 # volts
         self.findSerialPort()
 
     def close(self):
@@ -53,6 +84,10 @@ class hardwareInterface():
             self.ser.close()
     
     def mainfunction(self):
+        if (self.simulatedSoc<100):
+            if ((self.outvalue & 2)!=0):
+                # while the relay is closes, simulate increasing SOC
+                self.simulatedSoc = self.simulatedSoc + 0.2
         self.loopcounter+=1
         if (self.isInterfaceOk):
             if (self.loopcounter>15):

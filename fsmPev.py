@@ -10,6 +10,8 @@ from helpers import prettyHexMessage
 from exiConnector import * # for EXI data handling/converting
 import json
 
+PARAM_U_DELTA_MAX_FOR_END_OF_PRECHARGE = 10 # volts between inlet and accu, to change from PreCharge to PowerDelivery
+
 stateNotYetInitialized = 0
 stateConnecting = 1
 stateConnected = 2
@@ -22,6 +24,10 @@ stateWaitForChargeParameterDiscoveryResponse = 8
 stateWaitForCableCheckResponse = 9
 stateWaitForPreChargeResponse = 10
 stateWaitForPowerDeliveryResponse = 11
+stateWaitForCurrentDemandResponse = 12
+stateWaitForWeldingDetectionResponse = 13
+stateWaitForSessionStopResponse = 14
+stateChargingFinished = 15
 stateSequenceTimeout = 99
 
 
@@ -286,13 +292,110 @@ class fsmPev():
             if (strConverterResult.find("PreChargeRes")>0):
                 # todo: check the request content, and fill response parameters
                 self.addToTrace("PreCharge aknowledge received.")
-                self.addToTrace("As Demo, we stay in PreCharge forever.")
-                msg = addV2GTPHeader(exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
-                self.addToTrace("responding " + prettyHexMessage(msg))
-                self.Tcp.transmit(msg)
-                self.DelayCycles=15 # wait with the next evaluation approx half a second
+                if (abs(self.hardwareInterface.getInletVoltage()-self.hardwareInterface.getAccuVoltage()) < PARAM_U_DELTA_MAX_FOR_END_OF_PRECHARGE):
+                    self.addToTrace("Difference between accu voltage and inlet voltage is small. Sending PowerDeliveryReq.")
+                    self.hardwareInterface.setPowerRelayOn()
+                    msg = addV2GTPHeader(exiEncode("EDH_"+self.sessionId+"_"+"1")) # EDH for Encode, Din, PowerDeliveryReq, ON
+                    self.wasPowerDeliveryRequestedOn=True
+                    self.addToTrace("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    self.enterState(stateWaitForPowerDeliveryResponse)
+                else:
+                    self.addToTrace("Difference too big. Continuing PreCharge.")
+                    #self.addToTrace("As Demo, we stay in PreCharge forever.")
+                    msg = addV2GTPHeader(exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
+                    self.addToTrace("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    self.DelayCycles=15 # wait with the next evaluation approx half a second
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
+            
+    def stateFunctionWaitForPowerDeliveryResponse(self):
+        if (len(self.rxData)>0):
+            self.addToTrace("In state WaitForPowerDeliveryRes, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            self.rxData = []
+            strConverterResult = exiDecode(exidata, "DD") # Decode DIN
+            self.addToTrace(strConverterResult)
+            if (strConverterResult.find("PowerDeliveryRes")>0):
+                if (self.wasPowerDeliveryRequestedOn):
+                    self.addToTrace("Starting the charging loop with CurrentDemandReq")
+                    msg = addV2GTPHeader(exiEncode("EDI_"+self.sessionId)) # EDI for Encode, Din, CurrentDemandReq
+                    self.addToTrace("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    self.enterState(stateWaitForCurrentDemandResponse)
+                else:
+                    # We requested "OFF". So we turn-off the Relay and continue with the Welding detection.
+                    self.addToTrace("Turning off the relay and starting the WeldingDetection")
+                    self.hardwareInterface.setPowerRelayOff()
+                    msg = addV2GTPHeader(exiEncode("EDJ_"+self.sessionId)) # EDI for Encode, Din, WeldingDetectionReq
+                    self.addToTrace("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    self.enterState(stateWaitForWeldingDetectionResponse)
+        if (self.isTooLong()):
+            self.enterState(stateSequenceTimeout)
+
+    def stateFunctionWaitForCurrentDemandResponse(self):
+        if (len(self.rxData)>0):
+            self.addToTrace("In state WaitForCurrentDemandRes, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            self.rxData = []
+            strConverterResult = exiDecode(exidata, "DD") # Decode DIN
+            self.addToTrace(strConverterResult)
+            if (strConverterResult.find("CurrentDemandRes")>0):
+                # as long as the accu is not full and no stop-demand from the user, we continue charging
+                if (self.hardwareInterface.getIsAccuFull()):
+                    self.addToTrace("Accu is full. Sending PowerDeliveryReq Stop.")
+                    msg = addV2GTPHeader(exiEncode("EDH_"+self.sessionId+"_"+"0")) # EDH for Encode, Din, PowerDeliveryReq, OFF
+                    self.wasPowerDeliveryRequestedOn=False
+                    self.addToTrace("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    self.enterState(stateWaitForPowerDeliveryResponse)
+                else:
+                    # continue charging loop
+                    msg = addV2GTPHeader(exiEncode("EDI_"+self.sessionId)) # EDI for Encode, Din, CurrentDemandReq
+                    self.addToTrace("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    self.enterState(stateWaitForCurrentDemandResponse)
+                    
+        if (self.isTooLong()):
+            self.enterState(stateSequenceTimeout)
+
+    def stateFunctionWaitForWeldingDetectionResponse(self):
+        if (len(self.rxData)>0):
+            self.addToTrace("In state WaitForWeldingDetectionResponse, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            self.rxData = []
+            strConverterResult = exiDecode(exidata, "DD") # Decode DIN
+            self.addToTrace(strConverterResult)
+            if (strConverterResult.find("WeldingDetectionRes")>0):
+                    self.addToTrace("Sending SessionStopReq")                    
+                    msg = addV2GTPHeader(exiEncode("EDK_"+self.sessionId)) # EDI for Encode, Din, SessionStopReq
+                    self.addToTrace("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    self.enterState(stateWaitForSessionStopResponse)
+        if (self.isTooLong()):
+            self.enterState(stateSequenceTimeout)
+
+    def stateFunctionWaitForSessionStopResponse(self):
+        if (len(self.rxData)>0):
+            self.addToTrace("In state WaitForSessionStopRes, received " + prettyHexMessage(self.rxData))
+            exidata = removeV2GTPHeader(self.rxData)
+            self.rxData = []
+            strConverterResult = exiDecode(exidata, "DD") # Decode DIN
+            self.addToTrace(strConverterResult)
+            if (strConverterResult.find("SessionStopRes")>0):
+                # req -508
+                # Todo: close the TCP connection here.
+                # Todo: Unlock the connector lock.
+                self.addToTrace("Charging is finished")
+                self.enterState(stateChargingFinished)
+        if (self.isTooLong()):
+            self.enterState(stateSequenceTimeout)
+    
+    def stateFunctionChargingFinished(self):
+        # charging is finished. Nothing to do. Just stay here, until we get re-initialized after a new SLAC/SDP.        
+        pass
             
     def stateFunctionSequenceTimeout(self):
         # Here we end, if we run into a timeout in the state machine. This is an error case, and
@@ -314,13 +417,21 @@ class fsmPev():
             stateWaitForChargeParameterDiscoveryResponse: stateFunctionWaitForChargeParameterDiscoveryResponse,
             stateWaitForCableCheckResponse: stateFunctionWaitForCableCheckResponse,
             stateWaitForPreChargeResponse: stateFunctionWaitForPreChargeResponse,
+            stateWaitForPowerDeliveryResponse: stateFunctionWaitForPowerDeliveryResponse,
+            stateWaitForCurrentDemandResponse: stateFunctionWaitForCurrentDemandResponse,
+            stateWaitForWeldingDetectionResponse: stateFunctionWaitForWeldingDetectionResponse,
+            stateWaitForSessionStopResponse: stateFunctionWaitForSessionStopResponse,
+            stateChargingFinished: stateFunctionChargingFinished,
             stateSequenceTimeout: stateFunctionSequenceTimeout
         }
+
+
 
     def reInit(self):
         self.addToTrace("re-initializing fsmPev") 
         self.Tcp.disconnect()
         self.hardwareInterface.setStateB()
+        self.hardwareInterface.setPowerRelayOff()
         self.state = stateConnecting
         self.cyclesInState = 0
         self.rxData = []

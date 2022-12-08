@@ -135,6 +135,24 @@ class fsmEvse():
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
+            if (strConverterResult.find("CurrentDemandReq")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDi")) # EDi for Encode, Din, CurrentDemandRes
+                self.addToTrace("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)  
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
+            if (strConverterResult.find("WeldingDetectionReq")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDj")) # EDj for Encode, Din, WeldingDetectionRes
+                self.addToTrace("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)  
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
+            if (strConverterResult.find("SessionStopReq")>0):
+                # todo: check the request content, and fill response parameters
+                msg = addV2GTPHeader(exiEncode("EDk")) # EDk for Encode, Din, SessionStopRes
+                self.addToTrace("responding " + prettyHexMessage(msg))
+                self.Tcp.transmit(msg)  
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
 
 
                 
