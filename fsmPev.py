@@ -65,8 +65,8 @@ class fsmPev():
     
     def sendCurrentDemandReq(self):
         soc = str(self.hardwareInterface.getSoc())
-        EVTargetCurrent = str(self.hardwareInterface.getAccuMaxCurrent)
-        EVTargetVoltage = str(self.hardwareInterface.getAccuMaxVoltage)
+        EVTargetCurrent = str(self.hardwareInterface.getAccuMaxCurrent())
+        EVTargetVoltage = str(self.hardwareInterface.getAccuMaxVoltage())
         msg = addV2GTPHeader(self.exiEncode("EDI_"+self.sessionId + "_" + soc + "_" + EVTargetCurrent + "_" + EVTargetVoltage )) # EDI for Encode, Din, CurrentDemandReq
         self.addToTrace("responding " + prettyHexMessage(msg))
         self.Tcp.transmit(msg)
