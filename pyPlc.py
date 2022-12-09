@@ -86,5 +86,6 @@ while lastKey!="x":
     # print(str(nMainloops) + " " + str(nKeystrokes)) # show something in the console window
     root.update()
     worker.mainfunction()
+del(worker)
         
 #---------------------------------------------------------------

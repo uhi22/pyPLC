@@ -307,7 +307,9 @@ class ipv6handler():
         # 0x8001 EXI encoded V2G message
         if (v2gptPayloadType == 0x8001):
             self.ExiPacket = self.v2gframe[8:] # the exi payload, without the 8 bytes V2GTP header
-            print("[SNIFFER] EXI from " + str(self.tcpsourceport) + " to " + str(self.tcpdestinationport) + " " + prettyHexMessage(self.ExiPacket))
+            s = "[SNIFFER] EXI from " + str(self.tcpsourceport) + " to " + str(self.tcpdestinationport) + " " + prettyHexMessage(self.ExiPacket)
+            print(s)
+            # print(s, file=self.exiLogFile)
             # Todo: further process the EXI packet. E.g. write it into file for offline analysis.
             # And send it to decoder.
 
@@ -316,7 +318,7 @@ class ipv6handler():
         # just want to listen to the conversation of two others, and extract what we hear.
         self.tcpsourceport = self.myreceivebuffer[54] * 256 + self.myreceivebuffer[55]
         self.tcpdestinationport = self.myreceivebuffer[56] * 256 + self.myreceivebuffer[57]
-        if ((self.tcpsourceport == 15118) or (self.tcpdestinationport == 15118)):
+        if (True): # we do not check port, because the TCP port is variable. (self.tcpsourceport == 15118) or (self.tcpdestinationport == 15118))
             if (len(self.myreceivebuffer)>=74+9): # 74 is the TCP without any data. A V2GTP has 8 bytes header, plus at least 1 payload byte.
                 startOfV2gtp = 74 # the index of the first V2GTP byte in the ethernet buffer
                 if ((self.myreceivebuffer[startOfV2gtp] == 0x01) and (self.myreceivebuffer[startOfV2gtp+1] == 0xFE)):
@@ -356,6 +358,7 @@ class ipv6handler():
         #self.enterListenMode()
         self.transmit = transmitCallback
         self.addressManager = addressManager
+        #self.exiLogFile = open('SnifferExiLog.txt', 'w')
         # 16 bytes, a default IPv6 address for the charging station
         # self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0xaa, 0xaa, 0xff, 0xfe, 0, 0xaa, 0xaa ]
         # fe80::e0ad:99ac:52eb:85d3 is the Win10 laptop

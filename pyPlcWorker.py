@@ -42,7 +42,11 @@ class pyPlcWorker():
             self.evse = fsmEvse.fsmEvse(self.workerAddToTrace)
         if (self.mode == C_PEV_MODE):
             self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace, self.hardwareInterface)
- 
+    def __del__(self):
+        if (self.mode == C_PEV_MODE):
+            print("worker: deleting pev")
+            del(self.pev)
+        
     def workerAddToTrace(self, s):
         # The central logging function. All logging messages from the different parts of the project
         # shall come here.

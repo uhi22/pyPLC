@@ -751,7 +751,7 @@ class pyPlcHomeplug():
         self.pevSequenceCyclesInState+=1
         if (self.pevSequenceState==STATE_INITIAL): # Initial state.
             # In real life we would check whether we see 5% PWM on the pilot line. We skip this check.
-            self.isSimulationMode = 0
+            self.isSimulationMode = self.isForcedSimulationMode # from command line, we can force the simulation mode
             self.isSDPDone = 0
             self.numberOfFoundModems = 0
             self.localModemFound = 0
@@ -1034,7 +1034,8 @@ class pyPlcHomeplug():
         self.pevSequenceState = 0
         self.pevSequenceCyclesInState = 0
         self.numberOfSoftwareVersionResponses = 0
-        self.isSimulationMode = isSimulationMode # simulation without homeplug modem
+        self.numberOfFoundModems = 0
+        self.isForcedSimulationMode = isSimulationMode # simulation without homeplug modem
         #self.sniffer = pcap.pcap(name=None, promisc=True, immediate=True, timeout_ms=50)
         # eth3 means: Third entry from back, in the list of interfaces, which is provided by pcap.findalldevs.
         #  Improvement necessary: select the interface based on the name.

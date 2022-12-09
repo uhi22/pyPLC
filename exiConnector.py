@@ -230,7 +230,7 @@ def testDecoder(strHex, pre="DH", comment=""):
             print("---***!!!FAIL!!!***---")
             nFail+=1
 
-def testReadExiFromFile():
+def testReadExiFromSnifferFile():
     file1 = open('results\\tmp.txt', 'r')
     Lines = file1.readlines()
     for myLine in Lines:
@@ -241,6 +241,24 @@ def testReadExiFromFile():
             s = s.replace("\n", "") # Remove line feeds
             #print(s)
             testDecoder(s, "DD", "")
+
+def testReadExiFromExiLogFile():
+    file1 = open('PevExiLog.txt', 'r')
+    fileOut = open('PevExiLog_decoded.txt', 'w')
+    # example: "ED 809a02004080c1014181c210b8"
+    Lines = file1.readlines()
+    for myLine in Lines:
+        if (myLine[1:3]=="D "): # it is DIN
+            posOfSpace=2
+            s = myLine[posOfSpace+1:] # The part after the " " contains the EXI hex data.
+            s = s.replace(" ", "") # Remove blanks
+            s = s.replace("\n", "") # Remove line feeds
+            #print(s)
+            decoded=exiDecode(s, "DD")
+            print(decoded)
+            print(myLine.replace("\n", "") + " means:", file=fileOut)            
+            print(decoded, file=fileOut)
+    fileOut.close()
 
 def testTimeConsumption():
     strHex = "809a001150400000c80006400000"
@@ -268,8 +286,8 @@ if __name__ == "__main__":
     if (False):
         testTimeConsumption()
         exit()
-    if (False):        
-        testReadExiFromFile()
+    if (True):        
+        testReadExiFromExiLogFile()
         exit()
     
     if (False):
