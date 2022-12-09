@@ -2,7 +2,7 @@
 
 - [ ] PevMode: PreChargeReq: Fill EVRESSSOC, EVTargetVoltage, EVTargetCurrent
 - [ ] PevMode: PowerDeliveryReq: Fill EVRESSSOC, Stop/Start
-- [ ] PevMode: CurrentDemandReq: Fill EVTargetCurrent, EVMaximumVoltageLimit
+- [ ] PevMode: CurrentDemandReq: Fill EVRESSSOC, EVTargetCurrent, EVTargetVoltage
 - [ ] EvseMode: CurrentDemandRes: Fill EVSEPresentVoltage, EVSEPresentCurrent, EVSEMaximumVoltageLimit, ...LimitAchieved
 - [ ] EvseMode: Fill V2G messages as far as needed, to convince the car to accept it.
 - [ ] PevMode: Fill V2G messages as far as needed, to convince the charger to accept it.

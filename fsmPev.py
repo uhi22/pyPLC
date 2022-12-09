@@ -50,6 +50,33 @@ class fsmPev():
         self.exiLogFile.write(schema + " " + s +"\n") # write the EXI data to the exiLogFile
         return exidata
         
+    def sendChargeParameterDiscoveryReq(self):
+        soc = str(self.hardwareInterface.getSoc())
+        msg = addV2GTPHeader(self.exiEncode("EDE_"+self.sessionId + "_" + soc)) # EDE for Encode, Din, ChargeParameterDiscovery.
+        self.addToTrace("responding " + prettyHexMessage(msg))
+        self.Tcp.transmit(msg)
+        
+    def sendCableCheckReq(self):
+        soc = str(self.hardwareInterface.getSoc())
+        msg = addV2GTPHeader(self.exiEncode("EDF_"+self.sessionId + "_" + soc)) # EDF for Encode, Din, CableCheckReq
+        self.addToTrace("responding " + prettyHexMessage(msg))
+        self.Tcp.transmit(msg)
+    
+    
+    def sendCurrentDemandReq(self):
+        soc = str(self.hardwareInterface.getSoc())
+        EVTargetCurrent = str(self.hardwareInterface.getAccuMaxCurrent)
+        EVTargetVoltage = str(self.hardwareInterface.getAccuMaxVoltage)
+        msg = addV2GTPHeader(self.exiEncode("EDI_"+self.sessionId + "_" + soc + "_" + EVTargetCurrent + "_" + EVTargetVoltage )) # EDI for Encode, Din, CurrentDemandReq
+        self.addToTrace("responding " + prettyHexMessage(msg))
+        self.Tcp.transmit(msg)
+
+    def sendWeldingDetectionReq(self):
+        soc = str(self.hardwareInterface.getSoc())
+        msg = addV2GTPHeader(self.exiEncode("EDJ_"+self.sessionId + "_" + soc)) # EDI for Encode, Din, WeldingDetectionReq
+        self.addToTrace("responding " + prettyHexMessage(msg))
+        self.Tcp.transmit(msg)
+            
     def enterState(self, n):
         print("from " + str(self.state) + " entering " + str(n))
         self.state = n
@@ -184,9 +211,7 @@ class fsmPev():
                 # Or, the authorization is finished. This is shown by EVSEProcessing=Finished.
                 if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):                
                     self.addToTrace("It is Finished. Will send ChargeParameterDiscoveryReq")
-                    msg = addV2GTPHeader(self.exiEncode("EDE_"+self.sessionId)) # EDE for Encode, Din, ChargeParameterDiscovery.
-                    self.addToTrace("responding " + prettyHexMessage(msg))
-                    self.Tcp.transmit(msg)
+                    self.sendChargeParameterDiscoveryReq()
                     self.numberOfChargeParameterDiscoveryReq = 1 # first message
                     self.enterState(stateWaitForChargeParameterDiscoveryResponse)
                 else:
@@ -224,9 +249,7 @@ class fsmPev():
                     self.addToTrace("It is Finished. Will change to state C and send CableCheckReq.")
                     # pull the CP line to state C here:
                     self.hardwareInterface.setStateC()
-                    msg = addV2GTPHeader(self.exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
-                    self.addToTrace("responding " + prettyHexMessage(msg))
-                    self.Tcp.transmit(msg)
+                    self.sendCableCheckReq()
                     self.numberOfCableCheckReq = 1 # This is the first request.
                     self.enterState(stateWaitForCableCheckResponse)
                 else:
@@ -238,9 +261,7 @@ class fsmPev():
                          # Try again.
                         self.numberOfChargeParameterDiscoveryReq += 1 # count the number of tries.
                         self.addToTrace("Not (yet) finished. Will again send ChargeParameterDiscoveryReq #" + str(self.numberOfChargeParameterDiscoveryReq))
-                        msg = addV2GTPHeader(self.exiEncode("EDE_"+self.sessionId)) # EDE for Encode, Din, ChargeParameterDiscovery.
-                        self.addToTrace("responding " + prettyHexMessage(msg))
-                        self.Tcp.transmit(msg)
+                        self.sendChargeParameterDiscoveryReq()
                         # we stay in the same state
                         self.enterState(stateWaitForChargeParameterDiscoveryResponse)                
         if (self.isTooLong()):
@@ -270,7 +291,9 @@ class fsmPev():
                 if ((strEVSEProcessing=="Finished") and (strResponseCode=="OK")):
                     self.addToTrace("The EVSE says that the CableCheck is finished and ok.")
                     self.addToTrace("Will send PreChargeReq")
-                    msg = addV2GTPHeader(self.exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
+                    soc = self.hardwareInterface.getSoc()
+                    EVTargetVoltage = self.hardwareInterface.getAccuVoltage()
+                    msg = addV2GTPHeader(self.exiEncode("EDG_"+self.sessionId+"_"+str(soc)+"_"+str(EVTargetVoltage))) # EDG for Encode, Din, PreChargeReq
                     self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
                     self.enterState(stateWaitForPreChargeResponse)
@@ -282,9 +305,7 @@ class fsmPev():
                         # cable check not yet finished or finished with bad result -> try again
                         self.numberOfCableCheckReq += 1
                         self.addToTrace("Will again send CableCheckReq")
-                        msg = addV2GTPHeader(self.exiEncode("EDF_"+self.sessionId)) # EDF for Encode, Din, CableCheck
-                        self.addToTrace("responding " + prettyHexMessage(msg))
-                        self.Tcp.transmit(msg)
+                        self.sendCableCheckReq()
                         # stay in the same state
                         self.enterState(stateWaitForCableCheckResponse)
                     
@@ -307,15 +328,17 @@ class fsmPev():
                 if (abs(self.hardwareInterface.getInletVoltage()-self.hardwareInterface.getAccuVoltage()) < PARAM_U_DELTA_MAX_FOR_END_OF_PRECHARGE):
                     self.addToTrace("Difference between accu voltage and inlet voltage is small. Sending PowerDeliveryReq.")
                     self.hardwareInterface.setPowerRelayOn()
-                    msg = addV2GTPHeader(self.exiEncode("EDH_"+self.sessionId+"_"+"1")) # EDH for Encode, Din, PowerDeliveryReq, ON
+                    soc = self.hardwareInterface.getSoc()
+                    msg = addV2GTPHeader(self.exiEncode("EDH_"+self.sessionId+"_"+ str(soc) + "_" + "1")) # EDH for Encode, Din, PowerDeliveryReq, ON
                     self.wasPowerDeliveryRequestedOn=True
                     self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
                     self.enterState(stateWaitForPowerDeliveryResponse)
                 else:
                     self.addToTrace("Difference too big. Continuing PreCharge.")
-                    #self.addToTrace("As Demo, we stay in PreCharge forever.")
-                    msg = addV2GTPHeader(self.exiEncode("EDG_"+self.sessionId)) # EDG for Encode, Din, PreCharge
+                    soc = self.hardwareInterface.getSoc()
+                    EVTargetVoltage = self.hardwareInterface.getAccuVoltage()
+                    msg = addV2GTPHeader(self.exiEncode("EDG_"+self.sessionId+"_"+str(soc)+"_"+str(EVTargetVoltage))) # EDG for Encode, Din, PreChargeReq
                     self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
                     self.DelayCycles=15 # wait with the next evaluation approx half a second
@@ -332,17 +355,13 @@ class fsmPev():
             if (strConverterResult.find("PowerDeliveryRes")>0):
                 if (self.wasPowerDeliveryRequestedOn):
                     self.addToTrace("Starting the charging loop with CurrentDemandReq")
-                    msg = addV2GTPHeader(self.exiEncode("EDI_"+self.sessionId)) # EDI for Encode, Din, CurrentDemandReq
-                    self.addToTrace("responding " + prettyHexMessage(msg))
-                    self.Tcp.transmit(msg)
+                    self.sendCurrentDemandReq()
                     self.enterState(stateWaitForCurrentDemandResponse)
                 else:
                     # We requested "OFF". So we turn-off the Relay and continue with the Welding detection.
                     self.addToTrace("Turning off the relay and starting the WeldingDetection")
                     self.hardwareInterface.setPowerRelayOff()
-                    msg = addV2GTPHeader(self.exiEncode("EDJ_"+self.sessionId)) # EDI for Encode, Din, WeldingDetectionReq
-                    self.addToTrace("responding " + prettyHexMessage(msg))
-                    self.Tcp.transmit(msg)
+                    self.sendWeldingDetectionReq()
                     self.enterState(stateWaitForWeldingDetectionResponse)
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
@@ -358,16 +377,15 @@ class fsmPev():
                 # as long as the accu is not full and no stop-demand from the user, we continue charging
                 if (self.hardwareInterface.getIsAccuFull()):
                     self.addToTrace("Accu is full. Sending PowerDeliveryReq Stop.")
-                    msg = addV2GTPHeader(self.exiEncode("EDH_"+self.sessionId+"_"+"0")) # EDH for Encode, Din, PowerDeliveryReq, OFF
+                    soc = self.hardwareInterface.getSoc()
+                    msg = addV2GTPHeader(self.exiEncode("EDH_"+self.sessionId+"_"+ str(soc) + "_" + "0")) # EDH for Encode, Din, PowerDeliveryReq, OFF
                     self.wasPowerDeliveryRequestedOn=False
                     self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
                     self.enterState(stateWaitForPowerDeliveryResponse)
                 else:
                     # continue charging loop
-                    msg = addV2GTPHeader(self.exiEncode("EDI_"+self.sessionId)) # EDI for Encode, Din, CurrentDemandReq
-                    self.addToTrace("responding " + prettyHexMessage(msg))
-                    self.Tcp.transmit(msg)
+                    self.sendCurrentDemandReq()
                     self.enterState(stateWaitForCurrentDemandResponse)
                     
         if (self.isTooLong()):
@@ -381,6 +399,7 @@ class fsmPev():
             strConverterResult = self.exiDecode(exidata, "DD") # Decode DIN
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("WeldingDetectionRes")>0):
+                    # todo: add real welding detection here, run in welding detection loop until finished.
                     self.addToTrace("Sending SessionStopReq")                    
                     msg = addV2GTPHeader(self.exiEncode("EDK_"+self.sessionId)) # EDI for Encode, Din, SessionStopReq
                     self.addToTrace("responding " + prettyHexMessage(msg))

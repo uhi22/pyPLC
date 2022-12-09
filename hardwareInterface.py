@@ -65,10 +65,19 @@ class hardwareInterface():
         self.accuMaxCurrent = 10
         return self.accuMaxCurrent
 
+    def getAccuMaxVoltage(self):
+        #todo: get max charging voltage from the BMS
+        self.accuMaxVoltage = 230
+        return self.accuMaxVoltage
+
     def getIsAccuFull(self):
         #todo: get "full" indication from the BMS
         self.IsAccuFull = (self.simulatedSoc >= 98)
         return self.IsAccuFull
+
+    def getSoc(self):
+        #todo: get SOC from the BMS
+        return self.simulatedSoc
         
         
     def __init__(self, callbackAddToTrace=None):
