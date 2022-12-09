@@ -289,10 +289,6 @@ is not yet implemented.
 - TCP connection works now on Alpitronics charger
 - ContractAuthentication loop works
 
-### Ongoing improvements
-
-- SLAC timing: improvement to be tested.
-
 ### Test results on real-world chargers
 
 See [charger_test_results.md](doc/charger_test_results.md)
@@ -309,13 +305,8 @@ functions Monitor() and Sniffer(), but these are included from a path ../nda/ wh
 Any idea how to enable full-transparency of the AR7420?
 
 ## Other open topics
-- [*EvseMode*] [*PevMode*] Fill V2G messages as far as needed, to convince the car to accept it.
-- [*PevMode*] Find out TCP connection issue on Alpitronics
-- [*PevMode*] Find out the SLAC issue on Supercharger and Compleo.
-- improve docu (update layer diagram, improve hardware docu, add link to evse which provides the 5% PWM)
-- in addressManager, replace the print by addToTrace
-- Resolve the todo-markers in the code
-- (and much more)
+
+See [todo.md](doc/todo.md) and [bug_analysis.md](doc/bug_analysis.md)
 
 ## FAQ
 
