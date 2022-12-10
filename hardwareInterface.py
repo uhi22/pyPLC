@@ -52,7 +52,7 @@ class hardwareInterface():
         
     def getInletVoltage(self):
         #todo: get real measured voltage from the inlet
-        self.inletVoltage = 230
+        self.inletVoltage = self.simulatedInletVoltage
         return self.inletVoltage
         
     def getAccuVoltage(self):
@@ -87,6 +87,14 @@ class hardwareInterface():
         self.simulatedSoc = 20.0 # percent
         self.inletVoltage = 0.0 # volts
         self.findSerialPort()
+        
+    def resetSimulation(self):
+        self.simulatedInletVoltage = 0.0 # volts
+        self.simulatedSoc = 20.0 # percent
+        
+    def simulatePreCharge(self):
+        if (self.simulatedInletVoltage<230):
+            self.simulatedInletVoltage = self.simulatedInletVoltage + 1.0 # simulate increasing voltage during PreCharge
 
     def close(self):
         if (self.isInterfaceOk):        

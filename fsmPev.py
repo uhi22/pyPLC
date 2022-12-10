@@ -118,6 +118,7 @@ class fsmPev():
         # We just use the initial request message from the Ioniq. It contains one entry: DIN.
         self.addToTrace("Sending the initial SupportedApplicationProtocolReq")
         self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestIoniq)))
+        self.hardwareInterface.resetSimulation()
         self.enterState(stateWaitForSupportedApplicationProtocolResponse)
         
     def stateFunctionWaitForSupportedApplicationProtocolResponse(self):
@@ -313,6 +314,7 @@ class fsmPev():
             self.enterState(stateSequenceTimeout)
 
     def stateFunctionWaitForPreChargeResponse(self):
+        self.hardwareInterface.simulatePreCharge()
         if (self.DelayCycles>0):
             self.DelayCycles-=1
             return    
@@ -325,6 +327,9 @@ class fsmPev():
             if (strConverterResult.find("PreChargeRes")>0):
                 # todo: check the request content, and fill response parameters
                 self.addToTrace("PreCharge aknowledge received.")
+                s = "U_Inlet " + str(self.hardwareInterface.getInletVoltage()) + "V, "
+                s= s + "U_Accu " + str(self.hardwareInterface.getAccuVoltage()) + "V"
+                self.addToTrace(s)
                 if (abs(self.hardwareInterface.getInletVoltage()-self.hardwareInterface.getAccuVoltage()) < PARAM_U_DELTA_MAX_FOR_END_OF_PRECHARGE):
                     self.addToTrace("Difference between accu voltage and inlet voltage is small. Sending PowerDeliveryReq.")
                     self.hardwareInterface.setPowerRelayOn()
