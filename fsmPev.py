@@ -424,6 +424,7 @@ class fsmPev():
                 # req -508
                 # Todo: close the TCP connection here.
                 # Todo: Unlock the connector lock.
+                self.hardwareInterface.setStateB()
                 self.addToTrace("Charging is finished")
                 self.enterState(stateChargingFinished)
         if (self.isTooLong()):

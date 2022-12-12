@@ -103,8 +103,8 @@ class hardwareInterface():
     def mainfunction(self):
         if (self.simulatedSoc<100):
             if ((self.outvalue & 2)!=0):
-                # while the relay is closes, simulate increasing SOC
-                self.simulatedSoc = self.simulatedSoc + 1.0
+                # while the relay is closed, simulate increasing SOC
+                self.simulatedSoc = self.simulatedSoc + 0.05
         self.loopcounter+=1
         if (self.isInterfaceOk):
             if (self.loopcounter>15):
