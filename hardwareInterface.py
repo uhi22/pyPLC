@@ -110,7 +110,8 @@ class hardwareInterface():
             if (self.loopcounter>15):
                 self.loopcounter=0
                 # self.ser.write(b'hello world\n')
-                self.ser.write(bytes("out"+str(self.outvalue)+"\n", "utf-8"))
+                s = "000" + str(self.outvalue)
+                self.ser.write(bytes("do"+s+"\n", "utf-8")) # set outputs of dieter, see https://github.com/uhi22/dieter
             s = self.ser.read(100)
             if (len(s)>0):
                 self.addToTrace(str(len(s)) + " bytes received: " + str(s, 'utf-8').strip())
