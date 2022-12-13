@@ -45,8 +45,20 @@ Test results of version v0.3
 
 Test site: e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Koesching/EDEKA-Ingolstaedter-Strasse-114/62619/
 
-Test results
-- [ ] SLAC: fails. It sends SLAC_PARAM_CNF, but nothing more.
+Test results of version v0.4
+- [x] SLAC
+- [x] SDP
+- [x] TCP connection
+- [x] EXI
+    - [x] DIN SupportedApplicationProtocol
+	- [x] DIN SessionSetup
+	- [x] DIN ServiceDiscovery
+	- [x] DIN ServicePaymentSelection
+	- [x] DIN ContractAuthentication
+	- [x] DIN ChargeParameterDiscovery
+	- [x] DIN CableCheck (10s loop ongoing, then finished OK)
+	- [x] DIN PreCharge ok, but at the end the state machine runs into timeout. Issue 15.
+	- [ ] DIN PowerDelivery, CurrentDemand
 
 ## Efacec QC45 Triple Charger
 

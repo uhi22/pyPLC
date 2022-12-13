@@ -289,6 +289,12 @@ is not yet implemented.
 - TCP connection works now on Alpitronics charger
 - ContractAuthentication loop works
 
+### 2022-12-13 v0.4 On Compleo, Light Bulb survives 400V cable check and PreCharge
+- SLAC issue is fixed on Compleo. Authorization works. Hardware interface "Dieter" controls the CP into state C.
+- The charger delivers power in the cable check, and a connected 230V bulb makes bright light and survives the 400V.
+- PreCharge starts, but terminates before full voltage is reached. Switching the load with power-relay is not yet implemented from
+hardware side. Without the load, we see the intended 230V precharge voltage, and run into timeout (to be investigated).
+
 ### Test results on real-world chargers
 
 See [charger_test_results.md](doc/charger_test_results.md)
