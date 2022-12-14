@@ -1,5 +1,12 @@
 # Todos
 
+- [ ] Decode CableCheckRes."DC_EVSEStatus.EVSEStatusCode": dinDC_EVSEStatusCodeType as readable text
+- [ ] Decode CableCheckRes."DC_EVSEStatus.EVSEIsolationStatus": dinisolationLevelType as readable text
+- [ ] Encoder: PreChargeReq: is it possible to enable the units for EVTargetVoltage and EVTargetCurrent?
+- [ ] Find out, why Alpi reports CableCheckRes = Finished FAILED in v0.4
+- [ ] Find out, why Compleo ignores the PowerDeliveryReq START in v0.4
+- [ ] Add date/time into ExiLog
+- [ ] PevMode: Add state transition in case of failed CableCheck
 - [x] PevMode: PreChargeReq: Fill EVRESSSOC, EVTargetVoltage, EVTargetCurrent
 - [x] PevMode: PowerDeliveryReq: Fill EVRESSSOC, Stop/Start
 - [x] PevMode: CurrentDemandReq: Fill EVRESSSOC, EVTargetCurrent, EVTargetVoltage
@@ -10,7 +17,10 @@
 - [ ] PevMode: Connect the inlet voltage measurement
 - [x] PevMode: Connect the control of CP
 - [ ] PevMode: Connect the control of Relay
-- [ ] improve docu (update layer diagram, improve hardware docu, add link to evse which provides the 5% PWM)
+- [ ] docu: add link to evse which provides the 5% PWM)
+- [ ] docu: add hardwareInterface into software architecture puml
+- [ ] docu: create hardware architecture picture
+- [ ] docu for Dieter (Schematic, concept idea, Dieter0, Dieter1, ...)
 - [ ] in addressManager, replace the print by addToTrace
 - [ ] Resolve the todo-markers in the code
 - [ ] Still fixed addresses (MAC, IP) used somewhere?

@@ -243,8 +243,8 @@ def testReadExiFromSnifferFile():
             testDecoder(s, "DD", "")
 
 def testReadExiFromExiLogFile():
-    file1 = open('PevExiLog.txt', 'r')
-    fileOut = open('PevExiLog_decoded.txt', 'w')
+    file1 = open('PevExiLog_2022-12-13_westparkAlpi_twice.txt', 'r')
+    fileOut = open('PevExiLog_2022-12-13_westparkAlpi_twice.txt.decoded.txt', 'w')
     # example: "ED 809a02004080c1014181c210b8"
     Lines = file1.readlines()
     for myLine in Lines:
