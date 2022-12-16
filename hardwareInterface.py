@@ -49,6 +49,14 @@ class hardwareInterface():
     def setPowerRelayOff(self):
         self.addToTrace("Switching PowerRelay OFF.")
         self.outvalue &= ~2
+
+    def setRelay2On(self):
+        self.addToTrace("Switching PowerRelay ON.")
+        self.outvalue |= 4
+
+    def setRelay2Off(self):
+        self.addToTrace("Switching PowerRelay OFF.")
+        self.outvalue &= ~4
         
     def getInletVoltage(self):
         #todo: get real measured voltage from the inlet
@@ -122,16 +130,22 @@ def myPrintfunction(s):
 if __name__ == "__main__":
     print("Testing hardwareInterface...")
     hw = hardwareInterface(myPrintfunction)
-    for i in range(0, 300):
+    for i in range(0, 350):
         hw.mainfunction()
-        if (i==100):
+        if (i==50):
             hw.setStateC()
+        if (i==100):
+            hw.setStateB()
+        if (i==150):
+            hw.setStateC()
+            hw.setPowerRelayOn()
         if (i==200):
             hw.setStateB()
+            hw.setPowerRelayOff()
         if (i==250):
-            hw.setStateC()
-        if (i==280):
-            hw.setStateB()
+            hw.setRelay2On()
+        if (i==300):
+            hw.setRelay2Off()
         sleep(0.03)
     hw.close()    
     print("finished.")

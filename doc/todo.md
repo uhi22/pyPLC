@@ -1,6 +1,6 @@
 # Todos
 
-- [ ] Decode CableCheckRes."DC_EVSEStatus.EVSEStatusCode": dinDC_EVSEStatusCodeType as readable text
+- [x] Decode CableCheckRes."DC_EVSEStatus.EVSEStatusCode": dinDC_EVSEStatusCodeType as readable text
 - [ ] Decode CableCheckRes."DC_EVSEStatus.EVSEIsolationStatus": dinisolationLevelType as readable text
 - [ ] Encoder: PreChargeReq: is it possible to enable the units for EVTargetVoltage and EVTargetCurrent?
 - [ ] Find out, why Alpi reports CableCheckRes = Finished FAILED in v0.4
