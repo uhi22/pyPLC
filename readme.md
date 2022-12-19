@@ -18,7 +18,9 @@ In this project, we call this mode *ListenMode*.
 * [vi] https://github.com/SwitchEV/iso15118
 * [vii] https://books.google.de/books?id=WYlmEAAAQBAJ&pg=PA99&lpg=PA99&dq=%22ampsnif%22&source=bl&ots=hqCjdFooZ-&sig=ACfU3U0EleLZQu0zWhHQZGktp8OytCMrLg&hl=de&sa=X&ved=2ahUKEwjT0Yq88P36AhWj_rsIHeGMA5MQ6AF6BAgKEAM#v=onepage&q=%22ampsnif%22&f=false How to enable sniffer mode.
 * [viii] https://www.mdpi.com/2076-3417/6/6/165/htm "Building an Interoperability Test System for Electric Vehicle Chargers Based on ISO/IEC 15118 and IEC 61850 Standards", including V2G message sequence chart
-* [iix] https://www.oppcharge.org/dok/ISO_15118-2_OpportunityCharging_Rev1.3.0.pdf Pantograph specific differences with some insight into ISO15118.
+* [ix] https://www.oppcharge.org/dok/ISO_15118-2_OpportunityCharging_Rev1.3.0.pdf Pantograph specific differences with some insight into ISO15118.
+* [x] https://assured-project.eu/storage/files/assured-10-interoperability-reference.pdf Fast and Smart Charging Solutions for
+Full Size Urban Heavy Duty Applications
 
 ## Quick start / overview
 - Modify a PLC adaptor hardware, that it runs on battery
@@ -184,6 +186,7 @@ min and max current. Now, the initialization phase of the charging session is fi
 44. The car sends CableCheckRequest. This contains the information, whether the connector is locked.
 45. The charger applies voltage to the cable and measures the isolation resistance.
 46. The charger confirms with CableCheckResponse.
+47. The CableCheckRequest/CableCheckResponse are repeated until the charger says "Finished".
 47. The car sends PreChargeRequest. With this, the car announces the target voltage of the charger before closing the circut. The goal
 is, to adjust the chargers output voltage to match the cars battery voltage. Also a current limit (max 2A) is sent.
 48. The charger confirms with PreChargeResponse. This response contains the actual voltage on the charger.
@@ -191,7 +194,7 @@ is, to adjust the chargers output voltage to match the cars battery voltage. Als
 50. The car measures the voltage on the inlet and on the battery.
 51. The above steps (PreChargeRequest, PreChargeResponse, measuring physical voltage) are repeating, while the
 physical voltage did not yet reach the target voltage.
-51. If the difference is small enough (less than 20V?), the car
+51. If the difference is small enough (less than 20V according to [ref x] chapter 4.4.1.10), the car
 closes the power relay.
 51. The car sends PowerDelivery(Start)Request.
 52. The charger confirms with PowerDeliveryResponse.
@@ -199,7 +202,8 @@ closes the power relay.
 target current.
 54. The charger confirms with CurrentDemandResponse. This contains the measured voltage, measured current, and flags which show which limitation
 is active (current limitation, voltage limitation, power limitation).
-55. The car sends PowerDelivery(Stop)Request.
+55. The CurrentDemandRequest/CurrentDemandResponse are repeated during the charging.
+55. When the end of charging is decided (battery full or user wish), the car sends PowerDelivery(Stop)Request.
 56. The charger confirms with PowerDeliveryResponse.
 57. The car sends WeldingDetectionRequest.
 58. The charger confirms with WeldingDetectionResponse.
