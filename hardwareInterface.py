@@ -88,12 +88,14 @@ class hardwareInterface():
         return self.simulatedSoc
         
         
-    def __init__(self, callbackAddToTrace=None):
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None):
         self.callbackAddToTrace = callbackAddToTrace
+        self.callbackShowStatus = callbackShowStatus
         self.loopcounter = 0
         self.outvalue = 0
         self.simulatedSoc = 20.0 # percent
         self.inletVoltage = 0.0 # volts
+        self.rxbuffer = ""
         self.findSerialPort()
         
     def resetSimulation(self):
@@ -107,6 +109,22 @@ class hardwareInterface():
     def close(self):
         if (self.isInterfaceOk):        
             self.ser.close()
+            
+    def evaluateReceivedData(self, s):
+        self.rxbuffer += s
+        x=self.rxbuffer.find("A0=")
+        if (x>=0):
+            s = self.rxbuffer[x+3:x+7]
+            if (len(s)==4):
+                try:
+                    self.uInlet_V = int(s) / 1024.0 * 1.08 * (6250) / (4.7+4.7)
+                    
+                    self.callbackShowStatus(format(self.uInlet_V,".1f"), "uInlet")
+                except:
+                    # keep last known value, if nothing new valid was received.
+                    pass
+                #self.addToTrace("RX data ok " + s)
+                self.rxbuffer = self.rxbuffer[x+3:] # consume the receive buffer entry
     
     def mainfunction(self):
         if (self.simulatedSoc<100):
@@ -122,7 +140,12 @@ class hardwareInterface():
                 self.ser.write(bytes("do"+s+"\n", "utf-8")) # set outputs of dieter, see https://github.com/uhi22/dieter
             s = self.ser.read(100)
             if (len(s)>0):
-                self.addToTrace(str(len(s)) + " bytes received: " + str(s, 'utf-8').strip())
+                try:
+                    s = str(s, 'utf-8').strip()
+                except:
+                    s = "" # for the case we received corrupted data (not convertable as utf-8)
+                self.addToTrace(str(len(s)) + " bytes received: " + s)
+                self.evaluateReceivedData(s)
         
 def myPrintfunction(s):
     print("myprint " + s)

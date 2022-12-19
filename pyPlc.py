@@ -36,6 +36,9 @@ def cbShowStatus(s, selection=""):
     if (selection == "pevmac"):
         lblPevMac['text']="PEV MAC " + s
         s=""
+    if (selection == "uInlet"):
+        lblUInlet['text']= "UInlet " + s + "V"
+        s=""
     if (len(s)>0):
         lblStatus['text']=s
     root.update()
@@ -69,6 +72,9 @@ lblStatus = tk.Label(root, text="(Status)")
 lblStatus.pack()
 lblPevMac = tk.Label(root, text="(pev mac)")
 lblPevMac.pack()
+lblUInlet = tk.Label(root, text="(U Inlet)")
+lblUInlet.config(font=('Helvetica bold', 26))
+lblUInlet.pack()
 lblMode = tk.Label(root, text="(mode)")
 lblMode.pack()
 
