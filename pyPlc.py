@@ -39,6 +39,15 @@ def cbShowStatus(s, selection=""):
     if (selection == "uInlet"):
         lblUInlet['text']= "UInlet " + s + "V"
         s=""
+    if (selection == "pevState"):
+        lblState['text']= s
+        s=""
+    if (selection == "evseState"):
+        lblState['text']= s
+        s=""
+    if (selection == "soc"):
+        lblSoc['text']= "SOC " + s + "%"
+        s=""
     if (len(s)>0):
         lblStatus['text']=s
     root.update()
@@ -64,20 +73,27 @@ if (myMode == C_EVSE_MODE):
     print("starting in EVSE_MODE")
  
 root = tk.Tk()
+root.geometry("400x300")
 lastKey = ''
 lblHelp = tk.Label(root, justify= "left")
-lblHelp['text']="x=exit \nS=GET_SW \nP=PEV mode \nE=EVSE mode \nL=Listen mode \ns=SET_KEY \nG=GET_KEY (try twice) \nt=SET_KEY modified"
+lblHelp['text']="x=exit \nS=GET_SW \nP=PEV mode \nE=EVSE mode \nL=Listen mode \ns=SET_KEY \nG=GET_KEY (try twice) \nt=SET_KEY modified \n space=stop charging"
 lblHelp.pack()
 lblStatus = tk.Label(root, text="(Status)")
 lblStatus.pack()
 lblPevMac = tk.Label(root, text="(pev mac)")
 lblPevMac.pack()
+lblState = tk.Label(root, text="(state)")
+lblState.config(font=('Helvetica bold', 20))
+lblState.pack()
+lblSoc = tk.Label(root, text="(soc)")
+lblSoc.pack()
 lblUInlet = tk.Label(root, text="(U Inlet)")
 lblUInlet.config(font=('Helvetica bold', 26))
 lblUInlet.pack()
 lblMode = tk.Label(root, text="(mode)")
 lblMode.pack()
 
+nKeystrokes=0
 # Bind the keyboard handler to all relevant elements:
 root.bind('<Key>', storekeyname)
 cbShowStatus("initialized")
@@ -85,7 +101,6 @@ root.update()
 worker=pyPlcWorker.pyPlcWorker(cbAddToTrace, cbShowStatus, myMode, isSimulationMode)
 
 nMainloops=0
-nKeystrokes=0
 while lastKey!="x":
     time.sleep(.03) # 'do some calculation'
     nMainloops+=1

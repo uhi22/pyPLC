@@ -39,9 +39,9 @@ class pyPlcWorker():
             strLabel = "(unknown version. 'git describe --tags' failed.)"
         self.workerAddToTrace("[pyPlcWorker] Software version " + strLabel)  
         if (self.mode == C_EVSE_MODE):
-            self.evse = fsmEvse.fsmEvse(self.workerAddToTrace)
+            self.evse = fsmEvse.fsmEvse(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.callbackShowStatus)
         if (self.mode == C_PEV_MODE):
-            self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace, self.hardwareInterface)
+            self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.callbackShowStatus)
     def __del__(self):
         if (self.mode == C_PEV_MODE):
             print("worker: deleting pev")
@@ -84,6 +84,7 @@ class pyPlcWorker():
         
     def handleUserAction(self, strAction):
         self.strUserAction = strAction
+        print("user action " + strAction)
         if (strAction == "P"):
             print("switching to PEV mode")
             self.mode = C_PEV_MODE
@@ -93,7 +94,7 @@ class pyPlcWorker():
             self.hp.enterPevMode()
             if (not hasattr(self, 'pev')):
                 print("creating pev")
-                self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace, self.hardwareInterface)
+                self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.callbackShowStatus)
             self.pev.reInit()
         if (strAction == "E"):
             print("switching to EVSE mode")
@@ -116,6 +117,10 @@ class pyPlcWorker():
             if (hasattr(self, 'pev')):
                 print("deleting pev")
                 del self.pev
+        if (strAction == "space"):
+            print("stopping the charge process")
+            if (hasattr(self, 'pev')):
+                self.pev.stopCharging()
         # self.addToTrace("UserAction " + strAction)
         self.hp.sendTestFrame(strAction)
 

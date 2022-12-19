@@ -51,11 +51,11 @@ class hardwareInterface():
         self.outvalue &= ~2
 
     def setRelay2On(self):
-        self.addToTrace("Switching PowerRelay ON.")
+        self.addToTrace("Switching Relay2 ON.")
         self.outvalue |= 4
 
     def setRelay2Off(self):
-        self.addToTrace("Switching PowerRelay OFF.")
+        self.addToTrace("Switching Relay2 OFF.")
         self.outvalue &= ~4
         
     def getInletVoltage(self):
@@ -85,6 +85,7 @@ class hardwareInterface():
 
     def getSoc(self):
         #todo: get SOC from the BMS
+        self.callbackShowStatus(format(self.simulatedSoc,".1f"), "soc")
         return self.simulatedSoc
         
         
@@ -131,6 +132,8 @@ class hardwareInterface():
             if ((self.outvalue & 2)!=0):
                 # while the relay is closed, simulate increasing SOC
                 self.simulatedSoc = self.simulatedSoc + 0.05
+                
+                
         self.loopcounter+=1
         if (self.isInterfaceOk):
             if (self.loopcounter>15):

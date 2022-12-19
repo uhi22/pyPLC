@@ -808,6 +808,7 @@ class pyPlcHomeplug():
                 self.enterState(STATE_READY_FOR_SLAC)
             return
         if (self.pevSequenceState==STATE_READY_FOR_SLAC):
+            self.showStatus("Starting SLAC", "pevState")
             self.addToTrace("[PEVSLAC] Sending SLAC_PARAM.REQ...")
             self.composeSlacParamReq()
             self.transmit(self.mytransmitbuffer)                
@@ -881,6 +882,7 @@ class pyPlcHomeplug():
                 self.pevSequenceDelayCycles-=1
                 return
             self.composeSlacMatchReq()
+            self.showStatus("SLAC match", "pevState")
             self.addToTrace("[PEVSLAC] transmitting SLAC_MATCH.REQ...")
             self.transmit(self.mytransmitbuffer)  
             self.enterState(STATE_WAITING_FOR_SLAC_MATCH_CNF)
@@ -957,6 +959,7 @@ class pyPlcHomeplug():
                 self.enterState(STATE_WAITING_FOR_RESTART2)
                 return
             # SDP was not done yet. Now we start it.
+            self.showStatus("SDP ongoing", "pevState")
             self.addToTrace("[PEVSLAC] SDP was not done yet. Now we start it.")
             # Next step is to discover the chargers communication controller (SECC) using discovery protocol (SDP).
             self.pevSequenceDelayCycles=0
@@ -967,6 +970,7 @@ class pyPlcHomeplug():
         if (self.pevSequenceState==STATE_SDP):  # SDP request transmission and waiting for SDP response.
             if (len(self.addressManager.getSeccIp())>0):
                 # we received an SDP response, and can start the high-level communication
+                self.showStatus("SDP finished", "pevState")
                 print("[PEVSLAC] Now we know the chargers IP.")
                 self.isSDPDone = 1
                 self.callbackReadyForTcp(1)
