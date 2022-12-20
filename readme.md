@@ -299,6 +299,12 @@ is not yet implemented.
 - PreCharge starts, but terminates before full voltage is reached. Switching the load with power-relay is not yet implemented from
 hardware side. Without the load, we see the intended 230V precharge voltage, and run into timeout (to be investigated).
 
+### 2022-12-20 Measurement of inlet voltage works
+- Tests ran on Alpitronics HPC.
+- Measuring the inlet voltage with Arduino "Dieter" works. During CableCheck and PreCharge, the inlet voltage is shown in the GUI.
+- The Alpi confirms the PowerDelivery (start), but rejects the CurrentDemandRequest with FAILED_SequenceError and EVSE_Shutdown.
+- Results (log file and pcap) are stored in https://github.com/uhi22/pyPLC/tree/master/results.
+
 ### Test results on real-world chargers
 
 See [charger_test_results.md](doc/charger_test_results.md)

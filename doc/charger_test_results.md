@@ -27,7 +27,7 @@ Test results tbd
 
 Test site: e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Ingolstadt/Dehner-Garten-Center-Degenhartstrasse-Degenhartstrasse-2/71112/
 
-Test results of version v0.3
+Test results of version v0.4-6-g257e5af
 - [x] SLAC
 - [x] SDP
 - [x] TCP connection
@@ -35,11 +35,17 @@ Test results of version v0.3
     - [x] DIN SupportedApplicationProtocol
 	- [x] DIN SessionSetup
 	- [x] DIN ServiceDiscovery
-	- [x] DIN ChargeParameterDiscovery
+	- [x] DIN ServicePaymentSelection
 	- [x] DIN ContractAuthentication
-	- [ ] DIN CableCheck
-	- [ ] DIN PreCharge
-	- [ ] DIN PowerDelivery, CurrentDemand
+	- [x] DIN ChargeParameterDiscovery
+	- [x] DIN CableCheck
+	- [x] DIN PreCharge
+	- [x] DIN PowerDelivery Start
+	- [ ] DIN CurrentDemand rejected with FAILED_SequenceError and EVSE_Shutdown. Issue 16
+	- [ ] DIN PowerDelivery Stop
+	- [ ] DIN WeldingDetection
+	- [ ] DIN SessionStop
+- [x] Inlet voltage measurement (shows 500V during cable check, and 230V during precharge)
 
 ## Compleo Cito BM 500
 

@@ -1,0 +1,4582 @@
+2022-12-20T10:01:27.895113=ED 809a02000000000000000011d00000 means:
+{
+"msgName": "SessionSetupReq",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0000000000000000",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVCCID.bytesLen": "0",
+"EVCCID": "",
+"debug": "Line532"
+}
+2022-12-20T10:01:27.941991=DD 809A02000000000EF04D44D1E02004001D1E70B3A0C0 means:
+{
+"msgName": "SessionSetupRes",
+"info": "22 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK_NewSessionEstablished",
+"EVSEID.bytesLen": "1",
+"EVSEID": "00",
+"debug": "Line538"
+}
+2022-12-20T10:01:28.004487=ED 809a02000000000ef04d44d198 means:
+{
+"msgName": "ServiceDiscoveryReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line508"
+}
+2022-12-20T10:01:28.035775=DD 809A02000000000EF04D44D1A00120024100C4 means:
+{
+"msgName": "ServiceDiscoveryRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"debug": "Line514"
+}
+2022-12-20T10:01:28.098230=ED 809a02000000000ef04d44d1b2001280 means:
+{
+"msgName": "ServicePaymentSelectionReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"SelectedPaymentOption": "ExternalPayment",
+"SelectedService.arrayLen": "1",
+"SelectedService.array": "0:1",
+"debug": "Line520"
+}
+2022-12-20T10:01:28.145113=DD 809A02000000000EF04D44D1C000 means:
+{
+"msgName": "ServicePaymentSelectionRes",
+"info": "14 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"debug": "Line526"
+}
+2022-12-20T10:01:28.254497=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:29.191951=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:29.223196=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:30.160721=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:30.254438=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:31.207564=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:31.301265=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:32.238782=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:32.332484=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:33.270002=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:33.363726=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:34.301224=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:34.394943=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:35.348067=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:35.379265=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:36.316740=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:36.363613=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:37.316720=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:37.379209=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:38.332309=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:38.394805=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:39.332297=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:39.379153=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:40.316675=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:40.410392=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:41.347889=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:41.441599=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:42.394737=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:42.504069=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:43.441579=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:43.535281=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:44.488425=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:44.582128=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:45.550896=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:45.644600=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:46.597740=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:46.707063=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:47.644575=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:47.738302=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:48.675800=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:48.769506=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:49.758360=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:49.820840=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:50.758316=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:50.789557=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:51.727052=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:51.836406=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:52.773922=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:52.883251=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:53.820767=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:53.914472=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:54.867614=DD 809A02000000000EF04D44D0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:01:54.976938=ED 809a02000000000ef04d44d0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:01:55.914456=DD 809A02000000000EF04D44D0C00000 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Finished",
+"debug": "Line430"
+}
+2022-12-20T10:01:55.992529=ED 809a02000000000ef04d44d07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2022-12-20T10:01:56.961302=DD 809A02000000000EF04D44D08002000000000010002A800400000C0C190080E18A3A060A1E8060606000060A12C02230300610 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "51 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "0",
+"EVSEMinimumVoltageLimit.Value": "150",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2022-12-20T10:01:57.086249=ED 809a02000000000ef04d44d07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2022-12-20T10:01:58.023742=DD 809A02000000000EF04D44D08002000000000010002A800400000C0C190080E18A3A060A1E8060606000060A12C02230300610 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "51 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "0",
+"EVSEMinimumVoltageLimit.Value": "150",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2022-12-20T10:01:58.101844=ED 809a02000000000ef04d44d07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2022-12-20T10:01:59.054942=DD 809A02000000000EF04D44D08002000000000010002A800400000C0C190080E18A3A060A1E8060606000060A12C02230300610 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "51 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "0",
+"EVSEMinimumVoltageLimit.Value": "150",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2022-12-20T10:01:59.101817=ED 809a02000000000ef04d44d07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2022-12-20T10:02:00.039291=DD 809A02000000000EF04D44D08002000000000010002A800400000C0C190080E18A3A060A1E8060606000060A12C02230300610 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "51 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "0",
+"EVSEMinimumVoltageLimit.Value": "150",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2022-12-20T10:02:00.164293=ED 809a02000000000ef04d44d07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2022-12-20T10:02:01.101807=DD 809A02000000000EF04D44D080000004002000040518283FFFC0455000800001818320101C314740C143D00C0C0C0000C1425804460600C030900000 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "60 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Finished",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "0",
+"EVSEMinimumVoltageLimit.Value": "150",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2022-12-20T10:02:01.195508=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:02.148643=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:02.257974=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:03.195457=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:03.289195=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:04.226713=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:04.336040=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:05.273531=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:05.382902=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:06.320402=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:06.429749=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:07.382871=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:07.492197=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:08.429715=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:08.539041=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:09.492144=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:09.601530=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:10.585902=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:10.695238=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:11.648370=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:11.742073=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:12.732398=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:12.826099=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:13.779243=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:13.888567=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:14.841712=DD 809A02000000000EF04D44D020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:02:14.919786=ED 809a02000000000ef04d44d011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:02:15.857309=DD 809A02000000000EF04D44D020004080000000 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Finished",
+"debug": "Line370"
+}
+2022-12-20T10:02:15.951010=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:15.982281=DD 809A02000000000EF04D44D160004080000182800000 means:
+{
+"msgName": "PreChargeRes",
+"info": "22 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "0",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:16.044753=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:16.575989=DD 809A02000000000EF04D44D160004080000182806800 means:
+{
+"msgName": "PreChargeRes",
+"info": "22 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "13",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:16.700986=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:17.201016=DD 809A02000000000EF04D44D16000408000018287200800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "228",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:17.310351=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:17.810354=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:17.935325=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:18.435356=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:18.544702=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:19.060322=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:19.154044=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:19.654027=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:19.700896=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:20.200928=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:20.279004=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:20.779037=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:20.888362=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:21.404012=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:21.513344=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:22.028983=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:22.060201=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:22.560218=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:22.653936=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:23.153967=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:23.247673=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:23.747696=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:23.857025=ED 809a02000000000ef04d44d151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:02:24.357059=DD 809A02000000000EF04D44D16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:02:24.450762=ED 809a02000000000ef04d44d13022800a0800 means:
+{
+"msgName": "PowerDeliveryReq",
+"info": "18 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ReadyToChargeState": "0",
+"ReadyToChargeState_Text": "START",
+"ChargingProfile_isUsed": "0",
+"EVPowerDeliveryParameter_isUsed": "0",
+"DC_EVPowerDeliveryParameter_isUsed": "1",
+"EVReady": "1",
+"EVErrorCode": "0",
+"EVErrorCodeText": "NO_ERROR",
+"EVRESSSOC": "20",
+"BulkChargingComplete": "0",
+"ChargingComplete": "0",
+"debug": "Line472"
+}
+2022-12-20T10:02:24.513295=DD 809A02000000000EF04D44D1400420400000 means:
+{
+"msgName": "PowerDeliveryRes",
+"info": "18 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"debug": "Line478"
+}
+2022-12-20T10:02:24.638254=ED 809a02000000000ef04d44d0d1400500c814410c9cc020 means:
+{
+"msgName": "CurrentDemandReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "10",
+"EVTargetCurrent.Unit": "h",
+"EVMaximumVoltageLimit_isUsed": "0",
+"EVMaximumCurrentLimit_isUsed": "0",
+"EVMaximumPowerLimit_isUsed": "0",
+"ChargingComplete": "0",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"debug": "Line436"
+}
+2022-12-20T10:02:24.732047=DD 809A02000000000EF04D44D0E0A041000001828730081818000000060A1E806030306402038628E800 means:
+{
+"msgName": "CurrentDemandRes",
+"info": "41 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_SequenceError",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "2",
+"EVSEStatusCode_text": "EVSE_Shutdown",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"EVSEPresentCurrent.Multiplier": "0",
+"EVSEPresentCurrent.Value": "0",
+"EVSEPresentCurrent.Unit": "A",
+"EVSECurrentLimitAchieved": "0",
+"EVSEVoltageLimitAchieved": "0",
+"EVSEPowerLimitAchieved": "0",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"debug": "Line442"
+}
+2022-12-20T10:02:24.857015=ED 809a02000000000ef04d44d0d1400500c814410c9cc020 means:
+{
+"msgName": "CurrentDemandReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000003bc13513",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "10",
+"EVTargetCurrent.Unit": "h",
+"EVMaximumVoltageLimit_isUsed": "0",
+"EVMaximumCurrentLimit_isUsed": "0",
+"EVMaximumPowerLimit_isUsed": "0",
+"ChargingComplete": "0",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"debug": "Line436"
+}
+2022-12-20T10:05:20.324085=ED 809a02000000000000000011d00000 means:
+{
+"msgName": "SessionSetupReq",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0000000000000000",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVCCID.bytesLen": "0",
+"EVCCID": "",
+"debug": "Line532"
+}
+2022-12-20T10:05:20.355328=DD 809A0200000000139FAF9BD1E02004001A1EB0B3A0C0 means:
+{
+"msgName": "SessionSetupRes",
+"info": "22 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK_NewSessionEstablished",
+"EVSEID.bytesLen": "1",
+"EVSEID": "00",
+"debug": "Line538"
+}
+2022-12-20T10:05:20.464700=ED 809a0200000000139faf9bd198 means:
+{
+"msgName": "ServiceDiscoveryReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line508"
+}
+2022-12-20T10:05:20.511575=DD 809A0200000000139FAF9BD1A00120024100C4 means:
+{
+"msgName": "ServiceDiscoveryRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"debug": "Line514"
+}
+2022-12-20T10:05:20.589693=ED 809a0200000000139faf9bd1b2001280 means:
+{
+"msgName": "ServicePaymentSelectionReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"SelectedPaymentOption": "ExternalPayment",
+"SelectedService.arrayLen": "1",
+"SelectedService.array": "0:1",
+"debug": "Line520"
+}
+2022-12-20T10:05:20.620944=DD 809A0200000000139FAF9BD1C000 means:
+{
+"msgName": "ServicePaymentSelectionRes",
+"info": "14 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"debug": "Line526"
+}
+2022-12-20T10:05:20.683437=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:21.620944=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:21.652161=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:22.589639=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:22.652128=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:23.589604=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:23.652102=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:24.589620=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:24.683321=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:25.620839=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:25.714563=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:26.652062=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:26.745780=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:27.683279=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:27.776989=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:28.730126=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:28.808200=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:29.764701=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:29.858459=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:30.811557=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:30.905291=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:31.842765=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:31.920876=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:32.858384=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:32.967730=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:33.905235=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:33.998940=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:34.950599=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:35.028727=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:35.966232=DD 809A0200000000139FAF9BD0C00200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2022-12-20T10:05:36.044317=ED 809a0200000000139faf9bd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2022-12-20T10:05:36.981826=DD 809A0200000000139FAF9BD0C00000 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Finished",
+"debug": "Line430"
+}
+2022-12-20T10:05:37.075541=ED 809a0200000000139faf9bd07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2022-12-20T10:05:38.028638=DD 809A0200000000139FAF9BD08002000000000010002A800400000C0C190080E18A3A060A1E8060606000060A12C02230300610 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "51 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "0",
+"EVSEMinimumVoltageLimit.Value": "150",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2022-12-20T10:05:38.106755=ED 809a0200000000139faf9bd07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2022-12-20T10:05:39.059892=DD 809A0200000000139FAF9BD08002000000000010002A800400000C0C190080E18A3A060A1E8060606000060A12C02230300610 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "51 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "0",
+"EVSEMinimumVoltageLimit.Value": "150",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2022-12-20T10:05:39.169245=ED 809a0200000000139faf9bd07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2022-12-20T10:05:40.106736=DD 809A0200000000139FAF9BD08002000000000010002A800400000C0C190080E18A3A060A1E8060606000060A12C02230300610 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "51 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "0",
+"EVSEMinimumVoltageLimit.Value": "150",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2022-12-20T10:05:40.216072=ED 809a0200000000139faf9bd07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2022-12-20T10:05:41.184819=DD 809A0200000000139FAF9BD08002000000000010002A800400000C0C190080E18A3A060A1E8060606000060A12C02230300610 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "51 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Ongoing",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "0",
+"EVSEMinimumVoltageLimit.Value": "150",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2022-12-20T10:05:41.309802=ED 809a0200000000139faf9bd07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2022-12-20T10:05:42.247282=DD 809A0200000000139FAF9BD080000004002000040518283FFFC0455000800001818320101C314740C143D00C0C0C0000C1425804460600C030900000 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "60 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"EVSEProcessing": "Finished",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "0",
+"EVSEMinimumVoltageLimit.Value": "150",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2022-12-20T10:05:42.356637=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:43.309737=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:43.387852=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:44.325345=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:44.372197=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:45.309720=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:45.419064=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:46.356564=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:46.450267=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:47.387782=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:47.497116=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:48.434584=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:48.497082=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:49.442663=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:49.489531=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:50.427013=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:50.520751=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:51.473869=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:51.520720=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:52.458206=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:52.536317=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:53.523260=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:53.632618=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:54.585708=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:54.663831=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:55.601351=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:55.710675=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:56.648195=DD 809A0200000000139FAF9BD020000200000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "4",
+"EVSEStatusCode_text": "EVSE_IsolationMonitoringActive",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2022-12-20T10:05:56.757527=ED 809a0200000000139faf9bd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2022-12-20T10:05:57.695033=DD 809A0200000000139FAF9BD020004080000000 means:
+{
+"msgName": "CableCheckRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Finished",
+"debug": "Line370"
+}
+2022-12-20T10:05:57.788738=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:05:57.835618=DD 809A0200000000139FAF9BD160004080000182800000 means:
+{
+"msgName": "PreChargeRes",
+"info": "22 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "0",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:05:57.960609=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:05:58.476220=DD 809A0200000000139FAF9BD160004080000182806000 means:
+{
+"msgName": "PreChargeRes",
+"info": "22 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "12",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:05:58.554343=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:05:59.054350=DD 809A0200000000139FAF9BD16000408000018287200800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "228",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:05:59.163699=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:05:59.663733=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:05:59.773055=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:06:00.273088=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:06:00.382416=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:06:00.882397=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:06:00.947422=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:06:01.447407=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:06:01.541150=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:06:02.041145=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:06:02.103630=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:06:02.603664=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:06:02.712990=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:06:03.244259=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:06:03.353600=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:06:03.853627=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:06:03.931702=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:06:04.431737=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:06:04.541061=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:06:05.041080=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:06:05.150419=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:06:05.659943=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:06:05.769268=ED 809a0200000000139faf9bd151400500c9cc0206401000 means:
+{
+"msgName": "PreChargeReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "1",
+"EVTargetCurrent.Unit": "h",
+"debug": "Line484"
+}
+2022-12-20T10:06:06.269287=DD 809A0200000000139FAF9BD16000408000018287300800 means:
+{
+"msgName": "PreChargeRes",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"debug": "Line490"
+}
+2022-12-20T10:06:06.347373=ED 809a0200000000139faf9bd13022800a0800 means:
+{
+"msgName": "PowerDeliveryReq",
+"info": "18 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ReadyToChargeState": "0",
+"ReadyToChargeState_Text": "START",
+"ChargingProfile_isUsed": "0",
+"EVPowerDeliveryParameter_isUsed": "0",
+"DC_EVPowerDeliveryParameter_isUsed": "1",
+"EVReady": "1",
+"EVErrorCode": "0",
+"EVErrorCodeText": "NO_ERROR",
+"EVRESSSOC": "20",
+"BulkChargingComplete": "0",
+"ChargingComplete": "0",
+"debug": "Line472"
+}
+2022-12-20T10:06:06.441168=DD 809A0200000000139FAF9BD1400420400000 means:
+{
+"msgName": "PowerDeliveryRes",
+"info": "18 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"debug": "Line478"
+}
+2022-12-20T10:06:06.550493=ED 809a0200000000139faf9bd0d1400500c814410c9cc020 means:
+{
+"msgName": "CurrentDemandReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "10",
+"EVTargetCurrent.Unit": "h",
+"EVMaximumVoltageLimit_isUsed": "0",
+"EVMaximumCurrentLimit_isUsed": "0",
+"EVMaximumPowerLimit_isUsed": "0",
+"ChargingComplete": "0",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"debug": "Line436"
+}
+2022-12-20T10:06:06.659912=DD 809A0200000000139FAF9BD0E0A041000001828730081818000000060A1E806030306402038628E800 means:
+{
+"msgName": "CurrentDemandRes",
+"info": "41 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_SequenceError",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "2",
+"EVSEStatusCode_text": "EVSE_Shutdown",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEPresentVoltage.Multiplier": "0",
+"EVSEPresentVoltage.Value": "230",
+"EVSEPresentVoltage.Unit": "V",
+"EVSEPresentCurrent.Multiplier": "0",
+"EVSEPresentCurrent.Value": "0",
+"EVSEPresentCurrent.Unit": "A",
+"EVSECurrentLimitAchieved": "0",
+"EVSEVoltageLimitAchieved": "0",
+"EVSEPowerLimitAchieved": "0",
+"EVSEMaximumVoltageLimit.Multiplier": "0",
+"EVSEMaximumVoltageLimit.Value": "500",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMaximumCurrentLimit.Multiplier": "0",
+"EVSEMaximumCurrentLimit.Value": "100",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "3781",
+"EVSEMaximumPowerLimit.Unit": "W",
+"debug": "Line442"
+}
+2022-12-20T10:06:06.784881=ED 809a0200000000139faf9bd0d1400500c814410c9cc020 means:
+{
+"msgName": "CurrentDemandReq",
+"info": "23 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "000000004e7ebe6f",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVReady": "1",
+"DC_EVStatus.EVErrorCode": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"EVTargetCurrent.Multiplier": "0",
+"EVTargetCurrent.Value": "10",
+"EVTargetCurrent.Unit": "h",
+"EVMaximumVoltageLimit_isUsed": "0",
+"EVMaximumCurrentLimit_isUsed": "0",
+"EVMaximumPowerLimit_isUsed": "0",
+"ChargingComplete": "0",
+"EVTargetVoltage.Multiplier": "0",
+"EVTargetVoltage.Value": "230",
+"EVTargetVoltage.Unit": "h",
+"debug": "Line436"
+}
