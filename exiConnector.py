@@ -243,21 +243,29 @@ def testReadExiFromSnifferFile():
             testDecoder(s, "DD", "")
 
 def testReadExiFromExiLogFile():
-    file1 = open('PevExiLog_2022-12-13_westparkAlpi_twice.txt', 'r')
-    fileOut = open('PevExiLog_2022-12-13_westparkAlpi_twice.txt.decoded.txt', 'w')
+    file1 = open('PevExiLog.txt', 'r')
+    fileOut = open('PevExiLog.decoded.txt', 'w')
     # example: "ED 809a02004080c1014181c210b8"
+    # example with timestamp: "2022-12-20T08:17:15.055755=ED 809a02004080c1014181c21198"
     Lines = file1.readlines()
     for myLine in Lines:
-        if (myLine[1:3]=="D "): # it is DIN
+        posOfEqual=myLine.find("=")
+        if (posOfEqual>0):
+            # we have an equal-sign. Take the string behind it.
+            strToDecode=myLine[posOfEqual+1:]
+        else:
+            # no equal-sign. Take the complete line.
+            strToDecode=myLine
+        if (strToDecode[1:3]=="D "): # it is DIN
             posOfSpace=2
-            s = myLine[posOfSpace+1:] # The part after the " " contains the EXI hex data.
+            s = strToDecode[posOfSpace+1:] # The part after the " " contains the EXI hex data.
             s = s.replace(" ", "") # Remove blanks
             s = s.replace("\n", "") # Remove line feeds
             #print(s)
             decoded=exiDecode(s, "DD")
             print(decoded)
             print(myLine.replace("\n", "") + " means:", file=fileOut)            
-            print(decoded, file=fileOut)
+            print(decoded, file=fileOut)            
     fileOut.close()
 
 def testTimeConsumption():

@@ -5,7 +5,7 @@
 - [ ] Encoder: PreChargeReq: is it possible to enable the units for EVTargetVoltage and EVTargetCurrent?
 - [ ] Find out, why Alpi reports CableCheckRes = Finished FAILED in v0.4
 - [ ] Find out, why Compleo ignores the PowerDeliveryReq START in v0.4
-- [ ] Add date/time into ExiLog
+- [x] Add date/time into ExiLog
 - [ ] PevMode: Add state transition in case of failed CableCheck
 - [x] PevMode: PreChargeReq: Fill EVRESSSOC, EVTargetVoltage, EVTargetCurrent
 - [x] PevMode: PowerDeliveryReq: Fill EVRESSSOC, Stop/Start
@@ -14,9 +14,9 @@
 - [ ] EvseMode: Fill V2G messages as far as needed, to convince the car to accept it.
 - [x] PevMode: Fill V2G messages as far as needed, to convince the charger to accept it.
 - [x] PevMode: Find out the SLAC issue on Supercharger and Compleo.
-- [ ] PevMode: Connect the inlet voltage measurement
+- [x] PevMode: Connect the inlet voltage measurement
 - [x] PevMode: Connect the control of CP
-- [ ] PevMode: Connect the control of Relay
+- [x] PevMode: Connect the control of Relay
 - [ ] docu: add link to evse which provides the 5% PWM)
 - [ ] docu: add hardwareInterface into software architecture puml
 - [ ] docu: create hardware architecture picture

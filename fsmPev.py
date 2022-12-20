@@ -6,6 +6,7 @@
 
 import pyPlcTcpSocket
 import time # for time.sleep()
+from datetime import datetime
 from helpers import prettyHexMessage, compactHexMessage
 from exiConnector import * # for EXI data handling/converting
 import json
@@ -43,14 +44,16 @@ class fsmPev():
         
     def exiDecode(self, exidata, schema):
         s = compactHexMessage(exidata)
-        self.exiLogFile.write(schema + " " + s +"\n") # write the EXI data to the exiLogFile
+        strDateTime=datetime.today().strftime('%Y-%m-%dT%H:%M:%S.%f')
+        self.exiLogFile.write(strDateTime + "=" + schema + " " + s +"\n") # write the EXI data to the exiLogFile
         return exiDecode(exidata, schema) # call the decoder
         
     def exiEncode(self, input):
         schema = input[0:2]
         exidata = exiEncode(input) # call the encoder
         s = exidata # it is already a hex string
-        self.exiLogFile.write(schema + " " + s +"\n") # write the EXI data to the exiLogFile
+        strDateTime=datetime.today().strftime('%Y-%m-%dT%H:%M:%S.%f')
+        self.exiLogFile.write(strDateTime + "=" + schema + " " + s +"\n") # write the EXI data to the exiLogFile
         return exidata
         
     def sendChargeParameterDiscoveryReq(self):
