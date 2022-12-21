@@ -2,9 +2,10 @@
 
 - [x] Decode CableCheckRes."DC_EVSEStatus.EVSEStatusCode": dinDC_EVSEStatusCodeType as readable text
 - [ ] Decode CableCheckRes."DC_EVSEStatus.EVSEIsolationStatus": dinisolationLevelType as readable text
-- [ ] Encoder: PreChargeReq: is it possible to enable the units for EVTargetVoltage and EVTargetCurrent?
-- [ ] Find out, why Alpi reports CableCheckRes = Finished FAILED in v0.4
-- [ ] Find out, why Compleo ignores the PowerDeliveryReq START in v0.4
+- [x] Encoder: PreChargeReq: is it possible to enable the units for EVTargetVoltage and EVTargetCurrent?
+- [x] Encoder: CurrentDemandReq: is it possible to enable the units for EVTargetVoltage and EVTargetCurrent?
+- [x] Find out, why Alpi reports CableCheckRes = Finished FAILED in v0.4
+- [x] Find out, why Compleo ignores the PowerDeliveryReq START in v0.4
 - [x] Add date/time into ExiLog
 - [ ] PevMode: Add state transition in case of failed CableCheck
 - [x] PevMode: PreChargeReq: Fill EVRESSSOC, EVTargetVoltage, EVTargetCurrent

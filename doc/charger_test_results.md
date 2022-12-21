@@ -4,30 +4,7 @@
 
 Test site: e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Ingolstadt/hagebaumarkt-Siemensstrasse-1/48209/
 
-Test results of version v0.2
-- [x] SLAC
-- [x] SDP
-- [x] TCP connection
-- [x] EXI
-    - [x] DIN SupportedApplicationProtocol
-	- [x] DIN SessionSetup
-	- [x] DIN ServiceDiscovery
-	- [x] DIN ChargeParameterDiscovery
-	- [ ] DIN CableCheck
-	- [ ] DIN PreCharge
-	- [ ] DIN PowerDelivery, CurrentDemand
-
-## ABB Terra HPC
-
-Test site e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Koesching/Total-Tankstelle-Ruppertswies-6/63794/
-
-Test results tbd
-
-## Alpitronic HPC HYC300
-
-Test site: e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Ingolstadt/Dehner-Garten-Center-Degenhartstrasse-Degenhartstrasse-2/71112/
-
-Test results of version v0.4-6-g257e5af
+Test results of version v0.4-7-g7cea8b5 (2022-12-21, Köschinger Forst Ost)
 - [x] SLAC
 - [x] SDP
 - [x] TCP connection
@@ -41,10 +18,58 @@ Test results of version v0.4-6-g257e5af
 	- [x] DIN CableCheck
 	- [x] DIN PreCharge
 	- [x] DIN PowerDelivery Start
-	- [ ] DIN CurrentDemand rejected with FAILED_SequenceError and EVSE_Shutdown. Issue 16
-	- [ ] DIN PowerDelivery Stop
-	- [ ] DIN WeldingDetection
+	- [x] DIN CurrentDemand: Light bulb demo works
+	- [x] DIN PowerDelivery Stop
+	- [ ] DIN WeldingDetection no response 2022-12-21T08:50:36.640899, issue 17
 	- [ ] DIN SessionStop
+- [x] Inlet voltage measurement
+
+## ABB Terra HPC
+
+Test site e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Koesching/Total-Tankstelle-Ruppertswies-6/63794/
+
+Test results of version v0.4-7-g7cea8b5 (2022-12-21)
+- [x] SLAC
+- [x] SDP
+- [x] TCP connection
+- [x] EXI
+    - [x] DIN SupportedApplicationProtocol
+	- [x] DIN SessionSetup
+	- [x] DIN ServiceDiscovery
+	- [x] DIN ServicePaymentSelection
+	- [x] DIN ContractAuthentication
+	- [x] DIN ChargeParameterDiscovery
+	- [x] DIN CableCheck
+	- [x] DIN PreCharge
+	- [x] DIN PowerDelivery Start
+	- [x] DIN CurrentDemand: Light bulb demo works
+	- [x] DIN PowerDelivery Stop
+	- [ ] DIN WeldingDetection: No response 2022-12-21T08:36:29.943830, issue 17
+	- [ ] DIN SessionStop
+- [x] Inlet voltage measurement
+
+## Alpitronic HPC HYC300
+
+Test site: e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Ingolstadt/Dehner-Garten-Center-Degenhartstrasse-Degenhartstrasse-2/71112/
+
+Test results of version v0.4-7-g7cea8b5 (2022-12-21)
+- [x] SLAC
+- [x] SDP
+- [x] TCP connection
+- [x] EXI
+    - [x] DIN SupportedApplicationProtocol
+	- [x] DIN SessionSetup
+	- [x] DIN ServiceDiscovery
+	- [x] DIN ServicePaymentSelection
+	- [x] DIN ContractAuthentication
+	- [x] DIN ChargeParameterDiscovery
+	- [x] DIN CableCheck
+	- [x] DIN PreCharge
+	- [x] DIN PowerDelivery Start
+	- [x] DIN CurrentDemand: Light bulb demo works
+	- [x] DIN PowerDelivery Stop
+	- [ ] DIN WeldingDetection: "ResponseCode": "FAILED", issue 17
+	- [ ] DIN SessionStop: No response
 - [x] Inlet voltage measurement (shows 500V during cable check, and 230V during precharge)
 
 ## Compleo Cito BM 500
@@ -70,19 +95,46 @@ Test results of version v0.4
 
 Test site e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Hepberg/Koeschinger-Forst-West-A9/15982/
 
-Test results tbd
+Test results of version v0.4-7-g7cea8b5 (2022-12-21)
+- [x] SLAC
+- [x] SDP
+- [x] TCP connection
+- [x] EXI
+    - [x] DIN SupportedApplicationProtocol
+	- [x] DIN SessionSetup
+	- [x] DIN ServiceDiscovery
+	- [x] DIN ServicePaymentSelection
+	- [ ] DIN ContractAuthentication: Due to defective charger, no authorization possible via app or RFID.
 
 ## Efacec HPC Efapower Kiosk HV175
 
 Test site e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Neufahrn-bei-Freising/Fuerholzen-West-A9/22771/
 
-Test results tbd
+Test tbd
 
 ## Ionity Tritium Veefil-PK
 
 Test site: e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Hepberg/IONITY-Koeschinger-Forst-Ost-A9/37875/
 
-Test results tbd
+Test results of version v0.4-7-g7cea8b5
+- [x] SLAC
+- [x] SDP
+- [x] TCP connection
+- [x] EXI
+    - [x] DIN SupportedApplicationProtocol
+	- [x] DIN SessionSetup
+	- [x] DIN ServiceDiscovery
+	- [x] DIN ServicePaymentSelection
+	- [x] DIN ContractAuthentication
+	- [x] DIN ChargeParameterDiscovery
+	- [x] DIN CableCheck
+	- [x] DIN PreCharge
+	- [x] DIN PowerDelivery Start
+	- [ ] DIN CurrentDemand: With the light-bulb configuration, the charger overshoots the intended voltage, because no load is connected at the start of the charging loop. Then, after a few seconds, the charger stops.
+	- [ ] DIN PowerDelivery Stop
+	- [ ] DIN WeldingDetection
+	- [ ] DIN SessionStop
+- [x] Inlet voltage measurement
 
 ## Porsche
 

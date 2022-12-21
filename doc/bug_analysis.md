@@ -1,18 +1,25 @@
 # Open issues
 
-## Issue16: First CurrentDemandReq is rejected with FAILED_SequenceError and EVSE_Shutdown
-- observed on Alpitronics HPC with version v0.4-6-g257e5af
-- log 2022-12-20_alpi_currentDemandSequenceErrorShutdown.pcapng
-- same result in two trys
+## Issue 17: Welding detection fails
+- WeldingDetectionRes says "failed" on alpitronics, and no response on ABBHPC and ABBTriple
+- version v0.4-7-g7cea8b5 (2022-12-21)
 
 ## Issue15: After end of PreCharging, the log says "re-initializing fsmPev"
 - observed with v0.4 on the Compleo charger
 - PreCharge target voltage is reached. The fsmPev sends a message
 01fe800100000012809a022189cbf75b9625a9513022800a0800
 and after one second the state machine seems to run into timeout.
-
+- to be retested. Most likely fixed with with v0.4-7-g7cea8b5.
 
 # Closed issues
+
+## [Solved] Issue16: First CurrentDemandReq is rejected with FAILED_SequenceError and EVSE_Shutdown
+- observed on Alpitronics HPC with version v0.4-6-g257e5af
+- log 2022-12-20_alpi_currentDemandSequenceErrorShutdown.pcapng
+- same result in two trys
+- root cause: In the exi encoder, the PowerDeliveryReq.ReadyToChargeState was treated as enum as in the ISO, but in fact it must be boolean.
+- Fixed with https://github.com/uhi22/OpenV2Gx/commit/a00f1fba878085629a8325281b0a29c9ce6dd72c
+- Test pass 2022-12-21 with v0.4-7-g7cea8b5 on alpi, ABB HPC and ABB triple charger.
 
 ## [Solved] Issue14: Connection loss after authorization
 - with version v0.4.

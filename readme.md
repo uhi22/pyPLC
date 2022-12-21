@@ -305,6 +305,10 @@ hardware side. Without the load, we see the intended 230V precharge voltage, and
 - The Alpi confirms the PowerDelivery (start), but rejects the CurrentDemandRequest with FAILED_SequenceError and EVSE_Shutdown.
 - Results (log file and pcap) are stored in https://github.com/uhi22/pyPLC/tree/master/results.
 
+### 2022-12-21 v0.5 Light-bulb-demo-charging works on multiple chargers
+- On 3 of 4 tested charger models, the light-bulb-demo works: AlpitronicHPC, ABB HPC, ABB Triple. The Ionity Tritium overshoots the target voltage due to missing load, and aborts.
+- Welding detection gives negative or no answer.
+
 ### Test results on real-world chargers
 
 See [charger_test_results.md](doc/charger_test_results.md)
