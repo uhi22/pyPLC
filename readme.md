@@ -308,6 +308,8 @@ hardware side. Without the load, we see the intended 230V precharge voltage, and
 ### 2022-12-21 v0.5 Light-bulb-demo-charging works on multiple chargers
 - On 3 of 4 tested charger models, the light-bulb-demo works: AlpitronicHPC, ABB HPC, ABB Triple. The Ionity Tritium overshoots the target voltage due to missing load, and aborts.
 - Welding detection gives negative or no answer.
+- Traces https://github.com/uhi22/pyPLC/blob/master/results/2022-12-21_westpark_alpi_charge_ok_with_bulb.pcapng and https://github.com/uhi22/pyPLC/blob/master/results/2022-12-21_alpi_ABBHPC_ABB_Ionity_lightbulb_3of4ok.decoded.txt
+- Pictures and discussion in https://openinverter.org/forum/viewtopic.php?p=50172#p50172
 
 ### Test results on real-world chargers
 
