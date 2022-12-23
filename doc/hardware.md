@@ -54,9 +54,33 @@ How to modify:
 - connect cables to supply the device. Works with 12V, also works with 5V from an USB power bank.
 - connect cables and circuit (1nF and 150ohms in series) for connecting to the pilot line.
 
+## Controller for the PEV
+
+Besides the homeplug modem, there are additional parts necessary for a vehicle to perform CCS charging. Two of these are: 1. The inlet voltage measurement. 2. The control of CP state and relays.
+
+### DieterHV
+
+This is the high-voltage Dieter. It is responsible to measure the CCS inlet voltage. DieterHV is an Arduino Pro Mini, running the software from https://github.com/uhi22/dieter, and DieterHV has a quite simple task: Measure the divided voltage from the CCS inlet, and write the output of the ADC to the serial line, with 19200 Baud. The hardware includes a 5V-to-5V-DCDC converter (e.g. B0505S-1W) and a PC900V optocoupler. In the current version, the ADC0 is the main channel, and the ADC1 gets half of the voltage and may be used for plausibilization. Potential improvement could be, to enable also negative voltage measurement, to be able to detect wrong polarity.
+
+![image](DieterHV_schematic.jpg)
+![image](DieterHV_foto.jpg)
+
+### DieterLV
+
+This is the low-voltage Dieter. It controls the ControlPilot state, by switching an additional 1.2kOhm resistor in parallel to the permanently connected 2.7kOhm. Additionally, the DieterLV controls two relays via simple drivers. In the demo, these relays connect the DC from the CCS inlet to a light bulb.
+Also DieterLV is an Arduino Pro Mini, and it is running the same software as DieterHV. It receives the output control requests via serial line with 19200 Baud, and sets its digital outputs accordingly.
+
+![image](DieterLV_schematic.jpg)
+
+### USB
+
+Both, DieterHV and DieterLV communicate with 5V serial line with 19200 Baud. To connect these to the Laptop or Raspberry, we use a cheap USB-to-Serial converter with CP2102, similar to https://www.ebay.de/itm/122447169355?hash=item1c826b874b:g:PKYAAOSwBoVjdS28&amdata=enc%3AAQAHAAAA4IQcw6se5g1eqWsesz2sVJybly8WfWQrHcT%2BKk2kbf3dRjRl5Iimf8p54m2HcnGpjpFaTQqdKE0wrxuPJYLQcmOtofOYlAbClGhlgeIn21NQPaCGzqCSAMAI6yXqfsfCpsBZtJe1%2BfAfIOq1kEPDJBbWD6UFAv6%2FhR%2B6WxeiQKeaVSwc%2BRs87aBn0XbtWmF2p0C9RTURpWQauDpaWLsAthbiVBqBjeNkPQxMSx1AMUa33bO0OZakXjXyHVrGhEXRO7952z1oHjKyl51E0YX7Jqb5hA7GhAs%2BUGvPnBAbjKnH%7Ctkp%3ABFBMipSf-Kdh
+Its receive path is feed by the DieterHV via optocoupler, and its transmit path is connected to the DieterLV via a protection resistor.
+On software side, the python module hardwareInterface.py handles the communication with the serial devices.
+
 ## Electric vehicle simulator
 
-This device is able to convince an AC charger to deliver power, and also is needed to tell an DC charger, that a car is connected. By closing the "vehicle detected" switch, we pull the CP from 12V to 9V, and the charger will switch to the 5% PWM and starts listening to SLAC parameter request messages.
+This device is able to convince an AC charger to deliver power, and also is needed to tell an DC charger, that a car is connected. By closing the "vehicle detected" switch, we pull the CP from 12V to 9V, and the charger will switch to the 5% PWM and starts listening to SLAC parameter request messages. (If DieterLV is controlling the CP, we do not need the EV simulator anymore.)
 
 ![image](https://user-images.githubusercontent.com/98478946/204749022-764c57f1-cd15-441e-ad7a-df01043a341b.png)
 ![image](https://user-images.githubusercontent.com/98478946/204749197-4f1b0fb8-6dbb-4cca-bbec-aa26b327d9b7.png)

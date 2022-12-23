@@ -21,7 +21,7 @@
 - [ ] docu: add link to evse which provides the 5% PWM)
 - [ ] docu: add hardwareInterface into software architecture puml
 - [ ] docu: create hardware architecture picture
-- [ ] docu for Dieter (Schematic, concept idea, Dieter0, Dieter1, ...)
+- [x] docu for Dieter (Schematic, concept idea, DieterLV, DieterHV, ...)
 - [ ] in addressManager, replace the print by addToTrace
 - [ ] Resolve the todo-markers in the code
 - [ ] Still fixed addresses (MAC, IP) used somewhere?
