@@ -15,8 +15,11 @@ class hardwareInterface():
         ports = []
         self.addToTrace('Available serial ports:')
         for n, (port, desc, hwid) in enumerate(sorted(comports()), 1):
-            self.addToTrace('{:2}: {:20} {!r}'.format(n, port, desc))
-            ports.append(port)
+            if (port=="/dev/ttyAMA0"):
+                self.addToTrace("ignoring /dev/ttyAMA0, because this is not an USB serial port")
+            else:
+                self.addToTrace('{:2}: {:20} {!r}'.format(n, port, desc))
+                ports.append(port)
         if (len(ports)<1):
             self.addToTrace("ERROR: No serial ports found. No hardware interaction possible.")
             self.ser = None
