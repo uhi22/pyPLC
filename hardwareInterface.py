@@ -126,7 +126,12 @@ class hardwareInterface():
                     pass
                 #self.addToTrace("RX data ok " + s)
                 self.rxbuffer = self.rxbuffer[x+3:] # consume the receive buffer entry
-    
+
+    def showOnDisplay(self, s1, s2, s3):
+        # show the given string s on the display which is connected to the serial port
+        s = "lc" + s1 + "\n" + "lc" + s2 + "\n" + "lc" + s3 + "\n"
+        self.ser.write(bytes(s, "utf-8"))
+        
     def mainfunction(self):
         if (self.simulatedSoc<100):
             if ((self.outvalue & 2)!=0):
@@ -158,6 +163,8 @@ if __name__ == "__main__":
     hw = hardwareInterface(myPrintfunction)
     for i in range(0, 350):
         hw.mainfunction()
+        if (i==20):
+            hw.showOnDisplay("Hello", "A DEMO", "321.0V")
         if (i==50):
             hw.setStateC()
         if (i==100):
@@ -165,6 +172,7 @@ if __name__ == "__main__":
         if (i==150):
             hw.setStateC()
             hw.setPowerRelayOn()
+            hw.showOnDisplay("", "..middle..", "")
         if (i==200):
             hw.setStateB()
             hw.setPowerRelayOff()
@@ -172,6 +180,8 @@ if __name__ == "__main__":
             hw.setRelay2On()
         if (i==300):
             hw.setRelay2Off()
+        if (i==320):
+            hw.showOnDisplay("This", "...is...", "DONE :-)")
         sleep(0.03)
     hw.close()    
     print("finished.")
