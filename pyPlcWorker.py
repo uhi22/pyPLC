@@ -28,8 +28,8 @@ class pyPlcWorker():
         self.callbackShowStatus = callbackShowStatus
         self.oldAvlnStatus = 0
         self.isSimulationMode = isSimulationMode
-        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.workerAddToTrace, self.callbackShowStatus, self.mode, self.addressManager, self.callbackReadyForTcp, self.isSimulationMode)
-        self.hardwareInterface = hardwareInterface.hardwareInterface(self.workerAddToTrace, self.callbackShowStatus)
+        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.workerAddToTrace, self.showStatus, self.mode, self.addressManager, self.callbackReadyForTcp, self.isSimulationMode)
+        self.hardwareInterface = hardwareInterface.hardwareInterface(self.workerAddToTrace, self.showStatus)
         self.hp.printToUdp("pyPlcWorker init")
         # Find out the version number, using git.
         # see https://stackoverflow.com/questions/14989858/get-the-current-git-hash-in-a-python-script
@@ -39,9 +39,9 @@ class pyPlcWorker():
             strLabel = "(unknown version. 'git describe --tags' failed.)"
         self.workerAddToTrace("[pyPlcWorker] Software version " + strLabel)  
         if (self.mode == C_EVSE_MODE):
-            self.evse = fsmEvse.fsmEvse(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.callbackShowStatus)
+            self.evse = fsmEvse.fsmEvse(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.showStatus)
         if (self.mode == C_PEV_MODE):
-            self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.callbackShowStatus)
+            self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.showStatus)
     def __del__(self):
         if (self.mode == C_PEV_MODE):
             print("worker: deleting pev")
@@ -55,7 +55,9 @@ class pyPlcWorker():
         self.hp.printToUdp(s) # give the message to the udp for remote logging.
         
     def showStatus(self, s, selection = ""):
-        self.callbackShowStatus(s, selection)        
+        self.callbackShowStatus(s, selection)
+        if (selection == "pevState"):
+            self.hardwareInterface.showOnDisplay(s, "", "")
 
     def callbackReadyForTcp(self, status):
         if (status==1):
