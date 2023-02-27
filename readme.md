@@ -311,6 +311,10 @@ hardware side. Without the load, we see the intended 230V precharge voltage, and
 - Traces https://github.com/uhi22/pyPLC/blob/master/results/2022-12-21_westpark_alpi_charge_ok_with_bulb.pcapng and https://github.com/uhi22/pyPLC/blob/master/results/2022-12-21_alpi_ABBHPC_ABB_Ionity_lightbulb_3of4ok.decoded.txt
 - Pictures and discussion in https://openinverter.org/forum/viewtopic.php?p=50172#p50172
 
+### 2023-02-27 PEV mode with OLED-display works on headless Raspberry
+- Charging status is shown on OLED display. Details in [hardware.md](doc/hardware.md)
+- RaspberryPi 3 configured to auto-start the PEV software as service. Startup time around 21 seconds from power-up until the SLAC starts. Details 
+in [installation_on_raspberry.md](doc/installation_on_raspberry.md)
 ### Test results on real-world chargers
 
 See [charger_test_results.md](doc/charger_test_results.md)

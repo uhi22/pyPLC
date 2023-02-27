@@ -22,6 +22,7 @@
 - [ ] docu: add hardwareInterface into software architecture puml
 - [ ] docu: create hardware architecture picture
 - [x] docu for Dieter (Schematic, concept idea, DieterLV, DieterHV, ...)
+- [x] add OLED display to the PEV controller
 - [ ] in addressManager, replace the print by addToTrace
 - [ ] Resolve the todo-markers in the code
 - [ ] Still fixed addresses (MAC, IP) used somewhere?

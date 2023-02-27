@@ -82,6 +82,55 @@ Open a second console window, and start here the pev in simulation mode
 `sudo python pyPlc.py P S`.
 We should see how the EVSE and PEV are talking to each other.
 
+## Auto-start of the PEV software
+
+Use case: You use a RaspberryPi in the car, and want to start the charging software just by powering-up the Raspberry.
+
+(Based on https://gist.github.com/emxsys/a507f3cad928e66f6410e7ac28e2990f)
+
+We want to run the pevNoGui.py as superuser automatically after startup. To achieve this, we create a service, which we give the name "pev".
+
+```
+	cd /lib/systemd/system/
+	sudo nano pev.service
+```
+
+In this file, we write the following, to configure the new service:
+
+```
+	[Unit]
+	Description=The PEV.
+	After=multi-user.target
+
+	[Service]
+	Type=simple
+	ExecStart=/home/pi/myprogs/myPlc/starter.sh
+	Restart=on-abort
+
+	[Install]
+	WantedBy=multi-user.target
+```
+
+Finally we configure the attributes of the service, change the starter shell file to be executable, reload the service configuration and enable and start
+the service:
+
+```
+	sudo chmod 644 /lib/systemd/system/hello.service
+	chmod +x /home/pi/pyPlc/starter.sh
+	sudo systemctl daemon-reload
+	sudo systemctl enable pev.service
+	sudo systemctl start pev.service
+```
+
+To view the log of the service, run `journalctl --unit=pev` or `journalctl -f -u pev.service`.
+
+Todo: The service log will grow very large, because it contains the complete communication during the charging session. Do we need to take care to
+keep the log slim?
+
+The next time we power-up the pi, even without a HDMI display and keyboard connected, the OLED should show the charge progress now.
+Using an RaspberryPi 3 without additional startup time optimization, the time from power-on until the start of SLAC is ~21 seconds.
+
+
 ## Nice-to-have: Password-less SSH connection from the Windows notebook to the Pi
 
 https://strobelstefan.org/2019/10/16/zugriff-via-ssh-ohne-passworteingabe-anmeldung-erfolgt-durch-ausgetauschten-ssh-schluessel/
