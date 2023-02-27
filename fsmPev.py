@@ -39,8 +39,8 @@ class fsmPev():
     def addToTrace(self, s):
         self.callbackAddToTrace("[PEV] " + s)
         
-    def publishStatus(self, s):
-        self.callbackShowStatus(s, "pevState")
+    def publishStatus(self, s, strAuxInfo1="", strAuxInfo2=""):
+        self.callbackShowStatus(s, "pevState", strAuxInfo1, strAuxInfo2)
         
     def exiDecode(self, exidata, schema):
         s = compactHexMessage(exidata)
@@ -181,7 +181,7 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServiceDiscoveryRes")>0):
                 # todo: check the request content, and fill response parameters
-                self.publishStatus("ServiceDiscovery finished")
+                self.publishStatus("ServDisc done")
                 self.addToTrace("Will send ServicePaymentSelectionReq")
                 msg = addV2GTPHeader(self.exiEncode("EDC_"+self.sessionId)) # EDC for Encode, Din, ServicePaymentSelection
                 self.addToTrace("responding " + prettyHexMessage(msg))
@@ -199,7 +199,7 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServicePaymentSelectionRes")>0):
                 # todo: check the request content, and fill response parameters
-                self.publishStatus("ServicePaymentSelection finished")
+                self.publishStatus("ServPaySel done")
                 self.addToTrace("Will send ContractAuthenticationReq")
                 msg = addV2GTPHeader(self.exiEncode("EDL_"+self.sessionId)) # EDL for Encode, Din, ContractAuthenticationReq.
                 self.addToTrace("responding " + prettyHexMessage(msg))
@@ -223,7 +223,7 @@ class fsmPev():
                 # needs to authorize by RFID card or app, or something like this.
                 # Or, the authorization is finished. This is shown by EVSEProcessing=Finished.
                 if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):
-                    self.publishStatus("Authorization finished")
+                    self.publishStatus("Auth finished")
                     self.addToTrace("It is Finished. Will send ChargeParameterDiscoveryReq")
                     self.sendChargeParameterDiscoveryReq()
                     self.numberOfChargeParameterDiscoveryReq = 1 # first message
@@ -236,7 +236,7 @@ class fsmPev():
                     else:
                          # Try again.
                         self.numberOfContractAuthenticationReq += 1 # count the number of tries.
-                        self.publishStatus("Waiting for Authorization")
+                        self.publishStatus("Waiting f Auth")
                         self.addToTrace("Not (yet) finished. Will again send ContractAuthenticationReq #" + str(self.numberOfContractAuthenticationReq))
                         msg = addV2GTPHeader(self.exiEncode("EDL_"+self.sessionId)) # EDL for Encode, Din, ContractAuthenticationReq.
                         self.addToTrace("responding " + prettyHexMessage(msg))
@@ -261,7 +261,7 @@ class fsmPev():
                 # (A) The charger needs more time to show the charge parameters.
                 # (B) The charger finished to tell the charge parameters.
                 if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):
-                    self.publishStatus("ChargeParameters discovered")
+                    self.publishStatus("ChargeParams discovered")
                     self.addToTrace("It is Finished. Will change to state C and send CableCheckReq.")
                     # pull the CP line to state C here:
                     self.hardwareInterface.setStateC()
@@ -276,7 +276,7 @@ class fsmPev():
                     else:
                          # Try again.
                         self.numberOfChargeParameterDiscoveryReq += 1 # count the number of tries.
-                        self.publishStatus("discovering ChargeParameters")
+                        self.publishStatus("disc ChargeParams")
                         self.addToTrace("Not (yet) finished. Will again send ChargeParameterDiscoveryReq #" + str(self.numberOfChargeParameterDiscoveryReq))
                         self.sendChargeParameterDiscoveryReq()
                         # we stay in the same state
@@ -306,7 +306,7 @@ class fsmPev():
                 # 1) The charger says "cable check is finished and cable ok", by setting ResponseCode=OK and EVSEProcessing=Finished.
                 # 2) Else: The charger says "need more time or cable not ok". In this case, we just run into timeout and start from the beginning.
                 if ((strEVSEProcessing=="Finished") and (strResponseCode=="OK")):
-                    self.publishStatus("CableCheck done")
+                    self.publishStatus("CbleChck done")
                     self.addToTrace("The EVSE says that the CableCheck is finished and ok.")
                     self.addToTrace("Will send PreChargeReq")
                     soc = self.hardwareInterface.getSoc()
@@ -322,7 +322,7 @@ class fsmPev():
                     else:    
                         # cable check not yet finished or finished with bad result -> try again
                         self.numberOfCableCheckReq += 1
-                        self.publishStatus("CableCheck ongoing")
+                        self.publishStatus("CbleChck ongoing", format(self.hardwareInterface.getInletVoltage(),".0f") + "V")
                         self.addToTrace("Will again send CableCheckReq")
                         self.sendCableCheckReq()
                         # stay in the same state
@@ -364,7 +364,7 @@ class fsmPev():
                     self.Tcp.transmit(msg)
                     self.enterState(stateWaitForPowerDeliveryResponse)
                 else:
-                    self.publishStatus("PreCharge ongoing")
+                    self.publishStatus("PreChrge ongoing", format(self.hardwareInterface.getInletVoltage(), ".0f") + "V")
                     self.addToTrace("Difference too big. Continuing PreCharge.")
                     soc = self.hardwareInterface.getSoc()
                     EVTargetVoltage = self.hardwareInterface.getAccuVoltage()
@@ -384,13 +384,13 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("PowerDeliveryRes")>0):
                 if (self.wasPowerDeliveryRequestedOn):
-                    self.publishStatus("PowerDelivery ON success")
+                    self.publishStatus("PwrDelvy ON success")
                     self.addToTrace("Starting the charging loop with CurrentDemandReq")
                     self.sendCurrentDemandReq()
                     self.enterState(stateWaitForCurrentDemandResponse)
                 else:
                     # We requested "OFF". So we turn-off the Relay and continue with the Welding detection.
-                    self.publishStatus("PowerDelivery OFF success")
+                    self.publishStatus("PwrDelvry OFF success")
                     self.addToTrace("Turning off the relay and starting the WeldingDetection")
                     self.hardwareInterface.setPowerRelayOff()
                     self.hardwareInterface.setRelay2Off()
@@ -414,7 +414,7 @@ class fsmPev():
                         self.publishStatus("Accu full")
                         self.addToTrace("Accu is full. Sending PowerDeliveryReq Stop.")
                     else:
-                        self.publishStatus("User requested stop")
+                        self.publishStatus("User req stop")
                         self.addToTrace("User requested stop. Sending PowerDeliveryReq Stop.")
                     soc = self.hardwareInterface.getSoc()
                     msg = addV2GTPHeader(self.exiEncode("EDH_"+self.sessionId+"_"+ str(soc) + "_" + "0")) # EDH for Encode, Din, PowerDeliveryReq, OFF
@@ -424,15 +424,15 @@ class fsmPev():
                     self.enterState(stateWaitForPowerDeliveryResponse)
                 else:
                     # continue charging loop
-                    self.publishStatus("Charging")
+                    self.publishStatus("Charging", format(self.hardwareInterface.getInletVoltage(), ".0f") + "V", format(self.hardwareInterface.getSoc(), ".1f") + "%")
                     self.sendCurrentDemandReq()
                     self.enterState(stateWaitForCurrentDemandResponse)
         if (self.isLightBulbDemo):
-            if (self.cyclesLightBulbDelay<=33*5):
+            if (self.cyclesLightBulbDelay<=33*2):
                 self.cyclesLightBulbDelay+=1
             else:
                 if (not self.isBulbOn):
-                    self.addToTrace("This is a light bulb demo. Turning-on the bulb when 5s in the main charging loop.")
+                    self.addToTrace("This is a light bulb demo. Turning-on the bulb when 2s in the main charging loop.")
                     self.hardwareInterface.setPowerRelayOn()   
                     self.hardwareInterface.setRelay2On() 
                     self.isBulbOn = True
@@ -448,7 +448,7 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("WeldingDetectionRes")>0):
                     # todo: add real welding detection here, run in welding detection loop until finished.
-                    self.publishStatus("WeldingDetection done")
+                    self.publishStatus("WldingDet done")
                     self.addToTrace("Sending SessionStopReq")                    
                     msg = addV2GTPHeader(self.exiEncode("EDK_"+self.sessionId)) # EDI for Encode, Din, SessionStopReq
                     self.addToTrace("responding " + prettyHexMessage(msg))
@@ -468,7 +468,7 @@ class fsmPev():
                 # req -508
                 # Todo: close the TCP connection here.
                 # Todo: Unlock the connector lock.
-                self.publishStatus("Session stopped normally")
+                self.publishStatus("Stopped normally")
                 self.hardwareInterface.setStateB()
                 self.addToTrace("Charging is finished")
                 self.enterState(stateChargingFinished)

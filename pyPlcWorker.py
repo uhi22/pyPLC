@@ -54,10 +54,10 @@ class pyPlcWorker():
         self.callbackAddToTrace(s) # give the message to the upper level, eg for console log.
         self.hp.printToUdp(s) # give the message to the udp for remote logging.
         
-    def showStatus(self, s, selection = ""):
+    def showStatus(self, s, selection = "", strAuxInfo1="", strAuxInfo2=""):
         self.callbackShowStatus(s, selection)
         if (selection == "pevState"):
-            self.hardwareInterface.showOnDisplay(s, "", "")
+            self.hardwareInterface.showOnDisplay(s, strAuxInfo1, strAuxInfo2)
 
     def callbackReadyForTcp(self, status):
         if (status==1):

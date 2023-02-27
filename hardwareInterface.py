@@ -62,8 +62,8 @@ class hardwareInterface():
         self.outvalue &= ~4
         
     def getInletVoltage(self):
-        #todo: get real measured voltage from the inlet
-        self.inletVoltage = self.simulatedInletVoltage
+        # uncomment this line, to take the simulated inlet voltage instead of the really measured
+        # self.inletVoltage = self.simulatedInletVoltage
         return self.inletVoltage
         
     def getAccuVoltage(self):
@@ -121,9 +121,9 @@ class hardwareInterface():
             s = self.rxbuffer[x+3:x+7]
             if (len(s)==4):
                 try:
-                    self.uInlet_V = int(s) / 1024.0 * 1.08 * (6250) / (4.7+4.7)
+                    self.inletVoltage = int(s) / 1024.0 * 1.08 * (6250) / (4.7+4.7)
                     
-                    self.callbackShowStatus(format(self.uInlet_V,".1f"), "uInlet")
+                    self.callbackShowStatus(format(self.inletVoltage,".1f"), "uInlet")
                 except:
                     # keep last known value, if nothing new valid was received.
                     pass
