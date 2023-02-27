@@ -72,6 +72,22 @@ Also DieterLV is an Arduino Pro Mini, and it is running the same software as Die
 
 ![image](DieterLV_schematic.jpg)
 
+### OLED Display
+
+To show the status, the voltage and the SOC in PEV mode, there is an OLED display connected to the serial line of the USB-to-serial-converter.
+The display is programmed to receive data via serial line and show three lines. The python script is using the function self.hardwareInterface.showOnDisplay(s, strAuxInfo1, strAuxInfo2)
+to fill these three lines on the display.
+
+The display is an ESP32-powered board named "WIFI_KIT-32", available e.g. from
+https://de.aliexpress.com/item/1005002931025729.html?spm=a2g0o.productlist.main.23.3d607f4fVNGcAr&algo_pvid=338e0303-b3b2-45c7-94b6-4a55bba4009e&algo_exp_id=338e0303-b3b2-45c7-94b6-4a55bba4009e-11&pdp_ext_f=%7B%22sku_id%22%3A%2212000022853967835%22%7D&pdp_npi=3%40dis%21EUR%2113.87%2111.37%21%21%21%21%21%402100b78b16774931785037679d0714%2112000022853967835%21sea%21DE%210&curPageLogUid=TGlYiLzgZW4i
+
+The arduino sketch is available at https://github.com/uhi22/SerialToOLED
+
+The connection is simple: The 5V from the USB-to-Serial-converter board are supplying the WIFI_KIT-32, and the TXD of the USB-to-Serial-converter goes via an 1k5 protection resistor to a digital input of the WIFI_KIT_32.
+
+![image](OLED_for_PEV_foto.jpg)
+
+
 ### USB
 
 Both, DieterHV and DieterLV communicate with 5V serial line with 19200 Baud. To connect these to the Laptop or Raspberry, we use a cheap USB-to-Serial converter with CP2102, similar to https://www.ebay.de/itm/122447169355?hash=item1c826b874b:g:PKYAAOSwBoVjdS28&amdata=enc%3AAQAHAAAA4IQcw6se5g1eqWsesz2sVJybly8WfWQrHcT%2BKk2kbf3dRjRl5Iimf8p54m2HcnGpjpFaTQqdKE0wrxuPJYLQcmOtofOYlAbClGhlgeIn21NQPaCGzqCSAMAI6yXqfsfCpsBZtJe1%2BfAfIOq1kEPDJBbWD6UFAv6%2FhR%2B6WxeiQKeaVSwc%2BRs87aBn0XbtWmF2p0C9RTURpWQauDpaWLsAthbiVBqBjeNkPQxMSx1AMUa33bO0OZakXjXyHVrGhEXRO7952z1oHjKyl51E0YX7Jqb5hA7GhAs%2BUGvPnBAbjKnH%7Ctkp%3ABFBMipSf-Kdh

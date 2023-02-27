@@ -347,5 +347,5 @@ However, the software will help to explore and understand the behavior of the ca
 
 ### Q3: Is it possible to use this software in a car without CCS, to make it ready for CCS charging?
 That's is definitely a goal, at it looks reachable. Of course, two aspects need to be considered:
-- This project is not a final product. Further development will be necessary to ensure compatibility with chargers, and make is flexible for practical use.
+- This project is not a final product. Further development will be necessary to ensure compatibility with chargers, and make it flexible for practical use.
 - Some parts are not covered by this project at all, e.g. communication with the BMS, connector lock, safety considerations.
