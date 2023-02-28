@@ -757,6 +757,7 @@ class pyPlcHomeplug():
             self.localModemFound = 0
             self.isDeveloperLocalKey = 0
             self.nEvseModemMissingCounter = 0
+            self.showStatus("Modem search", "pevState")
             # First action: find the connected homeplug modems, by sending a GET_KEY
             self.composeGetKey()
             self.addToTrace("[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...")
@@ -808,7 +809,10 @@ class pyPlcHomeplug():
                 self.enterState(STATE_READY_FOR_SLAC)
             return
         if (self.pevSequenceState==STATE_READY_FOR_SLAC):
-            self.showStatus("Starting SLAC", "pevState")
+            if (self.numberOfFoundModems==0):
+                self.showStatus("NoModem, simuSLAC", "pevState")
+            else:
+                self.showStatus("Starting SLAC", "pevState")
             self.addToTrace("[PEVSLAC] Sending SLAC_PARAM.REQ...")
             self.composeSlacParamReq()
             self.transmit(self.mytransmitbuffer)                
