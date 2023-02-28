@@ -122,10 +122,24 @@ the service:
 	sudo systemctl start pev.service
 ```
 
-To view the log of the service, run `journalctl --unit=pev` or `journalctl -f -u pev.service`.
+To view the log of the service, run
+- `journalctl --unit=pev` or
+- `journalctl -f -u pev.service`
+- `journalctl -u pev --since "5 min ago"`
+To follow new messages:
+- `journalctl -f`
 
-Todo: The service log will grow very large, because it contains the complete communication during the charging session. Do we need to take care to
-keep the log slim?
+More possibilities are shown in https://wiki.archlinux.org/title/Systemd/Journal.
+
+The service log will grow very large, because it contains the complete communication during the charging session. To avoid filling the disk space with old logs, we may want to limit the size. One option is explained at https://got-tty.org/journalctl-via-journald-conf-die-loggroesse-definierenDo:
+`nano /etc/systemd/journald.conf` and set the settings
+
+```
+	SystemMaxUse=500M
+	SystemMaxFileSize=100M
+```
+The first value defines the overall disk space which is used by the service logs. The second value specifies the maximum size of a single log file.
+
 
 The next time we power-up the pi, even without a HDMI display and keyboard connected, the OLED should show the charge progress now.
 Using an RaspberryPi 3 without additional startup time optimization, the time from power-on until the start of SLAC is ~21 seconds.
