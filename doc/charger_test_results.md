@@ -145,7 +145,24 @@ Test results tbd
 ## Tesla Supercharger V3
 
 Test site e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Koesching/Supercharger-Car-Wash-Ruppertswies-4/69557/
+or https://www.goingelectric.de/stromtankstellen/Deutschland/Pfaffenhofen-an-der-Ilm/Supercharger-Hotel-Strasshof-Siebenecken-1/44134/
 
-Test results
-- [ ] SLAC: fails. It sends SLAC_PARAM_CNF, but nothing more.
+Test results of version v0.5-12-g23b1384, on 2023-03-02
+- [x] SLAC
+- [x] SDP
+- [x] TCP connection
+- [x] EXI
+    - [x] DIN SupportedApplicationProtocol
+	- [x] DIN SessionSetup
+	- [x] DIN ServiceDiscovery
+	- [x] DIN ServicePaymentSelection
+	- [x] DIN ContractAuthentication
+	- [x] DIN ChargeParameterDiscovery
+	- [ ] DIN CableCheck: The cable check runs into timeout. No real voltage on the pins. Maybe caused by wrong sessionId, see issue 18.
+	- [ ] DIN PreCharge
+	- [ ] DIN PowerDelivery Start
+	- [ ] DIN CurrentDemand
+	- [ ] DIN PowerDelivery Stop
+	- [ ] DIN WeldingDetection
+	- [ ] DIN SessionStop
 

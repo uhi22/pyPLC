@@ -1,5 +1,17 @@
 # Open issues
 
+## Issue 18: On SuperCharger we ignore the session ID
+- In the SessionSetupResponse, the SuperCharger V3 correctly provides a sessionID, e.g. "06ef0071".
+- But we ignore this, and send in all next messages (starting with ServiceDiscoveryReq) the sessionID "deadbeefdeadbeef".
+- The SuperCharger correctly complains with "ResponseCode": "FAILED_UnknownSession".
+- observed with Software version v0.5-12-g23b1384, on 2023-03-02.
+- root cause: In main_commandlineinterface.c we check, whether the session ID has 16 characters, to represent 8 hex bytes.
+But the SuperCharger provides 8 characters, to present 4 bytes. Thats why the function useSessionIdFromCommandLine()
+operates with the default session ID "deadbeefdeadbeef".
+- solution: in function useSessionIdFromCommandLine(), also accept shorter session IDs. And in function init_dinMessageHeaderWithSessionID(),
+use a dynamic length instead of the fixed length LEN_OF_SESSION_ID (=8).
+
+
 ## Issue 17: Welding detection fails
 - WeldingDetectionRes says "failed" on alpitronics, and no response on ABBHPC and ABBTriple
 - version v0.4-7-g7cea8b5 (2022-12-21)
