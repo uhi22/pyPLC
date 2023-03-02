@@ -139,7 +139,7 @@ class hardwareInterface():
         if (self.simulatedSoc<100):
             if ((self.outvalue & 2)!=0):
                 # while the relay is closed, simulate increasing SOC
-                self.simulatedSoc = self.simulatedSoc + 0.05
+                self.simulatedSoc = self.simulatedSoc + 0.01
                 
                 
         self.loopcounter+=1
