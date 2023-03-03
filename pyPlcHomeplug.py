@@ -587,7 +587,7 @@ class pyPlcHomeplug():
         for i in range(0, 7): # NID has 7 bytes
             self.NID[i] = self.myreceivebuffer[29+i]
             s=s+hex(self.NID[i])+ " "
-        print("From GetKeyCnf, got network ID (NID) " + s)
+        self.addToTrace("From GetKeyCnf, got network ID (NID) " + s)
         
 
     def evaluateSetKeyCnf(self):
@@ -1062,8 +1062,8 @@ class pyPlcHomeplug():
         self.findEthernetAdaptor()
         self.sniffer = pcap.pcap(name=self.strInterfaceName, promisc=True, immediate=True, timeout_ms=50)
         self.sniffer.setnonblock(True)
-        self.NMKdevelopment = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key        
-        self.NMK = self.NMKdevelopment # a default network key
+        self.NMKdevelopment = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # network key for development access       
+        self.NMK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key. Will be overwritten later.
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
         self.pevMac = [0xDC, 0x0E, 0xA1, 0x11, 0x67, 0x08 ] # a default pev MAC. Will be overwritten later.
         self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.

@@ -298,7 +298,7 @@ class fsmPev():
                     y = json.loads(strConverterResult)
                     strResponseCode = y["ResponseCode"]
                     strEVSEProcessing = y["EVSEProcessing"]
-                    self.addToTrace("[PEV] The CableCheck result is " + strResponseCode + " " + strEVSEProcessing)
+                    self.addToTrace("The CableCheck result is " + strResponseCode + " " + strEVSEProcessing)
                 except:
                     self.addToTrace("ERROR: Could not decode the CableCheckRes")
                 # todo: check the request content, and fill response parameters
