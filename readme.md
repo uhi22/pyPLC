@@ -1,4 +1,4 @@
-# CCS sniffing: Some try-outs with Python and network adaptor low-level communication
+# CCS hacking: Electric car charging experiments with Python and PLC network adaptors
 
 ## Goal
 This project tries to use cheap powerline network adaptors for communication with electric cars charging system.
@@ -10,12 +10,12 @@ In this project, we call this mode *ListenMode*.
 3. Building a charging unit for a car which does not support powerline communication. Let's call it *PevMode*.
 
 ## References
-* [i] https://www.goingelectric.de/wiki/CCS-Technische-Details/
-* [ii] https://openinverter.org/forum/viewtopic.php?p=37085#p37085
-* [iii] https://github.com/qca/open-plc-utils
-* [iv] https://github.com/karpierz/pcap-ct
-* [v] https://github.com/FlUxIuS/V2Gdecoder
-* [vi] https://github.com/SwitchEV/iso15118
+* [i] https://www.goingelectric.de/wiki/CCS-Technische-Details/ knowledge collection
+* [ii] https://openinverter.org/forum/viewtopic.php?p=37085#p37085 discussion of this project
+* [iii] https://github.com/qca/open-plc-utils utilities for configuring the PLC adaptor
+* [iv] https://github.com/karpierz/pcap-ct library for low-level-network-access
+* [v] https://github.com/FlUxIuS/V2Gdecoder demo for EXI decoder
+* [vi] https://github.com/SwitchEV/iso15118 another "nearly" open source CCS project
 * [vii] https://books.google.de/books?id=WYlmEAAAQBAJ&pg=PA99&lpg=PA99&dq=%22ampsnif%22&source=bl&ots=hqCjdFooZ-&sig=ACfU3U0EleLZQu0zWhHQZGktp8OytCMrLg&hl=de&sa=X&ved=2ahUKEwjT0Yq88P36AhWj_rsIHeGMA5MQ6AF6BAgKEAM#v=onepage&q=%22ampsnif%22&f=false How to enable sniffer mode.
 * [viii] https://www.mdpi.com/2076-3417/6/6/165/htm "Building an Interoperability Test System for Electric Vehicle Chargers Based on ISO/IEC 15118 and IEC 61850 Standards", including V2G message sequence chart
 * [ix] https://www.oppcharge.org/dok/ISO_15118-2_OpportunityCharging_Rev1.3.0.pdf Pantograph specific differences with some insight into ISO15118.
@@ -315,6 +315,10 @@ hardware side. Without the load, we see the intended 230V precharge voltage, and
 - Charging status is shown on OLED display. Details in [hardware.md](doc/hardware.md)
 - RaspberryPi 3 configured to auto-start the PEV software as service. Startup time around 21 seconds from power-up until the SLAC starts. Details 
 in [installation_on_raspberry.md](doc/installation_on_raspberry.md)
+
+### 2023-03-03 v0.6 Tea-Time on Alpitronics charger
+Made a tea, using the RaspberryPi3 and tpLink modem on Alpitronics hypercharger. 
+
 ### Test results on real-world chargers
 
 See [charger_test_results.md](doc/charger_test_results.md)
