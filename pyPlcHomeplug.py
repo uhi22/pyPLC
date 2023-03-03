@@ -1072,9 +1072,7 @@ class pyPlcHomeplug():
         self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager)
         self.ipv6.ownMac = self.myMAC
         self.udplog = udplog.udplog(self.transmit, self.addressManager)
-        for k in range(0, 10):
-            self.udplog.log("Test message number " + str(k))
-            time.sleep(0.1)
+        self.udplog.log("Test message to verify the syslog. pyPlcHomeplug.py is in the init function.")
         if (mode == C_LISTEN_MODE):
             self.enterListenMode()
         if (mode == C_EVSE_MODE):

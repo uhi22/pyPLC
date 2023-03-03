@@ -32,13 +32,13 @@ class pyPlcTcpClientSocket():
         
     def connect(self, host, port):
         try:
-            self.addToTrace("connecting to " + str(host) + " port " + str(port) + "...")
+            self.addToTrace("TCP connecting to " + str(host) + " port " + str(port) + "...")
             # for connecting, we are still in blocking-mode because
             # otherwise we run into error "[Errno 10035] A non-blocking socket operation could not be completed immediately"
             # We set a shorter timeout, so we do not block too long if the connection is not established:
-            print("step1")
+            #print("step1")
             self.sock.settimeout(0.5)
-            print("step2")
+            #print("step2")
 
             # https://stackoverflow.com/questions/71022092/python3-socket-program-udp-ipv6-bind-function-with-link-local-ip-address-gi
             # While on Windows10 just connecting to a remote link-local-address works, under
@@ -56,18 +56,18 @@ class pyPlcTcpClientSocket():
             socket_addr = socket.getaddrinfo(host,port,socket.AF_INET6,socket.SOCK_DGRAM,socket.SOL_UDP)[0][4]
             
             #print(socket_addr)
-            print("step2b")
+            #print("step2b")
             # https://stackoverflow.com/questions/5358021/establishing-an-ipv6-connection-using-sockets-in-python
             #  (address, port, flow info, scope id) 4-tuple for AF_INET6
             # On Raspberry, the ScopeId is important. Just giving 0 leads to "invalid argument" in case
             # of link-local ip-address.
             #self.sock.connect((host, port, 0, 0))
             self.sock.connect(socket_addr)
-            print("step3")
+            #print("step3")
             self.sock.setblocking(0) # make this socket non-blocking, so that the recv function will immediately return
             self.isConnected = True
         except socket.error as e:
-            self.addToTrace("connection failed" + str(e))
+            self.addToTrace("TCP connection failed" + str(e))
             self.isConnected = False
 
     def disconnect(self):
@@ -101,7 +101,7 @@ class pyPlcTcpClientSocket():
                 sent = self.sock.send(msg[totalsent:])
                 if sent == 0:
                     self.isConnected = False
-                    self.addToTrace("socket connection broken")
+                    self.addToTrace("TCP socket connection broken")
                     return -1
                 totalsent = totalsent + sent
             except:
