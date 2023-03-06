@@ -1,0 +1,3440 @@
+2023-03-02T10:40:06.388921=ED 809a02000000000000000011d00000 means:
+{
+"msgName": "SessionSetupReq",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0000000000000000",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVCCID.bytesLen": "0",
+"EVCCID": "",
+"debug": "Line532"
+}
+2023-03-02T10:40:06.435776=DD 809A0101BBC01C51E0201B71109C7F646C0000 means:
+{
+"msgName": "SessionSetupRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK_NewSessionEstablished",
+"EVSEID.bytesLen": "6",
+"EVSEID": "dc44271fd91b",
+"debug": "Line538"
+}
+2023-03-02T10:40:06.529515=ED 809a0237ab6fbbf7ab6fbbd198 means:
+{
+"msgName": "ServiceDiscoveryReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line508"
+}
+2023-03-02T10:40:06.560786=DD 809A0101BBC01C51A0E12168484120C4 means:
+{
+"msgName": "ServiceDiscoveryRes",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"debug": "Line514"
+}
+2023-03-02T10:40:06.607641=ED 809a0237ab6fbbf7ab6fbbd1b2001280 means:
+{
+"msgName": "ServicePaymentSelectionReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"SelectedPaymentOption": "ExternalPayment",
+"SelectedService.arrayLen": "1",
+"SelectedService.array": "0:1",
+"debug": "Line520"
+}
+2023-03-02T10:40:06.638914=DD 809A0101BBC01C51C0E0 means:
+{
+"msgName": "ServicePaymentSelectionRes",
+"info": "10 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"debug": "Line526"
+}
+2023-03-02T10:40:06.748272=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:07.685733=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:07.732605=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:08.685726=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:08.763824=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:09.723378=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:09.801483=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:10.754605=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:10.863953=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:11.832694=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:11.926423=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:12.879515=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:13.004512=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:13.941990=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:14.051375=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:15.004475=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:15.129455=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:16.082581=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:16.207548=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:17.145045=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:17.270012=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:18.207510=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:18.301224=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:19.238725=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:19.332444=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:20.285563=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:20.363662=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:21.301157=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:21.394884=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:22.332376=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:22.457374=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:23.455115=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:23.571519=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:24.509024=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:24.618381=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:25.571489=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:25.680840=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:26.633968=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:26.743304=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:27.712053=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:27.837036=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:28.794646=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:28.888366=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:29.841484=DD 809A0101BBC01C50C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:40:29.950836=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:40:30.887176=DD 809A0101BBC01C50C0E000 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Finished",
+"debug": "Line430"
+}
+2023-03-02T10:40:30.980896=ED 809a0237ab6fbbf7ab6fbbd07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2023-03-02T10:40:31.918408=DD 809A0101BBC01C5080E001EC00200004051828758405500080000101844138101C2432C04081436C900C0C000041435ECC044606000200 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "55 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Finished",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "-1",
+"EVSEMaximumCurrentLimit.Value": "5000",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "26000",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "-1",
+"EVSEMaximumVoltageLimit.Value": "4699",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "-2",
+"EVSEMinimumVoltageLimit.Value": "22999",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2023-03-02T10:40:32.023895=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:32.961406=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:33.101998=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:34.039472=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:34.180091=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:35.117594=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:35.211315=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:36.148803=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:36.275990=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:37.213440=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:37.338447=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:38.307184=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:38.432156=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:39.385283=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:39.494625=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:40.447739=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:40.541467=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:41.478942=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:41.557058=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:42.494539=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:42.525778=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:43.478903=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:43.603896=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:44.541387=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:44.666352=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:45.626662=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:45.736007=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:46.689102=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:46.782851=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:47.720324=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:47.782822=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:48.735928=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:48.798413=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:49.782782=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:49.845261=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:50.782757=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:50.876478=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:51.829614=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:51.923321=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:52.860836=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:52.985791=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:53.954513=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:54.063882=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:55.001381=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:55.095105=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:56.048200=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:56.141947=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:57.079436=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:57.196727=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:58.165456=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:58.259205=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:40:59.196709=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:40:59.321672=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:41:00.274785=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:41:00.399763=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:41:01.453091=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:41:01.546816=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:41:02.484320=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:41:02.624907=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:41:03.568670=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:41:03.662387=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:41:04.599878=DD 809A0101BBC01C5020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06ef0071",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:16.957512=ED 809a02000000000000000011d00000 means:
+{
+"msgName": "SessionSetupReq",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "0000000000000000",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVCCID.bytesLen": "0",
+"EVCCID": "",
+"debug": "Line532"
+}
+2023-03-02T10:42:16.988782=DD 809A0101BC3F9DD1E0201B71109C7F646C0000 means:
+{
+"msgName": "SessionSetupRes",
+"info": "19 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "OK_NewSessionEstablished",
+"EVSEID.bytesLen": "6",
+"EVSEID": "dc44271fd91b",
+"debug": "Line538"
+}
+2023-03-02T10:42:17.066887=ED 809a0237ab6fbbf7ab6fbbd198 means:
+{
+"msgName": "ServiceDiscoveryReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line508"
+}
+2023-03-02T10:42:17.098158=DD 809A0101BC3F9DD1A0E12168484120C4 means:
+{
+"msgName": "ServiceDiscoveryRes",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"debug": "Line514"
+}
+2023-03-02T10:42:17.176260=ED 809a0237ab6fbbf7ab6fbbd1b2001280 means:
+{
+"msgName": "ServicePaymentSelectionReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"SelectedPaymentOption": "ExternalPayment",
+"SelectedService.arrayLen": "1",
+"SelectedService.array": "0:1",
+"debug": "Line520"
+}
+2023-03-02T10:42:17.207535=DD 809A0101BC3F9DD1C0E0 means:
+{
+"msgName": "ServicePaymentSelectionRes",
+"info": "10 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"debug": "Line526"
+}
+2023-03-02T10:42:17.285627=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:42:18.223125=DD 809A0101BC3F9DD0C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:42:18.348097=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:42:19.285604=DD 809A0101BC3F9DD0C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:42:19.410565=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:42:20.348069=DD 809A0101BC3F9DD0C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:42:20.457420=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:42:21.410532=DD 809A0101BC3F9DD0C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:42:21.519878=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:42:22.488634=DD 809A0101BC3F9DD0C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:42:22.613596=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:42:23.551090=DD 809A0101BC3F9DD0C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:42:23.676064=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:42:24.629167=DD 809A0101BC3F9DD0C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:42:24.758227=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:42:25.695725=DD 809A0101BC3F9DD0C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:42:25.805073=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:42:26.758193=DD 809A0101BC3F9DD0C0E200 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Ongoing",
+"debug": "Line430"
+}
+2023-03-02T10:42:26.883164=ED 809a0237ab6fbbf7ab6fbbd0b8 means:
+{
+"msgName": "ContractAuthenticationReq",
+"info": "13 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"debug": "Line424"
+}
+2023-03-02T10:42:27.867510=DD 809A0101BC3F9DD0C0E000 means:
+{
+"msgName": "ContractAuthenticationRes",
+"info": "11 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Finished",
+"debug": "Line430"
+}
+2023-03-02T10:42:27.945629=ED 809a0237ab6fbbf7ab6fbbd07191400500c8c82324701900 means:
+{
+"msgName": "ChargeParameterDiscoveryReq",
+"info": "24 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"EVRequestedEnergyTransferType": "3",
+"DC_EVChargeParameter_isUsed": "1",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line400"
+}
+2023-03-02T10:42:28.961243=DD 809A0101BC3F9DD080E001EC00200004051828758405500080000101844138101C2432C04081436C900C0C000041435ECC044606000200 means:
+{
+"msgName": "ChargeParameterDiscoveryRes",
+"info": "55 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"EVSEProcessing": "Finished",
+"DC_EVSEStatus.EVSEIsolationStatus": "0",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEMaximumCurrentLimit.Multiplier": "-1",
+"EVSEMaximumCurrentLimit.Value": "5000",
+"EVSEMaximumCurrentLimit.Unit": "A",
+"EVSEMaximumPowerLimit_isUsed": "1",
+"EVSEMaximumPowerLimit.Multiplier": "1",
+"EVSEMaximumPowerLimit.Value": "26000",
+"EVSEMaximumPowerLimit.Unit": "W",
+"EVSEMaximumVoltageLimit.Multiplier": "-1",
+"EVSEMaximumVoltageLimit.Value": "4699",
+"EVSEMaximumVoltageLimit.Unit": "V",
+"EVSEMinimumCurrentLimit.Multiplier": "0",
+"EVSEMinimumCurrentLimit.Value": "0",
+"EVSEMinimumCurrentLimit.Unit": "A",
+"EVSEMinimumVoltageLimit.Multiplier": "-2",
+"EVSEMinimumVoltageLimit.Value": "22999",
+"EVSEMinimumVoltageLimit.Unit": "V",
+"debug": "Line406"
+}
+2023-03-02T10:42:29.101858=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:30.070598=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:30.164314=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:31.117435=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:31.258052=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:32.247277=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:32.372251=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:33.341013=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:33.450341=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:34.387816=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:34.481562=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:35.450284=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:35.497154=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:36.465878=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:36.528375=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:37.497119=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:37.575219=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:38.528355=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:38.575187=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:39.528320=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:39.653291=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:40.622029=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:40.746999=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:41.764246=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:41.795489=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:42.764217=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:42.842336=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:43.826695=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:43.904802=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:44.857898=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:44.904772=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:45.842246=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:45.920367=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:46.873464=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:46.951587=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:47.904721=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:48.014059=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:48.951561=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:49.092149=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:50.045274=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:50.170242=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:51.154612=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:51.185833=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:52.138932=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:52.185803=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:53.138901=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:53.217023=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:54.170151=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:54.248248=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:55.232612=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:55.357586=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:56.341950=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:56.468105=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:57.436818=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:57.577436=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:58.546187=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:58.655528=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:42:59.639880=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:42:59.717997=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:43:00.671102=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
+2023-03-02T10:43:00.749223=ED 809a0237ab6fbbf7ab6fbbd011400500 means:
+{
+"msgName": "CableCheckReq",
+"info": "16 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "deadbeefdeadbeef",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"DC_EVStatus.EVRESSSOC": "20",
+"DC_EVStatus.EVReady": "1",
+"debug": "Line364"
+}
+2023-03-02T10:43:01.702343=DD 809A0101BC3F9DD020E04080000400 means:
+{
+"msgName": "CableCheckRes",
+"info": "15 bytes to convert", 
+"error": "",
+"result": "",
+"schema": "DIN",
+"g_errn": "0",
+"header.SessionID": "06f0fe77",
+"header.Notification_isUsed": "0",
+"header.Signature_isUsed": "0",
+"ResponseCode": "FAILED_UnknownSession",
+"DC_EVSEStatus.EVSEIsolationStatus": "1",
+"DC_EVSEStatus.EVSEIsolationStatus_isUsed": "1",
+"DC_EVSEStatus.EVSEStatusCode": "1",
+"EVSEStatusCode_text": "EVSE_Ready",
+"DC_EVSEStatus.NotificationMaxDelay": "0",
+"DC_EVSEStatus.EVSENotification": "0",
+"EVSEProcessing": "Ongoing",
+"debug": "Line370"
+}
