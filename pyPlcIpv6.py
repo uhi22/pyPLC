@@ -144,8 +144,8 @@ class ipv6handler():
         if ((self.destinationport == 15118) or (self.sourceport == 15118)): # port for the SECC
             if ((self.udpPayload[0]==0x01) and (self.udpPayload[1]==0xFE)): # protocol version 1 and inverted
                 # it is a V2GTP message
-                if (self.iAmEvse):
-                    # if we are the charger, lets save the cars IP for later use.
+                if (self.iAmEvse) and (self.destinationport == 15118):
+                    # if we are the charger, and it is a message from car to charger, lets save the cars IP for later use.
                     self.EvccIp = self.sourceIp
                     self.addressManager.setPevIp(self.EvccIp)
                 showAsHex(self.udpPayload, "V2GTP ")
@@ -170,6 +170,7 @@ class ipv6handler():
                                 # This was a valid SDP request. Let's respond, if we are the charger.
                                 if (self.iAmEvse==1):
                                     print("Ok, this was a valid SDP request. We are the SECC. Sending SDP response.")
+                                    self.callbackShowStatus("SDP 2", "evseState")
                                     self.sendSdpResponse()
                     else:
                         print("v2gptPayloadLen on SDP request is " + str(v2gptPayloadLen) + " not supported")
@@ -353,11 +354,12 @@ class ipv6handler():
             if (self.nextheader == 0x06): # it is an TCP frame
                 self.evaluateTcpPacket()
                         
-    def __init__(self, transmitCallback, addressManager):
+    def __init__(self, transmitCallback, addressManager, callbackShowStatus):
         self.enterEvseMode()
         #self.enterListenMode()
         self.transmit = transmitCallback
         self.addressManager = addressManager
+        self.callbackShowStatus = callbackShowStatus
         #self.exiLogFile = open('SnifferExiLog.txt', 'w')
         # 16 bytes, a default IPv6 address for the charging station
         # self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0xaa, 0xaa, 0xff, 0xfe, 0, 0xaa, 0xaa ]

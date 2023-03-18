@@ -630,6 +630,7 @@ class pyPlcHomeplug():
         self.showStatus(prettyMac(self.pevMac), "pevmac")
         # If we want to emulate an EVSE, we want to answer.
         if (self.iAmEvse==1):
+            self.showStatus("SLAC started", "evseState")
             self.composeSlacParamCnf()
             self.addToTrace("[EVSE] transmitting CM_SLAC_PARAM.CNF")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
@@ -648,6 +649,7 @@ class pyPlcHomeplug():
         # to answer with a ATTEN_CHAR.IND, which normally contains the attenuation for 10 sounds, 58 groups.
         self.addToTrace("received MNBC_SOUND.IND")
         if (self.iAmEvse==1):
+            self.showStatus("SLAC 2", "evseState")
             countdown = self.myreceivebuffer[38]
             if (countdown == 0):
                 self.composeAttenCharInd()
@@ -678,6 +680,7 @@ class pyPlcHomeplug():
         # If we are EVSE, we send the response.
         self.addToTrace("received SLAC_MATCH.REQ")
         if (self.iAmEvse==1):
+            self.showStatus("SLAC match", "evseState")
             self.composeSlacMatchCnf()
             self.addToTrace("[EVSE] transmitting SLAC_MATCH.CNF")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
@@ -1069,7 +1072,7 @@ class pyPlcHomeplug():
         self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.
         self.myMAC = self.addressManager.getLocalMacAddress()
         self.runningCounter=0
-        self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager)
+        self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager, self.callbackShowStatus)
         self.ipv6.ownMac = self.myMAC
         self.udplog = udplog.udplog(self.transmit, self.addressManager)
         self.udplog.log("Test message to verify the syslog. pyPlcHomeplug.py is in the init function.")

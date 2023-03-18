@@ -144,8 +144,9 @@ class pyPlcTcpClientSocket():
         return d 
 
 class pyPlcTcpServerSocket():
-    def __init__(self, callbackAddToTrace):
+    def __init__(self, callbackAddToTrace, callbackStateNotification):
         self.callbackAddToTrace = callbackAddToTrace
+        self.callbackStateNotification = callbackStateNotification
         # Todo: find the link-local IPv6 address automatically.
         #self.ipAdress = 'fe80::e0ad:99ac:52eb:85d3'
         #self.ipAdress = 'fe80::c690:83f3:fbcb:980e%15'
@@ -162,6 +163,29 @@ class pyPlcTcpServerSocket():
         self.ourSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.ourSocket.bind((self.ipAdress, self.tcpPort))
         self.ourSocket.listen(1)
+        self.callbackStateNotification(1) # inform the higher level state machines, that TCP is listening
+        self.addToTrace("pyPlcTcpSocket listening on port " + str(self.tcpPort))
+        hostname=socket.gethostname()
+        IPAddr=socket.gethostbyname(hostname)
+        addressInfo = socket.getaddrinfo(hostname, None, socket.AF_INET6)
+        #print("Your Computer Name is:"+hostname)
+        self.addToTrace("The socket is linked the following IP addresses:")
+        for i in range(0, len(addressInfo)):
+            #fe80::4c46:fea5:b6c9:25a9
+            IPv6Addr = addressInfo[i][4][0]
+            self.addToTrace(IPv6Addr)
+        self.read_list = [self.ourSocket]
+        self.rxData = []
+        
+    def resetTheConnection(self):
+        # in case of a broken connection, here we try to start it again
+        self.addToTrace("Trying to reset the TCP socket")
+        # Todo: how to "reset" the socket?
+        self.ourSocket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM, 0)
+        self.ourSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.ourSocket.bind((self.ipAdress, self.tcpPort))
+        self.ourSocket.listen(1)
+        self.callbackStateNotification(1) # inform the higher level state machines, that TCP is listening
         self.addToTrace("pyPlcTcpSocket listening on port " + str(self.tcpPort))
         hostname=socket.gethostname()
         IPAddr=socket.gethostbyname(hostname)
@@ -194,10 +218,12 @@ class pyPlcTcpServerSocket():
             return -1
         # Simplification: We will send to the FIRST open connection, even we would have more connections open. This is
         # ok, because in our use case we have exactly one client.
+        # Improvement: Instead of using the first (oldest(?)) connection, lets use the last. This helps for the case, that one
+        # connection has crashed and the charger makes a new connection.
         totalsent = 0
         MSGLEN = len(txMessage)
         while totalsent < MSGLEN:
-            sent = self.read_list[1].send(txMessage[totalsent:])
+            sent = self.read_list[numberOfSockets-1].send(txMessage[totalsent:])
             if sent == 0:
                 self.addToTrace("socket connection broken")
                 return -1
@@ -217,6 +243,7 @@ class pyPlcTcpServerSocket():
                 # and we append this new socket to the list of sockets, which in the next loop will be handled by the select.
                 self.read_list.append(client_socket)
                 self.addToTrace("Connection from " + str(address))
+                self.callbackStateNotification(2) # inform the higher level state machines, that the connection is established.
             else:
                 # It is not the "listener socket", it is an above created "client socket" for talking with a client.
                 # Let's take the data from it:
@@ -232,7 +259,11 @@ class pyPlcTcpServerSocket():
                 else:
                     self.addToTrace("connection closed")
                     s.close()
-                    self.read_list.remove(s)    
+                    self.callbackStateNotification(0) # inform the higher level state machines, that the connection is gone.
+                    try:
+                        self.read_list.remove(s)
+                    except:
+                        pass
 
 
 

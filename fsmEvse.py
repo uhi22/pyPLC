@@ -28,6 +28,8 @@ class fsmEvse():
         
     def enterState(self, n):
         self.addToTrace("from " + str(self.state) + " entering " + str(n))
+        if (self.state!=0) and (n==0):
+            self.publishStatus("Waiting f AppHandShake")
         self.state = n
         self.cyclesInState = 0
         
@@ -55,7 +57,7 @@ class fsmEvse():
         
     def stateFunctionWaitForSessionSetupRequest(self):
         if (len(self.rxData)>0):
-            self.addToTrace("In state stateFunctionWaitForSessionSetupRequest, received " + prettyHexMessage(self.rxData))
+            self.addToTrace("In state WaitForSessionSetupRequest, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DD")
@@ -213,6 +215,21 @@ class fsmEvse():
         self.state = 0
         self.cyclesInState = 0
         self.rxData = []
+        self.Tcp.resetTheConnection()
+        
+    def socketStateNotification(self, notification):
+        if (notification==0):
+            # The TCP informs us, that the connection is broken.
+            # Let's restart the state machine.
+            self.publishStatus("TCP conn broken")
+            self.addToTrace("re-initializing fsmEvse due to broken connection")
+            self.reInit()
+        if (notification==1):
+            # The TCP informs us, that it is listening, means waiting for incoming connection.
+            self.publishStatus("Listening TCP")
+        if (notification==2):
+            # The TCP informs us, that a connection is established.
+            self.publishStatus("TCP connected")
 
     def __init__(self, addressManager, callbackAddToTrace, hardwareInterface, callbackShowStatus):
         self.callbackAddToTrace = callbackAddToTrace
@@ -224,7 +241,7 @@ class fsmEvse():
         if (self.faultInjectionDelayUntilSocketOpen_s>0):
             self.addToTrace("Fault injection: waiting " + str(self.faultInjectionDelayUntilSocketOpen_s) + " s until opening the TCP socket.")
             time.sleep(self.faultInjectionDelayUntilSocketOpen_s)
-        self.Tcp = pyPlcTcpSocket.pyPlcTcpServerSocket(self.callbackAddToTrace)
+        self.Tcp = pyPlcTcpSocket.pyPlcTcpServerSocket(self.callbackAddToTrace, self.socketStateNotification)
         self.state = 0
         self.cyclesInState = 0
         self.rxData = []

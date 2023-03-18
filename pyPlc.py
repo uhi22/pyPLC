@@ -93,6 +93,9 @@ lblUInlet.pack()
 lblMode = tk.Label(root, text="(mode)")
 lblMode.pack()
 
+if (myMode != C_PEV_MODE):
+    lblUInlet['text']= ""
+
 nKeystrokes=0
 # Bind the keyboard handler to all relevant elements:
 root.bind('<Key>', storekeyname)
