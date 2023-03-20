@@ -181,7 +181,7 @@ class ipv6handler():
                         v2gptPayloadLen = self.udpPayload[4] * 256 ** 3 + self.udpPayload[5] * 256 ** 2 + self.udpPayload[6] * 256 + self.udpPayload[7]
                         if (v2gptPayloadLen == 20):
                             # 20 is the only valid length for a SDP response.
-                            print("[PEV] Received SDP response")
+                            print("[PEV] Checkpoint203: Received SDP response")
                             # at byte 8 of the UDP payload starts the IPv6 address of the charger.
                             for i in range(0, 16):
                                 self.SeccIp[i] = self.udpPayload[8+i] # 16 bytes IP address of the charger

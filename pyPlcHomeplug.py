@@ -637,7 +637,7 @@ class pyPlcHomeplug():
     
     def evaluateSlacParamCnf(self):
         # As PEV, we receive the first response from the charger.
-        self.addToTrace("received SLAC_PARAM.CNF")
+        self.addToTrace("Checkpoint102: received SLAC_PARAM.CNF")
         if (self.iAmPev==1):
             if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_PARAM_CNF): # we were waiting for the SlacParamCnf
                 self.pevSequenceDelayCycles = 4 # original Ioniq is waiting 200ms
@@ -709,7 +709,7 @@ class pyPlcHomeplug():
             self.addToTrace("From SlacMatchCnf, got network membership key (NMK) " + s) 
             # use the extracted NMK and NID to set the key in the adaptor:
             self.composeSetKey(0)
-            self.addToTrace("transmitting CM_SET_KEY.REQ")
+            self.addToTrace("Checkpoint170: transmitting CM_SET_KEY.REQ")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
             if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_MATCH_CNF): # we were waiting for finishing the SLAC_MATCH.CNF and SET_KEY.REQ
                 self.enterState(STATE_WAITING_FOR_RESTART2)
@@ -816,7 +816,7 @@ class pyPlcHomeplug():
                 self.showStatus("NoModem, simuSLAC", "pevState")
             else:
                 self.showStatus("Starting SLAC", "pevState")
-            self.addToTrace("[PEVSLAC] Sending SLAC_PARAM.REQ...")
+            self.addToTrace("[PEVSLAC] Checkpoint100: Sending SLAC_PARAM.REQ...")
             self.composeSlacParamReq()
             self.transmit(self.mytransmitbuffer)                
             self.enterState(STATE_WAITING_FOR_SLAC_PARAM_CNF)
@@ -890,7 +890,7 @@ class pyPlcHomeplug():
                 return
             self.composeSlacMatchReq()
             self.showStatus("SLAC match", "pevState")
-            self.addToTrace("[PEVSLAC] transmitting SLAC_MATCH.REQ...")
+            self.addToTrace("[PEVSLAC] Checkpoint150: transmitting SLAC_MATCH.REQ...")
             self.transmit(self.mytransmitbuffer)  
             self.enterState(STATE_WAITING_FOR_SLAC_MATCH_CNF)
             return
@@ -967,7 +967,7 @@ class pyPlcHomeplug():
                 return
             # SDP was not done yet. Now we start it.
             self.showStatus("SDP ongoing", "pevState")
-            self.addToTrace("[PEVSLAC] SDP was not done yet. Now we start it.")
+            self.addToTrace("[PEVSLAC] Checkpoint200: SDP was not done yet. Now we start it.")
             # Next step is to discover the chargers communication controller (SECC) using discovery protocol (SDP).
             self.pevSequenceDelayCycles=0
             self.SdpRepetitionCounter = 50 # prepare the number of retries for the SDP. The more the better.

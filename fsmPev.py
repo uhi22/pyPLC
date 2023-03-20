@@ -105,6 +105,7 @@ class fsmPev():
             return
         evseIp = self.addressManager.getSeccIp() # the chargers IP address which was announced in SDP
         seccTcpPort = self.addressManager.getSeccTcpPort() # the chargers TCP port which was announced in SDP
+        self.addToTrace("Checkpoint301: connecting")
         self.Tcp.connect(evseIp, seccTcpPort) # This is a blocking call. If we come back, we are connected, or not.
         if (not self.Tcp.isConnected):
             # Bad case: Connection did not work. May happen if we are too fast and the charger needs more
@@ -124,7 +125,7 @@ class fsmPev():
     def stateFunctionConnected(self):
         # We have a freshly established TCP channel. We start the V2GTP/EXI communication now.
         # We just use the initial request message from the Ioniq. It contains one entry: DIN.
-        self.addToTrace("Sending the initial SupportedApplicationProtocolReq")
+        self.addToTrace("Checkpoint400: Sending the initial SupportedApplicationProtocolReq")
         self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestIoniq)))
         self.hardwareInterface.resetSimulation()
         self.enterState(stateWaitForSupportedApplicationProtocolResponse)
@@ -139,7 +140,7 @@ class fsmPev():
             if (strConverterResult.find("supportedAppProtocolRes")>0):
                 # todo: check the request content, and fill response parameters
                 self.publishStatus("Schema negotiated")
-                self.addToTrace("Will send SessionSetupReq")
+                self.addToTrace("Checkpoint403: Schema negotiated. And Checkpoint500: Will send SessionSetupReq")
                 msg = addV2GTPHeader(self.exiEncode("EDA")) # EDA for Encode, Din, SessionSetupReq
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
@@ -159,7 +160,7 @@ class fsmPev():
                 try:
                     y = json.loads(strConverterResult)
                     strSessionId = y["header.SessionID"]
-                    self.addToTrace("The Evse decided for SessionId " + strSessionId)
+                    self.addToTrace("Checkpoint506: The Evse decided for SessionId " + strSessionId)
                     self.publishStatus("Session established")
                     self.sessionId = strSessionId
                 except:
@@ -200,7 +201,7 @@ class fsmPev():
             if (strConverterResult.find("ServicePaymentSelectionRes")>0):
                 # todo: check the request content, and fill response parameters
                 self.publishStatus("ServPaySel done")
-                self.addToTrace("Will send ContractAuthenticationReq")
+                self.addToTrace("Checkpoint530: Will send ContractAuthenticationReq")
                 msg = addV2GTPHeader(self.exiEncode("EDL_"+self.sessionId)) # EDL for Encode, Din, ContractAuthenticationReq.
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
