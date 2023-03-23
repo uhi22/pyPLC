@@ -294,7 +294,7 @@ if __name__ == "__main__":
     if (False):
         testTimeConsumption()
         exit()
-    if (True):        
+    if (False):        
         testReadExiFromExiLogFile()
         exit()
     
@@ -318,9 +318,10 @@ if __name__ == "__main__":
     if (False):
         print("The request from the Ioniq after the EVSE sent ServicePaymentSelectionRes:")
         testDecoder("809A00113020000A00000000", pre="DD", comment="PowerDeliveryReq")
-    if (False):
+    if (True):
         print("The session setup request of the Ioniq:")
         testDecoder("809A02000000000000000011D01811959401930C00", pre="DD", comment="SessionSetupReq")
+    if (False):
         testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 E0 00 00 80", pre="DD", comment="SessionSetupRes")
         testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 94 00", pre="DD", comment="ServiceDiscoveryReq")
         testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 A0 01 20 02 41 00 84", pre="DD", comment="ServiceDiscoveryRes")
@@ -331,7 +332,7 @@ if __name__ == "__main__":
         
         print("The request of the Ioniq after ServicePaymentSelectionResponse")
         testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 10 B8", pre="DD", comment="ContractAuthenticationReq")
-    if (True):        
+    if (False):        
         print("The response of the Alpi chargeParameterDiscovery")
         testDecoder("80 9A 02 00 00 00 00 03 1F DC 8B D0 80 02 00 00 00 00 00 10 00 2A 80 04 00 00 14 0C 00 40 80 E1 8A 3A 0A 0A 00 A0 60 60 00 08 0A 01 E2 30 30 06 10", pre="DD", comment="ChargeParameterDiscoveryRes")
 

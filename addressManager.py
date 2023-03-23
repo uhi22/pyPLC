@@ -181,6 +181,13 @@ class addressManager():
         print("[addressManager] will give local MAC " + prettyMac(self.localMac))
         return self.localMac;
         
+    def getLocalMacAsTwelfCharString(self):
+        # gives the own MAC as string of 12 hex characters, without : or spaces.
+        s = ""
+        for i in range(0, 6):
+            s = s + twoCharHex(self.localMac[i])
+        return s
+        
     def getLinkLocalIpv6Address(self, resulttype="string"):
         if (resulttype=="string"):
             return self.localIpv6Address;

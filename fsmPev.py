@@ -141,7 +141,8 @@ class fsmPev():
                 # todo: check the request content, and fill response parameters
                 self.publishStatus("Schema negotiated")
                 self.addToTrace("Checkpoint403: Schema negotiated. And Checkpoint500: Will send SessionSetupReq")
-                msg = addV2GTPHeader(self.exiEncode("EDA")) # EDA for Encode, Din, SessionSetupReq
+                self.addToTrace("EDA_"+self.evccid)
+                msg = addV2GTPHeader(self.exiEncode("EDA_"+self.evccid)) # EDA for Encode, Din, SessionSetupReq
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForSessionSetupResponse)
@@ -537,6 +538,7 @@ class fsmPev():
         self.hardwareInterface = hardwareInterface
         self.state = stateNotYetInitialized
         self.sessionId = "DEAD55AADEAD55AA"
+        self.evccid = addressManager.getLocalMacAsTwelfCharString()
         self.cyclesInState = 0
         self.DelayCycles = 0
         self.rxData = []        

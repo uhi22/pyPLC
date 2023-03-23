@@ -26,4 +26,6 @@
 - [ ] in addressManager, replace the print by addToTrace
 - [ ] Resolve the todo-markers in the code
 - [ ] Still fixed addresses (MAC, IP) used somewhere?
+- [ ] configurable interface name and simplify address determination (see https://openinverter.org/forum/viewtopic.php?p=54659#p54659)
+- [x] in the SessionSetupRequest we need to set the EVCCID with the MAC of the car. At the moment this is not implemented, need to update in the OpenV2Gx the function encodeSessionSetupRequest(), also the fsmPev.py, and provide the MAC as command line parameter from the python to the OpenV2Gx. (see https://openinverter.org/forum/viewtopic.php?p=54667#p54667)
 - [ ] (and much more)

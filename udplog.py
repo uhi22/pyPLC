@@ -10,6 +10,8 @@ class udplog():
             
                           
     def log(self, s):
+        # return # activate this line to disable the logging completely
+        #
         # The frame format follows the Syslog protocol, https://en.wikipedia.org/wiki/Syslog
         # Level consists of
         #  Facility = 1 = "user"
