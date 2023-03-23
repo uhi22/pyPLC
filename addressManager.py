@@ -6,6 +6,7 @@
 #
 import subprocess
 import os
+import sys
 from helpers import * # prettyMac etc
 
 MAC_LAPTOP    = [0xdc, 0x0e, 0xa1, 0x11, 0x67, 0x08 ] # Win10 laptop
@@ -34,6 +35,12 @@ class addressManager():
         # On windows we can use command line tool "ipconfig".
         # The link-local addresses always start with fe80::, so we just parse the output of ipconfig line-by-line.
         # If we have multiple interfaces (e.g. ethernet and WLAN), it will find multiple link-local-addresses.
+        #
+        # On Linux, we use "ip addr". From its output we can directly see the ethernet IPv6 and MAC, even if
+        # there are multiple other interfaces (e.g. WLAN). Pitfall: As long as there is nothing connected to the
+        # ethernet, the Raspberry will not tell a link-local IPv6 in the command "ip addr". This means, we must
+        # make sure that the modem is connected and powered, when the script is starting.
+        ba = bytearray(6) 
         foundAddresses = []
         if os.name == 'nt':
             # on Windows
@@ -49,21 +56,78 @@ class addressManager():
                             foundAddresses.append(line[k+1:])
         else:
             # on Raspberry
-            result = subprocess.run(["ifconfig"], capture_output=True, text=True)    
-            if (len(result.stderr)>0):
-                print(result.stderr)
-            else:
-                lines = result.stdout.split("\n")
-                for line in lines:
-                    if (line.find("inet6")>0):
-                        k = line.find(" fe80::") # the beginning of the IPv6
-                        if (k>0):
-                            sIpWithText = line[k+1:]
-                            x = sIpWithText.find(" ") # the space is the end of the IPv6
-                            sIp = sIpWithText[0:x]                            
-                            # print("[addressManager] IP=>" + sIp + "<")
-                            foundAddresses.append(sIp)
-            
+            cfg_useOldStyleIfconfig = 0
+            if (cfg_useOldStyleIfconfig!=0):
+                result = subprocess.run(["ifconfig"], capture_output=True, text=True)    
+                if (len(result.stderr)>0):
+                    print(result.stderr)
+                else:
+                    lines = result.stdout.split("\n")
+                    for line in lines:
+                        if (line.find("inet6")>0):
+                            k = line.find(" fe80::") # the beginning of the IPv6
+                            if (k>0):
+                                sIpWithText = line[k+1:]
+                                x = sIpWithText.find(" ") # the space is the end of the IPv6
+                                sIp = sIpWithText[0:x]                            
+                                # print("[addressManager] IP=>" + sIp + "<")
+                                foundAddresses.append(sIp)
+            else: # instead of the deprecated ifconfig, use "ip addr"
+                result = subprocess.run(["ip", "addr"], capture_output=True, text=True)    
+                if (len(result.stderr)>0):
+                    print(result.stderr)
+                else:
+                    blInTheEthernetChapter = 0
+                    lines = result.stdout.split("\n")
+                    for line in lines:
+                        # print(line);
+                        if (line[0:1]!=" "): # if the line does not start with a blank, then it is a heading, e.g.
+                                             # 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+                                             # 3: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+                            # print("This is a heading")
+                            if (line.find(": eth")>0):
+                                # print("This is the heading for the ethernet.")
+                                blInTheEthernetChapter = 1 # we are in the ethernet chapter
+                            else:
+                                blInTheEthernetChapter = 0 # we are not in the ethernet chapter
+                        else:
+                            # The line started with a blank. This means, it is no heading.
+                            # In the best case, we find here something like
+                            #     inet6 fe80::181f:efdf:97e5:2191/64 scope link 
+                            if ((blInTheEthernetChapter==1) and (line.find("  inet6")>0) and (line.find(" scope link")>0)):
+                                k = line.find(" fe80::") # the beginning of the IPv6
+                                if (k>0):
+                                    sIpWithText = line[k+1:]
+                                    x = sIpWithText.find(" ") # the space is the end of the IPv6
+                                    sIp = sIpWithText[0:x]
+                                    x = sIp.find("/") # remove the /64 at the end
+                                    if (x>0):
+                                      sIp = sIp[0:x]
+                                    # print("[addressManager] IP=>" + sIp + "<")
+                                    foundAddresses.append(sIp)
+
+                            # Also the ethernet MAC is visible here, something like
+                            #    link/ether b8:27:eb:27:33:53 brd ff:ff:ff:ff:ff:ff
+                            if ((blInTheEthernetChapter==1) and (line.find(" link/ether")>0)):
+                                # print(line)
+                                k = line.find("link/ether ")
+                                # print(k)
+                                strMac = line[k+11:k+28]
+                                # e.g. "b8:27:eb:12:34:56"
+                                # print(strMac)
+                                # Remove all ":"
+                                strMac = strMac.replace(":", "")
+                                # print(strMac)
+                                if (len(strMac)!=12):
+                                   print("[addressManager] ERROR: invalid length of MAC string. Expected be 6 bytes, means 12 hex characters. Found " + str(len(strMac)))
+                                else:
+                                   for i in range(0, 6):
+                                      sTwoChar = strMac[2*i : 2*i+2]
+                                      ba[i] = int(sTwoChar, 16)
+                                   self.localMac = ba
+                                   print("[addressManager] we have local MAC " + prettyMac(self.localMac) + ".")
+
+
         print("[addressManager] Found " + str(len(foundAddresses)) + " link-local IPv6 addresses.")
         for a in foundAddresses:
             print(a)
@@ -71,6 +135,10 @@ class addressManager():
         if (len(self.localIpv6Addresses)==0):
             print("[addressManager] Error: No local Ipv6 address was found.")
             self.localIpv6Address = "localhost"
+            cfg_exitIfNoLocalLinkAddressIsFound = 1
+            if (cfg_exitIfNoLocalLinkAddressIsFound!=0):
+                print("Exiting, because it does not make sense to continue without IPv6 address");
+                sys.exit(1);
         else:
             # at least one address was found. Take the first one (this may be the wrong adaptor).
             self.localIpv6Address = self.localIpv6Addresses[0]
@@ -89,31 +157,8 @@ class addressManager():
             print("[addressManager] we have local MAC " + prettyMac(self.localMac) + ". Todo: find this out dynamically.")
         else:
             # on raspberry
-            # We use "ifconfig", and search for the line which says "ether <mac> ..."
-            result = subprocess.run(["ifconfig"], capture_output=True, text=True)
-            if (len(result.stderr)>0):
-                print(result.stderr)
-            else:
-                lines = result.stdout.split("\n")
-                for line in lines:
-                    if (line.find(" ether ")>0) and (line.find("(Ethernet)")>0):
-                        # print(line)
-                        k = line.find(" ether ")
-                        # print(k)
-                        strMac = line[k+7:k+24]
-                        # e.g. "b8:27:eb:12:34:56"
-                        # print(strMac)
-                        # Remove all ":"
-                        strMac = strMac.replace(":", "")
-                        #print(strMac)
-                        if (len(strMac)!=12):
-                            print("[addressManager] ERROR: invalid length of MAC string. Expected be 6 bytes, means 12 hex characters. Found " + str(len(strMac)))
-                        else:
-                            for i in range(0, 6):
-                                sTwoChar = strMac[2*i : 2*i+2]
-                                ba[i] = int(sTwoChar, 16)
-                            self.localMac = ba
-                            print("[addressManager] we have local MAC " + prettyMac(self.localMac) + ".")
+            # nothing to do here. The MAC address is found together with the IPv6 address above.
+            pass
             
     def setPevMac(self, pevMac):
         # During the SLAC, the MAC of the PEV was found out. Store it, maybe we need it later.

@@ -23,7 +23,6 @@ class pyPlcWorker():
         self.mode = mode
         self.strUserAction = ""
         self.addressManager = addressManager.addressManager()
-        self.addressManager.findLinkLocalIpv6Address()
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
         self.oldAvlnStatus = 0
@@ -44,8 +43,10 @@ class pyPlcWorker():
             self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.showStatus)
     def __del__(self):
         if (self.mode == C_PEV_MODE):
-            print("worker: deleting pev")
-            del(self.pev)
+            try:
+                del(self.pev)
+            except:
+                pass
         
     def workerAddToTrace(self, s):
         # The central logging function. All logging messages from the different parts of the project
