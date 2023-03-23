@@ -319,8 +319,20 @@ if __name__ == "__main__":
         print("The request from the Ioniq after the EVSE sent ServicePaymentSelectionRes:")
         testDecoder("809A00113020000A00000000", pre="DD", comment="PowerDeliveryReq")
     if (True):
-        print("The session setup request of the Ioniq:")
-        testDecoder("809A02000000000000000011D01811959401930C00", pre="DD", comment="SessionSetupReq")
+        #print("The session setup request of the Ioniq:")
+        #testDecoder("809A02000000000000000011D01811959401930C00", pre="DD", comment="SessionSetupReq")
+        print("Ioniq with pyPlc")
+        testDecoder("809a02004080c1014181c2107190000005004061a01e04070c84c02050a02000c2438368040309094820105e0a60", pre="DD") # 2022-11-11, 25.315s ChargeParameterDiscoveryReq
+#testDecoder("809a02004080c1014181c21080004820400000c99002062050193080c0c802064c8010190140c80a20", pre="DD") # 2022-11-11, 25.408s ChargeParamDisc Res
+        
+        #testDecoder("809a02004080c1014181c210200200000000", pre="DD") # 2022-11-11, 26.32s CableCheckRes
+        #testDecoder("809a02004080c1014181c2116002000000320000", pre="DD") # 2022-11-11, 27.659s PrechargeRes
+        #print("A ChargeParameterDiscoveryReq")        
+        #testDecoder("809a00107211400dc0c8c82324701900", pre="DD", comment="ChargeParameterDiscoveryReq")
+    if (True):
+        print("From  https://openinverter.org/forum/viewtopic.php?p=54692#p54692")
+        testDecoder("809A0233EBC74AB099A6DC907191400500C8C82324701900", pre="DD") # from https://openinverter.org/forum/viewtopic.php?p=54692#p54692
+
     if (False):
         testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 E0 00 00 80", pre="DD", comment="SessionSetupRes")
         testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 94 00", pre="DD", comment="ServiceDiscoveryReq")
