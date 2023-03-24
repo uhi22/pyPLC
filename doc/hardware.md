@@ -94,6 +94,18 @@ Both, DieterHV and DieterLV communicate with 5V serial line with 19200 Baud. To 
 Its receive path is feed by the DieterHV via optocoupler, and its transmit path is connected to the DieterLV via a protection resistor.
 On software side, the python module hardwareInterface.py handles the communication with the serial devices.
 
+## CCS Detector
+
+In some cases it may help to "hear" the CCS communication, to understand what is going on. For this, a detector receiver can be used,
+e.g. this one:
+![image](RfDetector_schematic.jpg)
+
+By placing the antenna near to the charging cable and just listening, it is possible to differentiate the following cases:
+* Silence: No communication is going on. No homeplug coordinator is present. No 1kHz PWM is present.
+* Continuous uniform rattling noise: Homeplug coordinator (charger) is there. Depending on the chargers implementation, this may be quite loud (e.g. Compleo) or less loud (e.g. Alpitronics).
+* 1kHz tone: The charger provides 1kHz PWM.
+* Click tones in faster or slower intervals: The communication is ongoing (SLAC, SDP, TCP). Depending on the implementation of the charger and car, this may be very loud (e.g. TPlink modem supplied by 12V) or less loud (some original cars).
+
 ## Electric vehicle simulator
 
 This device is able to convince an AC charger to deliver power, and also is needed to tell an DC charger, that a car is connected. By closing the "vehicle detected" switch, we pull the CP from 12V to 9V, and the charger will switch to the 5% PWM and starts listening to SLAC parameter request messages. (If DieterLV is controlling the CP, we do not need the EV simulator anymore.)
