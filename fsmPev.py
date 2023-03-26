@@ -226,7 +226,7 @@ class fsmPev():
                 # Or, the authorization is finished. This is shown by EVSEProcessing=Finished.
                 if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):
                     self.publishStatus("Auth finished")
-                    self.addToTrace("It is Finished. Will send ChargeParameterDiscoveryReq")
+                    self.addToTrace("Checkpoint538: Auth is Finished. Will send ChargeParameterDiscoveryReq")
                     self.sendChargeParameterDiscoveryReq()
                     self.numberOfChargeParameterDiscoveryReq = 1 # first message
                     self.enterState(stateWaitForChargeParameterDiscoveryResponse)
@@ -264,7 +264,7 @@ class fsmPev():
                 # (B) The charger finished to tell the charge parameters.
                 if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):
                     self.publishStatus("ChargeParams discovered")
-                    self.addToTrace("It is Finished. Will change to state C and send CableCheckReq.")
+                    self.addToTrace("Checkpoint550: It is Finished. Will change to state C and send CableCheckReq.")
                     # pull the CP line to state C here:
                     self.hardwareInterface.setStateC()
                     self.sendCableCheckReq()
@@ -387,7 +387,7 @@ class fsmPev():
             if (strConverterResult.find("PowerDeliveryRes")>0):
                 if (self.wasPowerDeliveryRequestedOn):
                     self.publishStatus("PwrDelvy ON success")
-                    self.addToTrace("Starting the charging loop with CurrentDemandReq")
+                    self.addToTrace("Checkpoint700: Starting the charging loop with CurrentDemandReq")
                     self.sendCurrentDemandReq()
                     self.enterState(stateWaitForCurrentDemandResponse)
                 else:
