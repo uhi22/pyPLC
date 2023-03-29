@@ -57,6 +57,7 @@ class fsmEvse():
         
     def stateFunctionWaitForSessionSetupRequest(self):
         if (len(self.rxData)>0):
+            self.simulatedPresentVoltage = 0
             self.addToTrace("In state WaitForSessionSetupRequest, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
@@ -133,13 +134,16 @@ class fsmEvse():
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("CableCheck")
                 self.Tcp.transmit(msg)  
-                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN               
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("PreChargeReq")>0):
                 # todo: check the request content, and fill response parameters
-                strPresentVoltage = "345"
+                # simulating preCharge
+                if (self.simulatedPresentVoltage<300):
+                    self.simulatedPresentVoltage += 10
+                strPresentVoltage = str(self.simulatedPresentVoltage) # "345"
                 msg = addV2GTPHeader(exiEncode("EDg_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
                 self.addToTrace("responding " + prettyHexMessage(msg))
-                self.publishStatus("PreCharging")
+                self.publishStatus("PreCharging " + strPresentVoltage)
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
             if (strConverterResult.find("ContractAuthenticationReq")>0):
@@ -151,7 +155,11 @@ class fsmEvse():
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
             if (strConverterResult.find("CurrentDemandReq")>0):
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDi")) # EDi for Encode, Din, CurrentDemandRes
+                if (self.simulatedPresentVoltage<300):
+                    self.simulatedPresentVoltage += 1;
+                strPresentVoltage = str(self.simulatedPresentVoltage)
+                strEVSEPresentCurrent = "10" # Just as a dummy current
+                msg = addV2GTPHeader(exiEncode("EDi_"+strPresentVoltage + "_" + strEVSEPresentCurrent)) # EDi for Encode, Din, CurrentDemandRes
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("CurrentDemand")
                 self.Tcp.transmit(msg)  
@@ -215,6 +223,7 @@ class fsmEvse():
         self.state = 0
         self.cyclesInState = 0
         self.rxData = []
+        self.simulatedPresentVoltage = 0
         self.Tcp.resetTheConnection()
         
     def socketStateNotification(self, notification):
