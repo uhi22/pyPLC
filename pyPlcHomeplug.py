@@ -39,6 +39,7 @@ import udplog
 import time
 from helpers import * # prettyMac etc
 from pyPlcModes import *
+from random import random
 
 MAC_BROADCAST = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF ]
 
@@ -139,7 +140,12 @@ class pyPlcHomeplug():
     def setNmkAt(self, index):
         # sets the Network Membership Key (NMK) at a certain position in the transmit buffer
         for i in range(0, 16):
-            self.mytransmitbuffer[index+i]=self.NMK[i] # NMK
+            if (self.iAmEvse):
+                # In EvseMode, the NMK is freely chosen:
+                self.mytransmitbuffer[index+i]=self.NMK_EVSE_random[i] # NMK 
+            else:
+                # In PevMode, the NMK is the one which was received in the SlacMatchConf. Or a default, if we did not receive any.
+                self.mytransmitbuffer[index+i]=self.NMK[i] # NMK
 
     def setNidAt(self, index):
         # (b0f2e695666b03 was NID of TPlink)
@@ -749,6 +755,19 @@ class pyPlcHomeplug():
         # The timeout handling function.
         return (self.pevSequenceCyclesInState > 500)
 
+    def runEvseSlacHandler(self):
+        if (self.evseSlacHandlerState==0):
+            # we did not yet configure our EVSE modem with the random key. Do it now.
+            # Fill some of the bytes of the NMK with random numbers. The others stay at 0x77 for easy visibility.
+            self.NMK_EVSE_random[2] = int(random()*255)
+            self.NMK_EVSE_random[3] = int(random()*255)
+            self.composeSetKey(0)
+            self.addToTrace("transmitting SET_KEY.REQ, to configure the EVSE modem with random NMK")
+            self.transmit(self.mytransmitbuffer)
+            self.evseSlacHandlerState = 1 # setkey was done
+            return
+
+
     def runPevSequencer(self):
         # in PevMode, check whether homeplug modem is connected, run the SLAC and SDP
         self.pevSequenceCyclesInState+=1
@@ -1044,6 +1063,7 @@ class pyPlcHomeplug():
         self.randomMac = 0
         self.pevSequenceState = 0
         self.pevSequenceCyclesInState = 0
+        self.evseSlacHandlerState = 0
         self.numberOfSoftwareVersionResponses = 0
         self.numberOfFoundModems = 0
         self.isForcedSimulationMode = isSimulationMode # simulation without homeplug modem
@@ -1067,6 +1087,7 @@ class pyPlcHomeplug():
         self.sniffer.setnonblock(True)
         self.NMKdevelopment = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # network key for development access       
         self.NMK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key. Will be overwritten later.
+        self.NMK_EVSE_random = [ 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77 ] # In EvseMode, we use this key.
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
         self.pevMac = [0xDC, 0x0E, 0xA1, 0x11, 0x67, 0x08 ] # a default pev MAC. Will be overwritten later.
         self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.
@@ -1110,6 +1131,8 @@ class pyPlcHomeplug():
         self.showStatus("nPacketsReceived=" + str(self.nPacketsReceived))
         if (self.iAmPev==1):
             self.runPevSequencer() # run the message sequencer for the PEV side
+        if (self.iAmEvse==1):
+            self.runEvseSlacHandler(); # run the SLAC state machine on EVSE side
         
     def close(self):
         self.sniffer.close()
