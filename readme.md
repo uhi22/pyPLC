@@ -12,7 +12,8 @@ In this project, we call this mode *ListenMode*.
 ## News / Change History / Functional Status
 
 ### 2023-03-03 v0.6 Tea-Time on Alpitronics charger
-Made a tea, using the RaspberryPi3 and tpLink modem on Alpitronics hypercharger. 
+Made a tea, using the RaspberryPi3 and tpLink modem on Alpitronics hypercharger.
+Pictures here: https://openinverter.org/forum/viewtopic.php?p=53848#p53848
 
 ### 2023-02-27 PEV mode with OLED-display works on headless Raspberry
 - Charging status is shown on OLED display. Details in [hardware.md](doc/hardware.md)
@@ -255,6 +256,8 @@ In the case, we use this pyPLC project as charger (*EvseMode*), we rely on the o
 this works perfectly, the only thing we must make sure, that the MAC and IPv6 of the ethernet port are correctly configured in the
 python script. Use `ipconfig -all` on Windows, to find out the addresses. Note: Each of the two participants (car and charger) may initiate
 the NeighborSolicitation, and the other side needs to respond with a NeighborAdvertisement.
+* Note: It depends on the implementation of the charger and car, at which states the NeighborDiscovery is done. It may be in the middle of the SDP,
+may be when starting the TCP, and may be never.
 * Checkpoint210: Now, the car and the charger have a clear view about addressing (MAC adresses, IPv6 addresses).
 * Checkpoint300: The charger starts listening on the TCP port which it announced in the SDP response.
 * Checkpoint301: The car requests to open a TCP connection to charger at the port which was announced on the SDP response. This may be 15118 or may be a different port, depending on the chargers implementation. Technically, this is a TCP message with SYN.
