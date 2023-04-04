@@ -119,9 +119,9 @@ does not see the real car, and the evse-configured device does not see the real 
 ![image](https://user-images.githubusercontent.com/98478946/196766285-1c3152f7-31db-4b5f-98b1-9f1216f9b9de.png)
 
 
-## Discussion
-See https://openinverter.org/forum/viewtopic.php?p=37085#p37085
-
+## Discussion and Wiki
+See openinverter forum https://openinverter.org/forum/viewtopic.php?p=37085#p37085
+and the openinverter wiki: https://openinverter.org/wiki/CCS_EVCC_using_AR7420
 
 ## Quick start / overview
 - Modify a PLC adaptor hardware, that it runs on battery
@@ -142,11 +142,11 @@ See [Hardware manual](doc/hardware.md)
 
 ## Configuration of the PLC adaptor
 The factory settings of the Homeplug PLC adaptor do not in all cases support the requirements of the communication
-with the car. In detail, the adaptors are supporting HomePlugAV, but we need HomePlugGP (Green Phy). This is similar,
+with the car, e.g. the SLAC messages. In detail, the adaptors are supporting HomePlugAV, but we need HomePlugGP (Green Phy). This is similar,
 but not the same.
 Fortunately, the supplier of the chipset is aware of this topic, and provides some smart helper tools.
 http://github.com/qca/open-plc-utils
-It is worth to read its documentation, starting in docbook/index.html, this contains all what we need for the next steps.
+It is worth to read its documentation, starting in docbook/index.html, this contains all what we need for the next steps. A more detailled description and discussion is available in https://openinverter.org/forum/viewtopic.php?p=55120#p55120.
 
 (Tested on Linux/Raspbian on a raspberryPi 3)
 
@@ -161,7 +161,7 @@ Read the configuration from the PLC adaptor and write it to a file
 	pi@RPi3D:~ $ plctool -ieth0 -p original.pib  98:48:27:5A:3C:E6
 	eth0 98:48:27:5A:3C:E6 Read Module from Memory
 ```
-Patch the configuration file (aee /docbook/ch05s15.html). For each side (pev (vehicle) and evse (charger)) there is a special configuration.
+Patch the configuration file (see /docbook/ch05s15.html). For each side (pev (vehicle) and evse (charger)) there is a special configuration.
 Example pev side:
 ```
 	pi@RPi3D:~ $ cp original.pib pev.pib
@@ -240,7 +240,7 @@ decides based on the attenuation levels, which of the charges is the nearest.
 * Checkpoint160: The car receives the SLAC_MATCH.CNF, takes the NID and NMK from this message.
 * Checkpoint170: The car configures its homeplug modem with the received NID and NMK.
 * Checkpoint180: The homeplug modem of the car makes a restart to apply the new settings. This takes approx five seconds. The LEDs of the modem are going off and on again during this restart.
-* Checkpoint190: Now, the homeplug modems of the car and of the charger have formed a "private" Homeplug network (AV local network, AVLN). The RF
+* Checkpoint190: Now, the homeplug modems of the car and of the charger have formed a "private" Homeplug network (AV logical network, AVLN). The RF
 traffic can only be decoded by participants who are using the same NID and NMK.
 * Checkpoint200: The car wants to know the chargers IP address. In computer networks, a DHCP would be a usual way to do this. In the CCS world, a different
 approach is used: SDP, which is the SECC discovery protocol. The DHCP may be also supported as fallback. The car sends a broadcast message "Is here a charger in this network?". Technically, it is an IPv6.UDP.V2GTP.SDP message
