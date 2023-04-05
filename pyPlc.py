@@ -39,6 +39,9 @@ def cbShowStatus(s, selection=""):
     if (selection == "uInlet"):
         lblUInlet['text']= "UInlet " + s + "V"
         s=""
+    if (selection == "EVSEPresentVoltage"):
+        lblEVSEPresentVoltage['text']= "EVSEPresentVoltage " + s + "V"
+        s=""
     if (selection == "pevState"):
         lblState['text']= s
         s=""
@@ -73,7 +76,7 @@ if (myMode == C_EVSE_MODE):
     print("starting in EVSE_MODE")
  
 root = tk.Tk()
-root.geometry("400x300")
+root.geometry("400x350")
 lastKey = ''
 lblHelp = tk.Label(root, justify= "left")
 lblHelp['text']="x=exit \nS=GET_SW \nP=PEV mode \nE=EVSE mode \nL=Listen mode \ns=SET_KEY \nG=GET_KEY (try twice) \nt=SET_KEY modified \n space=stop charging"
@@ -90,6 +93,9 @@ lblSoc.pack()
 lblUInlet = tk.Label(root, text="(U Inlet)")
 lblUInlet.config(font=('Helvetica bold', 26))
 lblUInlet.pack()
+lblEVSEPresentVoltage = tk.Label(root, text="(EVSEPresentVoltage)")
+lblEVSEPresentVoltage.config(font=('Helvetica bold', 16))
+lblEVSEPresentVoltage.pack()
 lblMode = tk.Label(root, text="(mode)")
 lblMode.pack()
 

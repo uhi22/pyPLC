@@ -294,7 +294,7 @@ if __name__ == "__main__":
     if (False):
         testTimeConsumption()
         exit()
-    if (False):        
+    if (True):        
         testReadExiFromExiLogFile()
         exit()
     
@@ -318,7 +318,7 @@ if __name__ == "__main__":
     if (False):
         print("The request from the Ioniq after the EVSE sent ServicePaymentSelectionRes:")
         testDecoder("809A00113020000A00000000", pre="DD", comment="PowerDeliveryReq")
-    if (True):
+    if (False):
         #print("The session setup request of the Ioniq:")
         #testDecoder("809A02000000000000000011D01811959401930C00", pre="DD", comment="SessionSetupReq")
         print("Ioniq with pyPlc")
@@ -329,7 +329,7 @@ if __name__ == "__main__":
         #testDecoder("809a02004080c1014181c2116002000000320000", pre="DD") # 2022-11-11, 27.659s PrechargeRes
         #print("A ChargeParameterDiscoveryReq")        
         #testDecoder("809a00107211400dc0c8c82324701900", pre="DD", comment="ChargeParameterDiscoveryReq")
-    if (True):
+    if (False):
         print("From  https://openinverter.org/forum/viewtopic.php?p=54692#p54692")
         testDecoder("809A0233EBC74AB099A6DC907191400500C8C82324701900", pre="DD") # from https://openinverter.org/forum/viewtopic.php?p=54692#p54692
 
