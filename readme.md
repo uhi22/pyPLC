@@ -127,6 +127,7 @@ and the openinverter wiki: https://openinverter.org/wiki/CCS_EVCC_using_AR7420
 - Modify a PLC adaptor hardware, that it runs on battery
 - Modify the configuration of the PLC adaptor, that it supports HomePlug Green Phy including the SLAC.
 - Install wireshark to view the network traffic
+- Optional: Install the Plugin for Wireshark from https://github.com/geynis/v2g-ws-dissectors, to decode the V2GTP. This does NOT decode the EXI itself.
 - Install Pcap-ct python library
 - Get and compile the exi decoder/encoder from http://github.com/uhi22/OpenV2Gx
 - Run `python pyPlc.py` and use keyboard to trigger actions, or
