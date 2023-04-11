@@ -56,6 +56,44 @@ class fsmPev():
         self.exiLogFile.write(strDateTime + "=" + schema + " " + s +"\n") # write the EXI data to the exiLogFile
         return exidata
         
+    def prettifyState(self, statenumber):
+        s="unknownState"
+        if (statenumber == stateNotYetInitialized):
+            s = "NotYetInitialized"
+        if (statenumber == stateConnecting):
+            s = "Connecting"
+        if (statenumber == stateConnected):
+            s = "Connected"
+        if (statenumber == stateWaitForSupportedApplicationProtocolResponse):
+            s = "WaitForSupportedApplicationProtocolResponse"
+        if (statenumber == stateWaitForSessionSetupResponse):
+            s = "WaitForSessionSetupResponse"
+        if (statenumber == stateWaitForServiceDiscoveryResponse):
+            s = "WaitForServiceDiscoveryResponse"
+        if (statenumber == stateWaitForServicePaymentSelectionResponse):
+            s = "WaitForServicePaymentSelectionResponse"
+        if (statenumber == stateWaitForContractAuthenticationResponse):
+            s = "WaitForContractAuthenticationResponse"
+        if (statenumber == stateWaitForChargeParameterDiscoveryResponse):
+            s = "WaitForChargeParameterDiscoveryResponse"
+        if (statenumber == stateWaitForCableCheckResponse):
+            s = "WaitForCableCheckResponse"
+        if (statenumber == stateWaitForPreChargeResponse):
+            s = "WaitForPreChargeResponse"
+        if (statenumber == stateWaitForPowerDeliveryResponse):
+            s = "WaitForPowerDeliveryResponse"
+        if (statenumber == stateWaitForCurrentDemandResponse):
+            s = "WaitForCurrentDemandResponse"
+        if (statenumber == stateWaitForWeldingDetectionResponse):
+            s = "WaitForWeldingDetectionResponse"
+        if (statenumber == stateWaitForSessionStopResponse):
+            s = "WaitForSessionStopResponse"
+        if (statenumber == stateChargingFinished):
+            s = "ChargingFinished"
+        if (statenumber == stateSequenceTimeout):
+            s = "SequenceTimeout"
+        return s
+        
     def sendChargeParameterDiscoveryReq(self):
         soc = str(self.hardwareInterface.getSoc())
         msg = addV2GTPHeader(self.exiEncode("EDE_"+self.sessionId + "_" + soc)) # EDE for Encode, Din, ChargeParameterDiscovery.
@@ -84,7 +122,7 @@ class fsmPev():
         self.Tcp.transmit(msg)
             
     def enterState(self, n):
-        print("from " + str(self.state) + " entering " + str(n))
+        self.addToTrace("from " + str(self.state) + ":" + self.prettifyState(self.state) + " entering " + str(n) + ":" + self.prettifyState(n))
         self.state = n
         self.cyclesInState = 0
         

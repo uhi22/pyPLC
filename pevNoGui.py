@@ -6,8 +6,12 @@ import pyPlcWorker
 from pyPlcModes import *
 import sys # for argv
 
+startTime_ms = round(time.time()*1000)
+
 def cbAddToTrace(s):
-    print(s)
+    currentTime_ms = round(time.time()*1000)
+    dT_ms = currentTime_ms - startTime_ms
+    print("[" + str(dT_ms) + "ms] " + s)
 
 def cbShowStatus(s, selection=""):
     pass
