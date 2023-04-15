@@ -9,8 +9,23 @@
 import serial # the pyserial
 from serial.tools.list_ports import comports
 from time import sleep
+from configmodule import getConfigValue, getConfigValueBool
+
+if (getConfigValue("digital_output_device")=="beaglebone"):
+    # In case we run on beaglebone, we want to use GPIO ports.
+    import Adafruit_BBIO.GPIO as GPIO
 
 class hardwareInterface():
+    def needsSerial(self):
+        # Find out, whether we need a serial port. This depends on several configuration items.
+        if (getConfigValueBool("display_via_serial")):
+            return True # a display is expected to be connected to serial port.
+        if (getConfigValue("digital_output_device")=="dieter"):
+            return True # a "dieter" output device is expected to be connected on serial port.
+        if (getConfigValue("analog_input_device")=="dieter"):
+            return True # a "dieter" input device is expected to be connected on serial port.
+        return False # non of the functionalities need a serial port.
+        
     def findSerialPort(self):
         ports = []
         self.addToTrace('Available serial ports:')
@@ -21,36 +36,49 @@ class hardwareInterface():
                 self.addToTrace('{:2}: {:20} {!r}'.format(n, port, desc))
                 ports.append(port)
         if (len(ports)<1):
-            self.addToTrace("ERROR: No serial ports found. No hardware interaction possible.")
-            self.ser = None
-            self.isInterfaceOk = False
+            if (self.needsSerial()):
+                self.addToTrace("ERROR: No serial ports found. No hardware interaction possible.")
+                self.ser = None
+                self.isSerialInterfaceOk = False
+            else:
+                self.addToTrace("We found no serial port, but also do not need it. No problem.")
+                self.ser = None
+                self.isSerialInterfaceOk = False
         else:
             self.addToTrace("ok, we take the first port, " + ports[0])
             try:
                 self.ser = serial.Serial(ports[0], 19200, timeout=0)
-                self.isInterfaceOk = True
+                self.isSerialInterfaceOk = True
             except:
                 self.addToTrace("ERROR: Could not open serial port.")
                 self.ser = None
-                self.isInterfaceOk = False
+                self.isSerialInterfaceOk = False
 
     def addToTrace(self, s):
         self.callbackAddToTrace("[HARDWAREINTERFACE] " + s)            
 
     def setStateB(self):
         self.addToTrace("Setting CP line into state B.")
+        if (getConfigValue("digital_output_device")=="beaglebone"):
+            GPIO.output("P8_18", GPIO.LOW)
         self.outvalue &= ~1
         
     def setStateC(self):
         self.addToTrace("Setting CP line into state C.")
+        if (getConfigValue("digital_output_device")=="beaglebone"):
+            GPIO.output("P8_18", GPIO.HIGH)
         self.outvalue |= 1
         
     def setPowerRelayOn(self):
         self.addToTrace("Switching PowerRelay ON.")
+        if (getConfigValue("digital_output_device")=="beaglebone"):
+            GPIO.output("P8_16", GPIO.HIGH)
         self.outvalue |= 2
 
     def setPowerRelayOff(self):
         self.addToTrace("Switching PowerRelay OFF.")
+        if (getConfigValue("digital_output_device")=="beaglebone"):
+            GPIO.output("P8_16", GPIO.LOW)
         self.outvalue &= ~2
 
     def setRelay2On(self):
@@ -90,7 +118,12 @@ class hardwareInterface():
         #todo: get SOC from the BMS
         self.callbackShowStatus(format(self.simulatedSoc,".1f"), "soc")
         return self.simulatedSoc
-        
+
+    def initPorts(self):
+        if (getConfigValue("digital_output_device") == "beaglebone"):
+            # Port configuration according to https://github.com/jsphuebner/pyPLC/commit/475f7fe9f3a67da3d4bd9e6e16dfb668d0ddb1d6
+            GPIO.setup("P8_16", GPIO.OUT) #output for port relays
+            GPIO.setup("P8_18", GPIO.OUT) #output for CP
         
     def __init__(self, callbackAddToTrace=None, callbackShowStatus=None):
         self.callbackAddToTrace = callbackAddToTrace
@@ -101,6 +134,8 @@ class hardwareInterface():
         self.inletVoltage = 0.0 # volts
         self.rxbuffer = ""
         self.findSerialPort()
+        self.initPorts()
+            
         
     def resetSimulation(self):
         self.simulatedInletVoltage = 0.0 # volts
@@ -111,7 +146,7 @@ class hardwareInterface():
             self.simulatedInletVoltage = self.simulatedInletVoltage + 1.0 # simulate increasing voltage during PreCharge
 
     def close(self):
-        if (self.isInterfaceOk):        
+        if (self.isSerialInterfaceOk):        
             self.ser.close()
             
     def evaluateReceivedData(self, s):
@@ -122,8 +157,8 @@ class hardwareInterface():
             if (len(s)==4):
                 try:
                     self.inletVoltage = int(s) / 1024.0 * 1.08 * (6250) / (4.7+4.7)
-                    
-                    self.callbackShowStatus(format(self.inletVoltage,".1f"), "uInlet")
+                    if (getConfigValue("analog_input_device")=="dieter"):
+                        self.callbackShowStatus(format(self.inletVoltage,".1f"), "uInlet")
                 except:
                     # keep last known value, if nothing new valid was received.
                     pass
@@ -132,18 +167,20 @@ class hardwareInterface():
 
     def showOnDisplay(self, s1, s2, s3):
         # show the given string s on the display which is connected to the serial port
-        s = "lc" + s1 + "\n" + "lc" + s2 + "\n" + "lc" + s3 + "\n"
-        self.ser.write(bytes(s, "utf-8"))
+        if (getConfigValueBool("display_via_serial") and self.isSerialInterfaceOk):
+            s = "lc" + s1 + "\n" + "lc" + s2 + "\n" + "lc" + s3 + "\n"
+            self.ser.write(bytes(s, "utf-8"))
         
     def mainfunction(self):
-        if (self.simulatedSoc<100):
-            if ((self.outvalue & 2)!=0):
-                # while the relay is closed, simulate increasing SOC
-                self.simulatedSoc = self.simulatedSoc + 0.01
+        if (getConfigValueBool("soc_simulation")):
+            if (self.simulatedSoc<100):
+                if ((self.outvalue & 2)!=0):
+                    # while the relay is closed, simulate increasing SOC
+                    self.simulatedSoc = self.simulatedSoc + 0.01
                 
                 
         self.loopcounter+=1
-        if (self.isInterfaceOk):
+        if (self.isSerialInterfaceOk):
             if (self.loopcounter>15):
                 self.loopcounter=0
                 # self.ser.write(b'hello world\n')

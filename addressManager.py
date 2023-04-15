@@ -85,7 +85,8 @@ class addressManager():
                                              # 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
                                              # 3: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
                             # print("This is a heading")
-                            if (line.find(": eth")>0):
+                            sFind = ": " + getConfigValue("eth_interface") # e.g. "eth0"
+                            if (line.find(sFind)>0):
                                 # print("This is the heading for the ethernet.")
                                 blInTheEthernetChapter = 1 # we are in the ethernet chapter
                             else:

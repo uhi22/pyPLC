@@ -10,8 +10,8 @@ from datetime import datetime
 from helpers import prettyHexMessage, compactHexMessage, combineValueAndMultiplier
 from exiConnector import * # for EXI data handling/converting
 import json
+from configmodule import getConfigValue, getConfigValueBool
 
-PARAM_U_DELTA_MAX_FOR_END_OF_PRECHARGE = 10 # volts between inlet and accu, to change from PreCharge to PowerDelivery
 
 stateNotYetInitialized = 0
 stateConnecting = 1
@@ -393,7 +393,7 @@ class fsmPev():
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
                 self.addToTrace("PreChargeResponse received.")
-                if (self.USE_EVSEPRESENTVOLTAGE_FOR_PRECHARGE_END):
+                if (getConfigValueBool("use_evsepresentvoltage_for_precharge_end")):
                     # We want to use the EVSEPresentVoltage, which was reported by the charger, as end-criteria for the precharging.
                     s = "EVSEPresentVoltage " + str(u) + "V, "
                 else:
@@ -402,7 +402,7 @@ class fsmPev():
                     s = "U_Inlet " + str(u) + "V, "
                 s= s + "U_Accu " + str(self.hardwareInterface.getAccuVoltage()) + "V"
                 self.addToTrace(s)
-                if (abs(u-self.hardwareInterface.getAccuVoltage()) < PARAM_U_DELTA_MAX_FOR_END_OF_PRECHARGE):
+                if (abs(u-self.hardwareInterface.getAccuVoltage()) < float(getConfigValue("u_delta_max_for_end_of_precharge"))):
                     self.addToTrace("Difference between accu voltage and inlet voltage is small. Sending PowerDeliveryReq.")
                     self.publishStatus("PreCharge done")
                     if (self.isLightBulbDemo):
@@ -471,7 +471,7 @@ class fsmPev():
                     self.callbackShowStatus(format(u,".1f"), "EVSEPresentVoltage")
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
-                if (self.USE_PHYSICAL_INLET_VOLTAGE_DURING_CHARGELOOP):
+                if (getConfigValueBool("use_physical_inlet_voltage_during_chargeloop")):
                     # Instead of using the voltage which is reported by the charger, use the physically measured.
                     u = self.hardwareInterface.getInletVoltage()
                 # as long as the accu is not full and no stop-demand from the user, we continue charging
@@ -606,14 +606,10 @@ class fsmPev():
         self.cyclesInState = 0
         self.DelayCycles = 0
         self.rxData = []        
-        self.isLightBulbDemo = True
+        self.isLightBulbDemo = getConfigValueBool("light_bulb_demo")
         self.isBulbOn = False
         self.cyclesLightBulbDelay = 0
         self.isUserStopRequest = False
-        self.USE_EVSEPRESENTVOLTAGE_FOR_PRECHARGE_END = 1 # to configure, which criteria is used for end of PreCharge
-        self.USE_PHYSICAL_INLET_VOLTAGE_DURING_CHARGELOOP = 0 # to configure, whether to display the measured or charger-reported
-                                                              # voltage during the charging loop
-
         # we do NOT call the reInit, because we want to wait with the connection until external trigger comes
                 
     def __del__(self):

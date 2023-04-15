@@ -11,6 +11,7 @@ import time
 import pyPlcWorker
 from pyPlcModes import *
 import sys # for argv
+from configmodule import getConfigValue, getConfigValueBool
 
 startTime_ms = round(time.time()*1000)
 
@@ -60,6 +61,10 @@ def cbShowStatus(s, selection=""):
     root.update()
 
 myMode = C_LISTEN_MODE
+if (getConfigValue("mode")=="PevMode"):
+    myMode = C_PEV_MODE
+if (getConfigValue("mode")=="EvseMode"):
+    myMode = C_EVSE_MODE
 if (len(sys.argv) > 1):
     if (sys.argv[1] == "P"):
         myMode = C_PEV_MODE
