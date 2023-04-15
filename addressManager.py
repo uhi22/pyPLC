@@ -8,6 +8,7 @@ import subprocess
 import os
 import sys
 from helpers import * # prettyMac etc
+from configmodule import getConfigValue, getConfigValueBool
 
 MAC_LAPTOP    = [0xdc, 0x0e, 0xa1, 0x11, 0x67, 0x08 ] # Win10 laptop
 #MAC_RANDOM    = [0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff ]
