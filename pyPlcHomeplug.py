@@ -98,7 +98,7 @@ STATE_SDP                         = 16
 class pyPlcHomeplug():    
     def showIpAddresses(self, mybytearray):
         addr = lambda pkt, offset: '.'.join(str(pkt[i]) for i in range(offset, offset + 4))
-        print('SRC %-16s\tDST %-16s' % (addr(mybytearray, self.sniffer.dloff + 12), addr(mybytearray, self.sniffer.dloff + 16)))
+        self.addToTrace('SRC %-16s\tDST %-16s' % (addr(mybytearray, self.sniffer.dloff + 12), addr(mybytearray, self.sniffer.dloff + 16)))
 
     def showMacAddresses(self, mybytearray):
         strDestMac = ""
@@ -114,7 +114,7 @@ class pyPlcHomeplug():
         if (lastThreeOfSource == 0x0064c3):
             strSourceFriendlyName="Ioniq"
             
-        print("From " + strSourceMac + strSourceFriendlyName + " to " + strDestMac)
+        self.addToTrace("From " + strSourceMac + strSourceFriendlyName + " to " + strDestMac)
 
     def getEtherType(self, messagebufferbytearray):
         etherType=0
@@ -747,7 +747,7 @@ class pyPlcHomeplug():
         return self.numberOfFoundModems>1
         
     def enterState(self, n):
-        print("[PEVSLAC] from " + str(self.pevSequenceState) + " entering " + str(n))
+        self.addToTrace("[PEVSLAC] from " + str(self.pevSequenceState) + " entering " + str(n))
         self.pevSequenceState = n
         self.pevSequenceCyclesInState = 0
         
@@ -997,7 +997,7 @@ class pyPlcHomeplug():
             if (len(self.addressManager.getSeccIp())>0):
                 # we received an SDP response, and can start the high-level communication
                 self.showStatus("SDP finished", "pevState")
-                print("[PEVSLAC] Now we know the chargers IP.")
+                self.addToTrace("[PEVSLAC] Now we know the chargers IP.")
                 self.isSDPDone = 1
                 self.callbackReadyForTcp(1)
                 # Continue with checking the connection, for the case somebody pulls the plug.
@@ -1017,7 +1017,7 @@ class pyPlcHomeplug():
                 self.enterState(STATE_SDP) # stick in the same state
                 return
             # All repetitions are over, no SDP response was seen. Back to the beginning.    
-            print("[PEVSLAC] ERROR: Did not receive SDP response. Starting from the beginning.")
+            self.addToTrace("[PEVSLAC] ERROR: Did not receive SDP response. Starting from the beginning.")
             self.enterState(STATE_INITIAL)
             return
         # invalid state is reached. As robustness measure, go to initial state.
@@ -1105,7 +1105,7 @@ class pyPlcHomeplug():
             self.enterPevMode()
             self.pevMac = self.myMAC
         self.showStatus(prettyMac(self.pevMac), "pevmac")
-        print("sniffer created at " + self.strInterfaceName)
+        print("sniffer created at " + self.strInterfaceName) # we use print, because addToLog does not yet work at this stage in the init.
 
     def addToTrace(self, s):
         self.callbackAddToTrace(s)
