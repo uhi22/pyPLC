@@ -11,6 +11,14 @@ In this project, we call this mode *ListenMode*.
 
 ## News / Change History / Functional Status
 
+### 2023-04-16 EvseMode brings the Ioniq to close the contactors
+With simulated rising EVSEPresentVoltage in the PreChargeResponse, the Ioniq indeed closes the contactors, without
+the need to feed physical voltage to the CCS DC inlet pins. This is surprising, because - at least for ISO -
+the specification says that a physical measurement shall be done. The Ioniq does not, it just relys on the
+reported voltage on the charger. After closing the contacts, there is the accu voltage on the CCS. Not yet
+tested, whether it is possible to draw some current out of the vehicle.
+Log here: results/2023-04-16_at_home_Ioniq_in_currentDemandLoop.pcapng
+
 ### 2023-03-03 v0.6 Tea-Time on Alpitronics charger
 Made a tea, using the RaspberryPi3 and tpLink modem on Alpitronics hypercharger.
 Pictures here: https://openinverter.org/forum/viewtopic.php?p=53848#p53848

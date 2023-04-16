@@ -138,8 +138,12 @@ class fsmEvse():
             if (strConverterResult.find("PreChargeReq")>0):
                 # todo: check the request content, and fill response parameters
                 # simulating preCharge
-                if (self.simulatedPresentVoltage<300):
+                if (self.simulatedPresentVoltage<200):
+                    self.simulatedPresentVoltage = 200
+                if (self.simulatedPresentVoltage<230):
                     self.simulatedPresentVoltage += 10
+                if (self.simulatedPresentVoltage<400):
+                    self.simulatedPresentVoltage += 5
                 strPresentVoltage = str(self.simulatedPresentVoltage) # "345"
                 msg = addV2GTPHeader(exiEncode("EDg_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
                 self.addToTrace("responding " + prettyHexMessage(msg))
