@@ -128,11 +128,13 @@ class fsmPev():
         
     def isTooLong(self):
         # The timeout handling function.
-        limit = 30 # number of call cycles until timeout
+        limit = 33 # number of call cycles until timeout. Default 33 cycles with 30ms, means approx. 1 second.
         if (self.state==stateWaitForCableCheckResponse):
-            limit = 30*30 # CableCheck may need some time. Wait at least 30s.
+            limit = 30*33 # CableCheck may need some time. Wait at least 30s.
         if (self.state==stateWaitForPreChargeResponse):
-            limit = 30*30 # PreCharge may need some time. Wait at least 30s.
+            limit = 30*33 # PreCharge may need some time. Wait at least 30s.
+        if (self.state==stateWaitForPowerDeliveryResponse):
+            limit = 5*33 # PowerDelivery may need some time. Wait at least 5s. On Compleo charger, observed more than 1s until response.
         return (self.cyclesInState > limit)
         
     def stateFunctionNotYetInitialized(self):
