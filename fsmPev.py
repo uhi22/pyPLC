@@ -43,6 +43,7 @@ class fsmPev():
         self.callbackShowStatus(s, "pevState", strAuxInfo1, strAuxInfo2)
         
     def exiDecode(self, exidata, schema):
+        self.connMgr.ApplOk()
         s = compactHexMessage(exidata)
         strDateTime=datetime.today().strftime('%Y-%m-%dT%H:%M:%S.%f')
         self.exiLogFile.write(strDateTime + "=" + schema + " " + s +"\n") # write the EXI data to the exiLogFile
@@ -593,7 +594,7 @@ class fsmPev():
         self.cyclesInState = 0
         self.rxData = []
         
-    def __init__(self, addressManager, callbackAddToTrace, hardwareInterface, callbackShowStatus):
+    def __init__(self, addressManager, connMgr, callbackAddToTrace, hardwareInterface, callbackShowStatus):
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
         self.addToTrace("initializing fsmPev") 
@@ -601,6 +602,7 @@ class fsmPev():
         self.exiLogFile.write("init\n")
         self.Tcp = pyPlcTcpSocket.pyPlcTcpClientSocket(self.callbackAddToTrace)
         self.addressManager = addressManager
+        self.connMgr = connMgr
         self.hardwareInterface = hardwareInterface
         self.state = stateNotYetInitialized
         self.sessionId = "DEAD55AADEAD55AA"

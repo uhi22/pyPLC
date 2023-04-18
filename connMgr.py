@@ -30,6 +30,18 @@ class connMgr():
     def getConnectionLevel(self):
         return self.ConnectionLevel
 
+    def printDebugInfos(self):
+        s = "[CONNMGR] " + str(self.timerEthLink) + " " \
+                     + str(self.timerModemLocal) + " " \
+                     + str(self.timerModemRemote) + " " \
+                     + str(self.timerSlac) + " " \
+                     + str(self.timerSDP) + " " \
+                     + str(self.timerTCP) + " " \
+                     + str(self.timerAppl) + " " \
+                     + " --> " + str(self.ConnectionLevel)
+        self.addToTrace(s)
+
+
     def __init__(self, callbackAddToTrace, callbackShowStatus):
         self.timerEthLink = 0
         self.timerModemLocal = 0
@@ -44,6 +56,8 @@ class connMgr():
         self.addToTrace = callbackAddToTrace
         
     def mainfunction(self):
+        # shortcut: we do not check the ethernet link, instead, we assume it is just always present.
+        self.timerEthLink = 10
         # count all the timers down
         if (self.timerEthLink>0):
             self.timerEthLink-=1
@@ -85,6 +99,9 @@ class connMgr():
         if (self.ConnectionLevelOld!=self.ConnectionLevel):
             self.addToTrace("[CONNMGR] ConnectionLevel changed from " + str(self.ConnectionLevelOld) + " to " + str(self.ConnectionLevel))
             self.ConnectionLevelOld = self.ConnectionLevel
+        if ((self.cycles % 33)==0):
+            # once per second
+            self.printDebugInfos()
         self.cycles+=1
 
     def ModemFinderOk(self, numberOfFoundModems):

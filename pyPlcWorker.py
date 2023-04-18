@@ -14,6 +14,7 @@ import addressManager
 import time
 import subprocess
 import hardwareInterface
+import connMgr
         
 
 class pyPlcWorker():
@@ -27,7 +28,8 @@ class pyPlcWorker():
         self.callbackShowStatus = callbackShowStatus
         self.oldAvlnStatus = 0
         self.isSimulationMode = isSimulationMode
-        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.workerAddToTrace, self.showStatus, self.mode, self.addressManager, self.callbackReadyForTcp, self.isSimulationMode)
+        self.connMgr = connMgr.connMgr(self.workerAddToTrace, self.showStatus)
+        self.hp = pyPlcHomeplug.pyPlcHomeplug(self.workerAddToTrace, self.showStatus, self.mode, self.addressManager, self.connMgr, self.isSimulationMode)
         self.hardwareInterface = hardwareInterface.hardwareInterface(self.workerAddToTrace, self.showStatus)
         self.hp.printToUdp("pyPlcWorker init")
         # Find out the version number, using git.
@@ -40,7 +42,7 @@ class pyPlcWorker():
         if (self.mode == C_EVSE_MODE):
             self.evse = fsmEvse.fsmEvse(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.showStatus)
         if (self.mode == C_PEV_MODE):
-            self.pev = fsmPev.fsmPev(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.showStatus)
+            self.pev = fsmPev.fsmPev(self.addressManager, self.connMgr, self.workerAddToTrace, self.hardwareInterface, self.showStatus)
     def __del__(self):
         if (self.mode == C_PEV_MODE):
             try:
@@ -60,24 +62,20 @@ class pyPlcWorker():
         if (selection == "pevState"):
             self.hardwareInterface.showOnDisplay(s, strAuxInfo1, strAuxInfo2)
 
-    def callbackReadyForTcp(self, status):
-        if (status==1):
+    def handleTcpConnectionTrigger(self):
+        if (self.mode == C_PEV_MODE) and (self.connMgr.getConnectionLevel()==50) and (self.oldAvlnStatus==0):
             self.workerAddToTrace("[PLCWORKER] Network is established, ready for TCP.")
-            #self.workerAddToTrace("[PLCWORKER] Waiting....")            
-            #time.sleep(5)
-            #self.workerAddToTrace("[PLCWORKER] now...")            
-            if (self.oldAvlnStatus==0):
-                self.oldAvlnStatus = 1
-                if (self.mode == C_PEV_MODE):
-                    self.pev.reInit()
-                    
-        else:
-            self.workerAddToTrace("[PLCWORKER] no network")
+            self.oldAvlnStatus = 1
+            self.pev.reInit()
+            return
+        if (self.connMgr.getConnectionLevel()<50):
             self.oldAvlnStatus = 0
         
     def mainfunction(self):
         self.nMainFunctionCalls+=1
         #self.showStatus("pyPlcWorker loop " + str(self.nMainFunctionCalls))
+        self.connMgr.mainfunction()
+        self.handleTcpConnectionTrigger()
         self.hp.mainfunction() # call the lower-level workers
         self.hardwareInterface.mainfunction()
         if (self.mode == C_EVSE_MODE):

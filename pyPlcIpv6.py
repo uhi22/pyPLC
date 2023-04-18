@@ -189,6 +189,7 @@ class ipv6handler():
                             seccTcpPort = (self.udpPayload[8+16]*256) + self.udpPayload[8+16+1]
                             self.addressManager.setSeccIp(self.SeccIp)
                             self.addressManager.setSeccTcpPort(seccTcpPort)
+                            self.connMgr.SdpOk()
                     return    
                 print("v2gptPayloadType " + hex(v2gptPayloadType) + " not supported")
                     
@@ -354,11 +355,12 @@ class ipv6handler():
             if (self.nextheader == 0x06): # it is an TCP frame
                 self.evaluateTcpPacket()
                         
-    def __init__(self, transmitCallback, addressManager, callbackShowStatus):
+    def __init__(self, transmitCallback, addressManager, connMgr, callbackShowStatus):
         self.enterEvseMode()
         #self.enterListenMode()
         self.transmit = transmitCallback
         self.addressManager = addressManager
+        self.connMgr = connMgr
         self.callbackShowStatus = callbackShowStatus
         #self.exiLogFile = open('SnifferExiLog.txt', 'w')
         # 16 bytes, a default IPv6 address for the charging station

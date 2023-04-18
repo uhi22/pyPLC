@@ -582,7 +582,6 @@ class pyPlcHomeplug():
                 self.isDeveloperLocalKey = 1
             else:
                 self.addToTrace("This is NOT the developer NMK.")            
-            self.localModemFound=1 
         s = ""
         # The getkey response contains the Network ID (NID), even if the request was rejected. We store the NID,
         # to have it available for the next request. Use case: A fresh started, unconnected non-Coordinator
@@ -606,6 +605,8 @@ class pyPlcHomeplug():
             self.addToTrace("SetKeyCnf says 0, this would be a bad sign for local modem, but normal for remote.")
         else:
             self.addToTrace("SetKeyCnf says " + str(result) + ", this is formally 'rejected', but indeed ok.")
+            self.publishStatus("modem is", "restarting")
+            self.connMgr.SlacOk()
 
     def evaluateGetSwCnf(self):
         # The GET_SW confirmation. This contains the software version of the homeplug modem.
@@ -629,13 +630,13 @@ class pyPlcHomeplug():
     def evaluateSlacParamReq(self):
         # We received a SLAC_PARAM request from the PEV. This is the initiation of a SLAC procedure.
         # We extract the pev MAC from it.
-        self.addToTrace("received SLAC_PARAM.REQ")
-        for i in range(0, 6):
-            self.pevMac[i] = self.myreceivebuffer[6+i]
-        self.addressManager.setPevMac(self.pevMac)
-        self.showStatus(prettyMac(self.pevMac), "pevmac")
-        # If we want to emulate an EVSE, we want to answer.
         if (self.iAmEvse==1):
+            self.addToTrace("received SLAC_PARAM.REQ")
+            for i in range(0, 6):
+                self.pevMac[i] = self.myreceivebuffer[6+i]
+            self.addressManager.setPevMac(self.pevMac)
+            self.showStatus(prettyMac(self.pevMac), "pevmac")
+            # We are EVSE, we want to answer.
             self.showStatus("SLAC started", "evseState")
             self.composeSlacParamCnf()
             self.addToTrace("[EVSE] transmitting CM_SLAC_PARAM.CNF")
@@ -767,74 +768,63 @@ class pyPlcHomeplug():
             self.evseSlacHandlerState = 1 # setkey was done
             return
 
+    def publishStatus(self, s1, s2="", s3=""):
+        self.showStatus(s1+s2+s3, "pevState")
+        
+    def modemFinder_Mainfunction(self):
+        if ((self.connMgr.getConnectionLevel()==5) and (self.mofi_state==0)):
+            # We want the modem search only, if no connection is present at all.
+            self.addToTrace("[ModemFinder] Starting modem search")
+            self.publishStatus("Modem search")
+            self.composeGetSwReq()
+            self.transmit(self.mytransmitbuffer)
+            self.numberOfSoftwareVersionResponses = 0 # we want to count the modems. Start from zero.
+            self.mofi_stateDelay = 15 # 0.5s should be sufficient to receive the software versions from the modems
+            self.mofi_state = 1
+            return
+        if (self.mofi_state==1):
+            # waiting for responses of the modems
+            if (self.mofi_stateDelay>0):
+                self.mofi_stateDelay-=1
+                return
+            # waiting time is expired. Lets look how many responses we got.
+            self.addToTrace("[ModemFinder] Number of modems:" + str(self.numberOfSoftwareVersionResponses))
+            self.publishStatus("Modems:", str(self.numberOfSoftwareVersionResponses))
+            if (self.numberOfSoftwareVersionResponses>0):
+                self.connMgr.ModemFinderOk(self.numberOfSoftwareVersionResponses)
+            self.mofi_stateDelay = 15 # 0.5s to show the number of modems, before we start a new search if necessary
+            self.mofi_state=2
+            return
+        if (self.mofi_state==2):
+            # just waiting, to give the user time to read the result.
+            if (self.mofi_stateDelay>0):
+                self.mofi_stateDelay-=1
+                return
+            self.mofi_state=0 # back to idle state
 
     def runPevSequencer(self):
         # in PevMode, check whether homeplug modem is connected, run the SLAC and SDP
         self.pevSequenceCyclesInState+=1
+        if (self.connMgr.getConnectionLevel()<10):
+            # we have no modem seen. --> nothing to do for the SLAC
+            if (self.pevSequenceState!=STATE_INITIAL):
+                self.enterState(STATE_INITIAL)
+            return
+        if (self.connMgr.getConnectionLevel()>=20):
+            # we have two modems in the AVLN. This means, the modem pairing is already done. --> nothing to do for the SLAC
+            if (self.pevSequenceState!=STATE_INITIAL):
+                self.enterState(STATE_INITIAL)
+            return
         if (self.pevSequenceState==STATE_INITIAL): # Initial state.
             # In real life we would check whether we see 5% PWM on the pilot line. We skip this check.
             self.isSimulationMode = self.isForcedSimulationMode # from command line, we can force the simulation mode
             self.isSDPDone = 0
-            self.numberOfFoundModems = 0
-            self.localModemFound = 0
             self.isDeveloperLocalKey = 0
             self.nEvseModemMissingCounter = 0
-            self.showStatus("Modem search", "pevState")
-            # First action: find the connected homeplug modems, by sending a GET_KEY
-            self.composeGetKey()
-            self.addToTrace("[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...")
-            self.transmit(self.mytransmitbuffer)                
-            self.enterState(STATE_MODEM_SEARCH_ONGOING)
-            return
-        if (self.pevSequenceState==STATE_MODEM_SEARCH_ONGOING): # Waiting for the modems to answer.
-            if (self.pevSequenceCyclesInState>=10):
-                # It was sufficient time to get the answers from the modems.
-                self.addToTrace("[PEVSLAC] It was sufficient time to get the answers from the modems.")
-                # Let's see what we received.
-                if (self.numberOfFoundModems==0):
-                    self.addToTrace("[PEVSLAC] No modem connected. We assume, we run in a simulation environment.")
-                    self.isSimulationMode = 1
-                    self.enterState(STATE_READY_FOR_SLAC)
-                    return
-                else:
-                    if (self.localModemFound):
-                        # we have at least a local modem. Maybe more remote.
-                        # We want to make sure, that the local modem is set to the "default key", so that
-                        # it is possible to connect to the PLC network for development purposes.
-                        # That's why we check the key, and if it is not the intended, we set the default.
-                        if (self.isDeveloperLocalKey):
-                            self.enterState(STATE_READY_FOR_SLAC)
-                            return
-                        else:
-                            self.composeSetKey() # set the default ("developer") key
-                            self.addToTrace("[PEVSLAC] setting the default developer key...")
-                            self.transmit(self.mytransmitbuffer)        
-                            self.enterState(STATE_WAITING_FOR_MODEM_RESTARTED)
-                            return
-                    else:
-                        # we found modems, but non of it could be identified as the local modem. This happens
-                        # when we do not use the matching NID for the request. We try again, because in the
-                        # first response we got a better NID in the meanwhile.
-                        self.addToTrace("[PEVSLAC] local modem not yet identified.")
-                        self.numberOfFoundModems = 0
-                        # find the connected homeplug modems, by sending a GET_KEY
-                        self.composeGetKey()
-                        self.addToTrace("[PEVSLAC] searching for modems, transmitting GET_KEY.REQ...")
-                        self.transmit(self.mytransmitbuffer)                
-                        self.enterState(STATE_MODEM_SEARCH_ONGOING)
-                        return
-                        
-            return            
-        if (self.pevSequenceState==STATE_WAITING_FOR_MODEM_RESTARTED): # Waiting for the modem to restart after SetKey.
-            if (self.pevSequenceCyclesInState>=100):
-                self.addToTrace("[PEVSLAC] Assuming the modem is up again.")
-                self.enterState(STATE_READY_FOR_SLAC)
+            self.enterState(STATE_READY_FOR_SLAC)
             return
         if (self.pevSequenceState==STATE_READY_FOR_SLAC):
-            if (self.numberOfFoundModems==0):
-                self.showStatus("NoModem, simuSLAC", "pevState")
-            else:
-                self.showStatus("Starting SLAC", "pevState")
+            self.showStatus("Starting SLAC", "pevState")
             self.addToTrace("[PEVSLAC] Checkpoint100: Sending SLAC_PARAM.REQ...")
             self.composeSlacParamReq()
             self.transmit(self.mytransmitbuffer)                
@@ -961,49 +951,37 @@ class pyPlcHomeplug():
                 if (self.isSimulationMode):
                     self.addToTrace("[PEVSLAC] But this is only simulated.")
                 self.nEvseModemMissingCounter=0
-                self.pevSequenceDelayCycles=0
-                self.composeGetSwReq()
-                self.addToTrace("[PEVSLAC] Requesting SW versions from the modems...")
-                self.transmit(self.mytransmitbuffer)
-                self.enterState(STATE_WAITING_FOR_SW_VERSIONS)
+                self.connMgr.ModemFinderOk(2) # Two modems were found.
+                # This is the end of the SLAC.
+                # The AVLN is established, we have at least two modems in the network.
+                self.enterState(STATE_INITIAL)
+
             return
-        if (self.pevSequenceState==STATE_WAITING_FOR_SW_VERSIONS):
-            if (self.pevSequenceCyclesInState>=2): # 2 cycles = 60ms are more than sufficient.
-                # Measured: The local modem answers in less than 1ms. The remote modem in ~5ms.
-                # It was sufficient time to get the answers from the modems.
-                self.addToTrace("[PEVSLAC] It was sufficient time to get the SW versions from the modems.")
-                self.enterState(STATE_READY_FOR_SDP)
+        # invalid state is reached. As robustness measure, go to initial state.
+        self.enterState(STATE_INITIAL)
+
+    def runSdpStateMachine(self):
+        if (self.connMgr.getConnectionLevel()<20):
+            # We have no AVLN established. It does not make sense to start SDP.
+            self.sdp_state = 0
             return
-        if (self.pevSequenceState==STATE_READY_FOR_SDP):
-            # The AVLN is established, we have at least two modems in the network.
-            # If we did not SDP up to now, let's do it.
-            if (self.isSDPDone):
-                # SDP is already done. No need to do it again. We are finished for the normal case.
-                # But we want to check whether the connection is still alive, so we start the
-                # modem-search from time to time.
-                self.pevSequenceDelayCycles = 300 # e.g. 10s
-                self.enterState(STATE_WAITING_FOR_RESTART2)
-                return
-            # SDP was not done yet. Now we start it.
-            self.showStatus("SDP ongoing", "pevState")
-            self.addToTrace("[PEVSLAC] Checkpoint200: SDP was not done yet. Now we start it.")
+        if (self.connMgr.getConnectionLevel()>20):
+            # SDP was already successful. No need to run it again.
+            self.sdp_state = 0
+            return
+        # The ConnectionLevel demands the SDP.
+        if (self.sdp_state==0):
             # Next step is to discover the chargers communication controller (SECC) using discovery protocol (SDP).
+            self.publishStatus("SDP ongoing")
+            self.addToTrace("[SDP] Checkpoint200: Starting SDP.")
             self.pevSequenceDelayCycles=0
             self.SdpRepetitionCounter = 50 # prepare the number of retries for the SDP. The more the better.
-            self.enterState(STATE_SDP)
+            self.sdp_state = 1
             return
-                
-        if (self.pevSequenceState==STATE_SDP):  # SDP request transmission and waiting for SDP response.
-            if (len(self.addressManager.getSeccIp())>0):
-                # we received an SDP response, and can start the high-level communication
-                self.showStatus("SDP finished", "pevState")
-                self.addToTrace("[PEVSLAC] Now we know the chargers IP.")
-                self.isSDPDone = 1
-                self.callbackReadyForTcp(1)
-                # Continue with checking the connection, for the case somebody pulls the plug.
-                self.pevSequenceDelayCycles = 300 # e.g. 10s
-                self.enterState(STATE_WAITING_FOR_RESTART2)
-                return
+        if (self.sdp_state == 1): # SDP request transmission and waiting for SDP response.
+            # The normal state transition in case of received SDP response is done in
+            #  the IPv6 receive handler. This will inform the ConnectionManager, and we will stop here
+            #  because of the increased ConnectionLevel.
             if (self.pevSequenceDelayCycles>0):
                 # just waiting until next action
                 self.pevSequenceDelayCycles-=1
@@ -1014,15 +992,11 @@ class pyPlcHomeplug():
                 self.ipv6.initiateSdpRequest()
                 self.SdpRepetitionCounter-=1
                 self.pevSequenceDelayCycles = 15 # e.g. half-a-second delay until re-try of the SDP
-                self.enterState(STATE_SDP) # stick in the same state
                 return
             # All repetitions are over, no SDP response was seen. Back to the beginning.    
-            self.addToTrace("[PEVSLAC] ERROR: Did not receive SDP response. Starting from the beginning.")
-            self.enterState(STATE_INITIAL)
-            return
-        # invalid state is reached. As robustness measure, go to initial state.
-        self.enterState(STATE_INITIAL)
-
+            self.addToTrace("[SDP] ERROR: Did not receive SDP response. Giving up.")
+            self.sdp_state = 0
+    
         
     def findEthernetAdaptor(self):
         self.strInterfaceName="eth0" # default, if the real is not found
@@ -1053,19 +1027,21 @@ class pyPlcHomeplug():
     def printToUdp(self, s):
         self.udplog.log(s)
 
-    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE, addrMan=None, callbackReadyForTcp=None, isSimulationMode=0):
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE, addrMan=None, connMgr=None, isSimulationMode=0):
         self.mytransmitbuffer = bytearray("Hallo das ist ein Test", 'UTF-8')
         self.nPacketsReceived = 0
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
-        self.callbackReadyForTcp = callbackReadyForTcp
         self.addressManager = addrMan
+        self.connMgr = connMgr
         self.randomMac = 0
         self.pevSequenceState = 0
         self.pevSequenceCyclesInState = 0
         self.evseSlacHandlerState = 0
         self.numberOfSoftwareVersionResponses = 0
         self.numberOfFoundModems = 0
+        self.mofi_state = 0
+        self.mofi_stateDelay = 0
         self.isForcedSimulationMode = isSimulationMode # simulation without homeplug modem
         #self.sniffer = pcap.pcap(name=None, promisc=True, immediate=True, timeout_ms=50)
         # eth3 means: Third entry from back, in the list of interfaces, which is provided by pcap.findalldevs.
@@ -1093,7 +1069,7 @@ class pyPlcHomeplug():
         self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.
         self.myMAC = self.addressManager.getLocalMacAddress()
         self.runningCounter=0
-        self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager, self.callbackShowStatus)
+        self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager, self.connMgr, self.callbackShowStatus)
         self.ipv6.ownMac = self.myMAC
         self.udplog = udplog.udplog(self.transmit, self.addressManager)
         self.udplog.log("Test message to verify the syslog. pyPlcHomeplug.py is in the init function.")
@@ -1130,7 +1106,9 @@ class pyPlcHomeplug():
         self.sniffer.dispatch(100, self.receiveCallback, None)                
         self.showStatus("nPacketsReceived=" + str(self.nPacketsReceived))
         if (self.iAmPev==1):
-            self.runPevSequencer() # run the message sequencer for the PEV side
+            self.modemFinder_Mainfunction() # run the modem finder cyclic function
+            self.runPevSequencer() # run the SLAC message sequencer for the PEV side
+            self.runSdpStateMachine() # run the SDP state machine
         if (self.iAmEvse==1):
             self.runEvseSlacHandler(); # run the SLAC state machine on EVSE side
         
