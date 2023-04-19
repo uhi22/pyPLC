@@ -65,6 +65,7 @@ if (getConfigValue("mode")=="PevMode"):
     myMode = C_PEV_MODE
 if (getConfigValue("mode")=="EvseMode"):
     myMode = C_EVSE_MODE
+# The command line arguments overwrite the config file setting for PevMode/EvseMode.
 if (len(sys.argv) > 1):
     if (sys.argv[1] == "P"):
         myMode = C_PEV_MODE
@@ -72,6 +73,7 @@ if (len(sys.argv) > 1):
         if (sys.argv[1] == "E"):
             myMode = C_EVSE_MODE
 
+# The simulation mode can be set by command line in addition in both, PevMode and EvseMode.
 isSimulationMode=0
 if (len(sys.argv) > 2):
     if (sys.argv[2] == "S"):
@@ -80,9 +82,15 @@ if (len(sys.argv) > 2):
 if (myMode == C_LISTEN_MODE):
     print("starting in LISTEN_MODE")
 if (myMode == C_PEV_MODE):
-    print("starting in PEV_MODE")
+    if (isSimulationMode!=0):
+        print("starting in PevMode, simulated environment")
+    else:
+        print("starting in PevMode")
 if (myMode == C_EVSE_MODE):
-    print("starting in EVSE_MODE")
+    if (isSimulationMode!=0):
+        print("starting in EvseMode, simulated environment")
+    else:
+        print("starting in EvseMode")
  
 root = tk.Tk()
 root.geometry("400x350")

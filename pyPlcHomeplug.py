@@ -719,6 +719,9 @@ class pyPlcHomeplug():
             self.addToTrace("Checkpoint170: transmitting CM_SET_KEY.REQ")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
             if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_MATCH_CNF): # we were waiting for finishing the SLAC_MATCH.CNF and SET_KEY.REQ
+                if (self.isSimulationMode!=0):
+                    # In simulation mode, we pretend a successful SetKey response:
+                    self.connMgr.SlacOk()
                 self.enterState(STATE_WAITING_FOR_RESTART2)
     
     def evaluateReceivedHomeplugPacket(self):
@@ -774,6 +777,14 @@ class pyPlcHomeplug():
     def modemFinder_Mainfunction(self):
         if ((self.connMgr.getConnectionLevel()==5) and (self.mofi_state==0)):
             # We want the modem search only, if no connection is present at all.
+            if (self.isSimulationMode!=0):
+                self.addToTrace("[ModemFinder] We are in SimulationMode. Pretending that one modem is present.")
+                self.composeGetSwReq() # Send a GetSoftwareVersionRequest never the less. Just to have it in the trace.
+                self.transmit(self.mytransmitbuffer)
+                self.numberOfSoftwareVersionResponses = 1 # One pretended modem
+                self.connMgr.ModemFinderOk(self.numberOfSoftwareVersionResponses) # report "success" to the connection manager
+                self.mofi_state=2
+                return
             self.addToTrace("[ModemFinder] Starting modem search")
             self.publishStatus("Modem search")
             self.composeGetSwReq()
@@ -817,14 +828,16 @@ class pyPlcHomeplug():
             return
         if (self.pevSequenceState==STATE_INITIAL): # Initial state.
             # In real life we would check whether we see 5% PWM on the pilot line. We skip this check.
-            self.isSimulationMode = self.isForcedSimulationMode # from command line, we can force the simulation mode
             self.isSDPDone = 0
             self.isDeveloperLocalKey = 0
             self.nEvseModemMissingCounter = 0
             self.enterState(STATE_READY_FOR_SLAC)
             return
         if (self.pevSequenceState==STATE_READY_FOR_SLAC):
-            self.showStatus("Starting SLAC", "pevState")
+            if (self.isSimulationMode!=0):
+                self.showStatus("Simu SLAC", "pevState")
+            else:
+                self.showStatus("Starting SLAC", "pevState")
             self.addToTrace("[PEVSLAC] Checkpoint100: Sending SLAC_PARAM.REQ...")
             self.composeSlacParamReq()
             self.transmit(self.mytransmitbuffer)                
@@ -927,17 +940,22 @@ class pyPlcHomeplug():
         if (self.pevSequenceState==STATE_FIND_MODEMS2): # Waiting for the modems to answer.
             if (self.pevSequenceCyclesInState>=10):
                 # It was sufficient time to get the answers from the modems.
+                if (self.isSimulationMode!=0):
+                    self.addToTrace("[PEVSLAC] Simulating that both modems are present now.")
+                    self.nEvseModemMissingCounter=0
+                    self.connMgr.ModemFinderOk(2) # Two modems were found.
+                    # This is the end of the SLAC.
+                    # The simulated AVLN is established, we have at least two modems in the network.
+                    self.enterState(STATE_INITIAL)
+                    return
                 self.addToTrace("[PEVSLAC] It was sufficient time to get the answers from the modems.")
                 # Let's see what we received.
-                if ((not self.isEvseModemFound()) and (not self.isSimulationMode)):
+                if (not self.isEvseModemFound()):
                     self.nEvseModemMissingCounter+=1
                     self.addToTrace("[PEVSLAC] No EVSE seen (yet). Still waiting for it.")
                     # At the Alpitronic we measured, that it takes 7s between the SlacMatchResponse and
                     # the chargers modem reacts to GetKeyRequest. So we should wait here at least 10s.
                     if (self.nEvseModemMissingCounter>10):
-                        if (self.isSimulationMode):
-                            self.addToTrace("[PEVSLAC] No EVSE modem. But this is fine, we are in SimulationMode.")
-                        else:
                             # We lost the connection to the EVSE modem. Back to the beginning.
                             self.addToTrace("[PEVSLAC] We lost the connection to the EVSE modem. Back to the beginning.")
                             self.enterState(STATE_INITIAL)
@@ -946,10 +964,8 @@ class pyPlcHomeplug():
                     self.pevSequenceDelayCycles=30
                     self.enterState(STATE_WAITING_FOR_RESTART2)
                     return
-                # The EVSE modem is present (or we are simulating)
+                # The EVSE modem is present
                 self.addToTrace("[PEVSLAC] EVSE is up, pairing successful.")
-                if (self.isSimulationMode):
-                    self.addToTrace("[PEVSLAC] But this is only simulated.")
                 self.nEvseModemMissingCounter=0
                 self.connMgr.ModemFinderOk(2) # Two modems were found.
                 # This is the end of the SLAC.
@@ -1042,7 +1058,7 @@ class pyPlcHomeplug():
         self.numberOfFoundModems = 0
         self.mofi_state = 0
         self.mofi_stateDelay = 0
-        self.isForcedSimulationMode = isSimulationMode # simulation without homeplug modem
+        self.isSimulationMode = isSimulationMode # simulation without homeplug modem
         #self.sniffer = pcap.pcap(name=None, promisc=True, immediate=True, timeout_ms=50)
         # eth3 means: Third entry from back, in the list of interfaces, which is provided by pcap.findalldevs.
         #  Improvement necessary: select the interface based on the name.

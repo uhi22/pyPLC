@@ -6,7 +6,8 @@
 
 import pyPlcTcpSocket
 import time # for time.sleep()
-from helpers import prettyHexMessage
+from helpers import prettyHexMessage, combineValueAndMultiplier
+from random import random
 from exiConnector import * # for EXI data handling/converting
 
 stateWaitForSupportedApplicationProtocolRequest = 0
@@ -136,15 +137,26 @@ class fsmEvse():
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("PreChargeReq")>0):
-                # todo: check the request content, and fill response parameters
+                # check the request content, and fill response parameters
+                uTarget = 220 # default in case we cannot decode the requested voltage
+                try:
+                    y = json.loads(strConverterResult)
+                    strEVTargetVoltageValue = y["EVTargetVoltage.Value"]
+                    strEVTargetVoltageMultiplier = y["EVTargetVoltage.Multiplier"]
+                    uTarget = combineValueAndMultiplier(strEVTargetVoltageValue, strEVTargetVoltageMultiplier)
+                    self.addToTrace("EV wants EVTargetVoltage " + str(uTarget))
+                except:
+                    self.addToTrace("ERROR: Could not decode the PreChargeReq")
+
                 # simulating preCharge
-                if (self.simulatedPresentVoltage<200):
-                    self.simulatedPresentVoltage = 200
-                if (self.simulatedPresentVoltage<230):
-                    self.simulatedPresentVoltage += 10
-                if (self.simulatedPresentVoltage<400):
+                if (self.simulatedPresentVoltage<uTarget/2):
+                    self.simulatedPresentVoltage = uTarget/2
+                if (self.simulatedPresentVoltage<uTarget-30):
+                    self.simulatedPresentVoltage += 20
+                if (self.simulatedPresentVoltage<uTarget):
                     self.simulatedPresentVoltage += 5
                 strPresentVoltage = str(self.simulatedPresentVoltage) # "345"
+                self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
                 msg = addV2GTPHeader(exiEncode("EDg_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("PreCharging " + strPresentVoltage)
@@ -158,10 +170,21 @@ class fsmEvse():
                 self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
             if (strConverterResult.find("CurrentDemandReq")>0):
-                # todo: check the request content, and fill response parameters
-                if (self.simulatedPresentVoltage<300):
-                    self.simulatedPresentVoltage += 1;
+                # check the request content, and fill response parameters
+                uTarget = 220 # default in case we cannot decode the requested voltage
+                try:
+                    y = json.loads(strConverterResult)
+                    strEVTargetVoltageValue = y["EVTargetVoltage.Value"]
+                    strEVTargetVoltageMultiplier = y["EVTargetVoltage.Multiplier"]
+                    uTarget = combineValueAndMultiplier(strEVTargetVoltageValue, strEVTargetVoltageMultiplier)
+                    self.addToTrace("EV wants EVTargetVoltage " + str(uTarget))
+                    strSoc = y["DC_EVStatus.EVRESSSOC"]
+                    self.callbackShowStatus(strSoc, "soc")
+                except:
+                    self.addToTrace("ERROR: Could not decode the CurrentDemandReq")
+                self.simulatedPresentVoltage = uTarget + 3*random() # The charger provides the voltage which is demanded by the car.
                 strPresentVoltage = str(self.simulatedPresentVoltage)
+                self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
                 strEVSEPresentCurrent = "10" # Just as a dummy current
                 msg = addV2GTPHeader(exiEncode("EDi_"+strPresentVoltage + "_" + strEVSEPresentCurrent)) # EDi for Encode, Din, CurrentDemandRes
                 self.addToTrace("responding " + prettyHexMessage(msg))
