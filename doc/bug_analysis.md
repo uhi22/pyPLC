@@ -4,13 +4,7 @@
 - In the ChargeParameterDiscoveryReq, some fields are not filled. This leads to abort on certain charger types.
 - Discussion in https://openinverter.org/forum/viewtopic.php?p=54696#p54696
 - Improvement in https://github.com/uhi22/OpenV2Gx/commit/4b5df391d56e15b45652605fa7ad8a7712e2acaf
-
-## Issue19: Wrong determination of MAC and IPv6
-- On linux, the deprecated ifconfig is not a good choice. And, if multiple interfaces are present, the wrong address is fetched.
-- Solution: Three parts
-1. Use "ip addr" instead of "ifconfig" -> done
-2. Filter for the correct interface -> done
-3. Make the interface name configurable -> todo
+- To be re-tested with several chargers. No issue on Compleo, Alpi, ABB.
 
 ## Issue18: On SuperCharger we ignore the session ID
 - In the SessionSetupResponse, the SuperCharger V3 correctly provides a sessionID, e.g. "06ef0071".
@@ -30,12 +24,6 @@ use a dynamic length instead of the fixed length LEN_OF_SESSION_ID (=8).
 - WeldingDetectionRes says "failed" on alpitronics, and no response on ABBHPC and ABBTriple
 - version v0.4-7-g7cea8b5 (2022-12-21)
 
-## Issue15: After end of PreCharging, the log says "re-initializing fsmPev"
-- observed with v0.4 on the Compleo charger
-- PreCharge target voltage is reached. The fsmPev sends a message
-01fe800100000012809a022189cbf75b9625a9513022800a0800
-and after one second the state machine seems to run into timeout.
-- to be retested. Most likely fixed with with v0.4-7-g7cea8b5.
 
 # Closed issues
 
@@ -43,6 +31,23 @@ and after one second the state machine seems to run into timeout.
 - In the SessionSetupReq, the charger expects the EVCCID filled with the cars MAC. This is missing, and leads to abort on certain charger types.
 - Discussion in https://openinverter.org/forum/viewtopic.php?p=54667#p54667
 - Fixed with https://github.com/uhi22/OpenV2Gx/commit/fc46c3ca802f08c57120a308f69fb4d1ce14f6b6 and https://github.com/uhi22/pyPLC/commit/9b39bff85a04071e5d92d613197422033f0c1d8d
+
+## Issue19: Wrong determination of MAC and IPv6
+- SOLVED in v0.7 (2023-04-19)
+- On linux, the deprecated ifconfig is not a good choice. And, if multiple interfaces are present, the wrong address is fetched.
+- Solution: Three parts
+1. Use "ip addr" instead of "ifconfig" -> done
+2. Filter for the correct interface -> done
+3. Make the interface name configurable -> done
+
+## Issue15: After end of PreCharging, the log says "re-initializing fsmPev"
+- SOLVED
+- observed with v0.4 on the Compleo charger
+- PreCharge target voltage is reached. The fsmPev sends a message
+01fe800100000012809a022189cbf75b9625a9513022800a0800
+and after one second the state machine seems to run into timeout.
+- same timeout issue observed on Compleo by johu with version 0.6+
+- with v0.7 (2023-04-19) tested ok, see results/2023-04-19_compleo_pyPlc_lightbulb_failedBadRegulation.pcapng
 
 ## [Solved] Issue16: First CurrentDemandReq is rejected with FAILED_SequenceError and EVSE_Shutdown
 - observed on Alpitronics HPC with version v0.4-6-g257e5af

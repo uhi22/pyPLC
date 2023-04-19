@@ -11,6 +11,23 @@ In this project, we call this mode *ListenMode*.
 
 ## News / Change History / Functional Status
 
+### 2023-04-19 v0.7 Released
+Main improvements between v0.6 and v0.7:
+- configuration file
+- redesign of the state machines incl introduction of connection manager. This leads to more clear and consistent state transitions.
+- simulation mode only controlled by command line parameter instead of instable auto-detection
+- more and more consistent data shown in the GUI in both, PevMode and EvseMode
+- PevMode: use EVSEPresentVoltage as criteria for end-of-precharge
+- EvseMode: Simulated PreCharge, using the target value demanded by car.
+- Helper: pcapConverter for converting of pcap files into readable text with the decoded EXI messages
+- PevMode: longer timeout for PowerDeliveryResponse
+- PevMode: preparation to support BeagleBone GPIO
+- PevMode: Logging state names instead of only state numbers
+- Timestamp is logged
+- EvseMode: use random NMK and set it in the modem
+- Improved address resolution (MAC and IP)
+- Added numbered checkpoints in docu and log
+
 ### 2023-04-16 EvseMode brings the Ioniq to close the contactors
 With simulated rising EVSEPresentVoltage in the PreChargeResponse, the Ioniq indeed closes the contactors, without
 the need to feed physical voltage to the CCS DC inlet pins. This is surprising, because - at least for ISO -
@@ -312,9 +329,9 @@ min and max current. Now, the initialization phase of the charging session is fi
 is, to adjust the chargers output voltage to match the cars battery voltage. Also a current limit (max 2A) is sent.
 * Checkpoint575: The charger confirms with PreChargeResponse. This response contains the actual voltage on the charger.
 * Checkpoint580: The charger adjusts its output voltage according to the requested voltage.
-* Checkpoint581: The car measures the voltage on the inlet and on the battery.
-* Checkpoint582: The above steps (PreChargeRequest, PreChargeResponse, measuring physical voltage) are repeating, while the
-physical voltage did not yet reach the target voltage.
+* Checkpoint581: The car measures the voltage on the inlet and on the battery. Alternatively, the car does not measure the inlet voltage, and instead listens to the EVSEPresentVoltage which is reported by the charger.
+* Checkpoint582: The above steps (PreChargeRequest, PreChargeResponse, measuring voltage) are repeating, while the
+present voltage did not yet reach the target voltage.
 * Checkpoint590: If the difference is small enough (less than 20V according to [ref x] chapter 4.4.1.10), the car
 closes the power relay.
 * Checkpoint600: The car sends PowerDelivery(Start)Request.
@@ -360,6 +377,7 @@ See [todo.md](doc/todo.md) and [bug_analysis.md](doc/bug_analysis.md)
 Good question. This depends on how strict the car is. This first hurdle is to convince the car, to close the relay. This is
 done after a successful PreCharge phase. And it depends on the implementation of the car, whether it needs physically correct
 voltage on the inlet before closing the relay, or whether it relies on the pretended voltage in the PreChargeResponse message.
+The Hyundai Ioniq 2016 closes the contactors by just a simulated charging session. Discussion in https://openinverter.org/forum/viewtopic.php?t=3551, pictures here: https://openinverter.org/forum/viewtopic.php?p=55656#p55656
 The second hurdle is, that the car may make a plausibilization between the expected current flow (charging) and the actually
 measured current flow (discharging). The car may stop the complete process, if the deviation is too high or/and too long.
 

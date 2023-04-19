@@ -76,7 +76,7 @@ Test results of version v0.4-7-g7cea8b5 (2022-12-21)
 
 Test site: e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Koesching/EDEKA-Ingolstaedter-Strasse-114/62619/
 
-Test results of version v0.4
+Test results of version v0.7 (2023-04-19)
 - [x] SLAC
 - [x] SDP
 - [x] TCP connection
@@ -88,8 +88,9 @@ Test results of version v0.4
 	- [x] DIN ContractAuthentication
 	- [x] DIN ChargeParameterDiscovery
 	- [x] DIN CableCheck (10s loop ongoing, then finished OK)
-	- [x] DIN PreCharge ok, but at the end the state machine runs into timeout. Issue 15.
-	- [ ] DIN PowerDelivery, CurrentDemand
+	- [x] DIN PreCharge
+	- [x] DIN PowerDelivery
+      [x] DIN CurrentDemand: With no load and later light bulb connected, the charger has massive problems to regulate the voltage. It shoots over to 400V and later turns off completely, instead of regulating to the target 230V. Log: results/2023-04-19_compleo_pyPlc_lightbulb_failedBadRegulation.pcapng and 2023-04-19_compleo_pyPlc_lightbulb_failedBadRegulation.pcapng.decoded.txt
 
 ## Efacec QC45 Triple Charger
 

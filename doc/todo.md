@@ -1,18 +1,18 @@
 # Todos
 
 - [x] Decode CableCheckRes."DC_EVSEStatus.EVSEStatusCode": dinDC_EVSEStatusCodeType as readable text
-- [ ] Decode CableCheckRes."DC_EVSEStatus.EVSEIsolationStatus": dinisolationLevelType as readable text
+- [x] Decode CableCheckRes."DC_EVSEStatus.EVSEIsolationStatus": dinisolationLevelType as readable text
 - [x] Encoder: PreChargeReq: is it possible to enable the units for EVTargetVoltage and EVTargetCurrent?
 - [x] Encoder: CurrentDemandReq: is it possible to enable the units for EVTargetVoltage and EVTargetCurrent?
 - [x] Find out, why Alpi reports CableCheckRes = Finished FAILED in v0.4
 - [x] Find out, why Compleo ignores the PowerDeliveryReq START in v0.4
 - [x] Add date/time into ExiLog
-- [ ] PevMode: Add state transition in case of failed CableCheck
+- [x] PevMode: Add state transition in case of failed CableCheck
 - [x] PevMode: PreChargeReq: Fill EVRESSSOC, EVTargetVoltage, EVTargetCurrent
 - [x] PevMode: PowerDeliveryReq: Fill EVRESSSOC, Stop/Start
 - [x] PevMode: CurrentDemandReq: Fill EVRESSSOC, EVTargetCurrent, EVTargetVoltage
-- [ ] EvseMode: CurrentDemandRes: Fill EVSEPresentVoltage, EVSEPresentCurrent, EVSEMaximumVoltageLimit, ...LimitAchieved
-- [ ] EvseMode: Fill V2G messages as far as needed, to convince the car to accept it.
+- [x] EvseMode: CurrentDemandRes: Fill EVSEPresentVoltage, EVSEPresentCurrent, EVSEMaximumVoltageLimit, ...LimitAchieved
+- [x] EvseMode: Fill V2G messages as far as needed, to convince the car to accept it.
 - [x] PevMode: Fill V2G messages as far as needed, to convince the charger to accept it.
 - [x] PevMode: Find out the SLAC issue on Supercharger and Compleo.
 - [x] PevMode: Connect the inlet voltage measurement
@@ -25,7 +25,7 @@
 - [x] add OLED display to the PEV controller
 - [ ] in addressManager, replace the print by addToTrace
 - [ ] Resolve the todo-markers in the code
-- [ ] Still fixed addresses (MAC, IP) used somewhere?
-- [ ] configurable interface name and simplify address determination (see https://openinverter.org/forum/viewtopic.php?p=54659#p54659)
+- [ ] Still fixed addresses (MAC, IP?) used on windows, add auto-detection or configuration
+- [x] configurable interface name and simplify address determination (see https://openinverter.org/forum/viewtopic.php?p=54659#p54659)
 - [x] in the SessionSetupRequest we need to set the EVCCID with the MAC of the car. At the moment this is not implemented, need to update in the OpenV2Gx the function encodeSessionSetupRequest(), also the fsmPev.py, and provide the MAC as command line parameter from the python to the OpenV2Gx. (see https://openinverter.org/forum/viewtopic.php?p=54667#p54667)
-- [ ] (and much more)
+- [ ] (and some more)
