@@ -1,5 +1,7 @@
 # Installation on Raspberry Pi
 
+Pitfall: Pcap-ct does not work with Python 3.4. After update to Python 3.8, it works.
+
 To try out, we use an old raspberry pi (first generation).
 
 Install an image on a fresh 16GB SD card, using the Raspberry Pi Imager from https://www.raspberrypi.com/software/.

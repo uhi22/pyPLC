@@ -18,7 +18,7 @@
 - [x] PevMode: Connect the inlet voltage measurement
 - [x] PevMode: Connect the control of CP
 - [x] PevMode: Connect the control of Relay
-- [ ] docu: add link to evse which provides the 5% PWM)
+- [x] docu: add link to evse which provides the 5% PWM)
 - [ ] docu: add hardwareInterface into software architecture puml
 - [ ] docu: create hardware architecture picture
 - [x] docu for Dieter (Schematic, concept idea, DieterLV, DieterHV, ...)

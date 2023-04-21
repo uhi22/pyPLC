@@ -6,7 +6,7 @@ This project tries to use cheap powerline network adaptors for communication wit
 There are three different use cases, where this project can be helpful:
 1. Sniffing the traffic between an CCS charger and a car. For instance to measure which side is the limiting element for reduced charging power.
 In this project, we call this mode *ListenMode*.
-2. Building a charger for CCS or for AC with digital communication. We call this *EvseMode*.
+2. Building a charger for CCS or for AC with digital communication. We call this *EvseMode*. [EvseMode manual](doc/EvseMode.md)
 3. Building a charging unit for a car which does not support powerline communication. Let's call it *PevMode*.
 
 ## News / Change History / Functional Status
@@ -35,6 +35,7 @@ the specification says that a physical measurement shall be done. The Ioniq does
 reported voltage on the charger. After closing the contacts, there is the accu voltage on the CCS. Not yet
 tested, whether it is possible to draw some current out of the vehicle.
 Log here: results/2023-04-16_at_home_Ioniq_in_currentDemandLoop.pcapng
+Docu here: [EvseMode manual](doc/EvseMode.md)
 
 ### 2023-03-03 v0.6 Tea-Time on Alpitronics charger
 Made a tea, using the RaspberryPi3 and tpLink modem on Alpitronics hypercharger.
@@ -209,27 +210,12 @@ Write the configuration file to the PLC adaptor
 The open-plc-utils contain the programs evse and pev, which can be used for try-out of the functionality, using two PLC adaptors. 
 
 ## Installation / Preconditions on PC side
+
 ### Usage on Windows10
-
-1.	Install python (windows automatically launches the installer if you type „python“ into the search field of the task bar)
-2.	Wireshark is already installed, this includes the pcap driver, which is necessary for low-level-network-interaction
-
-Attention: There are (at least) three different python-libs available for pcap:
--	Libpcap
--	Pylibpcap (But: only Python2)
--	Pypcap (recommented on https://stackoverflow.com/questions/63941109/pcap-open-live-issue)
--	Pcap-ct (https://pypi.org/project/pcap-ct/)
-
-We use the last one.
-    python -m pip install --upgrade pcap-ct
-This is fighting against the Libpcap-installation, so we need to deinstall the second:
-    python -m pip uninstall libpcap
-Then again install pcap-ct, and finally add in the libpcap\_platform\__init__py the missing is_osx = False. (Is in the meanwhile fixed in the github repository.)
+See [Windows installation manual](doc/installation_on_windows.md)
 
 ### Usage on Raspberry
-Pitfall: Pcap-ct does not work with Python 3.4. After update to Python 3.8, it works.
-
-See See [Raspberry installation manual](doc/installation_on_raspberry.md)
+See [Raspberry installation manual](doc/installation_on_raspberry.md)
 
 ### Usage on Microcontrollers
 This python project is NOT intended for use on microcontrollers like ESP32 or STM32. But there is a variant ported to C for
@@ -377,7 +363,8 @@ See [todo.md](doc/todo.md) and [bug_analysis.md](doc/bug_analysis.md)
 Good question. This depends on how strict the car is. This first hurdle is to convince the car, to close the relay. This is
 done after a successful PreCharge phase. And it depends on the implementation of the car, whether it needs physically correct
 voltage on the inlet before closing the relay, or whether it relies on the pretended voltage in the PreChargeResponse message.
-The Hyundai Ioniq 2016 closes the contactors by just a simulated charging session. Discussion in https://openinverter.org/forum/viewtopic.php?t=3551, pictures here: https://openinverter.org/forum/viewtopic.php?p=55656#p55656
+With setup from [EvseMode manual](docu/EvseMode.md),
+the Hyundai Ioniq 2016 closes the contactors by just a simulated charging session. Discussion in https://openinverter.org/forum/viewtopic.php?t=3551, pictures here: https://openinverter.org/forum/viewtopic.php?p=55656#p55656
 The second hurdle is, that the car may make a plausibilization between the expected current flow (charging) and the actually
 measured current flow (discharging). The car may stop the complete process, if the deviation is too high or/and too long.
 
