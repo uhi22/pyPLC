@@ -185,7 +185,7 @@ class fsmEvse():
                 self.simulatedPresentVoltage = uTarget + 3*random() # The charger provides the voltage which is demanded by the car.
                 strPresentVoltage = str(self.simulatedPresentVoltage)
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
-                strEVSEPresentCurrent = "10" # Just as a dummy current
+                strEVSEPresentCurrent = "1" # Just as a dummy current
                 msg = addV2GTPHeader(exiEncode("EDi_"+strPresentVoltage + "_" + strEVSEPresentCurrent)) # EDi for Encode, Din, CurrentDemandRes
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("CurrentDemand")

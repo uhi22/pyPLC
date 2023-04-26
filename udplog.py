@@ -16,6 +16,7 @@ class udplog():
         # Level consists of
         #  Facility = 1 = "user"
         #  Severity = 7 = "debug"
+        return
         strLevel="<15>"
         # The String to be logged. Terminated by 00.
         strMessage=s+"\0"
