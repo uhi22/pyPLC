@@ -36,7 +36,7 @@ class fsmEvse():
         
     def isTooLong(self):
         # The timeout handling function.
-        return (self.cyclesInState > 50)
+        return (self.cyclesInState > 100) # 100*33ms=3.3s
         
         
     def stateFunctionWaitForSupportedApplicationProtocolRequest(self):
