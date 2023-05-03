@@ -552,12 +552,9 @@ class fsmPev():
             
     def stateFunctionSequenceTimeout(self):
         # Here we end, if we run into a timeout in the state machine. This is an error case, and
-        # we should re-initalize and try again to get a communication.
-        # Todo: Maybe we want even inform the pyPlcHomeplug to do a new SLAC.
-        # For the moment, we just re-establish the TCP connection.
+        # an end of the PEV state machine. The re-initialization is performed by the
+        # lower layers SLAC, SDP, together with the connection manager. Nothing to do here.
         self.publishStatus("ERROR Timeout")
-        self.reInit()
-    
         
     stateFunctions = { 
             stateNotYetInitialized: stateFunctionNotYetInitialized,
