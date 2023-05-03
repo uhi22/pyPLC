@@ -137,6 +137,12 @@ Test results of version v0.4-7-g7cea8b5
 	- [ ] DIN SessionStop
 - [x] Inlet voltage measurement
 
+## Kempower satellite
+
+Tested by celeron55 with his fork https://github.com/celeron55/pyPLC 2023-05-03.
+
+Charging works, see https://openinverter.org/forum/viewtopic.php?p=56188&sid=9579fd29268d0e332c81ed528f59f09b#p56188
+
 ## Porsche
 
 Test site e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Ingolstadt/Audi-Forum-Ettinger-Strasse/7970/

@@ -11,6 +11,10 @@ In this project, we call this mode *ListenMode*.
 
 ## News / Change History / Functional Status
 
+### 2023-05-03 First real charging session
+
+Celeron55 is the winner. He managed to combine all the prerequisits, to have the world wide first pyPlc charging session. Congratulations and thanks for the great contribution. https://openinverter.org/forum/viewtopic.php?p=56188&sid=9579fd29268d0e332c81ed528f59f09b#p56188
+
 ### 2023-04-19 v0.7 Released
 Main improvements between v0.6 and v0.7:
 - configuration file

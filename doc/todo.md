@@ -28,4 +28,8 @@
 - [ ] Still fixed addresses (MAC, IP?) used on windows, add auto-detection or configuration
 - [x] configurable interface name and simplify address determination (see https://openinverter.org/forum/viewtopic.php?p=54659#p54659)
 - [x] in the SessionSetupRequest we need to set the EVCCID with the MAC of the car. At the moment this is not implemented, need to update in the OpenV2Gx the function encodeSessionSetupRequest(), also the fsmPev.py, and provide the MAC as command line parameter from the python to the OpenV2Gx. (see https://openinverter.org/forum/viewtopic.php?p=54667#p54667)
+- [ ] integrate celeron55s hardware interface, use config options for this.
+- [ ] configurable serial interface and baud rate
+- [ ] add plausibilization between EVSEPresentVoltage and physicalVoltage before closing contactors (configurable)
+- [ ] find out how a normal end of charging session works (Stopped on charger, stopped on car)
 - [ ] (and some more)
