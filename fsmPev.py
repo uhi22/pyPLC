@@ -30,6 +30,7 @@ stateWaitForCurrentDemandResponse = 13
 stateWaitForWeldingDetectionResponse = 14
 stateWaitForSessionStopResponse = 15
 stateChargingFinished = 16
+stateUnrecoverableError = 88
 stateSequenceTimeout = 99
 
 
@@ -578,6 +579,11 @@ class fsmPev():
         # lower layers SLAC, SDP, together with the connection manager. Nothing to do here.
         self.publishStatus("ERROR Timeout")
         
+    def stateFunctionUnrecoverableError(self):
+        # Here we end, if the EVSE reported an error code, which terminates the charging session.
+        # This is an end of the PEV state machine. The re-init is performed by the lower layers. Nothing more to do here.
+        self.publishStatus("ERROR reported")
+    
     stateFunctions = { 
             stateNotYetInitialized: stateFunctionNotYetInitialized,
             stateConnecting: stateFunctionConnecting,
@@ -596,6 +602,7 @@ class fsmPev():
             stateWaitForWeldingDetectionResponse: stateFunctionWaitForWeldingDetectionResponse,
             stateWaitForSessionStopResponse: stateFunctionWaitForSessionStopResponse,
             stateChargingFinished: stateFunctionChargingFinished,
+            stateUnrecoverableError: stateFunctionUnrecoverableError,
             stateSequenceTimeout: stateFunctionSequenceTimeout
         }
 

@@ -32,4 +32,5 @@
 - [ ] configurable serial interface and baud rate
 - [ ] add plausibilization between EVSEPresentVoltage and physicalVoltage before closing contactors (configurable)
 - [ ] find out how a normal end of charging session works (Stopped on charger, stopped on car)
+- [ ] PevMode: Evaluate the error code reported by the charger, and enter into state stateUnrecoverableError. 
 - [ ] (and some more)
