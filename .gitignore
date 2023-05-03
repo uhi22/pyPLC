@@ -1,4 +1,7 @@
+.*
 /__pycache__/
 /doc/*.jar
 *.bat
 PevExiLog*.txt
+pyPlc.ini
+/log

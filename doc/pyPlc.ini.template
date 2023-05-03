@@ -1,3 +1,5 @@
+# This is the template file pyPlc.ini.template.
+# Copy this file in the same folder like the pyPlc.py, and rename it to pyPlc.ini
 
 [general]
 # mode can be either PevMode to use as car, or EvseMode to use as charger

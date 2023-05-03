@@ -89,6 +89,9 @@ class hardwareInterface():
         self.addToTrace("Switching Relay2 OFF.")
         self.outvalue &= ~4
         
+    def getPowerRelayConfirmation(self):
+        return 1 # todo: self.contactor_confirmed
+
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
         # self.inletVoltage = self.simulatedInletVoltage

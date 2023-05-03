@@ -24,11 +24,12 @@ stateWaitForContractAuthenticationResponse = 7
 stateWaitForChargeParameterDiscoveryResponse = 8
 stateWaitForCableCheckResponse = 9
 stateWaitForPreChargeResponse = 10
-stateWaitForPowerDeliveryResponse = 11
-stateWaitForCurrentDemandResponse = 12
-stateWaitForWeldingDetectionResponse = 13
-stateWaitForSessionStopResponse = 14
-stateChargingFinished = 15
+stateWaitForContactorsClosed = 11
+stateWaitForPowerDeliveryResponse = 12
+stateWaitForCurrentDemandResponse = 13
+stateWaitForWeldingDetectionResponse = 14
+stateWaitForSessionStopResponse = 15
+stateChargingFinished = 16
 stateSequenceTimeout = 99
 
 
@@ -81,6 +82,8 @@ class fsmPev():
             s = "WaitForCableCheckResponse"
         if (statenumber == stateWaitForPreChargeResponse):
             s = "WaitForPreChargeResponse"
+        if (statenumber == stateWaitForContactorsClosed):
+            s = "WaitForContactorsClosed"
         if (statenumber == stateWaitForPowerDeliveryResponse):
             s = "WaitForPowerDeliveryResponse"
         if (statenumber == stateWaitForCurrentDemandResponse):
@@ -408,20 +411,17 @@ class fsmPev():
                 s= s + "U_Accu " + str(self.hardwareInterface.getAccuVoltage()) + "V"
                 self.addToTrace(s)
                 if (abs(u-self.hardwareInterface.getAccuVoltage()) < float(getConfigValue("u_delta_max_for_end_of_precharge"))):
-                    self.addToTrace("Difference between accu voltage and inlet voltage is small. Sending PowerDeliveryReq.")
+                    self.addToTrace("Difference between accu voltage and inlet voltage is small.")
                     self.publishStatus("PreCharge done")
                     if (self.isLightBulbDemo):
                         # For light-bulb-demo, nothing to do here.
                         self.addToTrace("This is a light bulb demo. Do not turn-on the relay at end of precharge.")
                     else:
                         # In real-world-case, turn the power relay on.
+                        self.addToTrace("Checkpoint590: Turning the contactors on.")
                         self.hardwareInterface.setPowerRelayOn()
-                    soc = self.hardwareInterface.getSoc()
-                    msg = addV2GTPHeader(self.exiEncode("EDH_"+self.sessionId+"_"+ str(soc) + "_" + "1")) # EDH for Encode, Din, PowerDeliveryReq, ON
-                    self.wasPowerDeliveryRequestedOn=True
-                    self.addToTrace("responding " + prettyHexMessage(msg))
-                    self.Tcp.transmit(msg)
-                    self.enterState(stateWaitForPowerDeliveryResponse)
+                    self.DelayCycles = 10 # 10*33ms = 330ms waiting for contactors
+                    self.enterState(stateWaitForContactorsClosed)
                 else:
                     self.publishStatus("PreChrge ongoing", format(u, ".0f") + "V")
                     self.addToTrace("Difference too big. Continuing PreCharge.")
@@ -434,6 +434,28 @@ class fsmPev():
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
             
+    def stateFunctionWaitForContactorsClosed(self):
+        if (self.DelayCycles>0):
+            self.DelayCycles-=1
+            return
+        if (self.isLightBulbDemo):
+            readyForNextState=1 # if it's just a bulb demo, we do not wait for contactor, because it is not switched in this moment.
+        else:
+            readyForNextState = self.hardwareInterface.getPowerRelayConfirmation() # check if the contactor is closed
+            if (readyForNextState):
+                self.addToTrace("Contactors are confirmed to be closed.")
+                self.publishStatus("Contactors ON")
+        if (readyForNextState):
+            self.addToTrace("Sending PowerDeliveryReq.")
+            soc = self.hardwareInterface.getSoc()
+            msg = addV2GTPHeader(self.exiEncode("EDH_"+self.sessionId+"_"+ str(soc) + "_" + "1")) # EDH for Encode, Din, PowerDeliveryReq, ON
+            self.wasPowerDeliveryRequestedOn=True
+            self.addToTrace("responding " + prettyHexMessage(msg))
+            self.Tcp.transmit(msg)
+            self.enterState(stateWaitForPowerDeliveryResponse)
+        if (self.isTooLong()):
+            self.enterState(stateSequenceTimeout)
+    
     def stateFunctionWaitForPowerDeliveryResponse(self):
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForPowerDeliveryRes, received " + prettyHexMessage(self.rxData))
@@ -568,6 +590,7 @@ class fsmPev():
             stateWaitForChargeParameterDiscoveryResponse: stateFunctionWaitForChargeParameterDiscoveryResponse,
             stateWaitForCableCheckResponse: stateFunctionWaitForCableCheckResponse,
             stateWaitForPreChargeResponse: stateFunctionWaitForPreChargeResponse,
+            stateWaitForContactorsClosed: stateFunctionWaitForContactorsClosed,
             stateWaitForPowerDeliveryResponse: stateFunctionWaitForPowerDeliveryResponse,
             stateWaitForCurrentDemandResponse: stateFunctionWaitForCurrentDemandResponse,
             stateWaitForWeldingDetectionResponse: stateFunctionWaitForWeldingDetectionResponse,
