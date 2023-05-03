@@ -130,6 +130,8 @@ class fsmPev():
     def isTooLong(self):
         # The timeout handling function.
         limit = 33 # number of call cycles until timeout. Default 33 cycles with 30ms, means approx. 1 second.
+        if (self.state==stateWaitForChargeParameterDiscoveryResponse):
+            limit = 5*33 # On some charger models, the chargeParameterDiscovery needs more than a second. Wait at least 5s.
         if (self.state==stateWaitForCableCheckResponse):
             limit = 30*33 # CableCheck may need some time. Wait at least 30s.
         if (self.state==stateWaitForPreChargeResponse):
