@@ -7,6 +7,7 @@
 import pyPlcTcpSocket
 import time # for time.sleep()
 from helpers import prettyHexMessage, combineValueAndMultiplier
+from mytestsuite import * 
 from random import random
 from exiConnector import * # for EXI data handling/converting
 
@@ -158,6 +159,9 @@ class fsmEvse():
                 strPresentVoltage = str(self.simulatedPresentVoltage) # "345"
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
                 msg = addV2GTPHeader(exiEncode("EDg_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_Shutdown_during_PreCharge)):
+                    # send a PreChargeResponse with StatusCode EVSE_Shutdown, to simulate a user-triggered session stop
+                    msg = addV2GTPHeader("809a02180189551e24fc9e9160004100008182800000")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("PreCharging " + strPresentVoltage)
                 self.Tcp.transmit(msg)  
@@ -187,6 +191,9 @@ class fsmEvse():
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
                 strEVSEPresentCurrent = "1" # Just as a dummy current
                 msg = addV2GTPHeader(exiEncode("EDi_"+strPresentVoltage + "_" + strEVSEPresentCurrent)) # EDi for Encode, Din, CurrentDemandRes
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_Malfunction_during_CurrentDemand)):
+                    # send a CurrentDemandResponse with StatusCode EVSE_Malfunction, to simulate e.g. a voltage overshoot
+                    msg = addV2GTPHeader("809a02203fa9e71c31bc920100821b430b933b4b7339032b93937b908e08043000081828440201818000040060a11c06030306402038441380")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("CurrentDemand")
                 self.Tcp.transmit(msg)  

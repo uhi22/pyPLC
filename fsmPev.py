@@ -95,6 +95,8 @@ class fsmPev():
             s = "WaitForSessionStopResponse"
         if (statenumber == stateChargingFinished):
             s = "ChargingFinished"
+        if (statenumber == stateUnrecoverableError):
+            s = "UnrecoverableError"
         if (statenumber == stateSequenceTimeout):
             s = "SequenceTimeout"
         return s
@@ -393,15 +395,22 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("PreChargeRes")>0):
                 u = 0 # a default voltage of 0V in case we cannot convert the actual value
+                strEVSEStatusCode = "0" # default in case the decoding does not work
                 try:
                     y = json.loads(strConverterResult)
                     strEVSEPresentVoltageValue = y["EVSEPresentVoltage.Value"]
                     strEVSEPresentVoltageMultiplier = y["EVSEPresentVoltage.Multiplier"]
                     u = combineValueAndMultiplier(strEVSEPresentVoltageValue, strEVSEPresentVoltageMultiplier)
                     self.callbackShowStatus(format(u,".1f"), "EVSEPresentVoltage")
+                    strEVSEStatusCode = y["DC_EVSEStatus.EVSEStatusCode"]
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
                 self.addToTrace("PreChargeResponse received.")
+                if (strEVSEStatusCode=="2"):
+                    self.addToTrace("EVSE_Shutdown. Seems the user canceled the charging on the charger.")
+                    self.publishStatus("EVSE_Shutdown")
+                    self.enterState(stateUnrecoverableError)
+                    return
                 if (getConfigValueBool("use_evsepresentvoltage_for_precharge_end")):
                     # We want to use the EVSEPresentVoltage, which was reported by the charger, as end-criteria for the precharging.
                     s = "EVSEPresentVoltage " + str(u) + "V, "
@@ -491,14 +500,26 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("CurrentDemandRes")>0):
                 u = 0 # a default voltage of 0V in case we cannot convert the actual value
+                strEVSEStatusCode = "0" # default in case the decoding does not work
                 try:
                     y = json.loads(strConverterResult)
                     strEVSEPresentVoltageValue = y["EVSEPresentVoltage.Value"]
                     strEVSEPresentVoltageMultiplier = y["EVSEPresentVoltage.Multiplier"]
                     u = combineValueAndMultiplier(strEVSEPresentVoltageValue, strEVSEPresentVoltageMultiplier)
                     self.callbackShowStatus(format(u,".1f"), "EVSEPresentVoltage")
+                    strEVSEStatusCode = y["DC_EVSEStatus.EVSEStatusCode"]
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
+                if (strEVSEStatusCode=="2"):
+                    self.addToTrace("EVSE_Shutdown. Seems the user canceled the charging on the charger.")
+                    self.publishStatus("EVSE_Shutdown")
+                    self.enterState(stateUnrecoverableError)
+                    return
+                if (strEVSEStatusCode=="6"):
+                    self.addToTrace("EVSE_Malfunction. Seems the charger detected a problem.")
+                    self.publishStatus("EVSE_Malfunction")
+                    self.enterState(stateUnrecoverableError)
+                    return
                 if (getConfigValueBool("use_physical_inlet_voltage_during_chargeloop")):
                     # Instead of using the voltage which is reported by the charger, use the physically measured.
                     u = self.hardwareInterface.getInletVoltage()
