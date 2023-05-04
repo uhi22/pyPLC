@@ -22,16 +22,21 @@ stateWaitForServiceDiscoveryResponse = 5
 stateWaitForServicePaymentSelectionResponse = 6
 stateWaitForContractAuthenticationResponse = 7
 stateWaitForChargeParameterDiscoveryResponse = 8
-stateWaitForCableCheckResponse = 9
-stateWaitForPreChargeResponse = 10
-stateWaitForContactorsClosed = 11
-stateWaitForPowerDeliveryResponse = 12
-stateWaitForCurrentDemandResponse = 13
-stateWaitForWeldingDetectionResponse = 14
-stateWaitForSessionStopResponse = 15
-stateChargingFinished = 16
+stateWaitForConnectorLock = 9
+stateWaitForCableCheckResponse = 10
+stateWaitForPreChargeResponse = 11
+stateWaitForContactorsClosed = 12
+stateWaitForPowerDeliveryResponse = 13
+stateWaitForCurrentDemandResponse = 14
+stateWaitForWeldingDetectionResponse = 15
+stateWaitForSessionStopResponse = 16
+stateChargingFinished = 17
 stateUnrecoverableError = 88
 stateSequenceTimeout = 99
+stateSafeShutDownWaitForChargerShutdown = 111
+stateSafeShutDownWaitForContactorsOpen = 222
+stateEnd = 1000
+
 
 
 dinEVSEProcessingType_Finished = "0"
@@ -79,6 +84,8 @@ class fsmPev():
             s = "WaitForContractAuthenticationResponse"
         if (statenumber == stateWaitForChargeParameterDiscoveryResponse):
             s = "WaitForChargeParameterDiscoveryResponse"
+        if (statenumber == stateWaitForConnectorLock):
+            s = "WaitForConnectorLock"
         if (statenumber == stateWaitForCableCheckResponse):
             s = "WaitForCableCheckResponse"
         if (statenumber == stateWaitForPreChargeResponse):
@@ -99,6 +106,12 @@ class fsmPev():
             s = "UnrecoverableError"
         if (statenumber == stateSequenceTimeout):
             s = "SequenceTimeout"
+        if (statenumber == stateSafeShutDownWaitForChargerShutdown):
+            s = "SafeShutDownWaitForChargerShutdown"
+        if (statenumber == stateSafeShutDownWaitForContactorsOpen):
+            s = "SafeShutDownWaitForContactorsOpen"
+        if (statenumber == stateEnd):
+            s = "End"
         return s
         
     def sendChargeParameterDiscoveryReq(self):
@@ -313,12 +326,12 @@ class fsmPev():
                 # (B) The charger finished to tell the charge parameters.
                 if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):
                     self.publishStatus("ChargeParams discovered")
-                    self.addToTrace("Checkpoint550: It is Finished. Will change to state C and send CableCheckReq.")
+                    self.addToTrace("Checkpoint550: ChargeParams are discovered. Will change to state C.")
                     # pull the CP line to state C here:
                     self.hardwareInterface.setStateC()
-                    self.sendCableCheckReq()
-                    self.numberOfCableCheckReq = 1 # This is the first request.
-                    self.enterState(stateWaitForCableCheckResponse)
+                    self.addToTrace("Checkpoint555: Locking the connector.")
+                    self.hardwareInterface.triggerConnectorLocking()
+                    self.enterState(stateWaitForConnectorLock)
                 else:
                     # Not (yet) finished.
                     if (self.numberOfChargeParameterDiscoveryReq>=20): # approx 20 seconds, should be sufficient for the charger to find its parameters...
@@ -335,6 +348,15 @@ class fsmPev():
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
 
+    def stateFunctionWaitForConnectorLock(self):
+        if (self.hardwareInterface.isConnectorLocked()):
+            self.addToTrace("Checkpoint560: Connector Lock confirmed. Will send CableCheckReq.")
+            self.sendCableCheckReq()
+            self.numberOfCableCheckReq = 1 # This is the first request.
+            self.enterState(stateWaitForCableCheckResponse)
+        if (self.isTooLong()):
+            self.enterState(stateSequenceTimeout)
+    
     def stateFunctionWaitForCableCheckResponse(self):
         if (self.cyclesInState<30): # The first second in the state just do nothing.
             return     
@@ -482,6 +504,10 @@ class fsmPev():
                 else:
                     # We requested "OFF". So we turn-off the Relay and continue with the Welding detection.
                     self.publishStatus("PwrDelvry OFF success")
+                    self.addToTrace("Checkpoint806: PowerDelivery Off confirmed.")
+                    self.addToTrace("Checkpoint810: Changing CP line to State B.")
+                    # set the CP line to B 
+                    self.hardwareInterface.setStateB()
                     self.addToTrace("Turning off the relay and starting the WeldingDetection")
                     self.hardwareInterface.setPowerRelayOff()
                     self.hardwareInterface.setRelay2Off()
@@ -584,26 +610,63 @@ class fsmPev():
                 # Todo: close the TCP connection here.
                 # Todo: Unlock the connector lock.
                 self.publishStatus("Stopped normally")
-                self.hardwareInterface.setStateB()
                 self.addToTrace("Charging is finished")
                 self.enterState(stateChargingFinished)
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
     
     def stateFunctionChargingFinished(self):
-        # charging is finished. Nothing to do. Just stay here, until we get re-initialized after a new SLAC/SDP.        
-        pass
-            
+        # charging is finished.
+        # Finally unlock the connector
+        self.addToTrace("Charging successfully finished. Unlocking the connector")
+        self.hardwareInterface.triggerConnectorUnlocking()
+        self.enterState(stateEnd)
+
     def stateFunctionSequenceTimeout(self):
-        # Here we end, if we run into a timeout in the state machine. This is an error case, and
-        # an end of the PEV state machine. The re-initialization is performed by the
-        # lower layers SLAC, SDP, together with the connection manager. Nothing to do here.
+        # Here we end, if we run into a timeout in the state machine.
         self.publishStatus("ERROR Timeout")
+        # Initiate the safe-shutdown-sequence.
+        self.addToTrace("Safe-shutdown-sequence: setting state B")
+        self.hardwareInterface.setStateB() # setting CP line to B disables in the charger the current flow.
+        self.DelayCycles = 66 # 66*30ms=2s for charger shutdown
+        self.enterState(stateSafeShutDownWaitForChargerShutdown)
         
     def stateFunctionUnrecoverableError(self):
         # Here we end, if the EVSE reported an error code, which terminates the charging session.
-        # This is an end of the PEV state machine. The re-init is performed by the lower layers. Nothing more to do here.
         self.publishStatus("ERROR reported")
+        # Initiate the safe-shutdown-sequence.
+        self.addToTrace("Safe-shutdown-sequence: setting state B")
+        self.hardwareInterface.setStateB() # setting CP line to B disables in the charger the current flow.
+        self.DelayCycles = 66 # 66*30ms=2s for charger shutdown
+        self.enterState(stateSafeShutDownWaitForChargerShutdown)
+
+    def stateFunctionSafeShutDownWaitForChargerShutdown(self):
+        # wait state, to give the charger the time to stop the current.
+        if (self.DelayCycles>0):
+            self.DelayCycles-=1
+            return    
+        # Now the current flow is stopped by the charger. We can safely open the contactors:
+        self.addToTrace("Safe-shutdown-sequence: opening contactors")
+        self.hardwareInterface.setPowerRelayOff()
+        self.hardwareInterface.setRelay2Off()
+        self.DelayCycles = 33 # 33*30ms=1s for opening the contactors
+        self.enterState(stateSafeShutDownWaitForContactorsOpen)
+
+    def stateFunctionSafeShutDownWaitForContactorsOpen(self):
+        # wait state, to give the contactors the time to open.
+        if (self.DelayCycles>0):
+            self.DelayCycles-=1
+            return    
+        # Finally, when we have no current and no voltage, unlock the connector
+        self.addToTrace("Safe-shutdown-sequence: unlocking the connector")
+        self.hardwareInterface.triggerConnectorUnlocking()
+        # This is the end of the safe-shutdown-sequence. 
+        self.enterState(stateEnd)
+
+    def stateFunctionEnd(self):
+        # Just stay here, until we get re-initialized after a new SLAC/SDP.
+        pass
+
     
     stateFunctions = { 
             stateNotYetInitialized: stateFunctionNotYetInitialized,
@@ -615,6 +678,7 @@ class fsmPev():
             stateWaitForServicePaymentSelectionResponse: stateFunctionWaitForServicePaymentSelectionResponse,
             stateWaitForContractAuthenticationResponse: stateFunctionWaitForContractAuthenticationResponse,
             stateWaitForChargeParameterDiscoveryResponse: stateFunctionWaitForChargeParameterDiscoveryResponse,
+            stateWaitForConnectorLock: stateFunctionWaitForConnectorLock,
             stateWaitForCableCheckResponse: stateFunctionWaitForCableCheckResponse,
             stateWaitForPreChargeResponse: stateFunctionWaitForPreChargeResponse,
             stateWaitForContactorsClosed: stateFunctionWaitForContactorsClosed,
@@ -624,7 +688,10 @@ class fsmPev():
             stateWaitForSessionStopResponse: stateFunctionWaitForSessionStopResponse,
             stateChargingFinished: stateFunctionChargingFinished,
             stateUnrecoverableError: stateFunctionUnrecoverableError,
-            stateSequenceTimeout: stateFunctionSequenceTimeout
+            stateSequenceTimeout: stateFunctionSequenceTimeout,
+            stateSafeShutDownWaitForChargerShutdown: stateFunctionSafeShutDownWaitForChargerShutdown,
+            stateSafeShutDownWaitForContactorsOpen: stateFunctionSafeShutDownWaitForContactorsOpen,
+            stateEnd: stateFunctionEnd
         }
 
     def stopCharging(self):

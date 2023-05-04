@@ -311,6 +311,8 @@ DC or AC and which power pins are used. The car announces the maximum current li
 * Checkpoint545: The charger confirms with ChargeParameterResponse. The contains the limits from charger side, e.g. min and max voltage,
 min and max current. Now, the initialization phase of the charging session is finished.
 * Checkpoint550: The car changes to CP State to C or D, by applying an additional resistor between CP and ground.
+* Checkpoint555: The car controls the connector lock motor into direction 'lock'.
+* Checkpoint556: The car checks whether the connector lock is confirmed.
 * Checkpoint560: The car sends CableCheckRequest. This contains the information, whether the connector is locked.
 * Checkpoint561: The charger applies voltage to the cable and measures the isolation resistance.
 * Checkpoint565: The charger confirms with CableCheckResponse.
@@ -333,6 +335,8 @@ is active (current limitation, voltage limitation, power limitation).
 * Checkpoint710: The CurrentDemandRequest/CurrentDemandResponse are repeated during the charging.
 * Checkpoint800: When the end of charging is decided (battery full or user wish), the car sends PowerDelivery(Stop)Request.
 * Checkpoint805: The charger confirms with PowerDeliveryResponse.
+* Checkpoint806: The car receives the PowerDeliveryResponse.
+* Checkpoint810: The car changes the CP line from StateC to StateB. (according to Figure 107)
 * Checkpoint850: The car sends WeldingDetectionRequest.
 * Checkpoint855: The charger confirms with WeldingDetectionResponse.
 * Checkpoint900: The car sends SessionStopRequest.

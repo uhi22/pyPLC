@@ -91,6 +91,17 @@ class hardwareInterface():
         
     def getPowerRelayConfirmation(self):
         return 1 # todo: self.contactor_confirmed
+        
+    def triggerConnectorLocking(self):
+        self.addToTrace("Locking the connector")
+        # todo control the lock motor into lock direction until the end (time based or current based stopping?)
+
+    def triggerConnectorUnlocking(self):
+        self.addToTrace("Unocking the connector")
+        # todo control the lock motor into unlock direction until the end (time based or current based stopping?)
+
+    def isConnectorLocked(self):
+        return 1 # todo: use the real connector lock feedback
 
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
