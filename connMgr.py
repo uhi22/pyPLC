@@ -120,10 +120,10 @@ class connMgr():
         self.timerSDP = CONNMGR_TIMER_MAX
 
     def TcpOk(self):
-        self.timerTCP = CONNMGR_TIMER_MAX
+        self.timerTCP = CONNMGR_TIMER_MAX_10s
 
     def ApplOk(self):
-        self.timerAppl = CONNMGR_TIMER_MAX
+        self.timerAppl = CONNMGR_TIMER_MAX_10s
 
 
 def testCallbackAddToTrace(s):
