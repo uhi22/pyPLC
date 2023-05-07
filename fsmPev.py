@@ -642,9 +642,10 @@ class fsmPev():
 
     def stateFunctionSafeShutDownWaitForChargerShutdown(self):
         # wait state, to give the charger the time to stop the current.
+        self.connMgr.ApplOk() # Trigger the communication manager, so that it does not disturb our safe-shutdown.
         if (self.DelayCycles>0):
             self.DelayCycles-=1
-            return    
+            return
         # Now the current flow is stopped by the charger. We can safely open the contactors:
         self.addToTrace("Safe-shutdown-sequence: opening contactors")
         self.hardwareInterface.setPowerRelayOff()
@@ -654,6 +655,7 @@ class fsmPev():
 
     def stateFunctionSafeShutDownWaitForContactorsOpen(self):
         # wait state, to give the contactors the time to open.
+        self.connMgr.ApplOk() # Trigger the communication manager, so that it does not disturb our safe-shutdown.
         if (self.DelayCycles>0):
             self.DelayCycles-=1
             return    
