@@ -146,6 +146,14 @@ The first value defines the overall disk space which is used by the service logs
 The next time we power-up the pi, even without a HDMI display and keyboard connected, the OLED should show the charge progress now.
 Using an RaspberryPi 3 without additional startup time optimization, the time from power-on until the start of SLAC is ~21 seconds.
 
+## Disable Network Manager for the ethernet port
+
+With standard settings, the Raspberry tries to find an internet connection on the ethernet port, this means it tries to do things like DHCP and RouterSolicitation. This procedure may disturb the communication between the PEV and EVSE. That's why it is recommended to forbid the Network Manager to care for the eth0.
+
+Discussion: https://openinverter.org/forum/viewtopic.php?p=56342#p56342
+
+Solution ideas: https://stackoverflow.com/questions/5321380/disable-network-manager-for-a-particular-interface or https://access.redhat.com/documentation/de-de/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-networkmanager-to-ignore-certain-devices_configuring-and-managing-networking Todo: which is the correct way on the raspberry?
+
 
 ## Nice-to-have: Password-less SSH connection from the Windows notebook to the Pi
 
