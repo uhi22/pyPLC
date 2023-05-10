@@ -113,7 +113,39 @@ class fsmPev():
         if (statenumber == stateEnd):
             s = "End"
         return s
-        
+    
+    def  isErrorEvseStatusCode(self, strEvseStatusCode):
+        # 0 is EVSE_NotReady. This may be normal, no error, just wait.
+        # 1 is EVSE_Ready: The normal case.
+        if (strEvseStatusCode == "2"): # EVSE_Shutdown: The user stopped the charging normally on charger.
+            self.addToTrace("EVSE_Shutdown. Seems the user canceled the charging on the charger.")
+            self.publishStatus("EVSE_Shutdown")
+            return True
+        if (strEvseStatusCode == "3"): # EVSE_UtilityInterruptEvent: Stopped or power reduction
+            self.addToTrace("EVSE_UtilityInterruptEvent.")
+            self.publishStatus("EVSE_UtilityInterruptEvent")
+            return True
+        # 4 is EVSE_IsolationMonitoringActive. This is normal, no error.
+        if (strEvseStatusCode == "5"): # EVSE_EmergencyShutdown: Error or Notaus button
+            self.addToTrace("EVSE_EmergencyShutdown.")
+            self.publishStatus("EVSE_EmergencyShutdown")
+            return True
+        if (strEvseStatusCode == "6"): # EVSE_Malfunction: Error
+            self.addToTrace("EVSE_Malfunction.")
+            self.publishStatus("EVSE_Malfunction")
+            return True
+        if (strEvseStatusCode == "7"): # Reserved, Error
+            return True
+        if (strEvseStatusCode == "8"): # Reserved, Error
+            return True
+        if (strEvseStatusCode == "9"): # Reserved, Error
+            return True
+        if (strEvseStatusCode == "10"): # Reserved, Error
+            return True
+        if (strEvseStatusCode == "11"): # Reserved, Error
+            return True
+        return False # no critical error detected
+            
     def sendChargeParameterDiscoveryReq(self):
         soc = str(self.hardwareInterface.getSoc())
         msg = addV2GTPHeader(self.exiEncode("EDE_"+self.sessionId + "_" + soc)) # EDE for Encode, Din, ChargeParameterDiscovery.
@@ -428,9 +460,7 @@ class fsmPev():
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
                 self.addToTrace("PreChargeResponse received.")
-                if (strEVSEStatusCode=="2"):
-                    self.addToTrace("EVSE_Shutdown. Seems the user canceled the charging on the charger.")
-                    self.publishStatus("EVSE_Shutdown")
+                if (self.isErrorEvseStatusCode(strEVSEStatusCode)):
                     self.enterState(stateUnrecoverableError)
                     return
                 if (getConfigValueBool("use_evsepresentvoltage_for_precharge_end")):
@@ -536,14 +566,7 @@ class fsmPev():
                     strEVSEStatusCode = y["DC_EVSEStatus.EVSEStatusCode"]
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
-                if (strEVSEStatusCode=="2"):
-                    self.addToTrace("EVSE_Shutdown. Seems the user canceled the charging on the charger.")
-                    self.publishStatus("EVSE_Shutdown")
-                    self.enterState(stateUnrecoverableError)
-                    return
-                if (strEVSEStatusCode=="6"):
-                    self.addToTrace("EVSE_Malfunction. Seems the charger detected a problem.")
-                    self.publishStatus("EVSE_Malfunction")
+                if (self.isErrorEvseStatusCode(strEVSEStatusCode)):
                     self.enterState(stateUnrecoverableError)
                     return
                 if (getConfigValueBool("use_physical_inlet_voltage_during_chargeloop")):
