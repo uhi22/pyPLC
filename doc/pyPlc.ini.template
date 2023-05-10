@@ -75,3 +75,8 @@ serial_baud = 115200
 # 11 * 6 * 4.1V = 66 * 4.1V = 270V
 charge_target_voltage = 270
 
+# By using an external manager script, this is useful for splitting charging
+# into separately logged sessions and avoiding logging when not connected to a
+# charger
+exit_on_session_end = False
+

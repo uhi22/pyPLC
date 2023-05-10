@@ -180,7 +180,9 @@ class fsmPev():
         
     def isTooLong(self):
         # The timeout handling function.
-        limit = 33 # number of call cycles until timeout. Default 33 cycles with 30ms, means approx. 1 second.
+        limit = 66 # number of call cycles until timeout. Default 66 cycles with 30ms, means approx. 2 seconds.
+        # This 2s is the specified timeout time for many messages, fitting to the
+        # performance time of 1.5s. Exceptions see below.
         if (self.state==stateWaitForChargeParameterDiscoveryResponse):
             limit = 5*33 # On some charger models, the chargeParameterDiscovery needs more than a second. Wait at least 5s.
         if (self.state==stateWaitForCableCheckResponse):
@@ -188,7 +190,11 @@ class fsmPev():
         if (self.state==stateWaitForPreChargeResponse):
             limit = 30*33 # PreCharge may need some time. Wait at least 30s.
         if (self.state==stateWaitForPowerDeliveryResponse):
-            limit = 5*33 # PowerDelivery may need some time. Wait at least 5s. On Compleo charger, observed more than 1s until response.
+            limit = 6*33 # PowerDelivery may need some time. Wait at least 6s. On Compleo charger, observed more than 1s until response.
+			# specified performance time is 4.5s (ISO)
+        if (self.state==stateWaitForCurrentDemandResponse):
+            limit = 5*33 # Test with 5s timeout. Just experimental.
+            # The specified performance time is 25ms (ISO), the specified timeout 250ms.
         return (self.cyclesInState > limit)
         
     def stateFunctionNotYetInitialized(self):

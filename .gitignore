@@ -3,5 +3,5 @@
 /doc/*.jar
 *.bat
 PevExiLog*.txt
-pyPlc.ini
+*.ini
 /log
