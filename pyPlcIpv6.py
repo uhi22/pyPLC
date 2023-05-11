@@ -299,6 +299,9 @@ class ipv6handler():
     def enterEvseMode(self):
         self.iAmEvse = 1 # emulating a charging station
         self.iAmPev = 0 # not emulating a vehicle
+        # If we are an charger, we need to support the SDP, which requires to know our IPv6 adrress.
+        self.SeccIp = self.addressManager.getLinkLocalIpv6Address("bytearray")
+        
     def enterListenMode(self):
         self.iAmEvse = 0 # not emulating a charging station
         self.iAmPev = 0 # not emulating a vehicle
@@ -356,8 +359,8 @@ class ipv6handler():
                 self.evaluateTcpPacket()
                         
     def __init__(self, transmitCallback, addressManager, connMgr, callbackShowStatus):
-        self.enterEvseMode()
-        #self.enterListenMode()
+        self.iAmEvse = 0
+        self.iAmPev = 0
         self.transmit = transmitCallback
         self.addressManager = addressManager
         self.connMgr = connMgr
@@ -367,14 +370,12 @@ class ipv6handler():
         # self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0xaa, 0xaa, 0xff, 0xfe, 0, 0xaa, 0xaa ]
         # fe80::e0ad:99ac:52eb:85d3 is the Win10 laptop
         # self.SeccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0xe0, 0xad, 0x99, 0xac, 0x52, 0xeb, 0x85, 0xd3 ]
+        # just a default for the chargers IP, will be filled later with the correct value from SDP
+        self.SeccIp = bytearray(16)
         # 16 bytes, a default IPv6 address for the vehicle
-        # todo: On EVSE side, extract the vehicles IP address from the SDP communication
         # Just a default, will be overwritten later:
         self.EvccIp = [ 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0x06, 0x65, 0x65, 0xff, 0xfe, 0, 0x64, 0xC3 ] 
-        #self.ownMac = [ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 ] # 6 bytes own MAC default. Should be overwritten before use.
         self.ownMac = self.addressManager.getLocalMacAddress()
         self.faultInjectionSuppressSdpResponse = 0 # can be set to >0 for fault injection. Number of "lost" SDP responses.
         print("pyPlcIpv6 started with ownMac " + prettyMac(self.ownMac))
-        if (self.iAmEvse):
-            # If we are an charger, we need to support the SDP, which requires to know our IPv6 adrress.
-            self.SeccIp = self.addressManager.getLinkLocalIpv6Address("bytearray")
+
