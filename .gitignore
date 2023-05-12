@@ -5,3 +5,5 @@
 PevExiLog*.txt
 *.ini
 /log
+/local
+*.bak

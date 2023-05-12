@@ -7,6 +7,7 @@
 import subprocess
 import os
 import sys
+import ipaddress
 from helpers import * # prettyMac etc
 from configmodule import getConfigValue, getConfigValueBool
 
@@ -242,27 +243,17 @@ class addressManager():
             # The caller wants a byte array. We need to convert a string like
             # "fe80::4c46:fea5:b6c9:25a9%3" into a byte array of 16 bytes.
             # "fe80::4c46:fea5:b6c9:25a9"
-            ba = bytearray(16) 
-            s = self.localIpv6Address
             # print("[addressManager] converting self.localIpv6Address into bytearray")
             # Step1: remove the % and all behind:
-            x = s.find("%")
-            #print("percent found at " + str(x))
+            s = self.localIpv6Address
+            s = s.partition('%')[0]
             #print(s)
-            if (x>0):
-                s=s[0:x]
-                #print(s)
             # Step 2: expand the ommited zeros
-            x = s.find("::")
-            #print(":: found at " + str(x))
-            if (x>0):
-                # a :: means four bytes which are 0x00 each.
-                # Todo: but we need two bytes more?!?
-                s = s.replace("::", ":0000:0000:0000:")
+            # Step 3: Fill in leading zeroes for each 16 bit field
+            # Step 4: Remove all ":"
+            s = ipaddress.IPv6Address(s).exploded.replace(':', '')
             #print(s)
-            # Step 3: Remove all ":"
-            s = s.replace(":", "")
-            #print(s)
+            ba = bytearray(s, 'utf-8')
             if (len(s)!=32):
                 print("[addressManager] ERROR: invalid length of IPv6 string. Expected be 16 bytes, means 32 hex characters. Found " + str(len(s)))
             else:
