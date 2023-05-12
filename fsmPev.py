@@ -372,7 +372,7 @@ class fsmPev():
                     self.enterState(stateWaitForConnectorLock)
                 else:
                     # Not (yet) finished.
-                    if (self.numberOfChargeParameterDiscoveryReq>=20): # approx 20 seconds, should be sufficient for the charger to find its parameters...
+                    if (self.numberOfChargeParameterDiscoveryReq>=60): # approx 60 seconds, should be sufficient for the charger to find its parameters... The ISO allows up to 55s reaction time and 60s timeout for "ongoing".
                         self.addToTrace("ChargeParameterDiscovery lasted too long. " + str(self.numberOfChargeParameterDiscoveryReq) + " Giving up.")
                         self.enterState(stateSequenceTimeout)
                     else:
@@ -427,7 +427,7 @@ class fsmPev():
                     self.Tcp.transmit(msg)
                     self.enterState(stateWaitForPreChargeResponse)
                 else:
-                    if (self.numberOfCableCheckReq>30): # approx 30s should be sufficient for cable check
+                    if (self.numberOfCableCheckReq>60): # approx 60s should be sufficient for cable check. The ISO allows up to 55s reaction time and 60s timeout for "ongoing".
                         self.addToTrace("CableCheck lasted too long. " + str(self.numberOfCableCheckReq) + " Giving up.")
                         self.enterState(stateSequenceTimeout)
                     else:    
