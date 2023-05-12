@@ -30,14 +30,14 @@ from helpers import combineValueAndMultiplier
 import json
 
 # The path where the script will search for pcap files:
-directory = '../temp'
+directory = '../temp/to_decode'
 
 # stop the evaluation after this number of packets. Set to zero to have no limit.
 nLimitNumberOfPackets = 1000
 
 
 def getManufacturerFromMAC(strMAC):
-    # Examples based on https://macvendors.com/, and own experience
+    # Examples based on https://macvendors.com/, and https://www.ipchecktool.com/tool/macfinder and own experience
     if (strMAC[0:5]=="ec:a2"):
         return "Kempower"
     if (strMAC[0:8]=="dc:44:27"):
@@ -48,6 +48,10 @@ def getManufacturerFromMAC(strMAC):
         return "Alpitronic"
     if (strMAC[0:8]=="e8:eb:1b"):
         return "Microchip (maybe ABB)"
+    if (strMAC[0:8]=="68:27:19"):
+        return "Microchip (maybe ABB)"
+    if (strMAC[0:8]=="80:1f:12"):
+        return "Microchip (maybe Compleo)"
     if (strMAC[0:5]=="18:d7"):
         return "(maybe Siemens)"
     return "(unknown vendor)"
