@@ -12,6 +12,7 @@ import pyPlcWorker
 from pyPlcModes import *
 import sys # for argv
 from configmodule import getConfigValue, getConfigValueBool
+from mytestsuite import * 
 
 startTime_ms = round(time.time()*1000)
 
@@ -113,6 +114,11 @@ lblUInlet.pack()
 lblEVSEPresentVoltage = tk.Label(root, text="(EVSEPresentVoltage)")
 lblEVSEPresentVoltage.config(font=('Helvetica bold', 16))
 lblEVSEPresentVoltage.pack()
+
+if (myMode == C_EVSE_MODE):
+    lblTestcase = tk.Label(root, text="(test case)")
+    lblTestcase.pack()
+
 lblMode = tk.Label(root, text="(mode)")
 lblMode.pack()
 
@@ -133,6 +139,9 @@ while lastKey!="x":
     # print(str(nMainloops) + " " + str(nKeystrokes)) # show something in the console window
     root.update()
     worker.mainfunction()
+    if (myMode == C_EVSE_MODE):
+        lblTestcase['text']= "Testcase " + str(testsuite_getTcNumber())
+
 del(worker)
         
 #---------------------------------------------------------------

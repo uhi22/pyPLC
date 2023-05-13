@@ -50,6 +50,15 @@ class fsmEvse():
             if (strConverterResult.find("ProtocolNamespace=urn:din")>0):
                 # todo: of course we should care for schemaID and prio also here
                 self.addToTrace("Detected DIN")
+                # TESTSUITE: When the EVSE received the Handshake, it selects a new test case.
+                testsuite_choose_testcase()
+                strTestcase = "TC" + str(testsuite_getTcNumber()) + "                    "
+                msg = bytearray(20)
+                for i in range(0, 20):
+                    msg[i] = ord(strTestcase[i])
+                self.Tcp.transmit(msg) # Announce the test case number to the pev, so that we see it in the cars log.
+                                       # It's not sure that this is a good idea, maybe the unexpected data in the TCP
+                                       # confuses the car.
                 # Eh for encode handshake, SupportedApplicationProtocolResponse
                 msg = addV2GTPHeader(exiEncode("Eh"))
                 self.addToTrace("responding " + prettyHexMessage(msg))
@@ -135,7 +144,8 @@ class fsmEvse():
                 msg = addV2GTPHeader(exiEncode("EDf")) # EDf for Encode, Din, CableCheckResponse
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("CableCheck")
-                self.Tcp.transmit(msg)  
+                if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CableCheck)):
+                    self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("PreChargeReq")>0):
                 # check the request content, and fill response parameters
@@ -164,7 +174,8 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a02180189551e24fc9e9160004100008182800000")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("PreCharging " + strPresentVoltage)
-                self.Tcp.transmit(msg)  
+                if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_PreCharge)):
+                    self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
             if (strConverterResult.find("ContractAuthenticationReq")>0):
                 # todo: check the request content, and fill response parameters
@@ -194,9 +205,13 @@ class fsmEvse():
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Malfunction_during_CurrentDemand)):
                     # send a CurrentDemandResponse with StatusCode EVSE_Malfunction, to simulate e.g. a voltage overshoot
                     msg = addV2GTPHeader("809a02203fa9e71c31bc920100821b430b933b4b7339032b93937b908e08043000081828440201818000040060a11c06030306402038441380")
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_Shutdown_during_CurrentDemand)):
+                    # send a CurrentDemandResponse with StatusCode EVSE_Shutdown, to simulate a user stop request
+                    msg = addV2GTPHeader("809a0125e15c2cd0e000410000018280001818000000040a1b648030300002038486580800")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("CurrentDemand")
-                self.Tcp.transmit(msg)  
+                if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CurrentDemand)):
+                    self.Tcp.transmit(msg)  
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
             if (strConverterResult.find("WeldingDetectionReq")>0):
                 # todo: check the request content, and fill response parameters

@@ -79,7 +79,8 @@ class pyPlcWorker():
         self.hp.mainfunction() # call the lower-level workers
         self.hardwareInterface.mainfunction()
         if (self.mode == C_EVSE_MODE):
-            self.evse.mainfunction() # call the evse state machine
+            if (self.nMainFunctionCalls>8*33): # ugly. Wait with EVSE high level handling, until the modem restarted.
+                self.evse.mainfunction() # call the evse state machine
         if (self.mode == C_PEV_MODE):
             self.pev.mainfunction() # call the pev state machine
         

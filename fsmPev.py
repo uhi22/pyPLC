@@ -233,6 +233,10 @@ class fsmPev():
     def stateFunctionWaitForSupportedApplicationProtocolResponse(self):
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForSupportedApplicationProtocolResponse, received " + prettyHexMessage(self.rxData))
+            if ((self.rxData[0]!=0x01) or (self.rxData[1]!=0xFE)):
+                # it is no EXI data. Print it to log, it could be a TESTSUITE notification.
+                self.addToTrace("TESTSUITE notification. Seems we are running a test case. TTTTTTTTTTTTTTTTTTTTTTT")
+                return
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = self.exiDecode(exidata, "Dh") # Decode Handshake-response
