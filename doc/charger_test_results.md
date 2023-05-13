@@ -72,6 +72,11 @@ Test results of version v0.4-7-g7cea8b5 (2022-12-21)
 	- [ ] DIN SessionStop: No response
 - [x] Inlet voltage measurement (shows 500V during cable check, and 230V during precharge)
 
+## Circontrol
+
+First test negative, see https://openinverter.org/forum/viewtopic.php?p=56268#p56268.
+The SLAC works, but after SetKey we do not see the chargers modem.
+
 ## Compleo Cito BM 500
 
 Test site: e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Koesching/EDEKA-Ingolstaedter-Strasse-114/62619/
@@ -149,6 +154,14 @@ Test site e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Ingolst
 
 Test results tbd
 
+## Siemens
+
+Charging works, see https://openinverter.org/forum/viewtopic.php?p=56478#p56478
+
+## Tesla Supercharger V2
+
+Charging works, see https://openinverter.org/forum/viewtopic.php?p=56478#p56478
+
 ## Tesla Supercharger V3
 
 Test site e.g. https://www.goingelectric.de/stromtankstellen/Deutschland/Koesching/Supercharger-Car-Wash-Ruppertswies-4/69557/
@@ -173,3 +186,6 @@ Test results of version v0.5-12-g23b1384, on 2023-03-02
 	- [ ] DIN WeldingDetection
 	- [ ] DIN SessionStop
 
+## Tritium 75kW
+
+Charging works, see https://openinverter.org/forum/viewtopic.php?p=56268#p56268
