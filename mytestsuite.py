@@ -16,7 +16,7 @@ TC_EVSE_Shutdown_during_CurrentDemand = 2000
 TC_EVSE_Malfunction_during_CurrentDemand = 2001
 
 # Here we configure, which test case should fire, and after which number of calls:
-testsuite_testcase_number = TC_EVSE_Malfunction_during_CurrentDemand
+testsuite_testcase_number = TC_EVSE_Shutdown_during_PreCharge
 testsuite_delayCycles = 5
 
 

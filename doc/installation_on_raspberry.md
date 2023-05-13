@@ -21,6 +21,11 @@ Install wireshark
 ```
 Choose "yes" for the question whether other users shall be able to trace network traffic.
 
+Install tcpdump, to be able to log the network traffic in background:
+```
+    sudo apt-get install tcpdump
+```
+
 
 Clone the two github repositories, and compile the OpenV2Gx EXI decoder/encoder:
 ```
@@ -78,8 +83,8 @@ Try-out the cooperation of Python with the EXI encoder/decoder:
 ```
 This should run some decoder/encoder tests and report in the end "Number of fails: 0".
 
-
-Start the EVSE `sudo python pyPlc.py E`.
+As first test, use the simulation mode (no need for modems or other hardware).
+Start the EVSE in simulation mode `sudo python pyPlc.py E S`.
 Open a second console window, and start here the pev in simulation mode
 `sudo python pyPlc.py P S`.
 We should see how the EVSE and PEV are talking to each other.
@@ -106,7 +111,7 @@ In this file, we write the following, to configure the new service:
 
 	[Service]
 	Type=simple
-	ExecStart=/home/pi/myprogs/myPlc/starter.sh
+	ExecStart=/home/pi/myprogs/pyPlc/starter.sh
 	Restart=on-abort
 
 	[Install]
@@ -146,6 +151,25 @@ The first value defines the overall disk space which is used by the service logs
 The next time we power-up the pi, even without a HDMI display and keyboard connected, the OLED should show the charge progress now.
 Using an RaspberryPi 3 without additional startup time optimization, the time from power-on until the start of SLAC is ~21 seconds.
 
+
+
+### Further optimizations
+To automatically create pcap network traces and log files, celeron55 developed some shell scripts, see https://github.com/celeron55/pyPLC
+Concept:
+* The starter.sh is started either by the user in the foreground by running c55_pev_foreground.sh, or the starter.sh is started by the
+systemd, when the service is started by the user by running c55_service_pev.sh.
+* The starter.sh creates a directory for the log files: pyPLC/logs
+* The starter.sh defines log file names, which start with the date and time. One log file for the pyPlc itself, and one for the tcpdump.pcap.
+* The starter.sh starts the tcpdump in the background, and afterwards the pyPlc.
+* The stdout of the pyPlc is distributed by tee to the log file and to the console/journal.
+* The pyPlc is configured to terminate when the plug is pulled.
+* When the pyPlc terminates, the starter.sh stops the tcpdump.
+
+
+Using environment variables for services:
+https://www.baeldung.com/linux/systemd-services-environment-variables
+
+
 ## Disable Network Manager for the ethernet port
 
 With standard settings, the Raspberry tries to find an internet connection on the ethernet port, this means it tries to do things like DHCP and RouterSolicitation. This procedure may disturb the communication between the PEV and EVSE. That's why it is recommended to forbid the Network Manager to care for the eth0.
@@ -154,6 +178,31 @@ Discussion: https://openinverter.org/forum/viewtopic.php?p=56342#p56342
 
 Solution ideas: https://stackoverflow.com/questions/5321380/disable-network-manager-for-a-particular-interface or https://access.redhat.com/documentation/de-de/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-networkmanager-to-ignore-certain-devices_configuring-and-managing-networking Todo: which is the correct way on the raspberry?
 
+Further discussion:
+https://openinverter.org/forum/viewtopic.php?p=56434#p56434
+
+1. Setup a new connection in NetworkManager nmcli con add connection.interface-name eth0 type ethernet connection.id CCS
+2. This created a new /etc/NetworkManager/system-connections/ something
+3. Edit this file, to have
+```
+    [ipv4]
+    method=disabled
+    [ipv6]
+    addr-gen-mode=stable-privacy
+    method=link-local
+```
+4. Restart the NetworkManager
+5. nmcli con up CCS
+6. Check which connection the NetworkManager sees:
+```
+    nmcli device status
+    DEVICE         TYPE      STATE         CONNECTION  
+    wlan0          wifi      connected     My wifi 
+    eth0           ethernet  connected     CCS        
+```
+
+If (like in uhi's case) the Raspberry says for nmcli something like "The network manager is not executed.", then this should be also fine,
+because it should not disturb the communication in this case.
 
 ## Nice-to-have: Password-less SSH connection from the Windows notebook to the Pi
 
