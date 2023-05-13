@@ -236,6 +236,7 @@ class fsmPev():
             if ((self.rxData[0]!=0x01) or (self.rxData[1]!=0xFE)):
                 # it is no EXI data. Print it to log, it could be a TESTSUITE notification.
                 self.addToTrace("TESTSUITE notification. Seems we are running a test case. TTTTTTTTTTTTTTTTTTTTTTT")
+                self.rxData = []
                 return
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
