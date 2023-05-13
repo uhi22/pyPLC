@@ -29,13 +29,15 @@ set -euv
 
 # Keep all IPv6 addresses on the interface down event.
 # Todo: flexible interface name.
+# Todo: On raspberry, without NetworkManager, this option does not help. After the down and up (see below), the IPv6 is missing.
 sysctl net.ipv6.conf.eth0.keep_addr_on_down=1
 
 # Shut down and activate the interface.
-# Todo: Why this needed?
-ip link set eth0 down
+# Todo: Why this needed? On raspberry, where the NetworkManager is not runnning, this disturbs, because
+# afterwards the pyPlc does not see the interfaces IPv6 address.
+# ip link set eth0 down
 sleep 1
-ip link set eth0 up
+# ip link set eth0 up
 sleep 1
 
 # show the addresses

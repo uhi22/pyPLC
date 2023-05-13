@@ -13,6 +13,9 @@
 #   the lower-layer state machine can stay silent as long as the upper layers are working
 #   fine.
 
+from configmodule import getConfigValue, getConfigValueBool
+import sys # For exit_on_session_end hack
+
 CONNLEVEL_100_APPL_RUNNING = 100
 CONNLEVEL_80_TCP_RUNNING = 80
 CONNLEVEL_50_SDP_DONE = 50
@@ -98,6 +101,14 @@ class connMgr():
                                     self.ConnectionLevel=0
         if (self.ConnectionLevelOld!=self.ConnectionLevel):
             self.addToTrace("[CONNMGR] ConnectionLevel changed from " + str(self.ConnectionLevelOld) + " to " + str(self.ConnectionLevel))
+            if ((self.ConnectionLevelOld==100) and (self.ConnectionLevel<100)):
+                # We had a charging session, and now it is gone.
+                # Depending on configuration option, we may end the script here.
+                if getConfigValueBool("exit_on_session_end"):
+                    # TODO: This is a hack. Do this in fsmPev instead?
+                    self.addToTrace("[CONNMGR] Terminating the application.")
+                    sys.exit(0)
+
             self.ConnectionLevelOld = self.ConnectionLevel
         if ((self.cycles % 33)==0):
             # once per second

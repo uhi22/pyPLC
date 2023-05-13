@@ -66,8 +66,11 @@ u_delta_max_for_end_of_precharge = 10
 # The serial port and baud rate used for communication. Used
 # for serial devices like Dieter, OLED-Display and
 # celeron55's measuring and switching device
-serial_port = /dev/ttyS1
-serial_baud = 115200
+# Examples:
+#   /dev/ttyS1
+#   auto
+serial_port = auto
+serial_baud = 19200
 
 # The target voltage used in the CurrentDemandRequest.
 # This is a value for first try-outs. Better would

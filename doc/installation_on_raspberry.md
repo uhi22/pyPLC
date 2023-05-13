@@ -83,6 +83,15 @@ Try-out the cooperation of Python with the EXI encoder/decoder:
 ```
 This should run some decoder/encoder tests and report in the end "Number of fails: 0".
 
+Copy the pyPlc.ini.template into the same directory where pyPlc.py is, and rename it to pyPlc.ini. Edit the settings in this file as you need.
+
+Make some files executable:
+```
+    chmod 744 c55*
+    chmod 744 pevNoGui.py
+    chmod 744 starter.sh
+```
+
 As first test, use the simulation mode (no need for modems or other hardware).
 Start the EVSE in simulation mode `sudo python pyPlc.py E S`.
 Open a second console window, and start here the pev in simulation mode
@@ -111,8 +120,8 @@ In this file, we write the following, to configure the new service:
 
 	[Service]
 	Type=simple
-	ExecStart=/home/pi/myprogs/pyPlc/starter.sh
-	Restart=on-abort
+	ExecStart=/home/pi/myprogs/pyPLC/starter.sh
+	Restart=always
 
 	[Install]
 	WantedBy=multi-user.target
