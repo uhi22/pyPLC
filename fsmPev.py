@@ -236,8 +236,13 @@ class fsmPev():
             if ((self.rxData[0]!=0x01) or (self.rxData[1]!=0xFE)):
                 # it is no EXI data. Print it to log, it could be a TESTSUITE notification.
                 self.addToTrace("TESTSUITE notification. Seems we are running a test case. TTTTTTTTTTTTTTTTTTTTTTT")
-                self.rxData = []
-                return
+                if (len(self.rxData)<=20):
+                    # it was the length of the testsuite notification. We are finished with this message.
+                    self.rxData = []
+                    return
+                else:
+                    # There was more data than the 20 byte testsuite notification. Most likely the EXI comes in the same message.
+                    self.rxData = self.rxData[20:]
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
             strConverterResult = self.exiDecode(exidata, "Dh") # Decode Handshake-response
