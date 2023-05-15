@@ -1,4 +1,16 @@
 
+# Scope
+# Shows data in the style of an oscilloscope.
+
+#
+# Todos:
+#  - use correct time axis
+#  - allow the user to change the scaling
+#  - use functions intead of copy&paste code
+#  - support more channels
+#  - (and more)
+#
+
 from tkinter import *
 import time
 import sys # for argv
@@ -38,7 +50,6 @@ c.create_line(x0Scope, y0Scope, x0Scope+xSizeScope, y0Scope, fill="#FFFFFF")
 c.create_line(x0Scope, y0Scope, x0Scope, y0Scope+ySizeScope, fill="#FFFFFF")
 c.create_line(x0Scope+xSizeScope, y0Scope+ySizeScope, x0Scope+xSizeScope, y0Scope, fill="#FFFFFF")
 c.create_line(x0Scope+xSizeScope, y0Scope+ySizeScope, x0Scope, y0Scope+ySizeScope, fill="#FFFFFF")
-
 
 inputFileName = "local/pcaps_converted/2023-05-12_170340_tcpdump.pcap.values.txt"
 fileIn = open(inputFileName, 'r')
@@ -81,6 +92,17 @@ for line in Lines:
     #print("Line{}: {}".format(count, line.strip()))
 fileIn.close()
 
+# Hack: look which channel has the most samples.
+# Todo: This is not correct, because we have to use the time stamp instead of the sample number.
+maxSamples = 1
+if maxSamples<len(ch1values):
+    maxSamples=len(ch1values)
+if maxSamples<len(ch2values):
+    maxSamples=len(ch2values)
+if maxSamples<len(ch3values):
+    maxSamples=len(ch3values)
+dxPerSample = xSizeScope / maxSamples
+
 vMin=ch1values[0]
 vMax=ch1values[0]
 for v in ch1values:
@@ -119,7 +141,7 @@ for v in ch1values:
     x2, y2 = ( x + 1 ), ( yPix + 1 )
     c.create_line(x1, y1, x2, y2, fill=strCh1Color)
     c.create_line(x1, y2, x2, y1, fill=strCh1Color)
-    x+=0.035
+    x+=dxPerSample
 
 vMin=ch2values[0]
 vMax=ch2values[0]
@@ -159,13 +181,13 @@ for v in ch2values:
     x2, y2 = ( x + 1 ), ( yPix + 1 )
     c.create_line(x1, y1, x2, y2, fill=strCh2Color)
     c.create_line(x1, y2, x2, y1, fill=strCh2Color)
-    x+=0.035
+    x+=dxPerSample
 
 
 vMin=ch3values[0]
 vMax=ch3values[0]
 for v in ch3values:
-    #print(v)
+    print(v)
     if (v<vMin):
         vMin = v
     if (v>vMax):
@@ -195,12 +217,12 @@ print("Offset: " + str(offs3))
 
 x =  x0Scope
 for v in ch3values:
-    yPix =  y0Scope+ySizeScope - (v - offs1)/perDiv3 * ySizeScope / divisionsPerScreen
-    x1, y1 = ( x - 1 ), ( yPix - 1 )
-    x2, y2 = ( x + 1 ), ( yPix + 1 )
+    yPix =  y0Scope+ySizeScope - (v - offs3)/perDiv3 * ySizeScope / divisionsPerScreen
+    x1, y1 = ( x - 3 ), ( yPix - 3 )
+    x2, y2 = ( x + 3 ), ( yPix + 3 )
     c.create_line(x1, y1, x2, y2, fill=strCh3Color)
     c.create_line(x1, y2, x2, y1, fill=strCh3Color)
-    x+=0.035
+    x+=dxPerSample
 
 
     
