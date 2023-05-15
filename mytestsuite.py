@@ -11,13 +11,22 @@
 
 # The list of test cases. Each must have a unique test case ID.
 TC_NOTHING_TO_TEST = 0
-TC_EVSE_Timeout_during_CableCheck = 1
-TC_EVSE_Timeout_during_PreCharge = 2
-TC_EVSE_Shutdown_during_PreCharge = 3
-TC_EVSE_Shutdown_during_CurrentDemand = 4
-TC_EVSE_Malfunction_during_CurrentDemand = 5
-TC_EVSE_Timeout_during_CurrentDemand = 6
-TC_EVSE_LastTest = 7
+TC_EVSE_ResponseCode_SequenceError_for_SessionSetup = 1
+TC_EVSE_ResponseCode_SequenceError_for_ServiceDiscoveryRes = 2
+TC_EVSE_ResponseCode_SequenceError_for_ServicePaymentSelectionRes = 3
+TC_EVSE_ResponseCode_SequenceError_for_ContractAuthenticationRes = 4
+TC_EVSE_ResponseCode_ServiceSelectionInvalid_for_ChargeParameterDiscovery = 5
+TC_EVSE_ResponseCode_Failed_for_CableCheckRes = 6
+TC_EVSE_ResponseCode_Failed_for_PreChargeRes = 7
+TC_EVSE_ResponseCode_Failed_for_PowerDeliveryRes = 8
+TC_EVSE_ResponseCode_Failed_for_CurrentDemandRes = 9
+TC_EVSE_Timeout_during_CableCheck = 10
+TC_EVSE_Timeout_during_PreCharge = 11
+TC_EVSE_Shutdown_during_PreCharge = 12
+TC_EVSE_Shutdown_during_CurrentDemand = 13
+TC_EVSE_Malfunction_during_CurrentDemand = 14
+TC_EVSE_Timeout_during_CurrentDemand = 15
+TC_EVSE_LastTest = 16
 
 
 # variables

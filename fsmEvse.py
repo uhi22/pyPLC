@@ -78,6 +78,10 @@ class fsmEvse():
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDa")) # EDa for Encode, Din, SessionSetupResponse
                 self.addToTrace("responding " + prettyHexMessage(msg))
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_SequenceError_for_SessionSetup)):
+                    # send a SessionSetupResponse with Responsecode SequenceError
+                    msg = addV2GTPHeader("809a0232417b661514a4cb91e0A02d0691559529548c0841e0fc1af4507460c0")
+                self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.publishStatus("Session established")
                 self.enterState(stateWaitForServiceDiscoveryRequest)
@@ -94,6 +98,9 @@ class fsmEvse():
             if (strConverterResult.find("ServiceDiscoveryReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDb")) # EDb for Encode, Din, ServiceDiscoveryResponse
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_SequenceError_for_ServiceDiscoveryRes)):
+                    # send a ServiceDiscoveryRes with Responsecode SequenceError
+                    msg = addV2GTPHeader("809a021a3b7c417774813311a0A120024100c4")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.publishStatus("Services discovered")
@@ -111,6 +118,9 @@ class fsmEvse():
             if (strConverterResult.find("ServicePaymentSelectionReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDc")) # EDc for Encode, Din, ServicePaymentSelectionResponse
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_SequenceError_for_ServicePaymentSelectionRes)):
+                    # send a ServicePaymentSelectionRes with Responsecode SequenceError
+                    msg = addV2GTPHeader("809a021a3b7c417774813311c0A0")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.Tcp.transmit(msg)
                 self.publishStatus("ServicePayment selected")
