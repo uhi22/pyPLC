@@ -268,14 +268,20 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("SessionSetupRes")>0):
                 # todo: check the request content, and fill response parameters
+                strResponseCode = "na"
                 try:
                     y = json.loads(strConverterResult)
                     strSessionId = y["header.SessionID"]
+                    strResponseCode = y["ResponseCode"]
                     self.addToTrace("Checkpoint506: The Evse decided for SessionId " + strSessionId)
                     self.publishStatus("Session established")
                     self.sessionId = strSessionId
                 except:
                     self.addToTrace("ERROR: Could not decode the sessionID")
+                if (strResponseCode!="OK_NewSessionEstablished"):
+                    self.addToTrace("Wrong response code. Aborting.")
+                    self.enterState(stateUnrecoverableError)
+                    return
                 self.addToTrace("Will send ServiceDiscoveryReq")
                 msg = addV2GTPHeader(self.exiEncode("EDB_"+self.sessionId)) # EDB for Encode, Din, ServiceDiscoveryRequest
                 self.addToTrace("responding " + prettyHexMessage(msg))
@@ -292,7 +298,16 @@ class fsmPev():
             strConverterResult = self.exiDecode(exidata, "DD") # Decode DIN
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServiceDiscoveryRes")>0):
-                # todo: check the request content, and fill response parameters
+                strResponseCode = "na"
+                try:
+                    y = json.loads(strConverterResult)
+                    strResponseCode = y["ResponseCode"]
+                except:
+                    self.addToTrace("ERROR: Could not decode the ServiceDiscoveryResponse")
+                if (strResponseCode!="OK"):
+                    self.addToTrace("Wrong response code. Aborting.")
+                    self.enterState(stateUnrecoverableError)
+                    return
                 self.publishStatus("ServDisc done")
                 self.addToTrace("Will send ServicePaymentSelectionReq")
                 msg = addV2GTPHeader(self.exiEncode("EDC_"+self.sessionId)) # EDC for Encode, Din, ServicePaymentSelection
@@ -311,6 +326,16 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServicePaymentSelectionRes")>0):
                 # todo: check the request content, and fill response parameters
+                strResponseCode = "na"
+                try:
+                    y = json.loads(strConverterResult)
+                    strResponseCode = y["ResponseCode"]
+                except:
+                    self.addToTrace("ERROR: Could not decode the ServicePaymentSelectionResponse")
+                if (strResponseCode!="OK"):
+                    self.addToTrace("Wrong response code. Aborting.")
+                    self.enterState(stateUnrecoverableError)
+                    return
                 self.publishStatus("ServPaySel done")
                 self.addToTrace("Checkpoint530: Will send ContractAuthenticationReq")
                 msg = addV2GTPHeader(self.exiEncode("EDL_"+self.sessionId)) # EDL for Encode, Din, ContractAuthenticationReq.
@@ -334,6 +359,16 @@ class fsmPev():
                 # In normal case, we can have two results here: either the Authentication is needed (the user
                 # needs to authorize by RFID card or app, or something like this.
                 # Or, the authorization is finished. This is shown by EVSEProcessing=Finished.
+                strResponseCode = "na"
+                try:
+                    y = json.loads(strConverterResult)
+                    strResponseCode = y["ResponseCode"]
+                except:
+                    self.addToTrace("ERROR: Could not decode the ContractAuthenticationResponse")
+                if (strResponseCode!="OK"):
+                    self.addToTrace("Wrong response code. Aborting.")
+                    self.enterState(stateUnrecoverableError)
+                    return
                 if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):
                     self.publishStatus("Auth finished")
                     self.addToTrace("Checkpoint538: Auth is Finished. Will send ChargeParameterDiscoveryReq")
@@ -369,6 +404,16 @@ class fsmPev():
             strConverterResult = self.exiDecode(exidata, "DD") # Decode DIN
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ChargeParameterDiscoveryRes")>0):
+                strResponseCode = "na"
+                try:
+                    y = json.loads(strConverterResult)
+                    strResponseCode = y["ResponseCode"]
+                except:
+                    self.addToTrace("ERROR: Could not decode the ChargeParameterDiscoveryResponse")
+                if (strResponseCode!="OK"):
+                    self.addToTrace("Wrong response code. Aborting.")
+                    self.enterState(stateUnrecoverableError)
+                    return
                 # We can have two cases here:
                 # (A) The charger needs more time to show the charge parameters.
                 # (B) The charger finished to tell the charge parameters.
@@ -415,6 +460,7 @@ class fsmPev():
             strConverterResult = self.exiDecode(exidata, "DD") # Decode DIN
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("CableCheckRes")>0):
+                strResponseCode = "na"
                 try:
                     y = json.loads(strConverterResult)
                     strResponseCode = y["ResponseCode"]
@@ -422,7 +468,10 @@ class fsmPev():
                     self.addToTrace("The CableCheck result is " + strResponseCode + " " + strEVSEProcessing)
                 except:
                     self.addToTrace("ERROR: Could not decode the CableCheckRes")
-                # todo: check the request content, and fill response parameters
+                if (strResponseCode!="OK"):
+                    self.addToTrace("Wrong response code. Aborting.")
+                    self.enterState(stateUnrecoverableError)
+                    return
                 # We have two cases here:
                 # 1) The charger says "cable check is finished and cable ok", by setting ResponseCode=OK and EVSEProcessing=Finished.
                 # 2) Else: The charger says "need more time or cable not ok". In this case, we just run into timeout and start from the beginning.
@@ -465,9 +514,11 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("PreChargeRes")>0):
                 u = 0 # a default voltage of 0V in case we cannot convert the actual value
+                strResponseCode = "na"
                 strEVSEStatusCode = "0" # default in case the decoding does not work
                 try:
                     y = json.loads(strConverterResult)
+                    strResponseCode = y["ResponseCode"]
                     strEVSEPresentVoltageValue = y["EVSEPresentVoltage.Value"]
                     strEVSEPresentVoltageMultiplier = y["EVSEPresentVoltage.Multiplier"]
                     u = combineValueAndMultiplier(strEVSEPresentVoltageValue, strEVSEPresentVoltageMultiplier)
@@ -476,6 +527,10 @@ class fsmPev():
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
                 self.addToTrace("PreChargeResponse received.")
+                if (strResponseCode!="OK"):
+                    self.addToTrace("Wrong response code. Aborting.")
+                    self.enterState(stateUnrecoverableError)
+                    return
                 if (self.isErrorEvseStatusCode(strEVSEStatusCode)):
                     self.enterState(stateUnrecoverableError)
                     return
@@ -542,6 +597,16 @@ class fsmPev():
             strConverterResult = self.exiDecode(exidata, "DD") # Decode DIN
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("PowerDeliveryRes")>0):
+                strResponseCode = "na"
+                try:
+                    y = json.loads(strConverterResult)
+                    strResponseCode = y["ResponseCode"]
+                except:
+                    self.addToTrace("ERROR: Could not decode the PowerDeliveryResponse")
+                if (strResponseCode!="OK"):
+                    self.addToTrace("Wrong response code. Aborting.")
+                    self.enterState(stateUnrecoverableError)
+                    return
                 if (self.wasPowerDeliveryRequestedOn):
                     self.publishStatus("PwrDelvy ON success")
                     self.addToTrace("Checkpoint700: Starting the charging loop with CurrentDemandReq")
@@ -571,10 +636,12 @@ class fsmPev():
             strConverterResult = self.exiDecode(exidata, "DD") # Decode DIN
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("CurrentDemandRes")>0):
+                strResponseCode = "na"
                 u = 0 # a default voltage of 0V in case we cannot convert the actual value
                 strEVSEStatusCode = "0" # default in case the decoding does not work
                 try:
                     y = json.loads(strConverterResult)
+                    strResponseCode = y["ResponseCode"]
                     strEVSEPresentVoltageValue = y["EVSEPresentVoltage.Value"]
                     strEVSEPresentVoltageMultiplier = y["EVSEPresentVoltage.Multiplier"]
                     u = combineValueAndMultiplier(strEVSEPresentVoltageValue, strEVSEPresentVoltageMultiplier)
@@ -582,6 +649,10 @@ class fsmPev():
                     strEVSEStatusCode = y["DC_EVSEStatus.EVSEStatusCode"]
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
+                if (strResponseCode!="OK"):
+                    self.addToTrace("Wrong response code. Aborting.")
+                    self.enterState(stateUnrecoverableError)
+                    return
                 if (self.isErrorEvseStatusCode(strEVSEStatusCode)):
                     self.enterState(stateUnrecoverableError)
                     return
@@ -627,6 +698,7 @@ class fsmPev():
             strConverterResult = self.exiDecode(exidata, "DD") # Decode DIN
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("WeldingDetectionRes")>0):
+                    strResponseCode = "na"
                     # todo: add real welding detection here, run in welding detection loop until finished.
                     self.publishStatus("WldingDet done")
                     self.addToTrace("Sending SessionStopReq")                    
@@ -645,9 +717,9 @@ class fsmPev():
             strConverterResult = self.exiDecode(exidata, "DD") # Decode DIN
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("SessionStopRes")>0):
+                strResponseCode = "na"
                 # req -508
-                # Todo: close the TCP connection here.
-                # Todo: Unlock the connector lock.
+                # Unlocking of the connector in the next state.
                 self.publishStatus("Stopped normally")
                 self.addToTrace("Charging is finished")
                 self.enterState(stateChargingFinished)
