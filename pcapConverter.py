@@ -30,7 +30,7 @@ from helpers import combineValueAndMultiplier
 import json
 
 # The path where the script will search for pcap files:
-directory = '../temp/to_decode'
+directory = 'local/pcaps_to_convert'
 
 # stop the evaluation after this number of packets. Set to zero to have no limit.
 nLimitNumberOfPackets = 1000

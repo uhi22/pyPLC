@@ -40,7 +40,7 @@ c.create_line(x0Scope+xSizeScope, y0Scope+ySizeScope, x0Scope+xSizeScope, y0Scop
 c.create_line(x0Scope+xSizeScope, y0Scope+ySizeScope, x0Scope, y0Scope+ySizeScope, fill="#FFFFFF")
 
 
-inputFileName = "../temp/2023-05-11_205813_tcpdump.pcap.values.txt"
+inputFileName = "local/pcaps_converted/2023-05-12_170340_tcpdump.pcap.values.txt"
 fileIn = open(inputFileName, 'r')
 Lines = fileIn.readlines()
 
