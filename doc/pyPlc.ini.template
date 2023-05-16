@@ -83,3 +83,9 @@ charge_target_voltage = 270
 # charger
 exit_on_session_end = False
 
+# Run test cases.
+# Explanation in doc/testing_and_simulation.md
+# Possible values:
+#  No: No testcases are executed. Normal function as Evse or Pev.
+#  Yes: Testcases are executed. The EvseMode will produce various errors for fault injection tests.
+testsuite_enable = Yes
