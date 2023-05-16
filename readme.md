@@ -346,6 +346,10 @@ is active (current limitation, voltage limitation, power limitation).
 
 See [charger_test_results.md](doc/charger_test_results.md)
 
+## Testing And Simulation On Desk
+
+See [testing_and_simulation.md](doc/testing_and_simulation.md)
+
 ## Biggest Challenges
 - [*ListenMode*] Find a way to enable the sniffer mode or monitor mode in the AR7420. Seems to be not included in the public qca/open-plc-utils.
 Without this mode, we see only the broadcast messages, not the TCP / UDP traffic between the EVSE and the PEV.
@@ -379,9 +383,21 @@ measured current flow (discharging). The car may stop the complete process, if t
 However, the software will help to explore and understand the behavior of the car.
 
 ### Q3: Is it possible to use this software in a car without CCS, to make it ready for CCS charging?
-That's is definitely a goal, at it looks reachable. Of course, two aspects need to be considered:
+That's is definitely a goal, and it was reached in the meanwhile. Of course, two aspects need to be considered:
 - This project is not a final product. Further development will be necessary to ensure compatibility with chargers, and make it flexible for practical use.
 - Some parts are not covered by this project at all, e.g. communication with the BMS, connector lock, safety considerations.
+
+### Q4: Do I need to go to a public charger to test my Pev integration?
+For testing the communication at home, the pyPlc supports both sides of the CCS, the car and the charger. Have a
+look to [testing_and_simulation.md](doc/testing_and_simulation.md)
+
+## Credits
+Thanks to catphish to start the investigations regarding the homeplug modems and publishing them on OpenInverter forum.
+Thanks to johu for the OpenInverter forum, and for the first video of the early experiments, and the beaglebone integration.
+Thanks to CCSknowitall for clarifying tricky details.
+Thanks to celeron55 for the large number of test drives to various public chargers, and for improving the software. Thanks for helpful discussions to Pete9008, peternooy, tom91, asavage and all which I forgot to mention.
+Thanks to all patreons.
+
 
 ## References
 * [i] https://www.goingelectric.de/wiki/CCS-Technische-Details/ knowledge collection

@@ -8,8 +8,12 @@
 # In normal software run, this condition is never fulfilled and does not disturb. If the related test case is activated,
 # by setting testsuite_testcase_number = TC_MY_TESTCASE_FOR_SOMETHING below, the condition will fire and the fault is injected.
 # A number of delay cycles can be configured with testsuite_delayCycles below.
+#
+# Detailled docu see doc/testing_and_simulation.md
+
 
 from udplog import udplog_log
+from configmodule import getConfigValue, getConfigValueBool
 
 
 # The list of test cases. Each must have a unique test case ID.
@@ -40,7 +44,10 @@ testsuite_delayCycles = 0
 testsuite_counter = 0
 
 def testsuite_getTcNumber():
-    return testsuite_testcase_number
+    if (testsuite_testcase_number==0):
+        return "(no tests)"
+    else:
+        return testsuite_testcase_number
 
 def testsuite_faultinjection_is_triggered(context):
     global testsuite_counter, testsuite_testcase_number, testsuite_delayCycles
@@ -59,6 +66,10 @@ def testsuite_choose_testcase():
     global testsuite_counter, testsuite_testcase_number, testsuite_delayCycles
     global testsuite_observedResult
     global testsuite_expectedResult
+    
+    if (not getConfigValueBool("testsuite_enable")):
+        testsuite_testcase_number = TC_NOTHING_TO_TEST
+        return
     
     try:
         if (testsuite_expectedResult is None):
