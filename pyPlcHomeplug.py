@@ -39,6 +39,7 @@ import udplog
 import time
 from helpers import * # prettyMac etc
 from pyPlcModes import *
+from mytestsuite import *
 from random import random
 
 MAC_BROADCAST = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF ]
@@ -1041,7 +1042,7 @@ class pyPlcHomeplug():
         self.showStatus("LISTEN mode", "mode")
 
     def printToUdp(self, s):
-        self.udplog.log(s)
+        udplog.udplog_log(s)
 
     def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_LISTEN_MODE, addrMan=None, connMgr=None, isSimulationMode=0):
         self.mytransmitbuffer = bytearray("Hallo das ist ein Test", 'UTF-8')
@@ -1087,8 +1088,8 @@ class pyPlcHomeplug():
         self.runningCounter=0
         self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager, self.connMgr, self.callbackShowStatus)
         self.ipv6.ownMac = self.myMAC
-        self.udplog = udplog.udplog(self.transmit, self.addressManager)
-        self.udplog.log("Test message to verify the syslog. pyPlcHomeplug.py is in the init function.")
+        udplog.udplog_init(self.transmit, self.addressManager)
+        udplog.udplog_log("Test message to verify the syslog. pyPlcHomeplug.py is in the init function.", "initalive")
         if (mode == C_LISTEN_MODE):
             self.enterListenMode()
         if (mode == C_EVSE_MODE):
@@ -1115,6 +1116,8 @@ class pyPlcHomeplug():
             self.evaluateReceivedHomeplugPacket()
         if (etherType == 0x86dd): # it is an IPv6 frame
             self.ipv6.evaluateReceivedPacket(pkt)
+        if (etherType == 0x0800): # it is an IPv4 frame
+            testsuite_evaluateIpv4Packet(pkt)
 
     def mainfunction(self):  
         # https://stackoverflow.com/questions/31305712/how-do-i-make-libpcap-pcap-loop-non-blocking

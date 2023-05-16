@@ -9,14 +9,16 @@ class udplog():
             self.EthTxFrame[6+i] = macbytearray[i]
             
                           
-    def log(self, s):
+    def log(self, s, purpose=""):
         # return # activate this line to disable the logging completely
         #
         # The frame format follows the Syslog protocol, https://en.wikipedia.org/wiki/Syslog
         # Level consists of
         #  Facility = 1 = "user"
         #  Severity = 7 = "debug"
-        return
+        # print("[UDPLOG] Logging " + s)
+        if (purpose==""):
+            return # here we filter, which kind of infos we want to provide to the UDP logging.
         strLevel="<15>"
         # The String to be logged. Terminated by 00.
         strMessage=s+"\0"
@@ -96,3 +98,11 @@ class udplog():
         self.addressManager = addressManager
         self.ownMac = self.addressManager.getLocalMacAddress()
         print("udplog started with ownMac " + prettyMac(self.ownMac))
+
+def udplog_init(transmitCallback, addressManager):
+    global udplogger
+    udplogger = udplog(transmitCallback, addressManager) # create a global logger object
+    
+def udplog_log(s, purpose=""):
+    global udplogger
+    udplogger.log(s, purpose)

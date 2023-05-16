@@ -330,7 +330,11 @@ class hardwareInterface():
             if (self.simulatedSoc<100):
                 if ((self.outvalue & 2)!=0):
                     # while the relay is closed, simulate increasing SOC
-                    self.simulatedSoc = self.simulatedSoc + 0.01
+                    deltaSoc = 0.5 # how fast the simulated SOC shall rise.
+                    # Examples:
+                    #  0.01 charging needs some minutes, good for light bulb tests
+                    #  0.5 charging needs ~8s, good for automatic test case runs.
+                    self.simulatedSoc = self.simulatedSoc + deltaSoc
                 
         if (getConfigValue("digital_output_device")=="dieter"):
             self.mainfunction_dieter()

@@ -52,13 +52,6 @@ class fsmEvse():
                 self.addToTrace("Detected DIN")
                 # TESTSUITE: When the EVSE received the Handshake, it selects a new test case.
                 testsuite_choose_testcase()
-                strTestcase = "TC" + str(testsuite_getTcNumber()) + "                    "
-                msg = bytearray(20)
-                for i in range(0, 20):
-                    msg[i] = ord(strTestcase[i])
-                self.Tcp.transmit(msg) # Announce the test case number to the pev, so that we see it in the cars log.
-                                       # It's not sure that this is a good idea, maybe the unexpected data in the TCP
-                                       # confuses the car.
                 # Eh for encode handshake, SupportedApplicationProtocolResponse
                 msg = addV2GTPHeader(exiEncode("Eh"))
                 self.addToTrace("responding " + prettyHexMessage(msg))

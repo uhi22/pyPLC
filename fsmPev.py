@@ -8,6 +8,7 @@ import pyPlcTcpSocket
 import time # for time.sleep()
 from datetime import datetime
 from helpers import prettyHexMessage, compactHexMessage, combineValueAndMultiplier
+from mytestsuite import *
 from exiConnector import * # for EXI data handling/converting
 import json
 from configmodule import getConfigValue, getConfigValueBool
@@ -731,6 +732,7 @@ class fsmPev():
         # Finally unlock the connector
         self.addToTrace("Charging successfully finished. Unlocking the connector")
         self.hardwareInterface.triggerConnectorUnlocking()
+        testsuite_reportstatus("TSRS_ChargingFinished")
         self.enterState(stateEnd)
 
     def stateFunctionSequenceTimeout(self):
@@ -773,6 +775,7 @@ class fsmPev():
         # Finally, when we have no current and no voltage, unlock the connector
         self.addToTrace("Safe-shutdown-sequence: unlocking the connector")
         self.hardwareInterface.triggerConnectorUnlocking()
+        testsuite_reportstatus("TSRS_SafeShutdownFinished")
         # This is the end of the safe-shutdown-sequence. 
         self.enterState(stateEnd)
 
