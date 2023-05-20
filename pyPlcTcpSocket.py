@@ -166,6 +166,7 @@ class pyPlcTcpServerSocket():
         self.callbackStateNotification(1) # inform the higher level state machines, that TCP is listening
         self.addToTrace("pyPlcTcpSocket listening on port " + str(self.tcpPort))
         hostname=socket.gethostname()
+        self.addToTrace(hostname)
         IPAddr=socket.gethostbyname(hostname)
         addressInfo = socket.getaddrinfo(hostname, None, socket.AF_INET6)
         #print("Your Computer Name is:"+hostname)
