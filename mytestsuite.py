@@ -33,21 +33,28 @@ TC_EVSE_Shutdown_during_PreCharge = 12
 TC_EVSE_Shutdown_during_CurrentDemand = 13
 TC_EVSE_Malfunction_during_CurrentDemand = 14
 TC_EVSE_Timeout_during_CurrentDemand = 15
-TC_EVSE_LastTest = 16
+TC_EVSE_GoodCase = 16
+TC_EVSE_LastTest = 17
 
 
 # variables
 testsuite_testcase_number = 0
 testsuite_delayCycles = 0
+testsuite_TcTitle = "(title not initialized)"
 
 # Counter variable for delaying the trigger
 testsuite_counter = 0
+
+def testsuite_printToTestLog(s):
+ fileOut = open('testresults.txt', 'a') # open the result file for appending
+ print(s, file=fileOut)
+ fileOut.close()
 
 def testsuite_getTcNumber():
     if (testsuite_testcase_number==0):
         return "(no tests)"
     else:
-        return testsuite_testcase_number
+        return str(testsuite_testcase_number) + testsuite_TcTitle
 
 def testsuite_faultinjection_is_triggered(context):
     global testsuite_counter, testsuite_testcase_number, testsuite_delayCycles
@@ -66,6 +73,7 @@ def testsuite_choose_testcase():
     global testsuite_counter, testsuite_testcase_number, testsuite_delayCycles
     global testsuite_observedResult
     global testsuite_expectedResult
+    global testsuite_TcTitle
     
     if (not getConfigValueBool("testsuite_enable")):
         testsuite_testcase_number = TC_NOTHING_TO_TEST
@@ -87,6 +95,9 @@ def testsuite_choose_testcase():
             s = "PASS " + s
         print(s)
         udplog_log(s, "testsuite")
+        x = "Result for Testcase " + str(testsuite_testcase_number) + " " + testsuite_TcTitle
+        testsuite_printToTestLog(x)
+        testsuite_printToTestLog(s)
     if (testsuite_testcase_number<TC_EVSE_LastTest):
         testsuite_testcase_number+=1
         print("[TESTSUITE] Setting up test case " + str(testsuite_testcase_number) + " TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
@@ -96,29 +107,87 @@ def testsuite_choose_testcase():
         testsuite_delayCycles = 5 # just a default
         testsuite_expectedResult = "" # just a default
         testsuite_observedResult = "" # just a default
+        testsuite_TcTitle = "(title missing)" # just a default
         
         # For each test case, configure the test parameters and the expected result
         if (testsuite_testcase_number == TC_EVSE_Timeout_during_CableCheck):
             testsuite_delayCycles=0 # immediately timeout
             testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "Timeout during CableCheck shall lead to SafeShutdown"
+
+        if (testsuite_testcase_number == TC_EVSE_Timeout_during_PreCharge):
+            testsuite_delayCycles=0 # immediately timeout
+            testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "Timeout during PreCharge shall lead to SafeShutdown"
+
+        if (testsuite_testcase_number == TC_EVSE_Shutdown_during_PreCharge):
+            testsuite_delayCycles=2 # shutdown after 2 ok-cycles
+            testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "Shutdown during PreCharge shall lead to SafeShutdown"
+            
+        if (testsuite_testcase_number == TC_EVSE_Shutdown_during_CurrentDemand):
+            testsuite_delayCycles=20 # shutdown after 20 ok-cycles
+            testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "Shutdown during CurrentDemand shall lead to SafeShutdown"
+            
+        if (testsuite_testcase_number == TC_EVSE_Malfunction_during_CurrentDemand):
+            testsuite_delayCycles=5 # malfunction after 5 ok-cycles
+            testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "Malfunction during CurrentDemand shall lead to SafeShutdown"
+            
+        if (testsuite_testcase_number == TC_EVSE_Timeout_during_CurrentDemand):
+            testsuite_delayCycles=30 # timeout after 30 ok-cycles
+            testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "Timeout during CurrentDemand shall lead to SafeShutdown"
+            
         if (testsuite_testcase_number == TC_EVSE_ResponseCode_SequenceError_for_SessionSetup):
             testsuite_delayCycles=0 # immediately
             testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "SequenceError in SessionSetup shall lead to SafeShutdown"
         if (testsuite_testcase_number == TC_EVSE_ResponseCode_SequenceError_for_ServiceDiscoveryRes):
             testsuite_delayCycles=0 # immediately
             testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "SequenceError in ServiceDiscoveryRes shall lead to SafeShutdown"
         if (testsuite_testcase_number == TC_EVSE_ResponseCode_SequenceError_for_ServicePaymentSelectionRes):
             testsuite_delayCycles=0 # immediately
             testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "SequenceError in ServicePaymentSelectionRes shall lead to SafeShutdown"
         if (testsuite_testcase_number == TC_EVSE_ResponseCode_SequenceError_for_ContractAuthenticationRes):
             testsuite_delayCycles=0 # immediately
             testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "SequenceError in ContractAuthenticationRes shall lead to SafeShutdown"
         if (testsuite_testcase_number == TC_EVSE_ResponseCode_ServiceSelectionInvalid_for_ChargeParameterDiscovery):
             testsuite_delayCycles=0 # immediately
             testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "ServiceSelectionInvalid in ChargeParameterDiscoveryshall lead to SafeShutdown"
+        
+        if (testsuite_testcase_number == TC_EVSE_ResponseCode_Failed_for_CableCheckRes):
+            testsuite_delayCycles=2 # after two ok cycles, we inject the fault in the third cycle
+            testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "Failed in CableCheckRes shall lead to SafeShutdown"
+            
+        if (testsuite_testcase_number == TC_EVSE_ResponseCode_Failed_for_PreChargeRes):
+            testsuite_delayCycles=2 # after two ok cycles, we inject the fault in the third cycle
+            testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "Failed in PreChargeRes shall lead to SafeShutdown"
+            
         if (testsuite_testcase_number == TC_EVSE_ResponseCode_Failed_for_PowerDeliveryRes):
             testsuite_delayCycles=0 # immediately
             testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "Failed in PowerDeliveryRes shall lead to SafeShutdown"
+            
+        if (testsuite_testcase_number == TC_EVSE_ResponseCode_Failed_for_CurrentDemandRes):
+            testsuite_delayCycles=10 # fire the fault after 10 ok-cycles
+            testsuite_expectedResult = "TSRS_SafeShutdownFinished"
+            testsuite_TcTitle = "Failed in CurrentDemandRes shall lead to SafeShutdown"
+            
+        if (testsuite_testcase_number == TC_EVSE_GoodCase):
+            # Test case for the good case: Normal charging, no errors.
+            testsuite_delayCycles=0 # not relevant
+            testsuite_expectedResult = "TSRS_ChargingFinished"
+            testsuite_TcTitle = "Good case, normal charging without errors"
+            
+        
 
 def testsuite_reportstatus(s):
     # give the test status to the UDP, to inform the other side and to have it in the network log.

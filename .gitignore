@@ -3,6 +3,7 @@
 /doc/*.jar
 *.bat
 PevExiLog*.txt
+testresults.txt
 *.ini
 /log
 /local

@@ -131,6 +131,9 @@ class fsmEvse():
             if (strConverterResult.find("PowerDeliveryReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDh")) # EDh for Encode, Din, PowerDeliveryResponse
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_PowerDeliveryRes)):
+                    # send a PowerDeliveryResponse with Responsecode Failed
+                    msg = addV2GTPHeader("809a0125e6cecc51408420400000")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("PowerDelivery")
                 self.Tcp.transmit(msg)  
@@ -138,6 +141,9 @@ class fsmEvse():
             if (strConverterResult.find("ChargeParameterDiscoveryReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDe")) # EDe for Encode, Din, ChargeParameterDiscoveryResponse
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_ServiceSelectionInvalid_for_ChargeParameterDiscovery)):
+                    # send a ChargeParameterDiscoveryResponse with Responsecode ServiceSelectionInvalid
+                    msg = addV2GTPHeader("809a0125e6cecd50810001ec00201004051828758405500080000101844138101c2432c04081436c900c0c000041435ecc044606000200")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("ChargeParamDiscovery")
                 self.Tcp.transmit(msg)  
@@ -183,6 +189,9 @@ class fsmEvse():
             if (strConverterResult.find("ContractAuthenticationReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDl")) # EDl for Encode, Din, ContractAuthenticationResponse
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_SequenceError_for_ContractAuthenticationRes)):
+                    # send a ContractAuthenticationResponse with Responsecode SequenceError
+                    msg = addV2GTPHeader("809a021a3b7c417774813310c0A200")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("ContractAuthentication")
                 self.Tcp.transmit(msg)  
