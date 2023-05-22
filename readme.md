@@ -11,6 +11,21 @@ In this project, we call this mode *ListenMode*.
 
 ## News / Change History / Functional Status
 
+### 2023-05-22 v0.8 Released
+
+Main improvements between v0.7 and v0.8:
+- PevMode: waiting for contactors closing
+- PevMode: fixes for various timeout times
+- PevMode: locking and unlocking of the connector
+- PevMode: introduction of SafeShutdownSequence in case of errors. This makes sure, that the contactors are opened only if no current flows, and that the connector is unlocked only if the contactors are opened.
+- PevMode: reaction on various error codes and status codes which are reported by the EVSE
+- Testsuite: Automatic run of 16 [fault-injection-tests](doc/testing_and_simulation.md) and creation of a test report
+- PevMode: Integration of celeron55's hardware interface
+- PevMode: Startup scripts from celeron55 which create log file and pcap file per session (linux only)
+- Helper: Take a pcap and show voltage, current and SOC in an oscillograph-like diagram (pcapConverter.py, scope.py) https://openinverter.org/forum/viewtopic.php?t=2262&start=225
+- Helper: pcapConverter measures the times for CableCheck and PreCharge
+- Docu: [Test results from real-world-chargers](doc/charger_test_results.md) (thanks to celeron55 for the many many testing sessions)
+
 ### 2023-05-03 First real charging session
 
 Celeron55 is the winner. He managed to combine all the prerequisits, to have the world wide first pyPlc charging session. Congratulations and thanks for the great contribution. https://openinverter.org/forum/viewtopic.php?p=56188&sid=9579fd29268d0e332c81ed528f59f09b#p56188
