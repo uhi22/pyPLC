@@ -24,6 +24,7 @@ CONNLEVEL_15_SLAC_ONGOING = 15
 CONNLEVEL_10_ONE_MODEM_FOUND = 10
 CONNLEVEL_5_ETH_LINK_PRESENT = 5
 
+CONNMGR_CYCLES_PER_SECOND = 33 # 33 cycles for one second, is 30ms call cycle
 CONNMGR_TIMER_MAX = (5*33) # 5 seconds until an OkReport is forgotten.
 CONNMGR_TIMER_MAX_10s = (10*33) # 10 seconds until an OkReport is forgotten.
 CONNMGR_TIMER_MAX_15s = (15*33) # 15 seconds until an OkReport is forgotten.
@@ -133,8 +134,10 @@ class connMgr():
     def TcpOk(self):
         self.timerTCP = CONNMGR_TIMER_MAX_10s
 
-    def ApplOk(self):
-        self.timerAppl = CONNMGR_TIMER_MAX_10s
+    def ApplOk(self, time_in_seconds=10):
+        # The application confirmed to have communication. It can decide, based on its state,
+        # how long the confirmation shall hold. Default is ten seconds.
+        self.timerAppl = time_in_seconds * CONNMGR_CYCLES_PER_SECOND
 
 
 def testCallbackAddToTrace(s):

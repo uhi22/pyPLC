@@ -19,11 +19,11 @@ from configmodule import getConfigValue, getConfigValueBool
 # The list of test cases. Each must have a unique test case ID.
 TC_NOTHING_TO_TEST = 0
 TC_EVSE_ResponseCode_SequenceError_for_SessionSetup = 1
-TC_EVSE_ResponseCode_SequenceError_for_ServiceDiscoveryRes = 2
-TC_EVSE_ResponseCode_SequenceError_for_ServicePaymentSelectionRes = 3
-TC_EVSE_ResponseCode_SequenceError_for_ContractAuthenticationRes = 4
-TC_EVSE_ResponseCode_ServiceSelectionInvalid_for_ChargeParameterDiscovery = 5
-TC_EVSE_ResponseCode_Failed_for_CableCheckRes = 6
+TC_EVSE_ResponseCode_Failed_for_CableCheckRes = 2
+TC_EVSE_ResponseCode_SequenceError_for_ServiceDiscoveryRes = 3
+TC_EVSE_ResponseCode_SequenceError_for_ServicePaymentSelectionRes = 4
+TC_EVSE_ResponseCode_SequenceError_for_ContractAuthenticationRes = 5
+TC_EVSE_ResponseCode_ServiceSelectionInvalid_for_ChargeParameterDiscovery = 6
 TC_EVSE_ResponseCode_Failed_for_PreChargeRes = 7
 TC_EVSE_ResponseCode_Failed_for_PowerDeliveryRes = 8
 TC_EVSE_ResponseCode_Failed_for_CurrentDemandRes = 9
@@ -162,7 +162,7 @@ def testsuite_choose_testcase():
             testsuite_TcTitle = "ServiceSelectionInvalid in ChargeParameterDiscoveryshall lead to SafeShutdown"
         
         if (testsuite_testcase_number == TC_EVSE_ResponseCode_Failed_for_CableCheckRes):
-            testsuite_delayCycles=2 # after two ok cycles, we inject the fault in the third cycle
+            testsuite_delayCycles=0 # immediately in the first message
             testsuite_expectedResult = "TSRS_SafeShutdownFinished"
             testsuite_TcTitle = "Failed in CableCheckRes shall lead to SafeShutdown"
             

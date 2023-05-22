@@ -150,7 +150,11 @@ class fsmEvse():
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN               
             if (strConverterResult.find("CableCheckReq")>0):
                 # todo: check the request content, and fill response parameters
+                # todo: make a real cable check, and while it is ongoing, send "Ongoing".
                 msg = addV2GTPHeader(exiEncode("EDf")) # EDf for Encode, Din, CableCheckResponse
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_CableCheckRes)):
+                    # send a CableCheckResponse with Responsecode Failed
+                    msg = addV2GTPHeader("809a0125e6cecc5020804080000400")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("CableCheck")
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CableCheck)):
@@ -181,6 +185,9 @@ class fsmEvse():
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Shutdown_during_PreCharge)):
                     # send a PreChargeResponse with StatusCode EVSE_Shutdown, to simulate a user-triggered session stop
                     msg = addV2GTPHeader("809a02180189551e24fc9e9160004100008182800000")
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_PreChargeRes)):
+                    # send a PreChargeResponse with ResponseCode Failed
+                    msg = addV2GTPHeader("809a0125e6cecc516080408000008284de880800")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("PreCharging " + strPresentVoltage)
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_PreCharge)):
@@ -220,6 +227,9 @@ class fsmEvse():
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Shutdown_during_CurrentDemand)):
                     # send a CurrentDemandResponse with StatusCode EVSE_Shutdown, to simulate a user stop request
                     msg = addV2GTPHeader("809a0125e15c2cd0e000410000018280001818000000040a1b648030300002038486580800")
+                if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_CurrentDemandRes)):
+                    # send a CurrentDemandResponse with ResponseCode Failed
+                    msg = addV2GTPHeader("809a0125e6cecc50e0804080000082867dc8081818000000040a1b64802030882702038486580800")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("CurrentDemand")
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CurrentDemand)):

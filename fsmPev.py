@@ -158,6 +158,10 @@ class fsmPev():
         msg = addV2GTPHeader(self.exiEncode("EDF_"+self.sessionId + "_" + soc)) # EDF for Encode, Din, CableCheckReq
         self.addToTrace("responding " + prettyHexMessage(msg))
         self.Tcp.transmit(msg)
+        # Since the response to the CableCheckRequest may need longer, inform the connection manager to be patient.
+        # This makes sure, that the timeout of the state machine comes before the timeout of the connectionManager, so
+        # that we enter the safe shutdown sequence as intended.
+        self.connMgr.ApplOk(31)
     
     
     def sendCurrentDemandReq(self):
@@ -485,6 +489,7 @@ class fsmPev():
                     msg = addV2GTPHeader(self.exiEncode("EDG_"+self.sessionId+"_"+str(soc)+"_"+str(EVTargetVoltage))) # EDG for Encode, Din, PreChargeReq
                     self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
+                    self.connMgr.ApplOk(31) # PreChargeResponse may need longer. Inform the connection manager to be patient.
                     self.enterState(stateWaitForPreChargeResponse)
                 else:
                     if (self.numberOfCableCheckReq>60): # approx 60s should be sufficient for cable check. The ISO allows up to 55s reaction time and 60s timeout for "ongoing".
