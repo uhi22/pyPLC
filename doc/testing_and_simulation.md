@@ -46,5 +46,6 @@ The testsuite feature can be enabled by setting testsuite_enable = Yes in the py
 
 ### Inspecting the test results
 
-The progress of the tests and their result can be best seen in Wireshark, by applying a display filter for "syslog".
+The progress of the tests and their result can be seen in Wireshark, by applying a display filter for "syslog".
+Also a test report file (testresults.txt) is created in the pyPlc main directory.
 
