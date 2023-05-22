@@ -133,6 +133,11 @@ class pyPlcHomeplug():
          # we can give a different offset, to re-use the MAC also in the data area
         for i in range(0, 6):
             self.mytransmitbuffer[offset+i]=mac[i]
+            
+    def fillRunId(self, offset):
+        # at the given offset in the transmit buffer, fill the 8-bytes-RunId.
+        for i in range(0, 8):
+            self.mytransmitbuffer[offset+i]=self.pevRunId[i]
         
     def cleanTransmitBuffer(self): # fill the complete ethernet transmit buffer with 0x00
         for i in range(0, len(self.mytransmitbuffer)):
@@ -308,9 +313,7 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[18]=0x00 # 
         self.mytransmitbuffer[19]=0x00 # 
         self.mytransmitbuffer[20]=0x00 #
-        self.fillSourceMac(self.pevMac, 21) # 21 to 28: 8 bytes runid. The Ioniq uses the PEV mac plus 00 00.
-        self.mytransmitbuffer[27]=0x00 # 
-        self.mytransmitbuffer[28]=0x00 # 
+        self.fillRunId(21) # 21 to 28: 8 bytes runid. The Ioniq uses the PEV mac plus 00 00. Tesla uses "TESLA EV".
         # rest is 00
         
     def composeSlacParamCnf(self):
@@ -340,7 +343,7 @@ class pyPlcHomeplug():
         self.fillDestinationMac(self.pevMac, 28)  # forwarding_sta, same as PEV MAC, plus 2 bytes 00 00
         self.mytransmitbuffer[34]=0x00 # 
         self.mytransmitbuffer[35]=0x00 # 
-        self.fillDestinationMac(self.pevMac, 36)  # runid, same as PEV MAC, plus 2 bytes 00 00 
+        self.fillRunId(36)  # runid 8 bytes 
         self.mytransmitbuffer[42]=0x0 # 
         self.mytransmitbuffer[43]=0x0 #
         # rest is 00
@@ -369,7 +372,7 @@ class pyPlcHomeplug():
                                        # charger is able to catch it all.
         self.mytransmitbuffer[23]=0x01 # response type 
         self.fillSourceMac(self.myMAC, 24) # 24 to 29: sound_forwarding_sta, MAC of the PEV
-        self.fillSourceMac(self.myMAC, 30) # 30 to 37: runid, filled with MAC of PEV and two bytes 00 00
+        self.fillRunId(30)  # 30 to 37: runid 8 bytes
         # rest is 00
 
     def composeNmbcSoundInd(self):
@@ -392,7 +395,7 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[20]=0x00 # sectype
         self.mytransmitbuffer[21]=0x00 # 21 to 37 sender ID, all 00
         self.mytransmitbuffer[38]=self.remainingNumberOfSounds # countdown. Remaining number of sounds. Starts with 9 and counts down to 0.
-        self.fillSourceMac(self.myMAC, 39) # 39 to 46: runid, filled with MAC of PEV and two bytes 00 00
+        self.fillRunId(39) # 39 to 46: runid
         self.mytransmitbuffer[47]=0x00 # 47 to 54: reserved, all 00
         # 55 to 70: random number. All 0xff in the ioniq message.
         for i in range(55, 71):
@@ -416,7 +419,7 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[19]=0x00 # apptype
         self.mytransmitbuffer[20]=0x00 # security
         self.fillDestinationMac(self.pevMac, 21) # The wireshark calls it source_mac, but alpitronic fills it with PEV mac. We use the PEV MAC.
-        self.fillDestinationMac(self.pevMac, 27) # runid. The alpitronic fills it with the PEV mac, plus 00 00.
+        self.fillRunId(27)  # runid 8 bytes 
         self.mytransmitbuffer[35]=0x00 # 35 - 51 source_id, 17 bytes. The alpitronic fills it with 00
         
         self.mytransmitbuffer[52]=0x00 # 52 - 68 response_id, 17 bytes. The alpitronic fills it with 00.
@@ -450,7 +453,7 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[19]=0x00 # apptype
         self.mytransmitbuffer[20]=0x00 # sectype
         self.fillSourceMac(self.myMAC, 21) # 21 to 26: source MAC
-        self.fillDestinationMac(self.myMAC, 27) # 27 to 34: runid. The PEV mac, plus 00 00.
+        self.fillRunId(27) # 27 to 34: runid
         # 35 to 51: source_id, all 00
         # 52 to 68: resp_id, all 00
         # 69: result. 0 is ok
@@ -479,7 +482,7 @@ class pyPlcHomeplug():
         self.fillSourceMac(self.myMAC, 40) # 40 to 45: PEV MAC
         # 46 to 62: evse_id, all 00
         self.fillDestinationMac(self.evseMac, 63) # 63 to 68: EVSE MAC
-        self.fillSourceMac(self.myMAC, 69) # 69 to 76: runid. The PEV mac, plus 00 00.
+        self.fillRunId(69) # 69 to 76: runid
         # 77 to 84: reserved, all 00        
     
     def composeSlacMatchCnf(self):
@@ -505,7 +508,7 @@ class pyPlcHomeplug():
         self.fillDestinationMac(self.pevMac, 40) # 40 - 45 pev_mac                               
                                        # 46 - 62: evse_id 17 bytes. All zero in alpi/Ioniq trace.
         self.fillSourceMac(self.myMAC, 63) # 63 - 68 evse_mac 
-        self.fillDestinationMac(self.pevMac, 69) # 69-76 run_id. Is the ioniq mac plus 00 00.
+        self.fillRunId(69)  # runid 8 bytes 69-76 run_id. Is the ioniq mac plus 00 00.
                                        # 77 to 84 reserved 0
         self.setNidAt(85) # 85-91 NID. We can nearly freely choose this, but the upper two bits need to be zero
                                        # 92 reserved 0                                 
@@ -637,6 +640,9 @@ class pyPlcHomeplug():
                 self.pevMac[i] = self.myreceivebuffer[6+i]
             self.addressManager.setPevMac(self.pevMac)
             self.showStatus(prettyMac(self.pevMac), "pevmac")
+            # extract the RunId from the SlacParamReq, and store it for later use
+            for i in range(0, 8):
+                self.pevRunId[i] = self.myreceivebuffer[21+i]
             # We are EVSE, we want to answer.
             self.showStatus("SLAC started", "evseState")
             self.composeSlacParamCnf()
@@ -1084,6 +1090,9 @@ class pyPlcHomeplug():
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
         self.pevMac = [0xDC, 0x0E, 0xA1, 0x11, 0x67, 0x08 ] # a default pev MAC. Will be overwritten later.
         self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.
+        # a default pev RunId. Will be overwritten later, if we are evse. If we are the pev, we are free to choose a
+        # RunID, e.g. the Ioniq uses the MAC plus 0x00 0x00 padding, the Tesla uses "TESLA EV".
+        self.pevRunId = [0xDC, 0x0E, 0xA1, 0xDE, 0xAD, 0xBE, 0xEF, 0x55 ]
         self.myMAC = self.addressManager.getLocalMacAddress()
         self.runningCounter=0
         self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager, self.connMgr, self.callbackShowStatus)
