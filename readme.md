@@ -22,7 +22,7 @@ Main improvements between v0.7 and v0.8:
 - Testsuite: Automatic run of 16 [fault-injection-tests](doc/testing_and_simulation.md) and creation of a test report
 - PevMode: Integration of celeron55's hardware interface
 - PevMode: Startup scripts from celeron55 which create log file and pcap file per session (linux only)
-- Helper: Take a pcap and show voltage, current and SOC in an oscillograph-like diagram (pcapConverter.py, scope.py) https://openinverter.org/forum/viewtopic.php?t=2262&start=225
+- Helper: Take a pcap and show voltage, current and SOC in an oscillograph-like diagram (pcapConverter.py, scope.py) https://openinverter.org/forum/viewtopic.php?p=56459#p56459
 - Helper: pcapConverter measures the times for CableCheck and PreCharge
 - Docu: [Test results from real-world-chargers](doc/charger_test_results.md) (thanks to celeron55 for the many many testing sessions)
 
