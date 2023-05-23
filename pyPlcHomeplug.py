@@ -343,9 +343,7 @@ class pyPlcHomeplug():
         self.fillDestinationMac(self.pevMac, 28)  # forwarding_sta, same as PEV MAC, plus 2 bytes 00 00
         self.mytransmitbuffer[34]=0x00 # 
         self.mytransmitbuffer[35]=0x00 # 
-        self.fillRunId(36)  # runid 8 bytes 
-        self.mytransmitbuffer[42]=0x0 # 
-        self.mytransmitbuffer[43]=0x0 #
+        self.fillRunId(36)  # 36 to 43 runid 8 bytes 
         # rest is 00
     
     def composeStartAttenCharInd(self):
