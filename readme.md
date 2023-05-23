@@ -413,6 +413,24 @@ Thanks to CCSknowitall for clarifying tricky details.
 Thanks to celeron55 for the large number of test drives to various public chargers, and for improving the software. Thanks for helpful discussions to Pete9008, peternooy, tom91, asavage and all which I forgot to mention.
 Thanks to all patreons.
 
+## Alternatives / Other projects
+
+There are other projects around CCS charging. It's worth a look to the state and progress there.
+
+### SwitchEV
+
+- It is not clear, how they cope with the EXI decoder. In https://github.com/SwitchEV/iso15118/issues/157 it is confirmed
+that the Java EXI codec is slow, and they announce a fast, Rust based codec in the Josev_pro variant. And they plan to
+integrate https://github.com/chargebyte/openv2g (which is basically the same version 0.9.5 of the Siemens tool as https://github.com/Martin-P/OpenV2G ) for the community version. At the moment this sounds like "either pay or wait".
+
+### EVEREST
+
+- https://github.com/EVerest
+- References https://github.com/EVerest/ext-switchev-iso15118. Not clear whether it uses the same Java EXI codec.
+
+### SmartEVSE
+
+- https://github.com/SmartEVSE/SmartEVSE-3/issues/25 discussion is ongoing, how to integrate the ISO high-level-communication
 
 ## References
 * [i] https://www.goingelectric.de/wiki/CCS-Technische-Details/ knowledge collection
