@@ -88,4 +88,9 @@ exit_on_session_end = False
 # Possible values:
 #  No: No testcases are executed. Normal function as Evse or Pev.
 #  Yes: Testcases are executed. The EvseMode will produce various errors for fault injection tests.
-testsuite_enable = Yes
+testsuite_enable = No
+
+# Logging to UDP Syslog messages
+# If this is activated, the pyPlc will send all logging messages also to the network interface,
+# in form of UDP Syslog messages. For details see in udplog.py.
+udp_syslog_enable = Yes
