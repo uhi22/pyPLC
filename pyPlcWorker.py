@@ -15,17 +15,18 @@ import time
 import subprocess
 import hardwareInterface
 import connMgr
-        
+
 
 class pyPlcWorker():
-    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_EVSE_MODE, isSimulationMode=0):
-        print("initializing pyPlcWorker") 
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, mode=C_EVSE_MODE, isSimulationMode=0, callbackSoC=None):
+        print("initializing pyPlcWorker")
         self.nMainFunctionCalls=0
         self.mode = mode
         self.strUserAction = ""
         self.addressManager = addressManager.addressManager()
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
+        self.callbackSoC = callbackSoC
         self.oldAvlnStatus = 0
         self.isSimulationMode = isSimulationMode
         self.connMgr = connMgr.connMgr(self.workerAddToTrace, self.showStatus)
@@ -38,9 +39,9 @@ class pyPlcWorker():
             strLabel = str(subprocess.check_output(["git", "describe", "--tags"], text=True).strip())
         except:
             strLabel = "(unknown version. 'git describe --tags' failed.)"
-        self.workerAddToTrace("[pyPlcWorker] Software version " + strLabel)  
+        self.workerAddToTrace("[pyPlcWorker] Software version " + strLabel)
         if (self.mode == C_EVSE_MODE):
-            self.evse = fsmEvse.fsmEvse(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.showStatus)
+            self.evse = fsmEvse.fsmEvse(self.addressManager, self.workerAddToTrace, self.hardwareInterface, self.showStatus, self.callbackSoC)
         if (self.mode == C_PEV_MODE):
             self.pev = fsmPev.fsmPev(self.addressManager, self.connMgr, self.workerAddToTrace, self.hardwareInterface, self.showStatus)
     def __del__(self):
@@ -49,14 +50,14 @@ class pyPlcWorker():
                 del(self.pev)
             except:
                 pass
-        
+
     def workerAddToTrace(self, s):
         # The central logging function. All logging messages from the different parts of the project
         # shall come here.
         #print("workerAddToTrace " + s)
         self.callbackAddToTrace(s) # give the message to the upper level, eg for console log.
         self.hp.printToUdp(s) # give the message to the udp for remote logging.
-        
+
     def showStatus(self, s, selection = "", strAuxInfo1="", strAuxInfo2=""):
         self.callbackShowStatus(s, selection)
         if (selection == "pevState"):
@@ -70,7 +71,7 @@ class pyPlcWorker():
             return
         if (self.connMgr.getConnectionLevel()<50):
             self.oldAvlnStatus = 0
-        
+
     def mainfunction(self):
         self.nMainFunctionCalls+=1
         #self.showStatus("pyPlcWorker loop " + str(self.nMainFunctionCalls))
@@ -83,7 +84,7 @@ class pyPlcWorker():
                 self.evse.mainfunction() # call the evse state machine
         if (self.mode == C_PEV_MODE):
             self.pev.mainfunction() # call the pev state machine
-        
+
     def handleUserAction(self, strAction):
         self.strUserAction = strAction
         print("user action " + strAction)
@@ -112,7 +113,7 @@ class pyPlcWorker():
         if (strAction == "L"):
             print("switching to LISTEN mode")
             self.mode = C_LISTEN_MODE
-            self.hp.enterListenMode()  
+            self.hp.enterListenMode()
             if (hasattr(self, 'evse')):
                 print("deleting evse")
                 del self.evse

@@ -7,9 +7,10 @@
 import pyPlcTcpSocket
 import time # for time.sleep()
 from helpers import prettyHexMessage, combineValueAndMultiplier
-from mytestsuite import * 
+from mytestsuite import *
 from random import random
 from exiConnector import * # for EXI data handling/converting
+import requests
 
 stateWaitForSupportedApplicationProtocolRequest = 0
 stateWaitForSessionSetupRequest = 1
@@ -27,19 +28,23 @@ class fsmEvse():
 
     def publishStatus(self, s):
         self.callbackShowStatus(s, "evseState")
-        
+
+    def publishSoCs(self, remaining_soc: int, full_soc: int = -1, bulk_soc: int = -1, origin: str = ""):
+        if self.callbackSoCStatus is not None:
+            self.callbackSoCStatus(remaining_soc, full_soc, bulk_soc, origin)
+
     def enterState(self, n):
         self.addToTrace("from " + str(self.state) + " entering " + str(n))
         if (self.state!=0) and (n==0):
             self.publishStatus("Waiting f AppHandShake")
         self.state = n
         self.cyclesInState = 0
-        
+
     def isTooLong(self):
         # The timeout handling function.
         return (self.cyclesInState > 100) # 100*33ms=3.3s
-        
-        
+
+
     def stateFunctionWaitForSupportedApplicationProtocolRequest(self):
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForSupportedApplicationProtocolRequest, received " + prettyHexMessage(self.rxData))
@@ -58,7 +63,7 @@ class fsmEvse():
                 self.Tcp.transmit(msg)
                 self.publishStatus("Schema negotiated")
                 self.enterState(stateWaitForSessionSetupRequest)
-        
+
     def stateFunctionWaitForSessionSetupRequest(self):
         if (len(self.rxData)>0):
             self.simulatedPresentVoltage = 0
@@ -80,7 +85,7 @@ class fsmEvse():
                 self.enterState(stateWaitForServiceDiscoveryRequest)
         if (self.isTooLong()):
             self.enterState(0)
-            
+
     def stateFunctionWaitForServiceDiscoveryRequest(self):
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForServiceDiscoveryRequest, received " + prettyHexMessage(self.rxData))
@@ -100,7 +105,7 @@ class fsmEvse():
                 self.enterState(stateWaitForServicePaymentSelectionRequest)
         if (self.isTooLong()):
             self.enterState(0)
-            
+
     def stateFunctionWaitForServicePaymentSelectionRequest(self):
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForServicePaymentSelectionRequest, received " + prettyHexMessage(self.rxData))
@@ -120,7 +125,7 @@ class fsmEvse():
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified. The Ioniq sends PowerDeliveryReq as next.
         if (self.isTooLong()):
             self.enterState(0)
-            
+
     def stateFunctionWaitForFlexibleRequest(self):
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForFlexibleRequest, received " + prettyHexMessage(self.rxData))
@@ -130,15 +135,26 @@ class fsmEvse():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("PowerDeliveryReq")>0):
                 # todo: check the request content, and fill response parameters
+                self.addToTrace("Received PowerDeliveryReq. Extracting SoC parameters")
+                info = json.loads(strConverterResult)
+                remaining_soc = int(info.get("EVRESSSOC", -1))
+                self.publishSoCs(remaining_soc, origin="PowerDeliveryReq")
                 msg = addV2GTPHeader(exiEncode("EDh")) # EDh for Encode, Din, PowerDeliveryResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_PowerDeliveryRes)):
                     # send a PowerDeliveryResponse with Responsecode Failed
                     msg = addV2GTPHeader("809a0125e6cecc51408420400000")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("PowerDelivery")
-                self.Tcp.transmit(msg)  
+                self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("ChargeParameterDiscoveryReq")>0):
+                self.addToTrace("Received ChargeParameterDiscoveryReq. Extracting SoC parameters via DC")
+                info = json.loads(strConverterResult)
+                remaining_soc = int(info.get("DC_EVStatus.EVRESSSOC", -1))
+                full_soc = int(info.get("FullSOC", -1))
+                bulk_soc = int(info.get("BulkSOC", -1))
+                self.publishSoCs(remaining_soc, full_soc, bulk_soc, origin="ChargeParameterDiscoveryReq")
+
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDe")) # EDe for Encode, Din, ChargeParameterDiscoveryResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_ServiceSelectionInvalid_for_ChargeParameterDiscovery)):
@@ -146,11 +162,16 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a0125e6cecd50810001ec00201004051828758405500080000101844138101c2432c04081436c900c0c000041435ecc044606000200")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("ChargeParamDiscovery")
-                self.Tcp.transmit(msg)  
-                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN               
+                self.Tcp.transmit(msg)
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("CableCheckReq")>0):
                 # todo: check the request content, and fill response parameters
                 # todo: make a real cable check, and while it is ongoing, send "Ongoing".
+                self.addToTrace("Received CableCheckReq. Extracting SoC parameters via DC")
+                info = json.loads(strConverterResult)
+                remaining_soc = int(info.get("DC_EVStatus.EVRESSSOC", -1))
+                self.publishSoCs(remaining_soc, -1, -1, origin="CableCheckReq")
+
                 msg = addV2GTPHeader(exiEncode("EDf")) # EDf for Encode, Din, CableCheckResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_CableCheckRes)):
                     # send a CableCheckResponse with Responsecode Failed
@@ -158,7 +179,7 @@ class fsmEvse():
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("CableCheck")
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CableCheck)):
-                    self.Tcp.transmit(msg)  
+                    self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("PreChargeReq")>0):
                 # check the request content, and fill response parameters
@@ -191,8 +212,8 @@ class fsmEvse():
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("PreCharging " + strPresentVoltage)
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_PreCharge)):
-                    self.Tcp.transmit(msg)  
-                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
+                    self.Tcp.transmit(msg)
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("ContractAuthenticationReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDl")) # EDl for Encode, Din, ContractAuthenticationResponse
@@ -201,8 +222,8 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a021a3b7c417774813310c0A200")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("ContractAuthentication")
-                self.Tcp.transmit(msg)  
-                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
+                self.Tcp.transmit(msg)
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("CurrentDemandReq")>0):
                 # check the request content, and fill response parameters
                 uTarget = 220 # default in case we cannot decode the requested voltage
@@ -212,8 +233,14 @@ class fsmEvse():
                     strEVTargetVoltageMultiplier = y["EVTargetVoltage.Multiplier"]
                     uTarget = combineValueAndMultiplier(strEVTargetVoltageValue, strEVTargetVoltageMultiplier)
                     self.addToTrace("EV wants EVTargetVoltage " + str(uTarget))
-                    strSoc = y["DC_EVStatus.EVRESSSOC"]
-                    self.callbackShowStatus(strSoc, "soc")
+
+                    remaining_soc = int(y.get("DC_EVStatus.EVRESSSOC", -1))
+                    full_soc = int(y.get("FullSOC", -1))
+                    bulk_soc = int(y.get("BulkSOC", -1))
+                    self.publishSoCs(remaining_soc, full_soc, bulk_soc, origin="CurrentDemandReq")
+
+                    self.callbackShowStatus(str(remaining_soc), "soc")
+
                 except:
                     self.addToTrace("ERROR: Could not decode the CurrentDemandReq")
                 self.simulatedPresentVoltage = uTarget + 3*random() # The charger provides the voltage which is demanded by the car.
@@ -233,40 +260,40 @@ class fsmEvse():
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("CurrentDemand")
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CurrentDemand)):
-                    self.Tcp.transmit(msg)  
-                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
+                    self.Tcp.transmit(msg)
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("WeldingDetectionReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDj")) # EDj for Encode, Din, WeldingDetectionRes
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("WeldingDetection")
-                self.Tcp.transmit(msg)  
-                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
+                self.Tcp.transmit(msg)
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("SessionStopReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDk")) # EDk for Encode, Din, SessionStopRes
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("SessionStop")
-                self.Tcp.transmit(msg)  
-                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN     
+                self.Tcp.transmit(msg)
+                self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
 
 
-                
+
         if (self.isTooLong()):
             self.enterState(0)
-            
+
     def stateFunctionWaitForChargeParameterDiscoveryRequest(self):
         if (self.isTooLong()):
             self.enterState(0)
-    
+
     def stateFunctionWaitForCableCheckRequest(self):
         if (self.isTooLong()):
             self.enterState(0)
-            
+
     def stateFunctionWaitForPreChargeRequest(self):
         if (self.isTooLong()):
             self.enterState(0)
-            
+
     def stateFunctionWaitForPowerDeliveryRequest(self):
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForPowerDeliveryRequest, received " + prettyHexMessage(self.rxData))
@@ -275,9 +302,9 @@ class fsmEvse():
             self.enterState(0)
         if (self.isTooLong()):
             self.enterState(0)
-            
-       
-    stateFunctions = { 
+
+
+    stateFunctions = {
             stateWaitForSupportedApplicationProtocolRequest: stateFunctionWaitForSupportedApplicationProtocolRequest,
             stateWaitForSessionSetupRequest: stateFunctionWaitForSessionSetupRequest,
             stateWaitForServiceDiscoveryRequest: stateFunctionWaitForServiceDiscoveryRequest,
@@ -288,15 +315,15 @@ class fsmEvse():
             stateWaitForPreChargeRequest: stateFunctionWaitForPreChargeRequest,
             stateWaitForPowerDeliveryRequest: stateFunctionWaitForPowerDeliveryRequest,
         }
-        
+
     def reInit(self):
-        self.addToTrace("re-initializing fsmEvse") 
+        self.addToTrace("re-initializing fsmEvse")
         self.state = 0
         self.cyclesInState = 0
         self.rxData = []
         self.simulatedPresentVoltage = 0
         self.Tcp.resetTheConnection()
-        
+
     def socketStateNotification(self, notification):
         if (notification==0):
             # The TCP informs us, that the connection is broken.
@@ -311,12 +338,13 @@ class fsmEvse():
             # The TCP informs us, that a connection is established.
             self.publishStatus("TCP connected")
 
-    def __init__(self, addressManager, callbackAddToTrace, hardwareInterface, callbackShowStatus):
+    def __init__(self, addressManager, callbackAddToTrace, hardwareInterface, callbackShowStatus, callbackSoCStatus = None):
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
+        self.callbackSoCStatus = callbackSoCStatus
         #todo self.addressManager = addressManager
         #todo self.hardwareInterface = hardwareInterface
-        self.addToTrace("initializing fsmEvse") 
+        self.addToTrace("initializing fsmEvse")
         self.faultInjectionDelayUntilSocketOpen_s = 0
         if (self.faultInjectionDelayUntilSocketOpen_s>0):
             self.addToTrace("Fault injection: waiting " + str(self.faultInjectionDelayUntilSocketOpen_s) + " s until opening the TCP socket.")
@@ -325,7 +353,7 @@ class fsmEvse():
         self.state = 0
         self.cyclesInState = 0
         self.rxData = []
-                
+
     def mainfunction(self):
         self.Tcp.mainfunction() # call the lower-level worker
         if (self.Tcp.isRxDataAvailable()):
@@ -334,8 +362,8 @@ class fsmEvse():
         # run the state machine:
         self.cyclesInState += 1 # for timeout handling, count how long we are in a state
         self.stateFunctions[self.state](self)
-                
-                
+
+
 if __name__ == "__main__":
     print("Testing the evse state machine")
     evse = fsmEvse()
@@ -343,5 +371,5 @@ if __name__ == "__main__":
     while (True):
         time.sleep(0.1)
         evse.mainfunction()
-        
+
 
