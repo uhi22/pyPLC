@@ -2,6 +2,7 @@
 # This module "prints" log messages to UDP broadcasts to port 514.
 
 from helpers import prettyMac
+from configmodule import getConfigValue, getConfigValueBool
 
 class udplog():
     def fillMac(self, macbytearray, position=6): # position 6 is the source MAC
@@ -18,9 +19,14 @@ class udplog():
         #  Severity = 7 = "debug"
         # print("[UDPLOG] Logging " + s)
         if (purpose==""):
-            return # here we filter, which kind of infos we want to provide to the UDP logging.
+            if (not self.isUpdSyslogEnabled):
+                # If no special purpose, and the logging is disabled, we stop here.
+                return
+        # Logging is not suppressed, so continue to construct the message:
         strLevel="<15>"
         # The String to be logged. Terminated by 00.
+        if (len(s)>700):
+            s = s[0:700] # Limit the length. Too long messages crash the transmit. Todo: Find out the real limit.
         strMessage=s+"\0"
       
         lenPayLoad = 4 + len(strMessage) # length of level is 4
@@ -98,6 +104,11 @@ class udplog():
         self.addressManager = addressManager
         self.ownMac = self.addressManager.getLocalMacAddress()
         print("udplog started with ownMac " + prettyMac(self.ownMac))
+        self.isUpdSyslogEnabled = getConfigValueBool("udp_syslog_enable")
+        if (self.isUpdSyslogEnabled):
+            print("logging to UDP Syslog is enabled")
+        else:
+            print("logging to UDP Syslog is disabled")
 
 def udplog_init(transmitCallback, addressManager):
     global udplogger
