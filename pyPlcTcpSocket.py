@@ -15,6 +15,7 @@ import time # for time.sleep()
 import errno
 import os
 import subprocess
+from configmodule import getConfigValue, getConfigValueBool
 
 class pyPlcTcpClientSocket():
     def __init__(self, callbackAddToTrace):
@@ -52,7 +53,8 @@ class pyPlcTcpClientSocket():
                 #print(host[0:5].lower())
                 if (host[0:5].lower()=="fe80:"):
                     #print("This is a link local address. We need to add %eth0 at the end.")
-                    host = host + "%eth1"
+                    ethInterface = getConfigValue("eth_interface") # e.g. "eth0"
+                    host = host + "%" + ethInterface
             socket_addr = socket.getaddrinfo(host,port,socket.AF_INET6,socket.SOCK_DGRAM,socket.SOL_UDP)[0][4]
             
             #print(socket_addr)

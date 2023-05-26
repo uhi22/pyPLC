@@ -37,10 +37,13 @@ import pcap
 import pyPlcIpv6
 import udplog
 import time
+import os
 from helpers import * # prettyMac etc
 from pyPlcModes import *
 from mytestsuite import *
 from random import random
+from configmodule import getConfigValue, getConfigValueBool
+import sys
 
 MAC_BROADCAST = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF ]
 
@@ -1020,14 +1023,36 @@ class pyPlcHomeplug():
     
         
     def findEthernetAdaptor(self):
-        self.strInterfaceName="eth1" # default, if the real is not found
-        #print("Interfaces:\n" + '\n'.join(pcap.findalldevs()))
-        for i in range(0, 10):
-            strInterfaceName = pcap.ex_name("eth"+str(i))
-            if (strInterfaceName == '\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}'):
-                #print("This is the wanted Ethernet adaptor.")
-                self.strInterfaceName="eth"+str(i)
-            #print("eth"+ str(i) + " is " + strInterfaceName)
+        if (os.name == 'nt'):
+            # On Windows
+            # print("Interfaces:\n" + '\n'.join(pcap.findalldevs()))
+            # For windows, we use a dirty solution here: The pcap uses numbered interfaces like eth0, eth1 etc.,
+            # but the mapping between these numbers and the physical devices is not stable. To find out the
+            # correct interface, we search for its name (e.g. '\Device\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}' in
+            # the list of all interfaces.
+            strWindowsInterfaceName = getConfigValue("eth_windows_interface_name")
+            print("The configured windows interface name is " + strWindowsInterfaceName)
+            self.strInterfaceName = "" # default for "not found"
+            for i in range(0, 10):
+                strInterfaceName = pcap.ex_name("eth"+str(i))
+                if (strInterfaceName == strWindowsInterfaceName):
+                    #print("This is the wanted Ethernet adaptor.")
+                    self.strInterfaceName="eth"+str(i)
+                    print("This interface is in pcap " + self.strInterfaceName)
+            if (self.strInterfaceName == ""):
+                print("ERROR: No matching interface was found. Make sure that you configured an existing eth_windows_interface_name in pyPlc.ini.")
+                print("The following interfaces are available:")
+                # print("Interfaces:\n" + '\n'.join(pcap.findalldevs()))
+                for i in range(0, 10):
+                    strInterfaceName = pcap.ex_name("eth"+str(i))
+                    print("eth"+ str(i) + " is " + strInterfaceName)
+
+                sys.exit()
+        else:
+            # On Linux (e.g. Raspberry)
+            # Take the interface name from the ini file. For Linux, this is all we need.
+            self.strInterfaceName=getConfigValue("eth_interface")
+            print("Linux interface is " + self.strInterfaceName)
             
     def enterPevMode(self):
         self.iAmEvse = 0 # not emulating a charging station
