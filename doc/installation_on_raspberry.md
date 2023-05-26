@@ -98,6 +98,16 @@ Open a second console window, and start here the pev in simulation mode
 `sudo python pyPlc.py P S`.
 We should see how the EVSE and PEV are talking to each other.
 
+## Sudo-less run of pyPLC
+
+The access to the ethernet raw data requires sudo. To avoid this, the following setting may help:
+- Find out the path of python: `which python`. This gives something like /usr/bin/python
+- Find out the "real" name of the python. The above /usr/bin/python may be a link, but we need the location where it points to.
+`ls -al /usr/bin | grep python`. This shows e.g. that python is a link to python3, and python3 is a link to python3.9, and this is the real file.
+- Give python the permission to access the raw ethernet traffic, e.g. `sudo setcap cap_net_raw,cap_net_admin=eip /usr/bin/python3.9`
+(discussed in https://github.com/SmartEVSE/SmartEVSE-3/issues/25#issuecomment-1563519025)
+- When this was done, the `python pyPlc.py E` etc work without `sudo`.
+
 ## Auto-start of the PEV software
 
 Use case: You use a RaspberryPi in the car, and want to start the charging software just by powering-up the Raspberry.
@@ -136,6 +146,11 @@ the service:
 	sudo systemctl daemon-reload
 	sudo systemctl enable pev.service
 	sudo systemctl start pev.service
+```
+
+To stop the service:
+```
+	sudo systemctl stop pev.service
 ```
 
 To view the log of the service, run
