@@ -12,8 +12,12 @@ mode = PevMode
 is_simulation_without_modems = false
 
 # The Ethernet interface. Usually eth0 on Raspberry.
-# Todo: This setting is considered only on linux. Find a clean solution for windows is to be done. 
+# This setting is considered only on linux. 
 eth_interface = eth0
+
+# The Ethernet interface name on Windows. Something like
+# \Device\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}
+eth_windows_interface_name = \Device\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}
 
 # If a display is connected via serial line, e.g. an WIFI-KIT-32 running the software from https://github.com/uhi22/SerialToOLED
 display_via_serial = yes

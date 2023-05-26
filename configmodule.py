@@ -12,14 +12,21 @@ def getConfigValue(s):
     try:
         return config['general'][s]
     except:
-        print("Error: seems we have a problem with pyPlc.ini.")
+        print("Error: seems we have a problem with pyPlc.ini, with entry " + s)
         print("How to fix: Try to use the docs/pyPlc.ini.template,")
         print(" copy it into the pyPlc's main folder,")
         print(" rename it to pyPlc.ini, and edit it for your needs.")
         sys.exit()
 
 def getConfigValueBool(s):
-    return config.getboolean('general', s)
+    try:
+        return config.getboolean('general', s)
+    except:
+        print("Error: seems we have a problem with pyPlc.ini, with entry " + s)
+        print("How to fix: Try to use the docs/pyPlc.ini.template,")
+        print(" copy it into the pyPlc's main folder,")
+        print(" rename it to pyPlc.ini, and edit it for your needs.")
+        sys.exit()
 
 if __name__ == "__main__":
     print("Testing configmodule...")
