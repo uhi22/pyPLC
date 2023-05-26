@@ -1020,7 +1020,7 @@ class pyPlcHomeplug():
     
         
     def findEthernetAdaptor(self):
-        self.strInterfaceName="eth0" # default, if the real is not found
+        self.strInterfaceName="eth1" # default, if the real is not found
         #print("Interfaces:\n" + '\n'.join(pcap.findalldevs()))
         for i in range(0, 10):
             strInterfaceName = pcap.ex_name("eth"+str(i))

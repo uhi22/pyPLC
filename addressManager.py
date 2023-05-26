@@ -66,8 +66,8 @@ class addressManager():
                 else:
                     lines = result.stdout.split("\n")
                     for line in lines:
-                        if (line.find("inet6")>0):
-                            k = line.find(" fe80::") # the beginning of the IPv6
+                        if (line.strip().find("inet6")>0):
+                            k = line.strip().find("fe80::") # the beginning of the IPv6
                             if (k>0):
                                 sIpWithText = line[k+1:]
                                 x = sIpWithText.find(" ") # the space is the end of the IPv6

@@ -52,7 +52,7 @@ class pyPlcTcpClientSocket():
                 #print(host[0:5].lower())
                 if (host[0:5].lower()=="fe80:"):
                     #print("This is a link local address. We need to add %eth0 at the end.")
-                    host = host + "%eth0"
+                    host = host + "%eth1"
             socket_addr = socket.getaddrinfo(host,port,socket.AF_INET6,socket.SOCK_DGRAM,socket.SOL_UDP)[0][4]
             
             #print(socket_addr)
@@ -182,6 +182,10 @@ class pyPlcTcpServerSocket():
         # in case of a broken connection, here we try to start it again
         self.addToTrace("Trying to reset the TCP socket")
         # Todo: how to "reset" the socket?
+        try:
+            self.ourSocket.close()
+        except:
+            pass
         self.ourSocket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM, 0)
         self.ourSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.ourSocket.bind((self.ipAdress, self.tcpPort))
@@ -297,7 +301,7 @@ def testClientSocket():
     #c.connect('fe80::e0ad:99ac:52eb:85d3', 15118)
     #c.connect('fe80::e0ad:99ac:52eb:9999', 15118)
     #c.connect('localhost', 15118)
-    c.connect('fe80::c690:83f3:fbcb:980e', 15118)
+    c.connect('fe80::407d:89f9:f6c2:6ee0', 15118)
     print("connected="+str(c.isConnected))
     if (c.isConnected):
         print("sending something to the server")

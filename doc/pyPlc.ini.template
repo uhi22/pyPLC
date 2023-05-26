@@ -94,3 +94,7 @@ testsuite_enable = No
 # If this is activated, the pyPlc will send all logging messages also to the network interface,
 # in form of UDP Syslog messages. For details see in udplog.py.
 udp_syslog_enable = Yes
+
+# REST callback for SoC states. Comment out to disable. Do not leave a trailing slash
+soc_callback_enabled = False
+soc_callback_endpoint = http://1.1.1.1
