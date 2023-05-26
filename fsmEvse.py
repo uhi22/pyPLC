@@ -10,7 +10,6 @@ from helpers import prettyHexMessage, combineValueAndMultiplier
 from mytestsuite import *
 from random import random
 from exiConnector import * # for EXI data handling/converting
-import requests
 
 stateWaitForSupportedApplicationProtocolRequest = 0
 stateWaitForSessionSetupRequest = 1
