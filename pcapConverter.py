@@ -33,7 +33,7 @@ import json
 directory = 'local/pcaps_to_convert'
 
 # stop the evaluation after this number of packets. Set to zero to have no limit.
-nLimitNumberOfPackets = 1000
+nLimitNumberOfPackets = 2000
 
 
 def getManufacturerFromMAC(strMAC):
@@ -132,6 +132,13 @@ def convertPcapToTxt(inputFileName):
                             print("[" + str(packet.sniff_time) + "] EVSEPresentVoltage=" + str(u), file=fileOutValues)
                             i = combineValueAndMultiplier(y["EVSEPresentCurrent.Value"], y["EVSEPresentCurrent.Multiplier"])
                             print("[" + str(packet.sniff_time) + "] EVSEPresentCurrent=" + str(i), file=fileOutValues)
+                        except:
+                            pass
+                        try:
+                            u = combineValueAndMultiplier(y["EVTargetVoltage.Value"], y["EVTargetVoltage.Multiplier"])
+                            print("[" + str(packet.sniff_time) + "] EVTargetVoltage=" + str(u), file=fileOutValues)
+                            i = combineValueAndMultiplier(y["EVTargetCurrent.Value"], y["EVTargetCurrent.Multiplier"])
+                            print("[" + str(packet.sniff_time) + "] EVTargetCurrent=" + str(i), file=fileOutValues)
                         except:
                             pass
                         try:
