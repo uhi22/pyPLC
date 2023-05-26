@@ -1,5 +1,5 @@
 
-# The non-GUI variant of the PEV side
+# The non-GUI variant of the EVSE side
 
 import time
 import pyPlcWorker
