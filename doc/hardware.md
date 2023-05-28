@@ -7,21 +7,34 @@
 ![image](https://user-images.githubusercontent.com/98478946/197698551-25887d20-1d90-40d1-9704-a5770db46739.png)
 ![image](https://user-images.githubusercontent.com/98478946/197698729-d66a847a-b93f-495b-82ec-ca1430708336.png)
 
+Contains an Atheros INT6400A1G.
+
 Pro:
 * Routes the SLAC traffic from RF port to Ethernet, using the original software (INT6000-MAC-4-4-4405-00-4497-20101201-FINAL-B)
 and unchanged parametrization.
 * Works as CentralCoordinator. This means, it sends out "coordinator packets" which enables the connected car to send out the first SLAC message.
+* Works on the PEV side with original software and original parametrization.
 
 Contra:
 * Does not support the read-out of the configuration using the github.com/qca/open-plc-utils.
-* Seems not to be able to send SLAC messages on the RF port.
+
+
+### Devolo Powerline 200+ MT2710
+
+Is discussed here: https://openinverter.org/forum/viewtopic.php?p=57003#p57003
+It uses an Atheros AR6400-AC30.
+
+Todo: To be tested...
 
 ### Devolo dLAN 1200+
 Todo: add picture how to connect the DC power and the RF
 
 ![image](https://user-images.githubusercontent.com/98478946/197516219-33440602-3feb-4c91-b353-efa90969b419.png)
 
+The open-plc-utils report the version MAC-QCA7500-2.8.0.30-01-20190707-CS.
 
+Contra:
+- Even with the modified configuration for pev (according to https://openinverter.org/forum/viewtopic.php?p=55120#p55120), the QCA7500 does not send SLAC parameter requests. This means: Cannot be used as pev.
 
 ### TPlink TL-PA4010P
 This adaptor was suggested by https://openinverter.org/forum/viewtopic.php?p=37085#p37085 and there,
