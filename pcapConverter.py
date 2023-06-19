@@ -33,7 +33,7 @@ import json
 directory = 'local/pcaps_to_convert'
 
 # stop the evaluation after this number of packets. Set to zero to have no limit.
-nLimitNumberOfPackets = 2000
+nLimitNumberOfPackets = -1
 
 
 def getManufacturerFromMAC(strMAC):

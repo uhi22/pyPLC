@@ -79,7 +79,7 @@ c.create_line(x0Scope, y0Scope, x0Scope, y0Scope+ySizeScope, fill="#FFFFFF")
 c.create_line(x0Scope+xSizeScope, y0Scope+ySizeScope, x0Scope+xSizeScope, y0Scope, fill="#FFFFFF")
 c.create_line(x0Scope+xSizeScope, y0Scope+ySizeScope, x0Scope, y0Scope+ySizeScope, fill="#FFFFFF")
 
-inputFileName = "local/pcaps_converted/2023-05-12_174912_tcpdump.pcap.values.txt"
+inputFileName = "local/pcaps_to_convert/ccm_spi_ioniq_compleo_full_charge_sequence_ended_on_charger.txt.pcap.values.txt"
 fileIn = open(inputFileName, 'r')
 Lines = fileIn.readlines()
 
