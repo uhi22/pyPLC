@@ -182,10 +182,10 @@ class hardwareInterface():
         return self.accuMaxCurrent
 
     def getAccuMaxVoltage(self):
-        if getConfigValue("charge_target_voltage"):
-            self.accuMaxVoltage = getConfigValue("charge_target_voltage")            
-        elif getConfigValue("charge_parameter_backend")=="chademo":
+        if getConfigValue("charge_parameter_backend")=="chademo":
             return self.accuMaxVoltage #set by CAN
+        elif getConfigValue("charge_target_voltage"):
+            self.accuMaxVoltage = getConfigValue("charge_target_voltage")            
         else:
             #todo: get max charging voltage from the BMS
             self.accuMaxVoltage = 230
@@ -240,7 +240,7 @@ class hardwareInterface():
         self.contactor_confirmed = False  # Confirmation from hardware
         self.plugged_in = None  # None means "not known yet"
 
-        self.maxChargerVoltage = 500
+        self.maxChargerVoltage = 0
         self.maxChargerCurrent = 10
         self.chargerVoltage = 0
         self.chargerCurrent = 0
@@ -430,7 +430,7 @@ class hardwareInterface():
              self.canbus.send(msg)
              #Report unspecified version 10, this makes our custom implementation send the momentary
              #battery voltage in 0x100 bytes 0 and 1
-             status = 4 #report connector locked
+             status = 4 if self.maxChargerVoltage > 0 else 0  #report connector locked
              msg = can.Message(arbitration_id=0x109, data=[ 10, self.chargerVoltage & 0xFF, self.chargerVoltage >> 8, self.chargerCurrent, 0, status, 0, 0], is_extended_id=False)
              self.canbus.send(msg)
              
