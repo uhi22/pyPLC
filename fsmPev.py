@@ -426,7 +426,9 @@ class fsmPev():
                     self.publishStatus("ChargeParams discovered")
                     self.addToTrace("Checkpoint550: ChargeParams are discovered. Will change to state C.")
                     #Report charger paramters
-                    self.hardwareInterface.setChargerParameters(500, 50) #TODO: send real parameters
+                    maxI = combineValueAndMultiplier(y["EVSEMaximumCurrentLimit.Value"], y["EVSEMaximumCurrentLimit.Multiplier"])
+                    maxV = combineValueAndMultiplier(y["EVSEMaximumVoltageLimit.Value"], y["EVSEMaximumVoltageLimit.Multiplier"])
+                    self.hardwareInterface.setChargerParameters(maxV, maxI)
                     # pull the CP line to state C here:
                     self.hardwareInterface.setStateC()
                     self.addToTrace("Checkpoint555: Locking the connector.")
@@ -652,10 +654,13 @@ class fsmPev():
                     strResponseCode = y["ResponseCode"]
                     strEVSEPresentVoltageValue = y["EVSEPresentVoltage.Value"]
                     strEVSEPresentVoltageMultiplier = y["EVSEPresentVoltage.Multiplier"]
+                    strEVSEPresentCurrentValue = y["EVSEPresentCurrent.Value"]
+                    strEVSEPresentCurrentMultiplier = y["EVSEPresentCurrent.Multiplier"]
                     u = combineValueAndMultiplier(strEVSEPresentVoltageValue, strEVSEPresentVoltageMultiplier)
+                    i = combineValueAndMultiplier(strEVSEPresentCurrentValue, strEVSEPresentCurrentMultiplier)
                     self.callbackShowStatus(format(u,".1f"), "EVSEPresentVoltage")
                     strEVSEStatusCode = y["DC_EVSEStatus.EVSEStatusCode"]
-                    self.hardwareInterface.setChargerVoltageAndCurrent(u, EVTargetCurrent) #TODO: report real current!
+                    self.hardwareInterface.setChargerVoltageAndCurrent(u, i)
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
                 if (strResponseCode!="OK"):
