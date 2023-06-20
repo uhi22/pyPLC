@@ -144,6 +144,14 @@ class hardwareInterface():
         #if (getConfigValue("digital_output_device")=="celeron55device"):
         #    return self.lock_confirmed
         return 1 # todo: use the real connector lock feedback
+        
+    def setChargerParameters(self, maxVoltage, maxCurrent):
+        self.maxChargerVoltage = int(maxVoltage)
+        self.maxChargerCurrent = int(maxCurrent)
+        
+    def setChargerVoltageAndCurrent(self, voltageNow, currentNow):
+        self.chargerVoltage = int(voltageNow)
+        self.chargerCurrent = int(currentNow)
 
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
@@ -231,6 +239,11 @@ class hardwareInterface():
         self.accuMaxCurrent = 0.0
         self.contactor_confirmed = False  # Confirmation from hardware
         self.plugged_in = None  # None means "not known yet"
+
+        self.maxChargerVoltage = 500
+        self.maxChargerCurrent = 10
+        self.chargerVoltage = 0
+        self.chargerCurrent = 0
 
         self.logged_inlet_voltage = None
         self.logged_dc_link_voltage = None
@@ -413,12 +426,12 @@ class hardwareInterface():
              self.capacity = message.data[6]
              
              #TODO: determine maximum charger current and voltage and also actual current and voltage
-             msg = can.Message(arbitration_id=0x108, data=[ 0, 0, 0, 125, 0, 0, 0, 0], is_extended_id=False)
+             msg = can.Message(arbitration_id=0x108, data=[ 0, self.maxChargerVoltage & 0xFF, self.maxChargerVoltage >> 8, self.maxChargerCurrent, 0, 0, 0, 0], is_extended_id=False)
              self.canbus.send(msg)
-             #Report unspecified version 10, this makes our custom implementation send the
+             #Report unspecified version 10, this makes our custom implementation send the momentary
              #battery voltage in 0x100 bytes 0 and 1
              status = 4 #report connector locked
-             msg = can.Message(arbitration_id=0x109, data=[ 10, 0, 0, 0, 0, 0, 0, 0], is_extended_id=False)
+             msg = can.Message(arbitration_id=0x109, data=[ 10, self.chargerVoltage & 0xFF, self.chargerVoltage >> 8, self.chargerCurrent, 0, status, 0, 0], is_extended_id=False)
              self.canbus.send(msg)
              
           if message.arbitration_id == 0x102:

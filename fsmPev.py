@@ -425,6 +425,8 @@ class fsmPev():
                 if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):
                     self.publishStatus("ChargeParams discovered")
                     self.addToTrace("Checkpoint550: ChargeParams are discovered. Will change to state C.")
+                    #Report charger paramters
+                    self.hardwareInterface.setChargerParameters(500, 50) #TODO: send real parameters
                     # pull the CP line to state C here:
                     self.hardwareInterface.setStateC()
                     self.addToTrace("Checkpoint555: Locking the connector.")
@@ -653,6 +655,7 @@ class fsmPev():
                     u = combineValueAndMultiplier(strEVSEPresentVoltageValue, strEVSEPresentVoltageMultiplier)
                     self.callbackShowStatus(format(u,".1f"), "EVSEPresentVoltage")
                     strEVSEStatusCode = y["DC_EVSEStatus.EVSEStatusCode"]
+                    self.hardwareInterface.setChargerVoltageAndCurrent(u, EVTargetCurrent) #TODO: report real current!
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
                 if (strResponseCode!="OK"):
