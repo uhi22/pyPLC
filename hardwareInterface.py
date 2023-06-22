@@ -16,6 +16,10 @@ if (getConfigValue("digital_output_device")=="beaglebone"):
     # In case we run on beaglebone, we want to use GPIO ports.
     import Adafruit_BBIO.GPIO as GPIO
 
+if (getConfigValue("charge_parameter_backend")=="chademo"):
+    # In case we use the CHAdeMO backend, we want to use CAN
+    import can
+
 class hardwareInterface():
     def needsSerial(self):
         # Find out, whether we need a serial port. This depends on several configuration items.
@@ -140,6 +144,14 @@ class hardwareInterface():
         #if (getConfigValue("digital_output_device")=="celeron55device"):
         #    return self.lock_confirmed
         return 1 # todo: use the real connector lock feedback
+        
+    def setChargerParameters(self, maxVoltage, maxCurrent):
+        self.maxChargerVoltage = int(maxVoltage)
+        self.maxChargerCurrent = int(maxCurrent)
+        
+    def setChargerVoltageAndCurrent(self, voltageNow, currentNow):
+        self.chargerVoltage = int(voltageNow)
+        self.chargerCurrent = int(currentNow)
 
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
@@ -149,6 +161,8 @@ class hardwareInterface():
     def getAccuVoltage(self):
         if (getConfigValue("digital_output_device")=="celeron55device"):
             return self.accuVoltage
+        elif getConfigValue("charge_parameter_backend")=="chademo":
+           return self.accuVoltage
         #todo: get real measured voltage from the accu
         self.accuVoltage = 230
         return self.accuVoltage
@@ -161,13 +175,17 @@ class hardwareInterface():
             if self.accuMaxCurrent >= EVMaximumCurrentLimit:
                 return EVMaximumCurrentLimit
             return self.accuMaxCurrent
+        elif getConfigValue("charge_parameter_backend")=="chademo":
+            return self.accuMaxCurrent #set by CAN        
         #todo: get max charging current from the BMS
         self.accuMaxCurrent = 10
         return self.accuMaxCurrent
 
     def getAccuMaxVoltage(self):
-        if getConfigValue("charge_target_voltage"):
-            self.accuMaxVoltage = getConfigValue("charge_target_voltage")
+        if getConfigValue("charge_parameter_backend")=="chademo":
+            return self.accuMaxVoltage #set by CAN
+        elif getConfigValue("charge_target_voltage"):
+            self.accuMaxVoltage = getConfigValue("charge_target_voltage")            
         else:
             #todo: get max charging voltage from the BMS
             self.accuMaxVoltage = 230
@@ -191,6 +209,13 @@ class hardwareInterface():
         return self.simulatedSoc
 
     def initPorts(self):
+        if (getConfigValue("charge_parameter_backend") == "chademo"):
+            filters = [
+               {"can_id": 0x100, "can_mask": 0x7FF, "extended": False},
+               {"can_id": 0x101, "can_mask": 0x7FF, "extended": False},
+               {"can_id": 0x102, "can_mask": 0x7FF, "extended": False}]
+            self.canbus = can.interface.Bus(bustype='socketcan', channel="can0", can_filters = filters)
+    
         if (getConfigValue("digital_output_device") == "beaglebone"):
             # Port configuration according to https://github.com/jsphuebner/pyPLC/commit/475f7fe9f3a67da3d4bd9e6e16dfb668d0ddb1d6
             GPIO.setup("P8_16", GPIO.OUT) #output for port relays
@@ -209,9 +234,16 @@ class hardwareInterface():
         self.lock_confirmed = False  # Confirmation from hardware
         self.cp_pwm = 0.0
         self.soc_percent = 0.0
+        self.capacity = 0.0
+        self.accuMaxVoltage = 0.0
         self.accuMaxCurrent = 0.0
         self.contactor_confirmed = False  # Confirmation from hardware
         self.plugged_in = None  # None means "not known yet"
+
+        self.maxChargerVoltage = 0
+        self.maxChargerCurrent = 10
+        self.chargerVoltage = 0
+        self.chargerCurrent = 0
 
         self.logged_inlet_voltage = None
         self.logged_dc_link_voltage = None
@@ -336,6 +368,9 @@ class hardwareInterface():
                     #  0.5 charging needs ~8s, good for automatic test case runs.
                     self.simulatedSoc = self.simulatedSoc + deltaSoc
                 
+        if (getConfigValue("charge_parameter_backend")=="chademo"):
+           self.mainfunction_chademo()
+        
         if (getConfigValue("digital_output_device")=="dieter"):
             self.mainfunction_dieter()
 
@@ -376,6 +411,43 @@ class hardwareInterface():
                     s = "" # for the case we received corrupted data (not convertable as utf-8)
                 #self.addToTrace(str(len(s)) + " bytes received: " + s)
                 self.evaluateReceivedData_celeron55device(s)
+                
+    def mainfunction_chademo(self):
+       message = self.canbus.recv(0)
+       
+       if message:
+          if message.arbitration_id == 0x100:
+             vtg = (message.data[1] << 8) + message.data[0]
+             if self.accuVoltage != vtg:
+                 self.addToTrace("CHAdeMO: Set battery voltage to %d V" % vtg)
+             self.accuVoltage = vtg
+             if self.capacity != message.data[6]:
+                 self.addToTrace("CHAdeMO: Set capacity to %d" % message.data[6])
+             self.capacity = message.data[6]
+             
+             msg = can.Message(arbitration_id=0x108, data=[ 0, self.maxChargerVoltage & 0xFF, self.maxChargerVoltage >> 8, self.maxChargerCurrent, 0, 0, 0, 0], is_extended_id=False)
+             self.canbus.send(msg)
+             #Report unspecified version 10, this makes our custom implementation send the momentary
+             #battery voltage in 0x100 bytes 0 and 1
+             status = 4 if self.maxChargerVoltage > 0 else 0  #report connector locked
+             msg = can.Message(arbitration_id=0x109, data=[ 10, self.chargerVoltage & 0xFF, self.chargerVoltage >> 8, self.chargerCurrent, 0, status, 0, 0], is_extended_id=False)
+             self.canbus.send(msg)
+             
+          if message.arbitration_id == 0x102:
+             vtg = (message.data[2] << 8) + message.data[1]
+             if self.accuMaxVoltage != vtg:
+                 self.addToTrace("CHAdeMO: Set target voltage to %d V" % vtg)
+             self.accuMaxVoltage = vtg
+             
+             if self.accuMaxCurrent != message.data[3]:
+                 self.addToTrace("CHAdeMO: Set current request to %d A" % message.data[3])
+             self.accuMaxCurrent = message.data[3]
+             
+             if self.capacity > 0:
+                 soc = message.data[6] / self.capacity * 100
+                 if self.simulatedSoc != soc:
+                     self.addToTrace("CHAdeMO: Set SoC to %d %%" % soc)
+                 self.simulatedSoc = soc
         
 def myPrintfunction(s):
     print("myprint " + s)

@@ -99,6 +99,10 @@ testsuite_enable = No
 # in form of UDP Syslog messages. For details see in udplog.py.
 udp_syslog_enable = Yes
 
+# Set backend for obtaining charging parameters, we start with CHAdeMO CAN for now
+# Need to make a simulator device and maybe a celeron device?
+charge_parameter_backend = chademo
+
 # REST callback for SoC states. Comment out to disable. Do not leave a trailing slash
 soc_callback_enabled = False
 soc_callback_endpoint = http://1.1.1.1
