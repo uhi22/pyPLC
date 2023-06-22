@@ -17,7 +17,7 @@ if (getConfigValue("digital_output_device")=="beaglebone"):
     import Adafruit_BBIO.GPIO as GPIO
 
 if (getConfigValue("charge_parameter_backend")=="chademo"):
-    # In case we run on beaglebone, we want to use GPIO ports.
+    # In case we use the CHAdeMO backend, we want to use CAN
     import can
 
 class hardwareInterface():
@@ -425,7 +425,6 @@ class hardwareInterface():
                  self.addToTrace("CHAdeMO: Set capacity to %d" % message.data[6])
              self.capacity = message.data[6]
              
-             #TODO: determine maximum charger current and voltage and also actual current and voltage
              msg = can.Message(arbitration_id=0x108, data=[ 0, self.maxChargerVoltage & 0xFF, self.maxChargerVoltage >> 8, self.maxChargerCurrent, 0, 0, 0, 0], is_extended_id=False)
              self.canbus.send(msg)
              #Report unspecified version 10, this makes our custom implementation send the momentary
