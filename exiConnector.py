@@ -101,6 +101,7 @@ exiHexDemoSupportedApplicationProtocolRequest2="8000ebab9371d34b9b79d189a98989c1
 # 809a0125e6cecc50e0004080000082867dc8081818000000040a1b64802030882702038486580800 CurrentDemandRes
 # 809a0125e6cecc50e0804080000082867dc8081818000000040a1b64802030882702038486580800 CurrentDemandRes with "FAILED"
 
+# Further examples are collected in the DemoExiLog.txt.
 
 # Configuration of the exi converter tool
 if os.name == "nt":
@@ -262,9 +263,17 @@ def testReadExiFromSnifferFile():
             testDecoder(s, "DD", "")
 
 def testReadExiFromExiLogFile(strLogFileName):
+    print("Trying to read from ExiLogFile " + strLogFileName)
     try:
         file1 = open(strLogFileName, 'r')
-        fileOut = open('PevExiLog.decoded.txt', 'w')
+        isFileOk = True
+    except:
+        print("Could not open " + strLogFileName)
+        isFileOk = False
+        if (strLogFileName == "PevExiLog.txt"):
+            print("This is no problem. The PevExiLog.txt will be created when the pyPLC runs in PevMode, and can be decoded afterwards.")
+    if (isFileOk):
+        fileOut = open(strLogFileName + '.decoded.txt', 'w')
         # example: "ED 809a02004080c1014181c210b8"
         # example with timestamp: "2022-12-20T08:17:15.055755=ED 809a02004080c1014181c21198"
         Lines = file1.readlines()
@@ -276,21 +285,28 @@ def testReadExiFromExiLogFile(strLogFileName):
             else:
                 # no equal-sign. Take the complete line.
                 strToDecode=myLine
-            if (strToDecode[1:3]=="D "): # it is DIN
+            if (myLine[0]=="#"):
+                # take-over comment lines into the output
+                print(myLine.replace("\n", ""))
+                print(myLine.replace("\n", ""), file=fileOut)
+            strDecoderSelection = "" # default: unknown line
+            if (strToDecode[1:3]=="D "):
+                strDecoderSelection = "D" # it is a DIN message
+            if (strToDecode[1:3]=="H ") or (strToDecode[1:3]=="h "):
+                strDecoderSelection = "H" # it is a ProtocolHandshake message
+                
+            if (len(strDecoderSelection)>0): # if we have selected a valid decoder
                 posOfSpace=2
                 s = strToDecode[posOfSpace+1:] # The part after the " " contains the EXI hex data.
                 s = s.replace(" ", "") # Remove blanks
                 s = s.replace("\n", "") # Remove line feeds
                 #print(s)
-                decoded=exiDecode(s, "DD")
+                decoded=exiDecode(s, "D"+strDecoderSelection)
+                print(myLine.replace("\n", "") + " means:")
                 print(decoded)
                 print(myLine.replace("\n", "") + " means:", file=fileOut)            
                 print(decoded, file=fileOut)            
         fileOut.close()
-    except:
-        print("Could not open " + strLogFileName)
-        if (strLogFileName == "PevExiLog.txt"):
-            print("This is no problem. The PevExiLog.txt will be created when the pyPLC runs in PevMode, and can be decoded afterwards.")
 
 def testTimeConsumption():
     strHex = "809a001150400000c80006400000"
