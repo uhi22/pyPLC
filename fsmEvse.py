@@ -28,9 +28,9 @@ class fsmEvse():
     def publishStatus(self, s):
         self.callbackShowStatus(s, "evseState")
 
-    def publishSoCs(self, remaining_soc: int, full_soc: int = -1, bulk_soc: int = -1, origin: str = ""):
+    def publishSoCs(self, current_soc: int, full_soc: int = -1, energy_capacity: int = -1, energy_request: int = -1, evccid: str = "", origin: str = ""):
         if self.callbackSoCStatus is not None:
-            self.callbackSoCStatus(remaining_soc, full_soc, bulk_soc, origin)
+            self.callbackSoCStatus(current_soc, full_soc, energy_capacity, energy_request, self.evccid, origin)
 
     def enterState(self, n):
         self.addToTrace("from " + str(self.state) + " entering " + str(n))
@@ -82,6 +82,9 @@ class fsmEvse():
                 self.Tcp.transmit(msg)
                 self.publishStatus("Session established")
                 self.enterState(stateWaitForServiceDiscoveryRequest)
+                y = json.loads(strConverterResult)
+                self.evccid = y.get("EVCCID", "")
+
         if (self.isTooLong()):
             self.enterState(0)
 
@@ -136,8 +139,8 @@ class fsmEvse():
                 # todo: check the request content, and fill response parameters
                 self.addToTrace("Received PowerDeliveryReq. Extracting SoC parameters")
                 info = json.loads(strConverterResult)
-                remaining_soc = int(info.get("EVRESSSOC", -1))
-                self.publishSoCs(remaining_soc, origin="PowerDeliveryReq")
+                current_soc = int(info.get("EVRESSSOC", -1))
+                self.publishSoCs(current_soc, origin="PowerDeliveryReq")
                 msg = addV2GTPHeader(exiEncode("EDh")) # EDh for Encode, Din, PowerDeliveryResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_PowerDeliveryRes)):
                     # send a PowerDeliveryResponse with Responsecode Failed
@@ -149,10 +152,11 @@ class fsmEvse():
             if (strConverterResult.find("ChargeParameterDiscoveryReq")>0):
                 self.addToTrace("Received ChargeParameterDiscoveryReq. Extracting SoC parameters via DC")
                 info = json.loads(strConverterResult)
-                remaining_soc = int(info.get("DC_EVStatus.EVRESSSOC", -1))
+                current_soc = int(info.get("DC_EVStatus.EVRESSSOC", -1))
                 full_soc = int(info.get("FullSOC", -1))
-                bulk_soc = int(info.get("BulkSOC", -1))
-                self.publishSoCs(remaining_soc, full_soc, bulk_soc, origin="ChargeParameterDiscoveryReq")
+                energy_capacity = int(info.get("EVEnergyCapacity.Value", -1))
+                energy_request = int(info.get("EVEnergyRequest.Value", -1))
+                self.publishSoCs(current_soc, full_soc, energy_capacity, energy_request, origin="ChargeParameterDiscoveryReq")
 
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDe")) # EDe for Encode, Din, ChargeParameterDiscoveryResponse
@@ -168,8 +172,8 @@ class fsmEvse():
                 # todo: make a real cable check, and while it is ongoing, send "Ongoing".
                 self.addToTrace("Received CableCheckReq. Extracting SoC parameters via DC")
                 info = json.loads(strConverterResult)
-                remaining_soc = int(info.get("DC_EVStatus.EVRESSSOC", -1))
-                self.publishSoCs(remaining_soc, -1, -1, origin="CableCheckReq")
+                current_soc = int(info.get("DC_EVStatus.EVRESSSOC", -1))
+                self.publishSoCs(current_soc, -1, -1, origin="CableCheckReq")
 
                 msg = addV2GTPHeader(exiEncode("EDf")) # EDf for Encode, Din, CableCheckResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_CableCheckRes)):
@@ -232,13 +236,14 @@ class fsmEvse():
                     strEVTargetVoltageMultiplier = y["EVTargetVoltage.Multiplier"]
                     uTarget = combineValueAndMultiplier(strEVTargetVoltageValue, strEVTargetVoltageMultiplier)
                     self.addToTrace("EV wants EVTargetVoltage " + str(uTarget))
-
-                    remaining_soc = int(y.get("DC_EVStatus.EVRESSSOC", -1))
+                    current_soc = int(y.get("DC_EVStatus.EVRESSSOC", -1))
                     full_soc = int(y.get("FullSOC", -1))
-                    bulk_soc = int(y.get("BulkSOC", -1))
-                    self.publishSoCs(remaining_soc, full_soc, bulk_soc, origin="CurrentDemandReq")
+                    energy_capacity = int(y.get("EVEnergyCapacity.Value", -1))
+                    energy_request = int(y.get("EVEnergyRequest.Value", -1))
 
-                    self.callbackShowStatus(str(remaining_soc), "soc")
+                    self.publishSoCs(current_soc, full_soc, energy_capacity, energy_request, origin="CurrentDemandReq")
+
+                    self.callbackShowStatus(str(current_soc), "soc")
 
                 except:
                     self.addToTrace("ERROR: Could not decode the CurrentDemandReq")
@@ -352,6 +357,7 @@ class fsmEvse():
         self.state = 0
         self.cyclesInState = 0
         self.rxData = []
+        self.evccid = ""
 
     def mainfunction(self):
         self.Tcp.mainfunction() # call the lower-level worker

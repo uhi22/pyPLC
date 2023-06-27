@@ -9,3 +9,5 @@ testresults.txt
 /log
 /local
 *.bak
+*.pyc
+
