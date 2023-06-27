@@ -232,6 +232,9 @@ class fsmPev():
         # We just use the initial request message from the Ioniq. It contains one entry: DIN.
         self.addToTrace("Checkpoint400: Sending the initial SupportedApplicationProtocolReq")
         self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestIoniq)))
+        # For testing purposes, we can also use the requests from other cars:
+        #self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestTesla)))
+        #self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestBMWiX3)))
         self.hardwareInterface.resetSimulation()
         self.enterState(stateWaitForSupportedApplicationProtocolResponse)
         

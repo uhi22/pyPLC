@@ -51,17 +51,32 @@ class fsmEvse():
             self.rxData = []
             strConverterResult = exiDecode(exidata, "DH") # Decode Handshake-request
             self.addToTrace(strConverterResult)
-            if (strConverterResult.find("ProtocolNamespace=urn:din")>0):
-                # todo: of course we should care for schemaID and prio also here
-                self.addToTrace("Detected DIN")
-                # TESTSUITE: When the EVSE received the Handshake, it selects a new test case.
-                testsuite_choose_testcase()
-                # Eh for encode handshake, SupportedApplicationProtocolResponse
-                msg = addV2GTPHeader(exiEncode("Eh"))
-                self.addToTrace("responding " + prettyHexMessage(msg))
-                self.Tcp.transmit(msg)
-                self.publishStatus("Schema negotiated")
-                self.enterState(stateWaitForSessionSetupRequest)
+            if (strConverterResult.find("supportedAppProtocolReq")>0):
+                nDinSchemaID = 255 # invalid default value
+                try:
+                    y = json.loads(strConverterResult)
+                    nAppProtocol_ArrayLen = int(y["AppProtocol_arrayLen"])
+                    self.addToTrace("The car supports " + str(nAppProtocol_ArrayLen) + " schemas.")
+                    for i in range(nAppProtocol_ArrayLen):
+                        strNameSpace = y["NameSpace_"+str(i)]
+                        nSchemaId = int(y["SchemaID_"+str(i)])
+                        self.addToTrace("The NameSpace " + strNameSpace + " has SchemaID " + str(nSchemaId))
+                        if (strNameSpace.find(":din:70121:")>0):
+                            nDinSchemaID = nSchemaId
+                except:
+                    self.addToTrace("ERROR: Could not decode the supportedAppProtocolReq")
+                if (nDinSchemaID<255):
+                    self.addToTrace("Detected DIN")
+                    # TESTSUITE: When the EVSE received the Handshake, it selects a new test case.
+                    testsuite_choose_testcase()
+                    # Eh for encode handshake, SupportedApplicationProtocolResponse, with SchemaID as parameter
+                    msg = addV2GTPHeader(exiEncode("Eh__"+str(nDinSchemaID)))
+                    self.addToTrace("responding " + prettyHexMessage(msg))
+                    self.Tcp.transmit(msg)
+                    self.publishStatus("Schema negotiated")
+                    self.enterState(stateWaitForSessionSetupRequest)
+                else:
+                    self.addToTrace("Error: The connected car does not support DIN. At the moment, the pyPLC only supports DIN.")
 
     def stateFunctionWaitForSessionSetupRequest(self):
         if (len(self.rxData)>0):
