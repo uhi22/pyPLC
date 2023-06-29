@@ -25,14 +25,14 @@
 - [x] add OLED display to the PEV controller
 - [ ] in addressManager, replace the print by addToTrace
 - [ ] Resolve the todo-markers in the code
-- [ ] Still fixed addresses (MAC, IP?) used on windows, add auto-detection or configuration
+- [x] Still fixed addresses (MAC, IP?) used on windows, add auto-detection or configuration
 - [x] configurable interface name and simplify address determination (see https://openinverter.org/forum/viewtopic.php?p=54659#p54659)
 - [x] in the SessionSetupRequest we need to set the EVCCID with the MAC of the car. At the moment this is not implemented, need to update in the OpenV2Gx the function encodeSessionSetupRequest(), also the fsmPev.py, and provide the MAC as command line parameter from the python to the OpenV2Gx. (see https://openinverter.org/forum/viewtopic.php?p=54667#p54667)
 - [x] integrate celeron55s hardware interface, use config options for this.
 - [x] configurable serial interface and baud rate
 - [ ] add plausibilization between EVSEPresentVoltage and physicalVoltage before closing contactors (configurable)
 - [ ] find out how a normal end of charging session works (Stopped on charger, stopped on car)
-- [ ] PevMode: Evaluate the error code reported by the charger, and enter into state stateUnrecoverableError. 
+- [x] PevMode: Evaluate the error code reported by the charger, and enter into state stateUnrecoverableError. 
 - [ ] Configurable pathes in sharter.sh
-- [ ] A timeout during PreCharging shall run into the safe shutdown sequence. Same for CableCheck.
+- [x] A timeout during PreCharging shall run into the safe shutdown sequence. Same for CableCheck.
 - [ ] (and some more)

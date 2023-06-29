@@ -1,10 +1,18 @@
 # Open issues
 
+(This document will not be updated. Issues are tracked in github issues, https://github.com/uhi22/pyPLC/issues )
+
+# Closed issues
+
+## Issue17: Welding detection fails
+- WeldingDetectionRes says "failed" on alpitronics, and no response on ABBHPC and ABBTriple
+- version v0.4-7-g7cea8b5 (2022-12-21)
+
 ## Issue21: Missing fields in ChargeParameterDiscoveryReq
 - In the ChargeParameterDiscoveryReq, some fields are not filled. This leads to abort on certain charger types.
 - Discussion in https://openinverter.org/forum/viewtopic.php?p=54696#p54696
 - Improvement in https://github.com/uhi22/OpenV2Gx/commit/4b5df391d56e15b45652605fa7ad8a7712e2acaf
-- To be re-tested with several chargers. No issue on Compleo, Alpi, ABB.
+- No issue on Compleo, Alpi, ABB.
 
 ## Issue18: On SuperCharger we ignore the session ID
 - In the SessionSetupResponse, the SuperCharger V3 correctly provides a sessionID, e.g. "06ef0071".
@@ -18,14 +26,6 @@ operates with the default session ID "deadbeefdeadbeef".
 - solution: in function useSessionIdFromCommandLine(), also accept shorter session IDs. And in function init_dinMessageHeaderWithSessionID(),
 use a dynamic length instead of the fixed length LEN_OF_SESSION_ID (=8).
 - implementation done with https://github.com/uhi22/OpenV2Gx/commit/9c08c19ce14446a316ed4059d6d5b5e07721fd9d
-- to be tested.
-
-## Issue17: Welding detection fails
-- WeldingDetectionRes says "failed" on alpitronics, and no response on ABBHPC and ABBTriple
-- version v0.4-7-g7cea8b5 (2022-12-21)
-
-
-# Closed issues
 
 ## [Solved] Issue20: Missing EVCCID in the SessionSetupReq
 - In the SessionSetupReq, the charger expects the EVCCID filled with the cars MAC. This is missing, and leads to abort on certain charger types.
