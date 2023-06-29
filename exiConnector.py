@@ -218,9 +218,9 @@ def exiEncode(strMessageName):
         # "result": "8004440400"
         # }
         try:
-            y = json.loads(result.stdout)
-            strConverterResult = y["result"]
-            strConverterError = y["error"]
+            jsondict = json.loads(result.stdout)
+            strConverterResult = jsondict["result"]
+            strConverterError = jsondict["error"]
             if (len(strConverterError)>0):
                 print("[EXICONNECTOR] exiEncode error " + strConverterError)
             #print("strConverterResult is " + str(strConverterResult))

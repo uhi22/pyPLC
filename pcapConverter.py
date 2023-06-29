@@ -126,23 +126,23 @@ def convertPcapToTxt(inputFileName):
                     if (decoded.find("CurrentDemandReq")>0) and (t3CurrentDemandBegin==0):
                         t3CurrentDemandBegin = float(packet.sniff_timestamp)
                     try:
-                        y = json.loads(decoded)
+                        jsondict = json.loads(decoded)
                         try:
-                            u = combineValueAndMultiplier(y["EVSEPresentVoltage.Value"], y["EVSEPresentVoltage.Multiplier"])
+                            u = combineValueAndMultiplier(jsondict["EVSEPresentVoltage.Value"], jsondict["EVSEPresentVoltage.Multiplier"])
                             print("[" + str(packet.sniff_time) + "] EVSEPresentVoltage=" + str(u), file=fileOutValues)
-                            i = combineValueAndMultiplier(y["EVSEPresentCurrent.Value"], y["EVSEPresentCurrent.Multiplier"])
+                            i = combineValueAndMultiplier(jsondict["EVSEPresentCurrent.Value"], jsondict["EVSEPresentCurrent.Multiplier"])
                             print("[" + str(packet.sniff_time) + "] EVSEPresentCurrent=" + str(i), file=fileOutValues)
                         except:
                             pass
                         try:
-                            u = combineValueAndMultiplier(y["EVTargetVoltage.Value"], y["EVTargetVoltage.Multiplier"])
+                            u = combineValueAndMultiplier(jsondict["EVTargetVoltage.Value"], jsondict["EVTargetVoltage.Multiplier"])
                             print("[" + str(packet.sniff_time) + "] EVTargetVoltage=" + str(u), file=fileOutValues)
-                            i = combineValueAndMultiplier(y["EVTargetCurrent.Value"], y["EVTargetCurrent.Multiplier"])
+                            i = combineValueAndMultiplier(jsondict["EVTargetCurrent.Value"], jsondict["EVTargetCurrent.Multiplier"])
                             print("[" + str(packet.sniff_time) + "] EVTargetCurrent=" + str(i), file=fileOutValues)
                         except:
                             pass
                         try:
-                            soc = y["DC_EVStatus.EVRESSSOC"]
+                            soc = jsondict["DC_EVStatus.EVRESSSOC"]
                             print("[" + str(packet.sniff_time) + "] EVRESSSOC=" + str(soc), file=fileOutValues)
                         except:
                             pass

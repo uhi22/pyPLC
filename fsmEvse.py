@@ -54,12 +54,12 @@ class fsmEvse():
             if (strConverterResult.find("supportedAppProtocolReq")>0):
                 nDinSchemaID = 255 # invalid default value
                 try:
-                    y = json.loads(strConverterResult)
-                    nAppProtocol_ArrayLen = int(y["AppProtocol_arrayLen"])
+                    jsondict = json.loads(strConverterResult)
+                    nAppProtocol_ArrayLen = int(jsondict["AppProtocol_arrayLen"])
                     self.addToTrace("The car supports " + str(nAppProtocol_ArrayLen) + " schemas.")
                     for i in range(nAppProtocol_ArrayLen):
-                        strNameSpace = y["NameSpace_"+str(i)]
-                        nSchemaId = int(y["SchemaID_"+str(i)])
+                        strNameSpace = jsondict["NameSpace_"+str(i)]
+                        nSchemaId = int(jsondict["SchemaID_"+str(i)])
                         self.addToTrace("The NameSpace " + strNameSpace + " has SchemaID " + str(nSchemaId))
                         if (strNameSpace.find(":din:70121:")>0):
                             nDinSchemaID = nSchemaId
@@ -97,8 +97,8 @@ class fsmEvse():
                 self.Tcp.transmit(msg)
                 self.publishStatus("Session established")
                 self.enterState(stateWaitForServiceDiscoveryRequest)
-                y = json.loads(strConverterResult)
-                self.evccid = y.get("EVCCID", "")
+                jsondict = json.loads(strConverterResult)
+                self.evccid = jsondict.get("EVCCID", "")
 
         if (self.isTooLong()):
             self.enterState(0)
@@ -153,8 +153,8 @@ class fsmEvse():
             if (strConverterResult.find("PowerDeliveryReq")>0):
                 # todo: check the request content, and fill response parameters
                 self.addToTrace("Received PowerDeliveryReq. Extracting SoC parameters")
-                info = json.loads(strConverterResult)
-                current_soc = int(info.get("EVRESSSOC", -1))
+                jsondict = json.loads(strConverterResult)
+                current_soc = int(jsondict.get("EVRESSSOC", -1))
                 self.publishSoCs(current_soc, origin="PowerDeliveryReq")
                 msg = addV2GTPHeader(exiEncode("EDh")) # EDh for Encode, Din, PowerDeliveryResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_PowerDeliveryRes)):
@@ -166,11 +166,11 @@ class fsmEvse():
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("ChargeParameterDiscoveryReq")>0):
                 self.addToTrace("Received ChargeParameterDiscoveryReq. Extracting SoC parameters via DC")
-                info = json.loads(strConverterResult)
-                current_soc = int(info.get("DC_EVStatus.EVRESSSOC", -1))
-                full_soc = int(info.get("FullSOC", -1))
-                energy_capacity = int(info.get("EVEnergyCapacity.Value", -1))
-                energy_request = int(info.get("EVEnergyRequest.Value", -1))
+                jsondict = json.loads(strConverterResult)
+                current_soc = int(jsondict.get("DC_EVStatus.EVRESSSOC", -1))
+                full_soc = int(jsondict.get("FullSOC", -1))
+                energy_capacity = int(jsondict.get("EVEnergyCapacity.Value", -1))
+                energy_request = int(jsondict.get("EVEnergyRequest.Value", -1))
                 self.publishSoCs(current_soc, full_soc, energy_capacity, energy_request, origin="ChargeParameterDiscoveryReq")
 
                 # todo: check the request content, and fill response parameters
@@ -186,8 +186,8 @@ class fsmEvse():
                 # todo: check the request content, and fill response parameters
                 # todo: make a real cable check, and while it is ongoing, send "Ongoing".
                 self.addToTrace("Received CableCheckReq. Extracting SoC parameters via DC")
-                info = json.loads(strConverterResult)
-                current_soc = int(info.get("DC_EVStatus.EVRESSSOC", -1))
+                jsondict = json.loads(strConverterResult)
+                current_soc = int(jsondict.get("DC_EVStatus.EVRESSSOC", -1))
                 self.publishSoCs(current_soc, -1, -1, origin="CableCheckReq")
 
                 msg = addV2GTPHeader(exiEncode("EDf")) # EDf for Encode, Din, CableCheckResponse
@@ -203,9 +203,9 @@ class fsmEvse():
                 # check the request content, and fill response parameters
                 uTarget = 220 # default in case we cannot decode the requested voltage
                 try:
-                    y = json.loads(strConverterResult)
-                    strEVTargetVoltageValue = y["EVTargetVoltage.Value"]
-                    strEVTargetVoltageMultiplier = y["EVTargetVoltage.Multiplier"]
+                    jsondict = json.loads(strConverterResult)
+                    strEVTargetVoltageValue = jsondict["EVTargetVoltage.Value"]
+                    strEVTargetVoltageMultiplier = jsondict["EVTargetVoltage.Multiplier"]
                     uTarget = combineValueAndMultiplier(strEVTargetVoltageValue, strEVTargetVoltageMultiplier)
                     self.addToTrace("EV wants EVTargetVoltage " + str(uTarget))
                 except:
@@ -246,15 +246,15 @@ class fsmEvse():
                 # check the request content, and fill response parameters
                 uTarget = 220 # default in case we cannot decode the requested voltage
                 try:
-                    y = json.loads(strConverterResult)
-                    strEVTargetVoltageValue = y["EVTargetVoltage.Value"]
-                    strEVTargetVoltageMultiplier = y["EVTargetVoltage.Multiplier"]
+                    jsondict = json.loads(strConverterResult)
+                    strEVTargetVoltageValue = jsondict["EVTargetVoltage.Value"]
+                    strEVTargetVoltageMultiplier = jsondict["EVTargetVoltage.Multiplier"]
                     uTarget = combineValueAndMultiplier(strEVTargetVoltageValue, strEVTargetVoltageMultiplier)
                     self.addToTrace("EV wants EVTargetVoltage " + str(uTarget))
-                    current_soc = int(y.get("DC_EVStatus.EVRESSSOC", -1))
-                    full_soc = int(y.get("FullSOC", -1))
-                    energy_capacity = int(y.get("EVEnergyCapacity.Value", -1))
-                    energy_request = int(y.get("EVEnergyRequest.Value", -1))
+                    current_soc = int(jsondict.get("DC_EVStatus.EVRESSSOC", -1))
+                    full_soc = int(jsondict.get("FullSOC", -1))
+                    energy_capacity = int(jsondict.get("EVEnergyCapacity.Value", -1))
+                    energy_request = int(jsondict.get("EVEnergyRequest.Value", -1))
 
                     self.publishSoCs(current_soc, full_soc, energy_capacity, energy_request, origin="CurrentDemandReq")
 

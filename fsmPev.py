@@ -278,9 +278,9 @@ class fsmPev():
                 # todo: check the request content, and fill response parameters
                 strResponseCode = "na"
                 try:
-                    y = json.loads(strConverterResult)
-                    strSessionId = y["header.SessionID"]
-                    strResponseCode = y["ResponseCode"]
+                    jsondict = json.loads(strConverterResult)
+                    strSessionId = jsondict["header.SessionID"]
+                    strResponseCode = jsondict["ResponseCode"]
                     self.addToTrace("Checkpoint506: The Evse decided for SessionId " + strSessionId)
                     self.publishStatus("Session established")
                     self.sessionId = strSessionId
@@ -308,8 +308,8 @@ class fsmPev():
             if (strConverterResult.find("ServiceDiscoveryRes")>0):
                 strResponseCode = "na"
                 try:
-                    y = json.loads(strConverterResult)
-                    strResponseCode = y["ResponseCode"]
+                    jsondict = json.loads(strConverterResult)
+                    strResponseCode = jsondict["ResponseCode"]
                 except:
                     self.addToTrace("ERROR: Could not decode the ServiceDiscoveryResponse")
                 if (strResponseCode!="OK"):
@@ -336,8 +336,8 @@ class fsmPev():
                 # todo: check the request content, and fill response parameters
                 strResponseCode = "na"
                 try:
-                    y = json.loads(strConverterResult)
-                    strResponseCode = y["ResponseCode"]
+                    jsondict = json.loads(strConverterResult)
+                    strResponseCode = jsondict["ResponseCode"]
                 except:
                     self.addToTrace("ERROR: Could not decode the ServicePaymentSelectionResponse")
                 if (strResponseCode!="OK"):
@@ -369,8 +369,8 @@ class fsmPev():
                 # Or, the authorization is finished. This is shown by EVSEProcessing=Finished.
                 strResponseCode = "na"
                 try:
-                    y = json.loads(strConverterResult)
-                    strResponseCode = y["ResponseCode"]
+                    jsondict = json.loads(strConverterResult)
+                    strResponseCode = jsondict["ResponseCode"]
                 except:
                     self.addToTrace("ERROR: Could not decode the ContractAuthenticationResponse")
                 if (strResponseCode!="OK"):
@@ -414,8 +414,8 @@ class fsmPev():
             if (strConverterResult.find("ChargeParameterDiscoveryRes")>0):
                 strResponseCode = "na"
                 try:
-                    y = json.loads(strConverterResult)
-                    strResponseCode = y["ResponseCode"]
+                    jsondict = json.loads(strConverterResult)
+                    strResponseCode = jsondict["ResponseCode"]
                 except:
                     self.addToTrace("ERROR: Could not decode the ChargeParameterDiscoveryResponse")
                 if (strResponseCode!="OK"):
@@ -429,8 +429,8 @@ class fsmPev():
                     self.publishStatus("ChargeParams discovered")
                     self.addToTrace("Checkpoint550: ChargeParams are discovered. Will change to state C.")
                     #Report charger paramters
-                    maxI = combineValueAndMultiplier(y["EVSEMaximumCurrentLimit.Value"], y["EVSEMaximumCurrentLimit.Multiplier"])
-                    maxV = combineValueAndMultiplier(y["EVSEMaximumVoltageLimit.Value"], y["EVSEMaximumVoltageLimit.Multiplier"])
+                    maxI = combineValueAndMultiplier(jsondict["EVSEMaximumCurrentLimit.Value"], jsondict["EVSEMaximumCurrentLimit.Multiplier"])
+                    maxV = combineValueAndMultiplier(jsondict["EVSEMaximumVoltageLimit.Value"], jsondict["EVSEMaximumVoltageLimit.Multiplier"])
                     self.hardwareInterface.setChargerParameters(maxV, maxI)
                     # pull the CP line to state C here:
                     self.hardwareInterface.setStateC()
@@ -474,9 +474,9 @@ class fsmPev():
             if (strConverterResult.find("CableCheckRes")>0):
                 strResponseCode = "na"
                 try:
-                    y = json.loads(strConverterResult)
-                    strResponseCode = y["ResponseCode"]
-                    strEVSEProcessing = y["EVSEProcessing"]
+                    jsondict = json.loads(strConverterResult)
+                    strResponseCode = jsondict["ResponseCode"]
+                    strEVSEProcessing = jsondict["EVSEProcessing"]
                     self.addToTrace("The CableCheck result is " + strResponseCode + " " + strEVSEProcessing)
                 except:
                     self.addToTrace("ERROR: Could not decode the CableCheckRes")
@@ -530,13 +530,13 @@ class fsmPev():
                 strResponseCode = "na"
                 strEVSEStatusCode = "0" # default in case the decoding does not work
                 try:
-                    y = json.loads(strConverterResult)
-                    strResponseCode = y["ResponseCode"]
-                    strEVSEPresentVoltageValue = y["EVSEPresentVoltage.Value"]
-                    strEVSEPresentVoltageMultiplier = y["EVSEPresentVoltage.Multiplier"]
+                    jsondict = json.loads(strConverterResult)
+                    strResponseCode = jsondict["ResponseCode"]
+                    strEVSEPresentVoltageValue = jsondict["EVSEPresentVoltage.Value"]
+                    strEVSEPresentVoltageMultiplier = jsondict["EVSEPresentVoltage.Multiplier"]
                     u = combineValueAndMultiplier(strEVSEPresentVoltageValue, strEVSEPresentVoltageMultiplier)
                     self.callbackShowStatus(format(u,".1f"), "EVSEPresentVoltage")
-                    strEVSEStatusCode = y["DC_EVSEStatus.EVSEStatusCode"]
+                    strEVSEStatusCode = jsondict["DC_EVSEStatus.EVSEStatusCode"]
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
                 self.addToTrace("PreChargeResponse received.")
@@ -612,8 +612,8 @@ class fsmPev():
             if (strConverterResult.find("PowerDeliveryRes")>0):
                 strResponseCode = "na"
                 try:
-                    y = json.loads(strConverterResult)
-                    strResponseCode = y["ResponseCode"]
+                    jsondict = json.loads(strConverterResult)
+                    strResponseCode = jsondict["ResponseCode"]
                 except:
                     self.addToTrace("ERROR: Could not decode the PowerDeliveryResponse")
                 if (strResponseCode!="OK"):
@@ -653,16 +653,16 @@ class fsmPev():
                 u = 0 # a default voltage of 0V in case we cannot convert the actual value
                 strEVSEStatusCode = "0" # default in case the decoding does not work
                 try:
-                    y = json.loads(strConverterResult)
-                    strResponseCode = y["ResponseCode"]
-                    strEVSEPresentVoltageValue = y["EVSEPresentVoltage.Value"]
-                    strEVSEPresentVoltageMultiplier = y["EVSEPresentVoltage.Multiplier"]
-                    strEVSEPresentCurrentValue = y["EVSEPresentCurrent.Value"]
-                    strEVSEPresentCurrentMultiplier = y["EVSEPresentCurrent.Multiplier"]
+                    jsondict = json.loads(strConverterResult)
+                    strResponseCode = jsondict["ResponseCode"]
+                    strEVSEPresentVoltageValue = jsondict["EVSEPresentVoltage.Value"]
+                    strEVSEPresentVoltageMultiplier = jsondict["EVSEPresentVoltage.Multiplier"]
+                    strEVSEPresentCurrentValue = jsondict["EVSEPresentCurrent.Value"]
+                    strEVSEPresentCurrentMultiplier = jsondict["EVSEPresentCurrent.Multiplier"]
                     u = combineValueAndMultiplier(strEVSEPresentVoltageValue, strEVSEPresentVoltageMultiplier)
                     i = combineValueAndMultiplier(strEVSEPresentCurrentValue, strEVSEPresentCurrentMultiplier)
                     self.callbackShowStatus(format(u,".1f"), "EVSEPresentVoltage")
-                    strEVSEStatusCode = y["DC_EVSEStatus.EVSEStatusCode"]
+                    strEVSEStatusCode = jsondict["DC_EVSEStatus.EVSEStatusCode"]
                     self.hardwareInterface.setChargerVoltageAndCurrent(u, i)
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeResponse")
