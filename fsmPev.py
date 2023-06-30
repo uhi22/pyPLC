@@ -430,10 +430,11 @@ class fsmPev():
                 # (A) The charger needs more time to show the charge parameters. It does not say "EVSEProcessing": "Finished".
                 # (B) The charger finished to tell the charge parameters, but still needs more time for internal purposes.
                 #     It says "EVSEProcessing": "Finished", but also "EVSEStatusCode_text": "EVSE_NotReady". Observed and discussed
-                #     here: https://openinverter.org/forum/viewtopic.php?p=58239#p58239
+                #     here: https://openinverter.org/forum/viewtopic.php?p=58239#p58239.
+                #     Update: This seems to be a normal case for Compleo, and NO reason to wait. So we go to the next step (cable check).
                 # (C) The charger is really finished and able to continue with the next step (cable check).
-                if ((strEVSEProcessing == "Finished") and (strEVSEStatusCode_text == "EVSE_Ready")) :
-                    # Case C
+                if ((strEVSEProcessing == "Finished")) :
+                    # Case B and C
                     self.publishStatus("ChargeParams discovered")
                     self.addToTrace("Checkpoint550: ChargeParams are discovered. Will change to state C.")
                     #Report charger paramters
