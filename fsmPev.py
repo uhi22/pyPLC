@@ -413,19 +413,27 @@ class fsmPev():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ChargeParameterDiscoveryRes")>0):
                 strResponseCode = "na"
+                strEVSEProcessing = "na"
+                strEVSEStatusCode_text = "na"
                 try:
                     jsondict = json.loads(strConverterResult)
                     strResponseCode = jsondict["ResponseCode"]
+                    strEVSEProcessing =  jsondict["EVSEProcessing"]
+                    strEVSEStatusCode_text = jsondict["EVSEStatusCode_text"]
                 except:
                     self.addToTrace("ERROR: Could not decode the ChargeParameterDiscoveryResponse")
                 if (strResponseCode!="OK"):
                     self.addToTrace("Wrong response code. Aborting.")
                     self.enterState(stateUnrecoverableError)
                     return
-                # We can have two cases here:
-                # (A) The charger needs more time to show the charge parameters.
-                # (B) The charger finished to tell the charge parameters.
-                if (strConverterResult.find('"EVSEProcessing": "Finished"')>0):
+                # We can have three cases here:
+                # (A) The charger needs more time to show the charge parameters. It does not say "EVSEProcessing": "Finished".
+                # (B) The charger finished to tell the charge parameters, but still needs more time for internal purposes.
+                #     It says "EVSEProcessing": "Finished", but also "EVSEStatusCode_text": "EVSE_NotReady". Observed and discussed
+                #     here: https://openinverter.org/forum/viewtopic.php?p=58239#p58239
+                # (C) The charger is really finished and able to continue with the next step (cable check).
+                if ((strEVSEProcessing == "Finished") and (strEVSEStatusCode_text == "EVSE_Ready")) :
+                    # Case C
                     self.publishStatus("ChargeParams discovered")
                     self.addToTrace("Checkpoint550: ChargeParams are discovered. Will change to state C.")
                     #Report charger paramters
@@ -438,7 +446,7 @@ class fsmPev():
                     self.hardwareInterface.triggerConnectorLocking()
                     self.enterState(stateWaitForConnectorLock)
                 else:
-                    # Not (yet) finished.
+                    # Not (yet) finished. Cases A and B.
                     if (self.numberOfChargeParameterDiscoveryReq>=60): # approx 60 seconds, should be sufficient for the charger to find its parameters... The ISO allows up to 55s reaction time and 60s timeout for "ongoing".
                         self.addToTrace("ChargeParameterDiscovery lasted too long. " + str(self.numberOfChargeParameterDiscoveryReq) + " Giving up.")
                         self.enterState(stateSequenceTimeout)
