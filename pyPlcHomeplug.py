@@ -985,8 +985,8 @@ class pyPlcHomeplug():
         self.enterState(STATE_INITIAL)
 
     def runSdpStateMachine(self):
-        if (self.connMgr.getConnectionLevel()<20):
-            # We have no AVLN established. It does not make sense to start SDP.
+        if (self.connMgr.getConnectionLevel()<15):
+            # We have no AVLN established and SLAC not ongoing. It does not make sense to start SDP.
             self.sdp_state = 0
             return
         if (self.connMgr.getConnectionLevel()>20):

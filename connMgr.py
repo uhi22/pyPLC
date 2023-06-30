@@ -28,6 +28,7 @@ CONNMGR_CYCLES_PER_SECOND = 33 # 33 cycles for one second, is 30ms call cycle
 CONNMGR_TIMER_MAX = (5*33) # 5 seconds until an OkReport is forgotten.
 CONNMGR_TIMER_MAX_10s = (10*33) # 10 seconds until an OkReport is forgotten.
 CONNMGR_TIMER_MAX_15s = (15*33) # 15 seconds until an OkReport is forgotten.
+CONNMGR_TIMER_MAX_20s = (20*33) # 20 seconds until an OkReport is forgotten.
 
 
 class connMgr():
@@ -126,7 +127,7 @@ class connMgr():
         # The SetKey was sent to the local modem. This leads to restart of the
         # local modem, and potenially also for the remote modem. If both modems are up,
         # they need additional time to pair. We need to be patient during this process. */
-        self.timerSlac = CONNMGR_TIMER_MAX_15s
+        self.timerSlac = CONNMGR_TIMER_MAX_20s
 
     def SdpOk(self):
         self.timerSDP = CONNMGR_TIMER_MAX
