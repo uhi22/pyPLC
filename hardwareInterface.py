@@ -8,9 +8,12 @@
 
 import serial # the pyserial
 from serial.tools.list_ports import comports
-from time import sleep
+from time import sleep, time
 from configmodule import getConfigValue, getConfigValueBool
 import sys # For exit_on_session_end hack
+
+PinCp = "P8_18"
+PinPowerRelay = "P8_16"
 
 if (getConfigValue("digital_output_device")=="beaglebone"):
     # In case we run on beaglebone, we want to use GPIO ports.
@@ -85,7 +88,7 @@ class hardwareInterface():
     def setStateB(self):
         self.addToTrace("Setting CP line into state B.")
         if (getConfigValue("digital_output_device")=="beaglebone"):
-            GPIO.output("P8_18", GPIO.LOW)
+            GPIO.output(PinCp, GPIO.LOW)
         if (getConfigValue("digital_output_device")=="celeron55device"):
             self.ser.write(bytes("cp=0\n", "utf-8"))
         self.outvalue &= ~1
@@ -93,7 +96,7 @@ class hardwareInterface():
     def setStateC(self):
         self.addToTrace("Setting CP line into state C.")
         if (getConfigValue("digital_output_device")=="beaglebone"):
-            GPIO.output("P8_18", GPIO.HIGH)
+            GPIO.output(PinCp, GPIO.HIGH)
         if (getConfigValue("digital_output_device")=="celeron55device"):
             self.ser.write(bytes("cp=1\n", "utf-8"))
         self.outvalue |= 1
@@ -101,7 +104,7 @@ class hardwareInterface():
     def setPowerRelayOn(self):
         self.addToTrace("Switching PowerRelay ON.")
         if (getConfigValue("digital_output_device")=="beaglebone"):
-            GPIO.output("P8_16", GPIO.HIGH)
+            GPIO.output(PinPowerRelay, GPIO.HIGH)
         if (getConfigValue("digital_output_device")=="celeron55device"):
             self.ser.write(bytes("contactor=1\n", "utf-8"))
         self.outvalue |= 2
@@ -109,7 +112,7 @@ class hardwareInterface():
     def setPowerRelayOff(self):
         self.addToTrace("Switching PowerRelay OFF.")
         if (getConfigValue("digital_output_device")=="beaglebone"):
-            GPIO.output("P8_16", GPIO.LOW)
+            GPIO.output(PinPowerRelay, GPIO.LOW)
         if (getConfigValue("digital_output_device")=="celeron55device"):
             self.ser.write(bytes("contactor=0\n", "utf-8"))
         self.outvalue &= ~2
@@ -218,8 +221,8 @@ class hardwareInterface():
     
         if (getConfigValue("digital_output_device") == "beaglebone"):
             # Port configuration according to https://github.com/jsphuebner/pyPLC/commit/475f7fe9f3a67da3d4bd9e6e16dfb668d0ddb1d6
-            GPIO.setup("P8_16", GPIO.OUT) #output for port relays
-            GPIO.setup("P8_18", GPIO.OUT) #output for CP
+            GPIO.setup(PinPowerRelay, GPIO.OUT) #output for port relays
+            GPIO.setup(PinCp, GPIO.OUT) #output for CP
         
     def __init__(self, callbackAddToTrace=None, callbackShowStatus=None):
         self.callbackAddToTrace = callbackAddToTrace
@@ -239,6 +242,7 @@ class hardwareInterface():
         self.accuMaxCurrent = 0.0
         self.contactor_confirmed = False  # Confirmation from hardware
         self.plugged_in = None  # None means "not known yet"
+        self.lastReceptionTime = 0
 
         self.maxChargerVoltage = 0
         self.maxChargerCurrent = 10
@@ -442,12 +446,18 @@ class hardwareInterface():
              if self.accuMaxCurrent != message.data[3]:
                  self.addToTrace("CHAdeMO: Set current request to %d A" % message.data[3])
              self.accuMaxCurrent = message.data[3]
+             self.lastReceptionTime = time()
              
              if self.capacity > 0:
                  soc = message.data[6] / self.capacity * 100
                  if self.simulatedSoc != soc:
                      self.addToTrace("CHAdeMO: Set SoC to %d %%" % soc)
                  self.simulatedSoc = soc
+       #if nothing was received for over a second, time out        
+       if self.lastReceptionTime < (time() - 1):
+           if self.accuMaxCurrent != 0:
+              self.addToTrace("CHAdeMO: No current limit update for over 1s, setting current to 0")
+           self.accuMaxCurrent = 0
         
 def myPrintfunction(s):
     print("myprint " + s)
