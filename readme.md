@@ -420,6 +420,19 @@ That's is definitely a goal, and it was reached in the meanwhile. Of course, two
 For testing the communication at home, the pyPlc supports both sides of the CCS, the car and the charger. Have a
 look to [testing_and_simulation.md](doc/testing_and_simulation.md)
 
+### Q5: What can be the reason, that the charger reports a failed cable check?
+In the cable check phase, the charger checks the following things:
+1. CP/PE lines. The charger expects "State C", this means, the car must connect a diode and two resistors between the CP and the PE. This shall result in PWM levels of -12V and +6V. The charger measures these level, and will complain with CableCheck=Failed if it detects a mismatch. Some potential root causes for failed checks are:
+- CP is not connected at all.
+- Diode is missing or has wrong polarity.
+- Diode is too slow to handle the 1kHz/5%PWM.
+- Wrong resistor values chosen or too high tolerance of the resistors
+- Connection between circuit ground and PE missing
+- too high saturation voltage of the switch transistor
+- wrong coupling network between the CP/PE and the PLC modem transformator. This may disturb the PWM levels, due to low-pass-filtering or it may inject too much power from the PLC modem.
+- Software not configured to use the correct output path for the StateC switching
+2. Isolation of the DC path. It is recommended to use two contactors, one for each DC lines, to avoid asymmetrical results in the isolation measurements.
+
 ## Credits
 Thanks to catphish to start the investigations regarding the homeplug modems and publishing them on OpenInverter forum.
 Thanks to johu for the OpenInverter forum, and for the first video of the early experiments, the beaglebone integration and CHAdeMO integration.
