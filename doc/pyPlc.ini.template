@@ -114,7 +114,7 @@ testsuite_enable = No
 # If this is activated, the pyPlc will send all logging messages also to the network interface,
 # in form of UDP Syslog messages. For details see in udplog.py.
 # For development purposes, set this to "Yes".
-# For daily use, set this to "No". There is the risk that the broadcase UDP packets disturb the charger,
+# For daily use, set this to "No". There is the risk that the broadcast UDP packets disturb the charger,
 # which may lead to unwanted aborts.
 udp_syslog_enable = Yes
 
