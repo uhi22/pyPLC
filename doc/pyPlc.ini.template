@@ -11,7 +11,7 @@ mode = PevMode
 
 # Simulation without modem
 # For development purposes, make it possible to run two instances (pev and evse) on one machine, without
-# a modem connected. This feature is not tested since a long time, most likely does not work as intended.
+# a modem connected.
 # If this setting is set to false, nevertheless the simulation mode can be activated by the second command
 # line parameter "S", e.g.
 # python pyPlc.py E S
@@ -33,7 +33,10 @@ display_via_serial = yes
 
 # LightBulbDemo turns on the relay with a short delay in the charging loop, to stabilize the voltage
 # before the resistive load is connected.
+# This mode is intended to test the PevMode without the need of a real battery, but a load like a light bulb,
+# or kettle or similar.
 # Possible values: yes or no
+# For the use together with a real battery set this to "no".
 light_bulb_demo = no
 
 # SOC simulation.
@@ -95,7 +98,9 @@ charge_target_voltage = 270
 
 # By using an external manager script, this is useful for splitting charging
 # into separately logged sessions and avoiding logging when not connected to a
-# charger
+# charger.
+# Recommended setting: True, and configure the starter.sh as service (Linux only).
+# Deeper explanations here: https://github.com/uhi22/pyPLC/blob/master/doc/installation_on_raspberry.md#further-optimizations
 exit_on_session_end = False
 
 # Run test cases.
@@ -108,6 +113,9 @@ testsuite_enable = No
 # Logging to UDP Syslog messages
 # If this is activated, the pyPlc will send all logging messages also to the network interface,
 # in form of UDP Syslog messages. For details see in udplog.py.
+# For development purposes, set this to "Yes".
+# For daily use, set this to "No". There is the risk that the broadcase UDP packets disturb the charger,
+# which may lead to unwanted aborts.
 udp_syslog_enable = Yes
 
 # Set backend for obtaining charging parameters, we start with CHAdeMO CAN for now
