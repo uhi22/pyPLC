@@ -73,3 +73,13 @@ present. This interface name must be configured in the pyPlc.ini, so that pyPLC 
 ### Q7: Besides the Python version (pyPLC), is there an embedded solution available?
 
 Not at the moment. The embedded CCS solutions on ESP32 or STM32 are implementing the PEV (car) side only (https://github.com/uhi22/ccs32, https://github.com/uhi22/ccs32berta, https://github.com/uhi22/ccs32clara)
+
+### Q8: Which side of the TPlink is the PE and which is the CP?
+
+The TPlink has a RF transformer with 3 coils. Two coils are connected to the modem chip (the transmit and the receive path), and the
+third coil is the way to the outside world, in our case the CP and PE. The modulation does not care for the polarity of this path. It uses
+radio frequencies in the range of 2MHz to 30MHz.
+This means, it does not matter which side of the "outside coil" is connected to PE and which to CP.
+The only important thing is, that the coil does not connect directly to the CP and PE, because this would destroy the 12V PWM signal, which
+lives in parallel on the CP / PE lines. The coupling network of 1nF and 150ohms in series assures, that the RF signals and the 12V PWM
+are not interfering each other.
