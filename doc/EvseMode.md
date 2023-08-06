@@ -92,4 +92,4 @@ The picture shows the two-coil variant:
 ![image](TPlink_RF_transformer_and_coupling_network.jpg)
 
 These are the possible coupling variants. All are fine:
-![image](RF_coupling_eight_variants.jpg)
+![image](RF_coupling_six_variants.jpg)
