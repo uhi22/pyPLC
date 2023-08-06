@@ -84,5 +84,12 @@ The only important thing is, that the coil does not connect directly to the CP a
 lives in parallel on the CP / PE lines. The coupling network of 1nF and 150ohms in series assures, that the RF signals and the 12V PWM
 are not interfering each other.
 
+In other words: between the CP and the PE, there is the series of tree components: The 1nF, the 150ohm, and the secondary coil of the RF transformer. The order does not matter, also the polarity not. This means, to remove all parts on the TPlink which are connected to the secondary coil of the RF transformer, and connect the 1n and 150ohms to it.
+
+Regarding the type of capacitor and the exact values of the C and R: The precise values do not matter, I guess everything between 33 ohms and 220 ohm should work, and also 0.5nF, 1nF and 2.2nF. Higher capacitor values could slow the edges of the 1kHz PWM, so this should be avoided. The type of capacitor does not matter.
+
 The picture shows the two-coil variant:
 ![image](TPlink_RF_transformer_and_coupling_network.jpg)
+
+These are the possible coupling variants. All are fine:
+![image](RF_coupling_eight_variants.jpg)

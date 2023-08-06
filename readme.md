@@ -433,6 +433,11 @@ In the cable check phase, the charger checks the following things:
 - Software not configured to use the correct output path for the StateC switching
 2. Isolation of the DC path. It is recommended to use two contactors, one for each DC lines, to avoid asymmetrical results in the isolation measurements.
 
+### Q6: How to connect the PLC modem to the CP and PE?
+
+This is explained in the EvseMode manual. The coupling is the same in EvseMode and PevMode.
+[EvseMode.md FAQ Question 8](doc/EvseMode.md#q8-which-side-of-the-tplink-is-the-pe-and-which-is-the-cp)
+
 ## Credits
 Thanks to catphish to start the investigations regarding the homeplug modems and publishing them on OpenInverter forum.
 Thanks to johu for the OpenInverter forum, and for the first video of the early experiments, the beaglebone integration and CHAdeMO integration.
