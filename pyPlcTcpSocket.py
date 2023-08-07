@@ -186,15 +186,7 @@ class pyPlcTcpServerSocket():
         self.ourSocket.listen(1)
         self.callbackStateNotification(1) # inform the higher level state machines, that TCP is listening
         self.addToTrace("pyPlcTcpSocket listening on port " + str(self.tcpPort))
-        hostname=socket.gethostname()
-        IPAddr=socket.gethostbyname(hostname)
-        addressInfo = socket.getaddrinfo(hostname, None, socket.AF_INET6)
-        #print("Your Computer Name is:"+hostname)
-        self.addToTrace("The socket is linked the following IP addresses:")
-        for i in range(0, len(addressInfo)):
-            #fe80::4c46:fea5:b6c9:25a9
-            IPv6Addr = addressInfo[i][4][0]
-            self.addToTrace(IPv6Addr)
+        # (unused gethostbyname removed, see https://openinverter.org/forum/viewtopic.php?p=59970#p59970)
         self.read_list = [self.ourSocket]
         self.rxData = []
         
