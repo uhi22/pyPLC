@@ -37,9 +37,10 @@ On the laptop, just run `python pyPlc.py E`.
 
 ### Q1: What is the purpose of the PP pin, and do I need to connect it?
 
-The car uses the ProximityPilot (or PlugPresent) to detect, that a plug has been inserted. We need to connect a 1.5kohms resistor between
+The car uses the ProximityPilot (or PlugPresent) to detect, that a plug has been inserted. For CCS2, we need to connect a 1.5kohms resistor between
 the PP and the ProtectiveEarth (PE), otherwise the car most likely does not initiate any communication. The resistor can be directly placed
 into the plug.
+In CCS1 case, the resistance is different, and a button can be added, too. Discussion and explanation here: https://openinverter.org/forum/viewtopic.php?p=59932#p59932
 
 ### Q2: Where can I address questions or distribute my testing results?
 
