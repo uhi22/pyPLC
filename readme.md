@@ -262,8 +262,10 @@ See [Windows installation manual](doc/installation_on_windows.md)
 See [Raspberry installation manual](doc/installation_on_raspberry.md)
 
 ### Usage on Microcontrollers
-This python project is NOT intended for use on microcontrollers like ESP32 or STM32. But there is a variant ported to C for
-use in the Arduino IDE, with the ESP32-based WT32-ETH01 board. See here: https://github.com/uhi22/ccs32
+This python project is NOT intended for use on microcontrollers like ESP32 or STM32. But there are variants ported to C:
+- for use in the Arduino IDE, with the ESP32-based WT32-ETH01 board, see here: https://github.com/uhi22/ccs32
+- for use in the Arduino IDE, with ESP32 talking via SPI to QCA7005: https://github.com/uhi22/ccs32berta
+- plain C / C++ on STM32 with QCA7005, using OpenInverter library: https://github.com/uhi22/ccs32clara
 
 ## Example flow
 This chapter describes the start of a charging session, considering all layers. The checkpoint numbers can be used as reference in code and in the log files.
