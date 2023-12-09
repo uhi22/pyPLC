@@ -373,6 +373,7 @@ target current.
 * Checkpoint705: The charger confirms with CurrentDemandResponse. This contains the measured voltage, measured current, and flags which show which limitation
 is active (current limitation, voltage limitation, power limitation).
 * Checkpoint710: The CurrentDemandRequest/CurrentDemandResponse are repeated during the charging.
+* Checkpoint790: When the user stops the charging session on the charger, the charger sends DC_EVSEStatus.EVSEStatusCode = 2 "EVSE_Shutdown" in the CurrentDemandResponse. (Observed on Compleo, see https://github.com/uhi22/Ioniq28Investigations/blob/main/CCM_ChargeControlModule_PLC_CCS/ccm_spi_ioniq_compleo_full_charge_sequence_ended_on_charger.txt.pcap.decoded.txt)
 * Checkpoint800: When the end of charging is decided (battery full or user wish), the car sends PowerDelivery(Stop)Request.
 * Checkpoint805: The charger confirms with PowerDeliveryResponse.
 * Checkpoint806: The car receives the PowerDeliveryResponse.
