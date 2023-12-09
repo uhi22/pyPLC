@@ -221,8 +221,9 @@ Read the configuration from the PLC adaptor and write it to a file
 	pi@RPi3D:~ $ plctool -ieth0 -p original.pib  98:48:27:5A:3C:E6
 	eth0 98:48:27:5A:3C:E6 Read Module from Memory
 ```
-Patch the configuration file (see /docbook/ch05s15.html). For each side (pev (vehicle) and evse (charger)) there is a special configuration.
-Example pev side:
+Patch the configuration file (see https://github.com/qca/open-plc-utils/blob/master/docbook/ch05s15.html). For each side (pev (vehicle) and evse (charger)) there is a special configuration.
+
+For the pev side:
 ```
 	pi@RPi3D:~ $ cp original.pib pev.pib
 	pi@RPi3D:~ $ setpib pev.pib 74 hfid "PEV"
@@ -230,6 +231,16 @@ Example pev side:
 	pi@RPi3D:~ $ setpib pev.pib 1653 byte 1
 	pi@RPi3D:~ $ setpib pev.pib 1C98 long 10240 long 102400
 ```
+
+For the evse side:
+```
+	pi@RPi3D:~ $ cp original.pib evse.pib
+	pi@RPi3D:~ $ setpib evse.pib 74 hfid "EVSE"
+	pi@RPi3D:~ $ setpib evse.pib F4 byte 2
+	pi@RPi3D:~ $ setpib evse.pib 1653 byte 2
+	pi@RPi3D:~ $ setpib evse.pib 1C98 long 10240 long 102400
+```
+
 Write the configuration file to the PLC adaptor
 ```
 	pi@RPi3D:~ $ plctool -ieth0 -P pev.pib  98:48:27:5A:3C:E6
