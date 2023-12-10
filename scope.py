@@ -79,12 +79,15 @@ c.create_line(x0Scope, y0Scope, x0Scope, y0Scope+ySizeScope, fill="#FFFFFF")
 c.create_line(x0Scope+xSizeScope, y0Scope+ySizeScope, x0Scope+xSizeScope, y0Scope, fill="#FFFFFF")
 c.create_line(x0Scope+xSizeScope, y0Scope+ySizeScope, x0Scope, y0Scope+ySizeScope, fill="#FFFFFF")
 
-inputFileName = "local/pcaps_to_convert/ccm_spi_ioniq_compleo_full_charge_sequence_ended_on_charger.txt.pcap.values.txt"
+#inputFileName = "local/pcaps_to_convert/ccm_spi_ioniq_compleo_full_charge_sequence_ended_on_charger.txt.pcap.values.txt"
+inputFileName = "local/pcaps_to_convert/johu_2023-12-10_log_ionity.claralog.values.txt"
 fileIn = open(inputFileName, 'r')
 Lines = fileIn.readlines()
 
 #                  yellow     green       blue      red         orange
-channelColors = ["#FFFF00", "#10FF10", "#4040FF",  "#FF4040", "#FFC000" ]
+#channelColors = ["#FFFF00", "#10FF10", "#4040FF",  "#FF4040", "#FFC000" ]
+channelColors = ["#FFFF00", "#10FF10" ]
+
 numberOfChannels = len(channelColors)
 print(str(numberOfChannels) + " channels")
 

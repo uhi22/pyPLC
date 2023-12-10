@@ -33,26 +33,6 @@ directory = 'local/pcaps_to_convert'
 nLimitNumberOfPackets = -1
 
 
-def getManufacturerFromMAC(strMAC):
-    # Examples based on https://macvendors.com/, and https://www.ipchecktool.com/tool/macfinder and own experience
-    if (strMAC[0:5]=="ec:a2"):
-        return "Kempower"
-    if (strMAC[0:8]=="dc:44:27"):
-        return "Tesla"
-    if (strMAC[0:8]=="ce:25:1a"):
-        return "Alpitronic"
-    if (strMAC[0:8]=="1a:a9:8e"):
-        return "Alpitronic"
-    if (strMAC[0:8]=="e8:eb:1b"):
-        return "Microchip (maybe ABB)"
-    if (strMAC[0:8]=="68:27:19"):
-        return "Microchip (maybe ABB)"
-    if (strMAC[0:8]=="80:1f:12"):
-        return "Microchip (maybe Compleo)"
-    if (strMAC[0:5]=="18:d7"):
-        return "(maybe Siemens)"
-    return "(unknown vendor)"
-
 # Examples of the decoder result:
 #"EVSEPresentVoltage.Multiplier": "0",
 #"EVSEPresentVoltage.Value": "318",
@@ -93,45 +73,29 @@ def convertClaralogToTxt(inputFileName):
                     decoded=exiConnector.exiDecode(strExi, pre)
                     #print(decoded)
                     print(decoded, file=fileOut)
-                    if (decoded.find("SessionSetupReq")>0):
-                        if ((t1CableCheckBegin>0) and (t2PreChargeBegin>t1CableCheckBegin) and (t3CurrentDemandBegin>t2PreChargeBegin)):
-                            print("charger MAC " + chargerMAC + " " + getManufacturerFromMAC(chargerMAC))
-                            timeForCableCheck = t2PreChargeBegin - t1CableCheckBegin
-                            timeForPreCharge = t3CurrentDemandBegin - t2PreChargeBegin
-                            print("timeForCableCheck= " + ("%.3f" % timeForCableCheck))
-                            print("timeForPreCharge= " + ("%.3f" % timeForPreCharge))
-                            print(chargerMAC + ";" + getManufacturerFromMAC(chargerMAC) + ";" + \
-                            "timeForCableCheck;" + ("%.3f" % timeForCableCheck) + ";" + \
-                            "timeForPreCharge; " + ("%.3f" % timeForPreCharge), file=fileOutStatistics)
-                        t1CableCheckBegin = 0
-                        t2PreChargeBegin = 0
-                        t3CurrentDemandBegin = 0
-                    if (decoded.find("CableCheckReq")>0) and (t1CableCheckBegin==0):
-                        t1CableCheckBegin = float(packet.sniff_timestamp)
-                        chargerMAC = str(packet.eth.dst)
-                    if (decoded.find("PreChargeReq")>0) and (t2PreChargeBegin==0):
-                        t2PreChargeBegin = float(packet.sniff_timestamp)
-                    if (decoded.find("CurrentDemandReq")>0) and (t3CurrentDemandBegin==0):
-                        t3CurrentDemandBegin = float(packet.sniff_timestamp)
+                    print(decoded)
+                    strTimeStamp = line[line.find("[")+1 : line.find("]")]
+                    print(strTimeStamp)
                     try:
                         jsondict = json.loads(decoded)
                         try:
                             u = combineValueAndMultiplier(jsondict["EVSEPresentVoltage.Value"], jsondict["EVSEPresentVoltage.Multiplier"])
-                            print("[" + str(packet.sniff_time) + "] EVSEPresentVoltage=" + str(u), file=fileOutValues)
+                            print("[" + strTimeStamp + "] EVSEPresentVoltage=" + str(u), file=fileOutValues)
                             i = combineValueAndMultiplier(jsondict["EVSEPresentCurrent.Value"], jsondict["EVSEPresentCurrent.Multiplier"])
-                            print("[" + str(packet.sniff_time) + "] EVSEPresentCurrent=" + str(i), file=fileOutValues)
+                            print("[" + strTimeStamp + "] EVSEPresentCurrent=" + str(i), file=fileOutValues)
                         except:
+                            print("no present voltage")
                             pass
                         try:
                             u = combineValueAndMultiplier(jsondict["EVTargetVoltage.Value"], jsondict["EVTargetVoltage.Multiplier"])
-                            print("[" + str(packet.sniff_time) + "] EVTargetVoltage=" + str(u), file=fileOutValues)
+                            print("[" + strTimeStamp + "] EVTargetVoltage=" + str(u), file=fileOutValues)
                             i = combineValueAndMultiplier(jsondict["EVTargetCurrent.Value"], jsondict["EVTargetCurrent.Multiplier"])
-                            print("[" + str(packet.sniff_time) + "] EVTargetCurrent=" + str(i), file=fileOutValues)
+                            print("[" + strTimeStamp + "] EVTargetCurrent=" + str(i), file=fileOutValues)
                         except:
                             pass
                         try:
                             soc = jsondict["DC_EVStatus.EVRESSSOC"]
-                            print("[" + str(packet.sniff_time) + "] EVRESSSOC=" + str(soc), file=fileOutValues)
+                            print("[" + strTimeStamp + "] EVRESSSOC=" + str(soc), file=fileOutValues)
                         except:
                             pass
                     except:
