@@ -385,6 +385,42 @@ is active (current limitation, voltage limitation, power limitation).
 * Checkpoint900: The car sends SessionStopRequest.
 * Checkpoint905: The charger confirms with SessionStopResponse.
 
+## Detailled investigation about the normal end of the charging session
+
+### From Ioniq trace (https://raw.githubusercontent.com/uhi22/Ioniq28Investigations/main/CCM_ChargeControlModule_PLC_CCS/ccm_spi_ioniq_compleo_full_charge_sequence_ended_on_charger.txt.pcap.decoded.txt)
+
+* User presses "Stop" at the charger
+* [10.778] CurrentDemandRes.EVSEStatusCode = 2 EVSE_Shutdown. In the same message, the EVSEPresentCurrent is still 125A.
+* [11.028] PowerDeliveryReq.ReadyToChargeState = 0
+* [12.528] PowerDeliveryRes "OK, DC_EVSEStatus.EVSEStatusCode = 2 EVSE_Shutdown. This does not contain voltage or current.
+* [12.828] WeldingDetectionReq
+* [13.838] WeldingDetectionRes.EVSEPresentVoltage = 109V
+* [13.918] Again WeldingDetectionReq
+* [14.928] WeldingDetectionRes.EVSEPresentVoltage = 65V
+* [15.178] SessionStopReq
+* [15.688] SessionStopRes
+
+### ISO
+* After PowerDeliveryRes(Stop), the PEV shall send WeldingDetectionReq within V2G_EVCC_Sequence_Performance_Time (40s) (really: fourty seconds, Table 109).
+* Figure 107: The PEV shall set stateB after receiving PowerDeliveryRes and before WeldingDetectionReq.
+* The time from WeldingDetectionReq until WeldingDetectionResponse shall be below 1.5s, the timeout on PEV side 2s.
+* If the EVSE receives WeldingDetectionReq or SessionStopReq, it shall check for StateB within 1.5s and shall respond "OK" within 1.5s if the StateB was seen, or "FAILED" if the stateB was not seen.
+
+### Combined together
+* User presses "Stop" at the charger
+* [10.778] CurrentDemandRes.EVSEStatusCode = 2 EVSE_Shutdown. In the same message, the EVSEPresentCurrent is still 125A.
+* [11.028] PowerDeliveryReq.ReadyToChargeState = 0
+* [12.528] PowerDeliveryRes "OK, DC_EVSEStatus.EVSEStatusCode = 2 EVSE_Shutdown. This does not contain voltage or current.
+* [12.528] StateB
+* [12.600] charger removed the current
+* [12.800] Open contactors
+* [12.828] WeldingDetectionReq
+* [13.838] WeldingDetectionRes.EVSEPresentVoltage = 109V
+* [13.918] Again WeldingDetectionReq
+* [14.928] WeldingDetectionRes.EVSEPresentVoltage = 65V
+* [15.178] SessionStopReq
+* [15.688] SessionStopRes
+
 ## Test results on real-world chargers
 
 See [charger_test_results.md](doc/charger_test_results.md)
