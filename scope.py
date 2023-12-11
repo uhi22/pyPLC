@@ -86,7 +86,7 @@ Lines = fileIn.readlines()
 
 #                  yellow     green       blue      red         orange
 #channelColors = ["#FFFF00", "#10FF10", "#4040FF",  "#FF4040", "#FFC000" ]
-channelColors = ["#FFFF00", "#10FF10" ]
+channelColors = ["#FFFF00", "#10FF10", "#4040FF" ]
 
 numberOfChannels = len(channelColors)
 print(str(numberOfChannels) + " channels")

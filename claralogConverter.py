@@ -73,9 +73,9 @@ def convertClaralogToTxt(inputFileName):
                     decoded=exiConnector.exiDecode(strExi, pre)
                     #print(decoded)
                     print(decoded, file=fileOut)
-                    print(decoded)
+                    #print(decoded)
                     strTimeStamp = line[line.find("[")+1 : line.find("]")]
-                    print(strTimeStamp)
+                    #print(strTimeStamp)
                     try:
                         jsondict = json.loads(decoded)
                         try:
@@ -84,7 +84,6 @@ def convertClaralogToTxt(inputFileName):
                             i = combineValueAndMultiplier(jsondict["EVSEPresentCurrent.Value"], jsondict["EVSEPresentCurrent.Multiplier"])
                             print("[" + strTimeStamp + "] EVSEPresentCurrent=" + str(i), file=fileOutValues)
                         except:
-                            print("no present voltage")
                             pass
                         try:
                             u = combineValueAndMultiplier(jsondict["EVTargetVoltage.Value"], jsondict["EVTargetVoltage.Multiplier"])
@@ -98,6 +97,13 @@ def convertClaralogToTxt(inputFileName):
                             print("[" + strTimeStamp + "] EVRESSSOC=" + str(soc), file=fileOutValues)
                         except:
                             pass
+                            
+                        try:
+                            soc = jsondict["DC_EVSEStatus.EVSEStatusCode"]
+                            print("[" + strTimeStamp + "] EVSEStatusCode=" + str(soc), file=fileOutValues)
+                        except:
+                            pass
+                            
                     except:
                         pass
         if ((numberOfPackets % 100)==0):
