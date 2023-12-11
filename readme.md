@@ -418,6 +418,7 @@ is active (current limitation, voltage limitation, power limitation).
 * [13.838] WeldingDetectionRes.EVSEPresentVoltage = 109V
 * [13.918] Again WeldingDetectionReq
 * [14.928] WeldingDetectionRes.EVSEPresentVoltage = 65V
+* [15.000] The car sees that the voltage is below dangerous level and unlocks the connector. (Better here than after SessionStopReq, because if the charger crashes and does not send a SessionStop, we should not been locked forever.)
 * [15.178] SessionStopReq
 * [15.688] SessionStopRes
 
