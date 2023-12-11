@@ -266,7 +266,14 @@ class fsmEvse():
                 strPresentVoltage = str(self.simulatedPresentVoltage)
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
                 strEVSEPresentCurrent = "1" # Just as a dummy current
-                msg = addV2GTPHeader(exiEncode("EDi_"+strPresentVoltage + "_" + strEVSEPresentCurrent)) # EDi for Encode, Din, CurrentDemandRes
+                if (self.blChargeStopTrigger == 1):
+                    # User pressed the STOP button on the charger. Send EVSE_Shutdown.
+                    self.addToTrace("User pressed the STOP button on the charger. Sending EVSE_Shutdown.")
+                    strEVSEStatus = "2" # 2=EVSE_Shutdown, means the user stopped the session on the charger.
+                else:
+                    # The normal case. No stop requested from user. Just send EVSE_Ready.
+                    strEVSEStatus = "1" # 1=EVSE_Ready
+                msg = addV2GTPHeader(exiEncode("EDi_"+strPresentVoltage + "_" + strEVSEPresentCurrent + "_" + strEVSEStatus)) # EDi for Encode, Din, CurrentDemandRes
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Malfunction_during_CurrentDemand)):
                     # send a CurrentDemandResponse with StatusCode EVSE_Malfunction, to simulate e.g. a voltage overshoot
                     msg = addV2GTPHeader("809a02203fa9e71c31bc920100821b430b933b4b7339032b93937b908e08043000081828440201818000040060a11c06030306402038441380")
@@ -373,6 +380,7 @@ class fsmEvse():
         self.cyclesInState = 0
         self.rxData = []
         self.evccid = ""
+        self.blChargeStopTrigger = 0
 
     def mainfunction(self):
         self.Tcp.mainfunction() # call the lower-level worker
@@ -382,6 +390,9 @@ class fsmEvse():
         # run the state machine:
         self.cyclesInState += 1 # for timeout handling, count how long we are in a state
         self.stateFunctions[self.state](self)
+
+    def stopCharging(self):
+        self.blChargeStopTrigger = 1
 
 
 if __name__ == "__main__":

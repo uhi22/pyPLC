@@ -124,6 +124,8 @@ class pyPlcWorker():
             print("stopping the charge process")
             if (hasattr(self, 'pev')):
                 self.pev.stopCharging()
+            if (hasattr(self, 'evse')):
+                self.evse.stopCharging()
         # self.addToTrace("UserAction " + strAction)
         self.hp.sendTestFrame(strAction)
 
