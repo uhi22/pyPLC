@@ -290,7 +290,11 @@ class fsmEvse():
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("WeldingDetectionReq")>0):
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDj")) # EDj for Encode, Din, WeldingDetectionRes
+                # simulate the decreasing voltage during the weldingDetection:
+                self.simulatedPresentVoltage = self.simulatedPresentVoltage*0.8 + 3*random()
+                strPresentVoltage = str(self.simulatedPresentVoltage)
+                self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
+                msg = addV2GTPHeader(exiEncode("EDj_"+strPresentVoltage)) # EDj for Encode, Din, WeldingDetectionRes
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("WeldingDetection")
                 self.Tcp.transmit(msg)
