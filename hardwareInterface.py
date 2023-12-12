@@ -12,8 +12,8 @@ from time import sleep, time
 from configmodule import getConfigValue, getConfigValueBool
 import sys # For exit_on_session_end hack
 
-PinCp = "P8_18"
-PinPowerRelay = "P8_16"
+PinCp = "P9_41"
+PinPowerRelay = "P9_17"
 
 if (getConfigValue("digital_output_device")=="beaglebone"):
     # In case we run on beaglebone, we want to use GPIO ports.
