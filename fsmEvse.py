@@ -181,6 +181,7 @@ class fsmEvse():
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("ChargeParamDiscovery")
                 self.Tcp.transmit(msg)
+                self.nCableCheckLoops = 0 # start with a fresh full cable check
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("CableCheckReq")>0):
                 # todo: check the request content, and fill response parameters
@@ -189,8 +190,12 @@ class fsmEvse():
                 jsondict = json.loads(strConverterResult)
                 current_soc = int(jsondict.get("DC_EVStatus.EVRESSSOC", -1))
                 self.publishSoCs(current_soc, -1, -1, origin="CableCheckReq")
-
-                msg = addV2GTPHeader(exiEncode("EDf")) # EDf for Encode, Din, CableCheckResponse
+                if (self.nCableCheckLoops<10):
+                    self.nCableCheckLoops+=1
+                    strCableCheckOngoing = "1"
+                else:
+                    strCableCheckOngoing = "0" # Now the cable check is finished.
+                msg = addV2GTPHeader(exiEncode("EDf_"+strCableCheckOngoing)) # EDf for Encode, Din, CableCheckResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_CableCheckRes)):
                     # send a CableCheckResponse with Responsecode Failed
                     msg = addV2GTPHeader("809a0125e6cecc5020804080000400")
@@ -385,6 +390,7 @@ class fsmEvse():
         self.rxData = []
         self.evccid = ""
         self.blChargeStopTrigger = 0
+        self.nCableCheckLoops = 0
 
     def mainfunction(self):
         self.Tcp.mainfunction() # call the lower-level worker
