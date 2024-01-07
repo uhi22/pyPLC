@@ -208,7 +208,16 @@ Fortunately, the supplier of the chipset is aware of this topic, and provides so
 http://github.com/qca/open-plc-utils
 It is worth to read its documentation, starting in docbook/index.html, this contains all what we need for the next steps. A more detailled description and discussion is available in https://openinverter.org/forum/viewtopic.php?p=55120#p55120.
 
+### Step-by-Step
 (Tested on Linux/Raspbian on a raspberryPi 3)
+
+Clone the http://github.com/qca/open-plc-utils to your raspberry (or other linux computer).
+
+Connect the homeplug modem using an ethernet cable to your raspberry.
+
+Open a command shell on the raspberry.
+
+The description below assumes that the homeplug modem is connected to the ethernet interface eth0. If on your setup you are using an different interface, replace the "eth0" in the commands by the appropriate interface name.
 
 Find the PLC adaptor
 ```
@@ -216,7 +225,7 @@ Find the PLC adaptor
 ```
 This shows the software version and the mac address.
 
-Read the configuration from the PLC adaptor and write it to a file
+Read the configuration from the PLC adaptor and write it to a file. Use the MAC address which was found out above.
 ```
 	pi@RPi3D:~ $ plctool -ieth0 -p original.pib  98:48:27:5A:3C:E6
 	eth0 98:48:27:5A:3C:E6 Read Module from Memory
@@ -241,7 +250,7 @@ For the evse side:
 	pi@RPi3D:~ $ setpib evse.pib 1C98 long 10240 long 102400
 ```
 
-Write the configuration file to the PLC adaptor
+Write the configuration file to the PLC adaptor. Use the pev.pib or evse.pib depending on your goal. Use the MAC address which you found out above.
 ```
 	pi@RPi3D:~ $ plctool -ieth0 -P pev.pib  98:48:27:5A:3C:E6
 	eth0 98:48:27:5A:3C:E6 Start Module Write Session
@@ -488,6 +497,20 @@ In the cable check phase, the charger checks the following things:
 
 This is explained in the EvseMode manual. The coupling is the same in EvseMode and PevMode.
 [EvseMode.md FAQ Question 8](doc/EvseMode.md#q8-which-side-of-the-tplink-is-the-pe-and-which-is-the-cp)
+
+### Q7: The pyPLC seems to create json data by processing the hexadecimal data of receive data array, how does it do this?
+
+The byte stream which is transferred via the homeplug physical layer runs to the following layers:
+- Ethernet: contains the MAC addresses of the transmitter and receiver
+- IPv6: contains the IP addresses and checksum
+- TCP: assures reliable communication by checking the sequence counters and making retry in case of packet loss
+- V2GTP: is just an additional protocol header to announce which data is transferrred
+- EXI: converts between a byte stream and a structured message
+
+The json data, which is mentioned in the question, is the output of the EXI decoder. The pyPLC uses the following approach for the exi decoder:
+- The exi decoder was developed by Siemens and published here: http://openv2g.sourceforge.net/ This is pure C code, which is very fast, but also needs a lot of RAM and ROM space. It also has the drawback, that it will be not available for the latest updates of the ISO15118 (discussed here: https://openinverter.org/forum/viewtopic.php?p=54026#p54026). There are other exi solutions available, with are worst in terms of speed or availability (used in ref [v] and  [vi]).
+- The original Siemens code is mirrored into https://github.com/Martin-P/OpenV2G
+- Since pyPLC is in python and cannot directly use the C code from Siemens, I added a command line interface to it. So python calls the compiled executable exi decoder, gives the input as command line parameter, and gets back the decoded message as standard output of the executable. This standard output is json-like. The extended OpenV2G has the name OpenV2Gx, and is available here: https://github.com/uhi22/OpenV2Gx. The readme contains examples how this can be used stand-alone for decoding and encoding exi message on command line.
 
 ## Credits
 Thanks to catphish to start the investigations regarding the homeplug modems and publishing them on OpenInverter forum.
