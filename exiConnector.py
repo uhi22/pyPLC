@@ -338,10 +338,17 @@ if __name__ == "__main__":
     if (False):
         testTimeConsumption()
         exit()
-    if (True):        
+    if (False):
         testReadExiFromExiLogFile('DemoExiLog.txt')
         testReadExiFromExiLogFile('PevExiLog.txt')
         exit()
+    if (True):
+        print("ChargeParameterDiscovery of the BMW iX, https://github.com/uhi22/pyPLC/issues/14#issuecomment-1895437190")
+        print("From Everest logs (successful)")
+        testDecoder("809a0211c1ff77aed4fdff907190000009204061104e04070a8c30102050961f12805000", pre="DD", comment="")
+        testDecoder("809a0211c1ff77aed4fdff90800000040020000405182824138550008000018180c80c1c", pre="DD", comment="")
+        print("From pyPLC (failed)")
+        testDecoder("809A02004080C1014181C21080004800400000C0C320040C0E014060A184060606002060A190020303005030300510", pre="DD", comment="")
     
     if (False):
         testDecoder("8000ebab9371d34b9b79d189a98989c1d191d191818981d26b9b3a232b30010000040001b75726e3a64696e3a37303132313a323031323a4d73674465660020000100880", pre="DH", comment="supportedAppProtocolReq")
