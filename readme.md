@@ -551,3 +551,4 @@ integrate https://github.com/chargebyte/openv2g (which is basically the same ver
 * [ix] https://www.oppcharge.org/dok/ISO_15118-2_OpportunityCharging_Rev1.3.0.pdf Pantograph specific differences with some insight into ISO15118.
 * [x] https://assured-project.eu/storage/files/assured-10-interoperability-reference.pdf Fast and Smart Charging Solutions for
 Full Size Urban Heavy Duty Applications
+* [xi] https://morth.nic.in/sites/default/files/ASI/320201825106PMAIS_138_Part_2_F.pdf The Indian Fast Charging specification, seems to contain Chademo (Annex A, System A), an other "System B" in annex B, and CCS as "System C" in Annex C.
