@@ -43,6 +43,16 @@ class fsmEvse():
         # The timeout handling function.
         return (self.cyclesInState > 100) # 100*33ms=3.3s
 
+    def showDecodedTransmitMessage(self, msg):
+        # decodes the transmit message to show it in the trace.
+        # This is inefficient, because it calls the exi decoder via the slow
+        # command line interface, while DEcoding for the transmit data is
+        # technically not necessary. Only for logging. In case this
+        # introduces timing problems, just remove the three lines below.
+        exidataTx = removeV2GTPHeader(msg)
+        strConverterResultTx = exiDecode(exidataTx, "DD")
+        self.addToTrace(strConverterResultTx)
+
 
     def stateFunctionWaitForSupportedApplicationProtocolRequest(self):
         if (len(self.rxData)>0):
@@ -89,11 +99,11 @@ class fsmEvse():
             if (strConverterResult.find("SessionSetupReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDa")) # EDa for Encode, Din, SessionSetupResponse
-                self.addToTrace("responding " + prettyHexMessage(msg))
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_SequenceError_for_SessionSetup)):
                     # send a SessionSetupResponse with Responsecode SequenceError
                     msg = addV2GTPHeader("809a0232417b661514a4cb91e0A02d0691559529548c0841e0fc1af4507460c0")
                 self.addToTrace("responding " + prettyHexMessage(msg))
+                self.showDecodedTransmitMessage(msg)
                 self.Tcp.transmit(msg)
                 self.publishStatus("Session established")
                 self.enterState(stateWaitForServiceDiscoveryRequest)
@@ -117,6 +127,7 @@ class fsmEvse():
                     # send a ServiceDiscoveryRes with Responsecode SequenceError
                     msg = addV2GTPHeader("809a021a3b7c417774813311a0A120024100c4")
                 self.addToTrace("responding " + prettyHexMessage(msg))
+                self.showDecodedTransmitMessage(msg)
                 self.Tcp.transmit(msg)
                 self.publishStatus("Services discovered")
                 self.enterState(stateWaitForServicePaymentSelectionRequest)
@@ -137,6 +148,7 @@ class fsmEvse():
                     # send a ServicePaymentSelectionRes with Responsecode SequenceError
                     msg = addV2GTPHeader("809a021a3b7c417774813311c0A0")
                 self.addToTrace("responding " + prettyHexMessage(msg))
+                self.showDecodedTransmitMessage(msg)
                 self.Tcp.transmit(msg)
                 self.publishStatus("ServicePayment selected")
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified. The Ioniq sends PowerDeliveryReq as next.
@@ -161,6 +173,7 @@ class fsmEvse():
                     # send a PowerDeliveryResponse with Responsecode Failed
                     msg = addV2GTPHeader("809a0125e6cecc51408420400000")
                 self.addToTrace("responding " + prettyHexMessage(msg))
+                self.showDecodedTransmitMessage(msg)
                 self.publishStatus("PowerDelivery")
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
@@ -179,6 +192,7 @@ class fsmEvse():
                     # send a ChargeParameterDiscoveryResponse with Responsecode ServiceSelectionInvalid
                     msg = addV2GTPHeader("809a0125e6cecd50810001ec00201004051828758405500080000101844138101c2432c04081436c900c0c000041435ecc044606000200")
                 self.addToTrace("responding " + prettyHexMessage(msg))
+                self.showDecodedTransmitMessage(msg)
                 self.publishStatus("ChargeParamDiscovery")
                 self.Tcp.transmit(msg)
                 self.nCableCheckLoops = 0 # start with a fresh full cable check
@@ -200,6 +214,7 @@ class fsmEvse():
                     # send a CableCheckResponse with Responsecode Failed
                     msg = addV2GTPHeader("809a0125e6cecc5020804080000400")
                 self.addToTrace("responding " + prettyHexMessage(msg))
+                self.showDecodedTransmitMessage(msg)
                 self.publishStatus("CableCheck")
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CableCheck)):
                     self.Tcp.transmit(msg)
@@ -233,6 +248,7 @@ class fsmEvse():
                     # send a PreChargeResponse with ResponseCode Failed
                     msg = addV2GTPHeader("809a0125e6cecc516080408000008284de880800")
                 self.addToTrace("responding " + prettyHexMessage(msg))
+                self.showDecodedTransmitMessage(msg)
                 self.publishStatus("PreCharging " + strPresentVoltage)
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_PreCharge)):
                     self.Tcp.transmit(msg)
@@ -244,6 +260,7 @@ class fsmEvse():
                     # send a ContractAuthenticationResponse with Responsecode SequenceError
                     msg = addV2GTPHeader("809a021a3b7c417774813310c0A200")
                 self.addToTrace("responding " + prettyHexMessage(msg))
+                self.showDecodedTransmitMessage(msg)
                 self.publishStatus("ContractAuthentication")
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
@@ -289,6 +306,7 @@ class fsmEvse():
                     # send a CurrentDemandResponse with ResponseCode Failed
                     msg = addV2GTPHeader("809a0125e6cecc50e0804080000082867dc8081818000000040a1b64802030882702038486580800")
                 self.addToTrace("responding " + prettyHexMessage(msg))
+                self.showDecodedTransmitMessage(msg)
                 self.publishStatus("CurrentDemand")
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CurrentDemand)):
                     self.Tcp.transmit(msg)
@@ -300,6 +318,7 @@ class fsmEvse():
                 strPresentVoltage = str(self.simulatedPresentVoltage)
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
                 msg = addV2GTPHeader(exiEncode("EDj_"+strPresentVoltage)) # EDj for Encode, Din, WeldingDetectionRes
+                self.showDecodedTransmitMessage(msg)
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("WeldingDetection")
                 self.Tcp.transmit(msg)
@@ -307,6 +326,7 @@ class fsmEvse():
             if (strConverterResult.find("SessionStopReq")>0):
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("EDk")) # EDk for Encode, Din, SessionStopRes
+                self.showDecodedTransmitMessage(msg)
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("SessionStop")
                 self.Tcp.transmit(msg)
