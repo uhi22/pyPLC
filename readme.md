@@ -492,6 +492,7 @@ In the cable check phase, the charger checks the following things:
 - wrong coupling network between the CP/PE and the PLC modem transformator. This may disturb the PWM levels, due to low-pass-filtering or it may inject too much power from the PLC modem.
 - Software not configured to use the correct output path for the StateC switching
 2. Isolation of the DC path. It is recommended to use two contactors, one for each DC lines, to avoid asymmetrical results in the isolation measurements.
+3. PP line: Some chargers (e.g. some of the Tesla Superchargers) are checking the voltage between the PP line and PE. The "official" recommendation seems to be to use on car side a pull-up of 330 ohm to 5V, and perhaps 3k pulldown to ground. Discussed here: https://openinverter.org/forum/viewtopic.php?p=67464#p67464 However, many chargers (e.g. alpitronics) seem not to care for the PP at all.
 
 ### Q6: How to connect the PLC modem to the CP and PE?
 
