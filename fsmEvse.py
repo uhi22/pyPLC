@@ -204,7 +204,7 @@ class fsmEvse():
                 jsondict = json.loads(strConverterResult)
                 current_soc = int(jsondict.get("DC_EVStatus.EVRESSSOC", -1))
                 self.publishSoCs(current_soc, -1, -1, origin="CableCheckReq")
-                if (self.nCableCheckLoops<10):
+                if (self.nCableCheckLoops<5):
                     self.nCableCheckLoops+=1
                     strCableCheckOngoing = "1"
                 else:
