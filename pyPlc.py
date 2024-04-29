@@ -57,6 +57,9 @@ def cbShowStatus(s, selection=""):
     if (selection == "soc"):
         lblSoc['text']= "SOC " + s + "%"
         s=""
+    if (selection == "UandI"):
+        lblRequestedUandI['text']= "Target " + s + ""
+        s=""
     if (len(s)>0):
         lblStatus['text']=s
     root.update()
@@ -108,6 +111,8 @@ lblState.config(font=('Helvetica bold', 20))
 lblState.pack()
 lblSoc = tk.Label(root, text="(soc)")
 lblSoc.pack()
+lblRequestedUandI = tk.Label(root, text="(U and I)")
+lblRequestedUandI.pack()
 lblUInlet = tk.Label(root, text="(U Inlet)")
 lblUInlet.config(font=('Helvetica bold', 26))
 lblUInlet.pack()

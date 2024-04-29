@@ -267,11 +267,15 @@ class fsmEvse():
             if (strConverterResult.find("CurrentDemandReq")>0):
                 # check the request content, and fill response parameters
                 uTarget = 220 # default in case we cannot decode the requested voltage
+                iTarget = 1 # default...
                 try:
                     jsondict = json.loads(strConverterResult)
                     strEVTargetVoltageValue = jsondict["EVTargetVoltage.Value"]
                     strEVTargetVoltageMultiplier = jsondict["EVTargetVoltage.Multiplier"]
                     uTarget = combineValueAndMultiplier(strEVTargetVoltageValue, strEVTargetVoltageMultiplier)
+                    strEVTargetCurrentValue = jsondict["EVTargetCurrent.Value"]
+                    strEVTargetCurrentMultiplier = jsondict["EVTargetCurrent.Multiplier"]
+                    iTarget = combineValueAndMultiplier(strEVTargetCurrentValue, strEVTargetCurrentMultiplier)
                     self.addToTrace("EV wants EVTargetVoltage " + str(uTarget))
                     current_soc = int(jsondict.get("DC_EVStatus.EVRESSSOC", -1))
                     full_soc = int(jsondict.get("FullSOC", -1))
@@ -281,6 +285,7 @@ class fsmEvse():
                     self.publishSoCs(current_soc, full_soc, energy_capacity, energy_request, origin="CurrentDemandReq")
 
                     self.callbackShowStatus(str(current_soc), "soc")
+                    self.callbackShowStatus(str(uTarget) + "V, " + str(iTarget) + "A", "UandI")
 
                 except:
                     self.addToTrace("ERROR: Could not decode the CurrentDemandReq")
