@@ -43,6 +43,7 @@ from pyPlcModes import *
 from mytestsuite import *
 from random import random
 from configmodule import getConfigValue, getConfigValueBool
+from datetime import datetime
 import sys
 
 MAC_BROADCAST = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF ]
@@ -667,6 +668,10 @@ class pyPlcHomeplug():
                 self.enterState(STATE_SLAC_PARAM_CNF_RECEIVED) # enter next state. Will be handled in the cyclic runPevSequencer
         if (self.iAmListener==1):
             self.addToTrace("SECC MAC is " + self.getSourceMacAddressAsString())
+            strDateTime=datetime.today().strftime('%Y-%m-%dT%H:%M:%S.%f')
+            MacLogFile = open('MacLog.txt', 'a')
+            MacLogFile.write(strDateTime + " SECC MAC " + self.getSourceMacAddressAsString() + "\n") # write the MAC to the MacLogFile
+            MacLogFile.close()
             
     def evaluateMnbcSoundInd(self):
         # We received MNBC_SOUND.IND from the PEV. Normally this happens 10times, with a countdown (remaining number of sounds)
