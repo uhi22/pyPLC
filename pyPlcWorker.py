@@ -75,7 +75,8 @@ class pyPlcWorker():
     def mainfunction(self):
         self.nMainFunctionCalls+=1
         #self.showStatus("pyPlcWorker loop " + str(self.nMainFunctionCalls))
-        self.connMgr.mainfunction()
+        if (self.mode == C_PEV_MODE):
+            self.connMgr.mainfunction()
         self.handleTcpConnectionTrigger()
         self.hp.mainfunction() # call the lower-level workers
         self.hardwareInterface.mainfunction()

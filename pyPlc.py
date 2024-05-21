@@ -76,6 +76,10 @@ if (len(sys.argv) > 1):
     else:
         if (sys.argv[1] == "E"):
             myMode = C_EVSE_MODE
+        else:
+            if (sys.argv[1] == "L"):
+                myMode = C_LISTEN_MODE
+        
 
 # The simulation mode can be set by command line in addition in both, PevMode and EvseMode.
 isSimulationMode=0

@@ -120,6 +120,14 @@ class pyPlcHomeplug():
             
         self.addToTrace("From " + strSourceMac + strSourceFriendlyName + " to " + strDestMac)
 
+    def getSourceMacAddressAsString(self):
+        strSourceMac = ""
+        for i in range(6, 12):
+            strSourceMac = strSourceMac + twoCharHex(self.myreceivebuffer[i])
+            if (i<11):
+                strSourceMac = strSourceMac + ":"
+        return strSourceMac
+
     def getEtherType(self, messagebufferbytearray):
         etherType=0
         if len(messagebufferbytearray)>(6+6+2):
@@ -657,6 +665,8 @@ class pyPlcHomeplug():
             if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_PARAM_CNF): # we were waiting for the SlacParamCnf
                 self.pevSequenceDelayCycles = 4 # original Ioniq is waiting 200ms
                 self.enterState(STATE_SLAC_PARAM_CNF_RECEIVED) # enter next state. Will be handled in the cyclic runPevSequencer
+        if (self.iAmListener==1):
+            self.addToTrace("SECC MAC is " + self.getSourceMacAddressAsString())
             
     def evaluateMnbcSoundInd(self):
         # We received MNBC_SOUND.IND from the PEV. Normally this happens 10times, with a countdown (remaining number of sounds)
@@ -1057,16 +1067,19 @@ class pyPlcHomeplug():
     def enterPevMode(self):
         self.iAmEvse = 0 # not emulating a charging station
         self.iAmPev = 1 # emulating a vehicle
+        self.iAmListener = 0 # not a passive listener
         self.ipv6.enterPevMode()
         self.showStatus("PEV mode", "mode")
     def enterEvseMode(self):
         self.iAmEvse = 1 # emulating a charging station
         self.iAmPev = 0 # not emulating a vehicle
+        self.iAmListener = 0 # not a passive listener
         self.ipv6.enterEvseMode()
         self.showStatus("EVSE mode", "mode")
     def enterListenMode(self):
         self.iAmEvse = 0 # not emulating a charging station
         self.iAmPev = 0 # not emulating a vehicle
+        self.iAmListener = 1 # just listening
         self.ipv6.enterListenMode()
         self.showStatus("LISTEN mode", "mode")
 
