@@ -50,7 +50,7 @@ class fsmEvse():
         # technically not necessary. Only for logging. In case this
         # introduces timing problems, just remove the three lines below.
         exidataTx = removeV2GTPHeader(msg)
-        strConverterResultTx = exiDecode(exidataTx, "DD")
+        strConverterResultTx = exiDecode(exidataTx, "D"+self.schemaSelection)
         self.addToTrace(strConverterResultTx)
 
 
@@ -119,7 +119,6 @@ class fsmEvse():
             strConverterResult = exiDecode(exidata, "D"+self.schemaSelection) # decodes DIN or ISO1
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("SessionSetupReq")>0):
-                # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"a")) # EDa for Encode, Din, SessionSetupResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_SequenceError_for_SessionSetup)):
                     # send a SessionSetupResponse with Responsecode SequenceError
@@ -144,7 +143,7 @@ class fsmEvse():
             self.addToTrace(strConverterResult)
             if (strConverterResult.find("ServiceDiscoveryReq")>0):
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDb")) # EDb for Encode, Din, ServiceDiscoveryResponse
+                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"b")) # EDb for Encode, Din, ServiceDiscoveryResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_SequenceError_for_ServiceDiscoveryRes)):
                     # send a ServiceDiscoveryRes with Responsecode SequenceError
                     msg = addV2GTPHeader("809a021a3b7c417774813311a0A120024100c4")
@@ -163,9 +162,12 @@ class fsmEvse():
             self.rxData = []
             strConverterResult = exiDecode(exidata, "D"+self.schemaSelection) # decodes DIN or ISO1
             self.addToTrace(strConverterResult)
-            if (strConverterResult.find("ServicePaymentSelectionReq")>0):
-                # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDc")) # EDc for Encode, Din, ServicePaymentSelectionResponse
+            if (self.schemaSelection=="D"):
+                strMessageName = "ServicePaymentSelectionReq" # This is the original name in DIN
+            else:
+                strMessageName = "PaymentServiceSelectionReq" # In ISO1, they use a slightly different name for the same thing.
+            if (strConverterResult.find(strMessageName)>0):
+                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"c")) # EDc for Encode, Din, ServicePaymentSelectionResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_SequenceError_for_ServicePaymentSelectionRes)):
                     # send a ServicePaymentSelectionRes with Responsecode SequenceError
                     msg = addV2GTPHeader("809a021a3b7c417774813311c0A0")
@@ -190,7 +192,7 @@ class fsmEvse():
                 jsondict = json.loads(strConverterResult)
                 current_soc = int(jsondict.get("EVRESSSOC", -1))
                 self.publishSoCs(current_soc, origin="PowerDeliveryReq")
-                msg = addV2GTPHeader(exiEncode("EDh")) # EDh for Encode, Din, PowerDeliveryResponse
+                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"h")) # EDh for Encode, Din, PowerDeliveryResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_PowerDeliveryRes)):
                     # send a PowerDeliveryResponse with Responsecode Failed
                     msg = addV2GTPHeader("809a0125e6cecc51408420400000")
@@ -209,7 +211,7 @@ class fsmEvse():
                 self.publishSoCs(current_soc, full_soc, energy_capacity, energy_request, origin="ChargeParameterDiscoveryReq")
 
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDe")) # EDe for Encode, Din, ChargeParameterDiscoveryResponse
+                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"e")) # EDe for Encode, Din, ChargeParameterDiscoveryResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_ServiceSelectionInvalid_for_ChargeParameterDiscovery)):
                     # send a ChargeParameterDiscoveryResponse with Responsecode ServiceSelectionInvalid
                     msg = addV2GTPHeader("809a0125e6cecd50810001ec00201004051828758405500080000101844138101c2432c04081436c900c0c000041435ecc044606000200")
@@ -231,7 +233,7 @@ class fsmEvse():
                     strCableCheckOngoing = "1"
                 else:
                     strCableCheckOngoing = "0" # Now the cable check is finished.
-                msg = addV2GTPHeader(exiEncode("EDf_"+strCableCheckOngoing)) # EDf for Encode, Din, CableCheckResponse
+                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"f_"+strCableCheckOngoing)) # EDf for Encode, Din, CableCheckResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_CableCheckRes)):
                     # send a CableCheckResponse with Responsecode Failed
                     msg = addV2GTPHeader("809a0125e6cecc5020804080000400")
@@ -262,7 +264,7 @@ class fsmEvse():
                     self.simulatedPresentVoltage += 5
                 strPresentVoltage = str(self.simulatedPresentVoltage) # "345"
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
-                msg = addV2GTPHeader(exiEncode("EDg_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
+                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"g_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Shutdown_during_PreCharge)):
                     # send a PreChargeResponse with StatusCode EVSE_Shutdown, to simulate a user-triggered session stop
                     msg = addV2GTPHeader("809a02180189551e24fc9e9160004100008182800000")
@@ -286,6 +288,13 @@ class fsmEvse():
                 self.publishStatus("ContractAuthentication")
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
+            if (strConverterResult.find("AuthorizationReq")>0):
+                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"l")) # E1l for Encode, Iso1, AuthorizationResponse
+                self.addToTrace("responding " + prettyHexMessage(msg))
+                self.showDecodedTransmitMessage(msg)
+                self.publishStatus("Authorization")
+                self.Tcp.transmit(msg)
+                self.enterState(stateWaitForFlexibleRequest)
             if (strConverterResult.find("CurrentDemandReq")>0):
                 # check the request content, and fill response parameters
                 uTarget = 220 # default in case we cannot decode the requested voltage
@@ -322,7 +331,7 @@ class fsmEvse():
                 else:
                     # The normal case. No stop requested from user. Just send EVSE_Ready.
                     strEVSEStatus = "1" # 1=EVSE_Ready
-                msg = addV2GTPHeader(exiEncode("EDi_"+strPresentVoltage + "_" + strEVSEPresentCurrent + "_" + strEVSEStatus)) # EDi for Encode, Din, CurrentDemandRes
+                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"i_"+strPresentVoltage + "_" + strEVSEPresentCurrent + "_" + strEVSEStatus)) # EDi for Encode, Din, CurrentDemandRes
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Malfunction_during_CurrentDemand)):
                     # send a CurrentDemandResponse with StatusCode EVSE_Malfunction, to simulate e.g. a voltage overshoot
                     msg = addV2GTPHeader("809a02203fa9e71c31bc920100821b430b933b4b7339032b93937b908e08043000081828440201818000040060a11c06030306402038441380")
@@ -344,7 +353,7 @@ class fsmEvse():
                 self.simulatedPresentVoltage = self.simulatedPresentVoltage*0.8 + 3*random()
                 strPresentVoltage = str(self.simulatedPresentVoltage)
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
-                msg = addV2GTPHeader(exiEncode("EDj_"+strPresentVoltage)) # EDj for Encode, Din, WeldingDetectionRes
+                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"j_"+strPresentVoltage)) # EDj for Encode, Din, WeldingDetectionRes
                 self.showDecodedTransmitMessage(msg)
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("WeldingDetection")
@@ -352,7 +361,7 @@ class fsmEvse():
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("SessionStopReq")>0):
                 # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDk")) # EDk for Encode, Din, SessionStopRes
+                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"k")) # EDk for Encode, Din, SessionStopRes
                 self.showDecodedTransmitMessage(msg)
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.publishStatus("SessionStop")
