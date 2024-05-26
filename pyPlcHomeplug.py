@@ -357,7 +357,38 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[35]=0x00 # 
         self.fillRunId(36)  # 36 to 43 runid 8 bytes 
         # rest is 00
-    
+
+    def composeSpecialMessage(self):
+        # special "homeplug" message, to control a hardware device.
+        # We re-purpose the ATTEN_CHAR.IND, because a AR4720 PEV modem is transparent for it also in unpaired state,
+        # and it contains a lot of space which can be used to transfer data. Also it is not expected to disturb the
+        # normal traffic, because it may be also caused by cross-coupling from an other charger, and the normal
+        # communication should be immune to such things.
+        self.mytransmitbuffer = bytearray(129)
+        self.cleanTransmitBuffer()
+        # Destination MAC
+        self.fillDestinationMac(MAC_BROADCAST)
+        # Source MAC
+        self.fillSourceMac(self.myMAC)
+        # Protocol
+        self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
+        self.mytransmitbuffer[13]=0xE1
+        self.mytransmitbuffer[14]=0x01 # version
+        self.mytransmitbuffer[15]=0x6E # ATTEN_CHAR.IND
+        self.mytransmitbuffer[16]=0x60 #
+        self.mytransmitbuffer[17]=0x00 # 2 bytes fragmentation information. 0000 means: unfragmented.
+        self.mytransmitbuffer[18]=0x00 #
+        self.mytransmitbuffer[19]=0x00 # apptype
+        self.mytransmitbuffer[20]=0x00 # security
+        self.fillDestinationMac(MAC_BROADCAST, 21) # The wireshark calls it source_mac, but alpitronic fills it with PEV mac.
+        self.fillRunId(27)  # runid 8 bytes
+        self.mytransmitbuffer[35]=0x00 # 35 - 51 source_id, 17 bytes. The alpitronic fills it with 00
+        self.mytransmitbuffer[52]=0x00 # 52 - 68 response_id, 17 bytes. The alpitronic fills it with 00.
+        self.mytransmitbuffer[69]=0x0A # Number of sounds. 10 in normal case.
+        self.mytransmitbuffer[70]=0x3A # Number of groups = 58.
+        for i in range(71, 129):  # 71 to 128: 58 special-purpose-bytes
+            self.mytransmitbuffer[i]=self.specialMessageTransmitBuffer[i-71]
+
     def composeStartAttenCharInd(self):
         # reference: see wireshark interpreted frame from ioniq
         self.mytransmitbuffer = bytearray(60)
@@ -554,6 +585,10 @@ class pyPlcHomeplug():
         if (selection=="M"):
             self.composeGetSwWithRamdomMac()
             self.addToTrace("transmitting GetSwWithRamdomMac")           
+            self.transmit(self.mytransmitbuffer)
+        if (selection=="9"):
+            self.composeSpecialMessage()
+            self.addToTrace("transmitting SpecialMessage")
             self.transmit(self.mytransmitbuffer)
             
     def transmit(self, pkt):
@@ -1068,7 +1103,25 @@ class pyPlcHomeplug():
             # Take the interface name from the ini file. For Linux, this is all we need.
             self.strInterfaceName=getConfigValue("eth_interface")
             print("Linux interface is " + self.strInterfaceName)
-            
+
+    def sendSpecialMessageToControlThePowerSupply(self, targetVoltage, targetCurrent):
+        u = int(targetVoltage*10) # resolution: 0.1 volt
+        i = int(targetCurrent*10) # resolution: 0.1 ampere
+        self.specialMessageTransmitBuffer[0] = 0xAF # Header 3 byte
+        self.specialMessageTransmitBuffer[1] = 0xFE #
+        self.specialMessageTransmitBuffer[2] = 0xDC #
+        self.specialMessageTransmitBuffer[3] = u >> 8 # target voltage, MSB first
+        self.specialMessageTransmitBuffer[4] = u & 0xFF # target voltage, LSB
+        self.specialMessageTransmitBuffer[5] = u >> 8 # same again, for plausibilization
+        self.specialMessageTransmitBuffer[6] = u & 0xFF
+        self.specialMessageTransmitBuffer[7] = i >> 8 # target current, MSB first
+        self.specialMessageTransmitBuffer[8] = i & 0xFF # target current, LSB
+        self.specialMessageTransmitBuffer[9] = i >> 8 # same again
+        self.specialMessageTransmitBuffer[10] = i & 0xFF
+        self.composeSpecialMessage()
+        self.addToTrace("transmitting SpecialMessage to control the power supply")
+        self.transmit(self.mytransmitbuffer)
+
     def enterPevMode(self):
         self.iAmEvse = 0 # not emulating a charging station
         self.iAmPev = 1 # emulating a vehicle
@@ -1134,6 +1187,7 @@ class pyPlcHomeplug():
         # a default pev RunId. Will be overwritten later, if we are evse. If we are the pev, we are free to choose a
         # RunID, e.g. the Ioniq uses the MAC plus 0x00 0x00 padding, the Tesla uses "TESLA EV".
         self.pevRunId = [0xDC, 0x0E, 0xA1, 0xDE, 0xAD, 0xBE, 0xEF, 0x55 ]
+        self.specialMessageTransmitBuffer = bytearray(58)
         self.myMAC = self.addressManager.getLocalMacAddress()
         self.runningCounter=0
         self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager, self.connMgr, self.callbackShowStatus)

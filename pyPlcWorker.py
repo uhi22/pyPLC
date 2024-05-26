@@ -31,7 +31,7 @@ class pyPlcWorker():
         self.isSimulationMode = isSimulationMode
         self.connMgr = connMgr.connMgr(self.workerAddToTrace, self.showStatus)
         self.hp = pyPlcHomeplug.pyPlcHomeplug(self.workerAddToTrace, self.showStatus, self.mode, self.addressManager, self.connMgr, self.isSimulationMode)
-        self.hardwareInterface = hardwareInterface.hardwareInterface(self.workerAddToTrace, self.showStatus)
+        self.hardwareInterface = hardwareInterface.hardwareInterface(self.workerAddToTrace, self.showStatus, self.hp)
         self.hp.printToUdp("pyPlcWorker init")
         # Find out the version number, using git.
         # see https://stackoverflow.com/questions/14989858/get-the-current-git-hash-in-a-python-script

@@ -263,6 +263,8 @@ class fsmEvse():
                 if (self.simulatedPresentVoltage<uTarget):
                     self.simulatedPresentVoltage += 5
                 strPresentVoltage = str(self.simulatedPresentVoltage) # "345"
+                # in case we control a real power supply: give the precharge target to it
+                self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, 1)
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"g_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Shutdown_during_PreCharge)):
@@ -434,7 +436,7 @@ class fsmEvse():
         self.callbackShowStatus = callbackShowStatus
         self.callbackSoCStatus = callbackSoCStatus
         #todo self.addressManager = addressManager
-        #todo self.hardwareInterface = hardwareInterface
+        self.hardwareInterface = hardwareInterface
         self.addToTrace("initializing fsmEvse")
         self.faultInjectionDelayUntilSocketOpen_s = 0
         if (self.faultInjectionDelayUntilSocketOpen_s>0):

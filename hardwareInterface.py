@@ -155,6 +155,10 @@ class hardwareInterface():
     def setChargerVoltageAndCurrent(self, voltageNow, currentNow):
         self.chargerVoltage = int(voltageNow)
         self.chargerCurrent = int(currentNow)
+        
+    def setPowerSupplyVoltageAndCurrent(self, targetVoltage, targetCurrent):
+        # if we are the charger, and have a real power supply which we want to control, we do it here
+        self.homeplughandler.sendSpecialMessageToControlThePowerSupply(targetVoltage, targetCurrent)
 
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
@@ -224,9 +228,10 @@ class hardwareInterface():
             GPIO.setup(PinPowerRelay, GPIO.OUT) #output for port relays
             GPIO.setup(PinCp, GPIO.OUT) #output for CP
         
-    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None):
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, homeplughandler=None):
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
+        self.homeplughandler = homeplughandler
 
         self.loopcounter = 0
         self.outvalue = 0
