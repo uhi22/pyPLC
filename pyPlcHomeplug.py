@@ -586,10 +586,19 @@ class pyPlcHomeplug():
             self.composeGetSwWithRamdomMac()
             self.addToTrace("transmitting GetSwWithRamdomMac")           
             self.transmit(self.mytransmitbuffer)
+        if (selection=="5"):
+            self.sendSpecialMessageToControlThePowerSupply(20, 1)
+        if (selection=="6"):
+            self.sendSpecialMessageToControlThePowerSupply(100, 1)
+        if (selection=="7"):
+            self.sendSpecialMessageToControlThePowerSupply(200, 1)
+        if (selection=="8"):
+            self.sendSpecialMessageToControlThePowerSupply(300, 1)
         if (selection=="9"):
-            self.composeSpecialMessage()
-            self.addToTrace("transmitting SpecialMessage")
-            self.transmit(self.mytransmitbuffer)
+            self.sendSpecialMessageToControlThePowerSupply(400, 1)
+        if (selection=="0"):
+            self.sendSpecialMessageToControlThePowerSupply(0, 0)
+
             
     def transmit(self, pkt):
         self.sniffer.sendpacket(bytes(pkt))
