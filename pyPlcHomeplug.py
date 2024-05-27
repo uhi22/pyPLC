@@ -730,6 +730,19 @@ class pyPlcHomeplug():
                 self.addToTrace("[EVSE] transmitting ATTEN_CHAR.IND")
                 self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
                 
+    def evaluateStartAttenCharInd(self):
+        # self.addToTrace("received START_ATTEN_CHAR.IND")
+        # nothing to do as PEV or EVSE.
+        # interpretation just in case we use it as special message in EVSE mode to get information from the power supply
+        if (self.iAmEvse==1):
+            if ((self.myreceivebuffer[38] == 0xDC) and (self.myreceivebuffer[39] == 0x55) and (self.myreceivebuffer[40] == 0xAA)):
+                uPresent = self.myreceivebuffer[43]
+                uPresent*=256
+                uPresent+=self.myreceivebuffer[44]
+                uPresent/=10 # scaling in the message is 0.1V
+                self.callbackShowStatus(str(uPresent), "PowerSupplyUPresent")
+                # Todo: evaluate other information of the power supply, like cable check result, current, temperature, ...
+
     def evaluateAttenCharInd(self):
         self.addToTrace("received ATTEN_CHAR.IND")    
         if (self.iAmPev==1):
@@ -804,6 +817,8 @@ class pyPlcHomeplug():
             self.evaluateSlacParamReq()
         if (mmt == CM_SLAC_PARAM + MMTYPE_CNF):
             self.evaluateSlacParamCnf()
+        if (mmt == CM_START_ATTEN_CHAR + MMTYPE_IND):
+            self.evaluateStartAttenCharInd()
         if (mmt == CM_MNBC_SOUND + MMTYPE_IND):
             self.evaluateMnbcSoundInd()
         if (mmt == CM_ATTEN_CHAR + MMTYPE_IND):
@@ -1130,6 +1145,7 @@ class pyPlcHomeplug():
         self.composeSpecialMessage()
         self.addToTrace("transmitting SpecialMessage to control the power supply")
         self.transmit(self.mytransmitbuffer)
+        self.callbackShowStatus(str(targetVoltage), "PowerSupplyUTarget")
 
     def enterPevMode(self):
         self.iAmEvse = 0 # not emulating a charging station

@@ -60,6 +60,12 @@ def cbShowStatus(s, selection=""):
     if (selection == "UandI"):
         lblRequestedUandI['text']= "Target " + s + ""
         s=""
+    if (selection == "PowerSupplyUPresent"):
+        lblPowerSupplyUPresent['text']= "UPresent " + s + "V"
+        s=""
+    if (selection == "PowerSupplyUTarget"):
+        lblPowerSupplyUTarget['text']= "UTarget " + s + "V"
+        s=""
     if (len(s)>0):
         lblStatus['text']=s
     root.update()
@@ -101,8 +107,19 @@ if (myMode == C_EVSE_MODE):
         print("starting in EvseMode")
  
 root = tk.Tk()
-root.geometry("400x350")
+#root.geometry("400x350")
+root.geometry("600x350")
 lastKey = ''
+if (myMode == C_EVSE_MODE):
+    frmPowerSupply = tk.Frame(root, bg='lightblue', bd=3)
+    frmPowerSupply.pack(side='right', fill='both', expand='True')
+    lblPowerSupplyUTarget = tk.Label(frmPowerSupply, text="(UTarget)", bg='lightblue')
+    lblPowerSupplyUTarget.config(font=('Helvetica bold', 18))
+    lblPowerSupplyUTarget.pack()
+    lblPowerSupplyUPresent = tk.Label(frmPowerSupply, text="(PowerSupplyUPresent)", bg='lightblue')
+    lblPowerSupplyUPresent.config(font=('Helvetica bold', 18))
+    lblPowerSupplyUPresent.pack()
+
 lblHelp = tk.Label(root, justify= "left")
 lblHelp['text']="x=exit \nS=GET_SW \nP=PEV mode \nE=EVSE mode \nL=Listen mode \ns=SET_KEY \nG=GET_KEY (try twice) \nt=SET_KEY modified \n space=stop charging"
 lblHelp.pack()
@@ -123,6 +140,7 @@ lblUInlet.pack()
 lblEVSEPresentVoltage = tk.Label(root, text="(EVSEPresentVoltage)")
 lblEVSEPresentVoltage.config(font=('Helvetica bold', 16))
 lblEVSEPresentVoltage.pack()
+
 
 if (myMode == C_EVSE_MODE):
     lblTestcase = tk.Label(root, text="(test case)")

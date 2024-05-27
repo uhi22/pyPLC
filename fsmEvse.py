@@ -262,7 +262,7 @@ class fsmEvse():
                     self.simulatedPresentVoltage += 20
                 if (self.simulatedPresentVoltage<uTarget):
                     self.simulatedPresentVoltage += 5
-                strPresentVoltage = str(self.simulatedPresentVoltage) # "345"
+                strPresentVoltage = str(int(self.simulatedPresentVoltage*10)/10) # "345"
                 # in case we control a real power supply: give the precharge target to it
                 self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, 1)
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
@@ -323,7 +323,7 @@ class fsmEvse():
                 except:
                     self.addToTrace("ERROR: Could not decode the CurrentDemandReq")
                 self.simulatedPresentVoltage = uTarget + 3*random() # The charger provides the voltage which is demanded by the car.
-                strPresentVoltage = str(self.simulatedPresentVoltage)
+                strPresentVoltage = str(int(self.simulatedPresentVoltage*10)/10) # "345"
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
                 strEVSEPresentCurrent = "1" # Just as a dummy current
                 if (self.blChargeStopTrigger == 1):
@@ -353,7 +353,7 @@ class fsmEvse():
                 # todo: check the request content, and fill response parameters
                 # simulate the decreasing voltage during the weldingDetection:
                 self.simulatedPresentVoltage = self.simulatedPresentVoltage*0.8 + 3*random()
-                strPresentVoltage = str(self.simulatedPresentVoltage)
+                strPresentVoltage = str(int(self.simulatedPresentVoltage*10)/10) # "345"
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"j_"+strPresentVoltage)) # EDj for Encode, Din, WeldingDetectionRes
                 self.showDecodedTransmitMessage(msg)
