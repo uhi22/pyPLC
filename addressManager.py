@@ -122,10 +122,12 @@ class addressManager():
         if (len(self.localIpv6Addresses)==0):
             print("[addressManager] Error: No local Ipv6 address was found.")
             self.localIpv6Address = "localhost"
-            cfg_exitIfNoLocalLinkAddressIsFound = 1
+            cfg_exitIfNoLocalLinkAddressIsFound = getConfigValueBool("exit_if_no_local_link_address_is_found")
             if (cfg_exitIfNoLocalLinkAddressIsFound!=0):
-                print("Exiting, because it does not make sense to continue without IPv6 address");
-                sys.exit(1);
+                print("Exiting, because it does not make sense to continue without IPv6 address")
+                sys.exit(1)
+            else:
+                print("Error: It does not make sense to continue without IPv6 address, but exit_if_no_local_link_address_is_found says you want to continue");
         else:
             # at least one address was found. Take the first one (this may be the wrong adaptor).
             self.localIpv6Address = self.localIpv6Addresses[0]

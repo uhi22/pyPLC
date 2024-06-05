@@ -710,12 +710,14 @@ class pyPlcHomeplug():
             if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_PARAM_CNF): # we were waiting for the SlacParamCnf
                 self.pevSequenceDelayCycles = 4 # original Ioniq is waiting 200ms
                 self.enterState(STATE_SLAC_PARAM_CNF_RECEIVED) # enter next state. Will be handled in the cyclic runPevSequencer
-        if (self.iAmListener==1):
-            self.addToTrace("SECC MAC is " + self.getSourceMacAddressAsString())
-            strDateTime=datetime.today().strftime('%Y-%m-%dT%H:%M:%S.%f')
-            MacLogFile = open('MacLog.txt', 'a')
-            MacLogFile.write(strDateTime + " SECC MAC " + self.getSourceMacAddressAsString() + "\n") # write the MAC to the MacLogFile
-            MacLogFile.close()
+        if ((self.iAmListener==1) or (self.iAmPev==1)):
+            if getConfigValueBool("log_the_evse_mac_to_file"):
+                # Write the MAC address of the charger to a log file
+                self.addToTrace("SECC MAC is " + self.getSourceMacAddressAsString())
+                strDateTime=datetime.today().strftime('%Y-%m-%dT%H:%M:%S.%f')
+                MacLogFile = open('MacLog.txt', 'a')
+                MacLogFile.write(strDateTime + " SECC MAC " + self.getSourceMacAddressAsString() + "\n") # write the MAC to the MacLogFile
+                MacLogFile.close()
             
     def evaluateMnbcSoundInd(self):
         # We received MNBC_SOUND.IND from the PEV. Normally this happens 10times, with a countdown (remaining number of sounds)

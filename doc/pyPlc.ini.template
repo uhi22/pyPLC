@@ -103,6 +103,16 @@ charge_target_voltage = 270
 # Deeper explanations here: https://github.com/uhi22/pyPLC/blob/master/doc/installation_on_raspberry.md#further-optimizations
 exit_on_session_end = False
 
+# If pyPLC does not find a local link address, this means there is no
+# ethernet connection to the homeplug modem. This is a severe hardware
+# error, so pyPLC will terminate. However, for special testing purposes this can
+# be set to False. In this case, pyPLC will continue to run, even if there is no modem connected.
+exit_if_no_local_link_address_is_found = True
+
+# pyPLC in PevMode or ListenMode can detect the MAC address of the charger (SECC MAC) and 
+# write it, together with the time stamp, into the file MacLog.txt
+log_the_evse_mac_to_file = True
+
 # Run test cases.
 # Explanation in doc/testing_and_simulation.md
 # Possible values:
@@ -125,7 +135,7 @@ udp_syslog_enable = Yes
 #           Limitations/explanations here: https://openinverter.org/forum/viewtopic.php?p=57894#p57894 and
 #           https://openinverter.org/forum/viewtopic.php?t=1063 (Is it possible to make a CCS to CHAdeMO adapter?)
 #  none: all other use cases
-charge_parameter_backend = chademo
+charge_parameter_backend = none
 
 # REST callback for SoC states. Comment out to disable. Do not leave a trailing slash
 # This parameter is used in EvseMode, to configure where the data which is retrieved
