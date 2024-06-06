@@ -145,3 +145,6 @@ soc_callback_enabled = False
 soc_callback_endpoint = http://1.1.1.1
 # Fallback value to use if the vehicle does not support the EVEnergyCapacity.Value
 soc_fallback_energy_capacity = 2700
+
+# The URL where to send some logging data.
+logging_url = http://enteryourhosthere.org/pyPlcLogging/addLog.php

@@ -27,6 +27,8 @@ class addressManager():
         self.pevIp=""
         self.SeccIp=""
         self.SeccTcpPort = 15118 # just a default. Will be overwritten during SDP if we are pev.
+        self.evseMacIsUpdated = False
+        self.evseMac = [0, 0, 0, 0, 0, 0]
         pass
         
     def findLinkLocalIpv6Address(self):
@@ -157,7 +159,15 @@ class addressManager():
     def setEvseMac(self, evseMac):
         # During the SLAC, the MAC of the EVSE was found out. Store it, maybe we need it later.
         self.evseMac = evseMac
+        self.evseMacIsUpdated = True
         print("[addressManager] evse has MAC " + prettyMac(self.evseMac))
+
+    def getEvseMacAsStringAndClearUpdateFlag(self):
+        self.evseMacIsUpdated = False
+        return prettyMac(self.evseMac)
+
+    def isEvseMacNew(self):
+        return self.evseMacIsUpdated
 
     def setPevIp(self, pevIp):
         # During SDP, the IPv6 of the PEV was found out. Store it, maybe we need it later.
