@@ -13,6 +13,7 @@ import sys # for argv
 from configmodule import getConfigValue, getConfigValueBool
 import urllib.request
 import gps               # the gpsd interface module
+import RPi.GPIO as GPIO # for controlling hardware pins of the raspberry
 
 startTime_ms = round(time.time()*1000)
 GPSsession = gps.gps(mode=gps.WATCH_ENABLE)
@@ -27,15 +28,35 @@ def cbAddToTrace(s):
 def cbShowStatus(s, selection=""):
     pass
 
+def testBlockingBeep(patternselection):
+    if (patternselection==1):
+        p.ChangeDutyCycle(10)
+        p.ChangeFrequency(1200)
+        time.sleep(0.2)
+        p.ChangeFrequency(1300)
+        time.sleep(0.2)
+        p.ChangeFrequency(1400)
+        time.sleep(0.2)
+        p.ChangeDutyCycle(0)
+    if (patternselection==2):
+        p.ChangeDutyCycle(10)
+        p.ChangeFrequency(1600)
+        time.sleep(0.2)
+        p.ChangeFrequency(1500)
+        time.sleep(0.2)
+        p.ChangeDutyCycle(0)
+
 def trySomeHttp():
     print("***************trying some http********************")
     strChargerMac = "chargerMac=na"
     if (worker.addressManager.isEvseMacNew()):
+        testBlockingBeep(1)
         strChargerMac = "chargerMac=" + worker.addressManager.getEvseMacAsStringAndClearUpdateFlag().replace(":", "")
     strParams = strChargerMac
     strParams = strParams + "&loops="+str(nMainloops)+"&pos="+strGpsPos
     try:
         contents = urllib.request.urlopen(strLoggingUrl + "?" + strParams).read()
+        testBlockingBeep(2)
     except Exception as err:
         contents = "(no contents received) " + str(err)
     print(contents)
@@ -63,6 +84,27 @@ def GpsMainfunction():
             strGpsPos = str(0.0)+"_"+str(0.0)
             print(strGpsPos)
     
+
+
+    
+    
+
+def mytestfunction():
+    global soundstate
+    #testBlockingBeep(2)
+    #if (soundstate==0):
+    #    p.ChangeDutyCycle(10)
+    #    p.ChangeFrequency(1000)
+    #if (soundstate==1):
+    #    p.ChangeDutyCycle(10)
+    #    p.ChangeFrequency(1200)
+    #if (soundstate==2):
+    #    p.ChangeDutyCycle(0)
+    #soundstate+=1
+    #if (soundstate>=3):
+    #    soundstate=0
+    
+
 myMode = C_LISTEN_MODE
 
 
@@ -78,7 +120,22 @@ worker=pyPlcWorker.pyPlcWorker(cbAddToTrace, cbShowStatus, myMode, isSimulationM
 
 nMainloops=0
 httpTime_ms = round(time.time()*1000)
-intervalForHttpLogging_ms = 15000 # each 15s send the logging data to the server
+testTime_ms = httpTime_ms
+intervalForHttpLogging_ms = 120*1000 # each 2 minutes send the logging data to the server
+
+soundstate = 0
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(23, GPIO.OUT)
+p=GPIO.PWM(23, 500) # 500 Hz
+p.start(0)
+p.ChangeDutyCycle(50)
+time.sleep(0.1)
+p.ChangeDutyCycle(0)
+time.sleep(0.1)
+p.ChangeDutyCycle(50)
+time.sleep(0.1)
+p.ChangeDutyCycle(0)
+
 
 while (1):
     time.sleep(.03) # 'do some calculation'
@@ -87,6 +144,9 @@ while (1):
     if ((currentTime_ms-httpTime_ms)>intervalForHttpLogging_ms) or (worker.addressManager.isEvseMacNew()):
         trySomeHttp()
         httpTime_ms = currentTime_ms
+    if ((currentTime_ms-testTime_ms)>2000):
+        mytestfunction()
+        testTime_ms = currentTime_ms
     worker.mainfunction()
     GpsMainfunction()
         
