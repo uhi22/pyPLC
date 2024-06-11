@@ -711,6 +711,10 @@ class pyPlcHomeplug():
                 self.pevSequenceDelayCycles = 4 # original Ioniq is waiting 200ms
                 self.enterState(STATE_SLAC_PARAM_CNF_RECEIVED) # enter next state. Will be handled in the cyclic runPevSequencer
         if ((self.iAmListener==1) or (self.iAmPev==1)):
+            # Take the MAC of the charger from the frame, and store it for later use.
+            for i in range(0, 6):
+                self.evseMac[i] = self.myreceivebuffer[6+i] # source MAC starts at offset 6
+            self.addressManager.setEvseMac(self.evseMac)
             if getConfigValueBool("log_the_evse_mac_to_file"):
                 # Write the MAC address of the charger to a log file
                 self.addToTrace("SECC MAC is " + self.getSourceMacAddressAsString())
@@ -752,10 +756,6 @@ class pyPlcHomeplug():
             if (self.pevSequenceState==STATE_WAIT_FOR_ATTEN_CHAR_IND): # we were waiting for the AttenCharInd
                 # todo: Handle the case when we receive multiple responses from different chargers.
                 #       Wait a certain time, and compare the attenuation profiles. Decide for the nearest charger.
-                # Take the MAC of the charger from the frame, and store it for later use.
-                for i in range(0, 6):
-                    self.evseMac[i] = self.myreceivebuffer[6+i] # source MAC starts at offset 6
-                self.addressManager.setEvseMac(self.evseMac)
                 self.AttenCharIndNumberOfSounds = self.myreceivebuffer[69]
                 self.addToTrace("[PEVSLAC] number of sounds reported by the EVSE (should be 10): " + str(self.AttenCharIndNumberOfSounds)) 
                 self.composeAttenCharRsp()
