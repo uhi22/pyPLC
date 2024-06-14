@@ -15,6 +15,14 @@ To convince the car, that a CCS charger is connected, several preconditions need
 
 ![image](EvseMode_BlockDiagram.jpg)
 
+![image](foto_MiniEvse1.jpg)
+![image](foto_MiniEvse2.jpg)
+![image](foto_MiniEvse3.jpg)
+![image](foto_MiniEvse4.jpg)
+![image](foto_MiniEvse5.jpg)
+![image](foto_MiniEvse6.jpg)
+
+
 ## Software
 
 ### Configuring the HomePlug modem as Charging Station
