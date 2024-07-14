@@ -266,6 +266,7 @@ class pyPlcHomeplug():
                             # Network ID to be associated with the key distributed herein.
                             # The 54 LSBs of this field contain the NID (refer to Section 3.4.3.1). The
                             # two MSBs shall be set to 0b00.
+        self.addToTrace("NID is " + prettyHexMessage(self.NID))
         self.mytransmitbuffer[40]=0x01 # 21 peks (payload encryption key select) Table 11-83. 01 is NMK. We had 02 here, why???
                                        # with 0x0F we could choose "no key, payload is sent in the clear"
         self.setNmkAt(41) 
@@ -849,8 +850,11 @@ class pyPlcHomeplug():
             # Fill some of the bytes of the NMK with random numbers. The others stay at 0x77 for easy visibility.
             self.NMK_EVSE_random[2] = int(random()*255)
             self.NMK_EVSE_random[3] = int(random()*255)
+            self.NMK_EVSE_random[4] = int(random()*255)
+            self.NMK_EVSE_random[5] = int(random()*255)
+            self.NMK_EVSE_random[6] = int(random()*255)
             self.composeSetKey(0)
-            self.addToTrace("transmitting SET_KEY.REQ, to configure the EVSE modem with random NMK")
+            self.addToTrace("transmitting SET_KEY.REQ, to configure the EVSE modem with random NMK " +prettyHexMessage(self.NMK_EVSE_random))
             self.transmit(self.mytransmitbuffer)
             self.evseSlacHandlerState = 1 # setkey was done
             return
@@ -1209,6 +1213,10 @@ class pyPlcHomeplug():
         self.NMK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key. Will be overwritten later.
         self.NMK_EVSE_random = [ 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77 ] # In EvseMode, we use this key.
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
+        self.NID[2] = int(random()*255) # in case we are EVSE, prepare a random network ID, to
+        self.NID[3] = int(random()*255) # allow multiple EVSEs live together without causing modem resets
+        self.NID[4] = int(random()*255)
+        self.NID[5] = int(random()*255)
         self.pevMac = [0xDC, 0x0E, 0xA1, 0x11, 0x67, 0x08 ] # a default pev MAC. Will be overwritten later.
         self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.
         # a default pev RunId. Will be overwritten later, if we are evse. If we are the pev, we are free to choose a
