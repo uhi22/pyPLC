@@ -30,20 +30,42 @@ def cbShowStatus(s, selection=""):
 
 def testBlockingBeep(patternselection):
     if (patternselection==1):
+        # The "MAC Found" beep
         p.ChangeDutyCycle(10)
-        p.ChangeFrequency(1200)
-        time.sleep(0.2)
+        p.ChangeFrequency(1100)
+        time.sleep(0.3)
         p.ChangeFrequency(1300)
-        time.sleep(0.2)
-        p.ChangeFrequency(1400)
-        time.sleep(0.2)
+        time.sleep(0.3)
+        p.ChangeFrequency(1500)
+        time.sleep(0.3)
         p.ChangeDutyCycle(0)
     if (patternselection==2):
+        # The short "ok" beep
         p.ChangeDutyCycle(10)
         p.ChangeFrequency(1600)
-        time.sleep(0.2)
-        p.ChangeFrequency(1500)
-        time.sleep(0.2)
+        time.sleep(0.07)
+        p.ChangeDutyCycle(0)
+    if (patternselection==3):
+        # The "no GPS position" beep
+        print("no pos beep 4")
+        p.ChangeDutyCycle(10)
+        p.ChangeFrequency(1700)
+        time.sleep(0.04)
+        p.ChangeDutyCycle(0)
+        time.sleep(0.04)
+        p.ChangeDutyCycle(10)
+        p.ChangeFrequency(1700)
+        time.sleep(0.04)
+        p.ChangeDutyCycle(0)
+        time.sleep(0.04)
+        p.ChangeDutyCycle(10)
+        p.ChangeFrequency(1700)
+        time.sleep(0.04)
+        p.ChangeDutyCycle(0)
+        time.sleep(0.04)
+        p.ChangeDutyCycle(10)
+        p.ChangeFrequency(1700)
+        time.sleep(0.04)
         p.ChangeDutyCycle(0)
 
 def trySomeHttp():
@@ -54,9 +76,16 @@ def trySomeHttp():
         strChargerMac = "chargerMac=" + worker.addressManager.getEvseMacAsStringAndClearUpdateFlag().replace(":", "")
     strParams = strChargerMac
     strParams = strParams + "&loops="+str(nMainloops)+"&pos="+strGpsPos
+    print(strParams)
     try:
         contents = urllib.request.urlopen(strLoggingUrl + "?" + strParams).read()
-        testBlockingBeep(2)
+        print(len(strGpsPos))
+        if (len(strGpsPos)>7):
+            print("Valid GPS coordinates, and http logging worked")
+            testBlockingBeep(2)
+        else:
+            print("http was ok, but no GPS position")
+            testBlockingBeep(3)
     except Exception as err:
         contents = "(no contents received) " + str(err)
     print(contents)
@@ -121,7 +150,8 @@ worker=pyPlcWorker.pyPlcWorker(cbAddToTrace, cbShowStatus, myMode, isSimulationM
 nMainloops=0
 httpTime_ms = round(time.time()*1000)
 testTime_ms = httpTime_ms
-intervalForHttpLogging_ms = 120*1000 # each 2 minutes send the logging data to the server
+#intervalForHttpLogging_ms = 120*1000 # each 2 minutes send the logging data to the server
+intervalForHttpLogging_ms = 30*1000 # each half minute send the logging data to the server
 
 soundstate = 0
 GPIO.setmode(GPIO.BCM)
