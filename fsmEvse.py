@@ -280,8 +280,14 @@ class fsmEvse():
                     self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("ContractAuthenticationReq")>0):
-                # todo: check the request content, and fill response parameters
-                msg = addV2GTPHeader(exiEncode("EDl")) # EDl for Encode, Din, ContractAuthenticationResponse
+                # Ask the hardwareInterface, whether the user already presented a valid RFID or similar
+                if (self.hardwareInterface.isUserAuthenticated()):
+                    strAuthFinished = "1"
+                    self.addToTrace("Contract is fine")
+                else:
+                    strAuthFinished = "0"
+                    self.addToTrace("Contract is not (yet) fine")
+                msg = addV2GTPHeader(exiEncode("EDl_" + strAuthFinished)) # EDl for Encode, Din, ContractAuthenticationResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_SequenceError_for_ContractAuthenticationRes)):
                     # send a ContractAuthenticationResponse with Responsecode SequenceError
                     msg = addV2GTPHeader("809a021a3b7c417774813310c0A200")
@@ -291,7 +297,14 @@ class fsmEvse():
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("AuthorizationReq")>0):
-                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"l")) # E1l for Encode, Iso1, AuthorizationResponse
+                # Ask the hardwareInterface, whether the user already presented a valid RFID or similar
+                if (self.hardwareInterface.isUserAuthenticated()):
+                    strAuthFinished = "1"
+                    self.addToTrace("User is Authorized")
+                else:
+                    strAuthFinished = "0"
+                    self.addToTrace("User is not (yet) authorized")
+                msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"l_" + strAuthFinished)) # E1l for Encode, Iso1, AuthorizationResponse
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
                 self.publishStatus("Authorization")

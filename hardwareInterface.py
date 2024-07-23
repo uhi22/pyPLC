@@ -215,6 +215,18 @@ class hardwareInterface():
         self.callbackShowStatus(format(self.simulatedSoc,".1f"), "soc")
         return self.simulatedSoc
 
+    def isUserAuthenticated(self):
+        # If the user needs to authorize, fill this function in a way that it returns False as long as
+        # we shall wait for the users authorization, and returns True if the authentication was successfull.
+        # Discussing here: https://github.com/uhi22/pyPLC/issues/28#issuecomment-2230656379
+        # For testing purposes, we just use a counter to decide that we return
+        # once "ongoing" and then "finished".
+        if (self.demoAuthenticationCounter<1):
+            self.demoAuthenticationCounter += 1
+            return False
+        else:
+            return True
+
     def initPorts(self):
         if (getConfigValue("charge_parameter_backend") == "chademo"):
             filters = [
@@ -236,6 +248,7 @@ class hardwareInterface():
         self.loopcounter = 0
         self.outvalue = 0
         self.simulatedSoc = 20.0 # percent
+        self.demoAuthenticationCounter = 0
 
         self.inletVoltage = 0.0 # volts
         self.accuVoltage = 0.0
@@ -270,6 +283,7 @@ class hardwareInterface():
     def resetSimulation(self):
         self.simulatedInletVoltage = 0.0 # volts
         self.simulatedSoc = 20.0 # percent
+        self.demoAuthenticationCounter = 0
         
     def simulatePreCharge(self):
         if (self.simulatedInletVoltage<230):
