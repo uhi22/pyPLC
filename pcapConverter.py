@@ -87,6 +87,7 @@ def convertPcapToTxt(inputFileName):
     t2PreChargeBegin = 0
     t3CurrentDemandBegin = 0
     numberOfPackets=0
+    decodeAlsoAsApplHandshake=0
     for packet in cap:
         numberOfPackets+=1
         #print(packet)
@@ -105,6 +106,16 @@ def convertPcapToTxt(inputFileName):
                     #print(decoded)
                     print(sHeader, file=fileOut)
                     print(decoded, file=fileOut)
+                    if (decodeAlsoAsApplHandshake>0): # if it may be applHandShake, caused by the previous message, we decode also this.
+                        print("Alternative decoding as applHandshake", file=fileOut)
+                        decodeAlsoAsApplHandshake-=1
+                        decoded=exiConnector.exiDecode(strExi, "DH")
+                        print(decoded, file=fileOut)
+                    if (decoded.find("error-")>0): # a decoding error usually points to wrong protocol, so most likely it is appHandShake.
+                        print("maybe this is no DIN. Trying to decode as applHandshake", file=fileOut)
+                        decodeAlsoAsApplHandshake=1
+                        decoded=exiConnector.exiDecode(strExi, "DH")
+                        print(decoded, file=fileOut)
                     if (decoded.find("SessionSetupReq")>0):
                         if ((t1CableCheckBegin>0) and (t2PreChargeBegin>t1CableCheckBegin) and (t3CurrentDemandBegin>t2PreChargeBegin)):
                             print("charger MAC " + chargerMAC + " " + getManufacturerFromMAC(chargerMAC))
