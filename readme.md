@@ -554,3 +554,6 @@ integrate https://github.com/chargebyte/openv2g (which is basically the same ver
 Full Size Urban Heavy Duty Applications
 * [xi] https://morth.nic.in/sites/default/files/ASI/320201825106PMAIS_138_Part_2_F.pdf The Indian Fast Charging specification, seems to contain Chademo (Annex A, System A), an other "System B" in annex B, and CCS as "System C" in Annex C.
 * [xii] User group which discusses the issues of the ISO15118. Link found on wikipedia article regarding Megawatt charging, https://de.wikipedia.org/wiki/Megawatt_Charging_System ref 5 https://www.elektroniknet.de/automotive/elektromobilitaet/smart-charging-grundlagen-und-herausforderungen.210253.html points to user group for developers https://iso15118.elaad.io/pt2/15118-20/user-group/ which is public.
+* [xiii] The exi xml schema definitions, e.g. https://standards.iso.org/iso/15118/-20/ed-1/en/
+* [xiv] exi encoders for ISO (din, 2, 20): https://github.com/tux-evse/iso15118-encoders?tab=readme-ov-file
+* [xv] codec generator https://github.com/EVerest/cbexigen and the generated codec library https://github.com/EVerest/libcbv2g
