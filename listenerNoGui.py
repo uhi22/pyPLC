@@ -31,7 +31,7 @@ def cbShowStatus(s, selection=""):
 def testBlockingBeep(patternselection):
     if (patternselection==1):
         # The "MAC Found" beep
-        p.ChangeDutyCycle(10)
+        p.ChangeDutyCycle(30)
         p.ChangeFrequency(1100)
         time.sleep(0.3)
         p.ChangeFrequency(1300)
@@ -82,10 +82,10 @@ def trySomeHttp():
         print(len(strGpsPos))
         if (len(strGpsPos)>7):
             print("Valid GPS coordinates, and http logging worked")
-            testBlockingBeep(2)
+            #testBlockingBeep(2)
         else:
             print("http was ok, but no GPS position")
-            testBlockingBeep(3)
+            #testBlockingBeep(3)
     except Exception as err:
         contents = "(no contents received) " + str(err)
     print(contents)

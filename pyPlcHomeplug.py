@@ -797,16 +797,20 @@ class pyPlcHomeplug():
                 self.NMK[i] = self.myreceivebuffer[93+i]
                 s=s+hex(self.NMK[i])+ " "
             self.addToTrace("From SlacMatchCnf, got network membership key (NMK) " + s) 
-            # use the extracted NMK and NID to set the key in the adaptor:
-            self.composeSetKey(0)
-            self.addToTrace("Checkpoint170: transmitting CM_SET_KEY.REQ")
-            self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
-            if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_MATCH_CNF): # we were waiting for finishing the SLAC_MATCH.CNF and SET_KEY.REQ
-                if (self.isSimulationMode!=0):
-                    # In simulation mode, we pretend a successful SetKey response:
-                    self.connMgr.SlacOk()
-                self.enterState(STATE_WAITING_FOR_RESTART2)
-    
+            if (self.iAmPev==1):
+                # use the extracted NMK and NID to set the key in the adaptor:
+                self.composeSetKey(0)
+                self.addToTrace("Checkpoint170: transmitting CM_SET_KEY.REQ")
+                self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+                if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_MATCH_CNF): # we were waiting for finishing the SLAC_MATCH.CNF and SET_KEY.REQ
+                    if (self.isSimulationMode!=0):
+                        # In simulation mode, we pretend a successful SetKey response:
+                        self.connMgr.SlacOk()
+                    self.enterState(STATE_WAITING_FOR_RESTART2)
+            else:
+                # We are neither Evse nor PEV, so we are just listener. Do not set the key, to avoid disturbing the two participants.
+                self.enterState(STATE_WAITING_FOR_RESTART2) # does not really matter
+
     def evaluateReceivedHomeplugPacket(self):
         mmt = self.getManagementMessageType()
         # print(hex(mmt))
