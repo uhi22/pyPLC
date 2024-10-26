@@ -39,3 +39,8 @@ Example states the following levels:
 - Transceiver modem input: -81dBm/Hz
 This would be 9dB between transmitter output and receiver input.
 
+7. Output of the QCA7005
+
+4Vpp. Each output (TX+ and TX-) sit at ~1.6V statically, and move 1V up and 1V down. So the differential voltage
+reaches from -2V to +2V, which is 4Vpp.
+
