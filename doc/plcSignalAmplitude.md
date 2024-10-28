@@ -44,3 +44,23 @@ This would be 9dB between transmitter output and receiver input.
 4Vpp. Each output (TX+ and TX-) sit at ~1.6V statically, and move 1V up and 1V down. So the differential voltage
 reaches from -2V to +2V, which is 4Vpp.
 
+8. Foccci 5.1 transmit level
+
+with 120ohm termination
+
+270mVpp
+
+9. Foccci 5.1 receive limit test
+
+- Foccci sees the EVSE, starting to become instable, if 400mVpp -36dB. This is 400mVpp / 64 = 6mVpp.
+- Foccci sees single messages, if 400mVpp -42dB. This is 3mV.
+- Foccci does not see the EVSE (modem goes to sleep) if 400mVpp -44dB. This is 400mVpp/158 = 2.5mVpp.
+
+
+# Attenuation calculator
+
+https://www.digikey.de/de/resources/conversion-calculators/conversion-calculator-attenuator
+
+* -6dB  is half voltage
+* -12dB is quater voltage
+* -20dB is tenth voltage
