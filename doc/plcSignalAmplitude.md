@@ -56,6 +56,17 @@ with 120ohm termination
 - Foccci sees single messages, if 400mVpp -42dB. This is 3mV.
 - Foccci does not see the EVSE (modem goes to sleep) if 400mVpp -44dB. This is 400mVpp/158 = 2.5mVpp.
 
+10. Foccci 5.1 transformerless patch, R25=100ohms, receive limit
+
+- 400mV -32dB stable connection.
+- 400mV -38dB still works, starting to become instable.
+- 400mV -44dB sometimes modem sleep, sometimes not.
+- 400mV -50dB modem sleep.
+
+11. Foccci 5.1 transformerless patch, R25=100ohms, transmit level
+
+210mVpp
+
 
 # Attenuation calculator
 
