@@ -513,6 +513,23 @@ The json data, which is mentioned in the question, is the output of the EXI deco
 - The original Siemens code is mirrored into https://github.com/Martin-P/OpenV2G
 - Since pyPLC is in python and cannot directly use the C code from Siemens, I added a command line interface to it. So python calls the compiled executable exi decoder, gives the input as command line parameter, and gets back the decoded message as standard output of the executable. This standard output is json-like. The extended OpenV2G has the name OpenV2Gx, and is available here: https://github.com/uhi22/OpenV2Gx. The readme contains examples how this can be used stand-alone for decoding and encoding exi message on command line.
 
+### Q8: How can I bring out the target current and target voltage out of pyPLC, to control a power supply?
+
+In EVSE mode, if we want to use pyPLC to physically charge a car, the pyPLC must control the power supply, by providing
+the target current and the target voltage to it. Different types of power supplies may have different needs for their control
+signals, e.g. CAN bus, ethernet, analog inputs, RS232 or RS485 or what ever.
+
+The point in pyPLC, where we can add the communication to the power supply, is the function
+`setPowerSupplyVoltageAndCurrent()` in hardwareInterface.py, which gets two parameters: targetVoltage and targetCurrent.
+
+At the time of writing, the only implemented method to communicate with the power supply is ethernet/homeplug, via
+the function homeplughandler.sendSpecialMessageToControlThePowerSupply(). This is just for demonstration purpose and
+plays together with the adjustable power supply https://github.com/uhi22/stepup-test?tab=readme-ov-file#level-9-software-adjustable-output-voltage
+
+Adding a CAN bus communication to the power supply would be possible e.g. if pyPLC runs on a raspberry pi, a CAN hat can be added,
+and the hardwareInterface.py already contains some CAN bus stuff for the CHAdeMO, which may be used as guidance for further
+implementations.
+
 ## Credits
 Thanks to catphish to start the investigations regarding the homeplug modems and publishing them on OpenInverter forum.
 Thanks to johu for the OpenInverter forum, and for the first video of the early experiments, the beaglebone integration and CHAdeMO integration.
