@@ -36,7 +36,7 @@ The open-plc-utils report the version MAC-QCA7500-2.8.0.30-01-20190707-CS.
 Contra:
 - Even with the modified configuration for pev (according to https://openinverter.org/forum/viewtopic.php?p=55120#p55120), the QCA7500 does not send SLAC parameter requests. This means: Cannot be used as pev.
 
-### TPlink TL-PA4010P
+### TPlink TL-PA4010P v5.0
 This adaptor was suggested by https://openinverter.org/forum/viewtopic.php?p=37085#p37085 and there,
 successfully used to establish a communication to the CCS charger.
 
@@ -66,6 +66,12 @@ How to modify:
 - remove the AC power connector parts
 - connect cables to supply the device. Works with 12V, also works with 5V from an USB power bank.
 - connect cables and circuit (1nF and 150ohms in series) for connecting to the pilot line.
+
+#### TPlink TL-PA4010P v2.3
+![image](https://github.com/user-attachments/assets/c98d100c-f7fc-4e41-a183-1b5eeebd43fa)
+![image](https://github.com/user-attachments/assets/6fef8096-4373-42d9-9688-7d284f587940)
+
+Confirmed to be working as EVSE (needs patching via open-plc-utils) and supplied with 5V.
 
 ## Controller for the PEV
 
