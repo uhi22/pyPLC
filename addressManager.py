@@ -27,6 +27,8 @@ class addressManager():
         self.pevIp=""
         self.SeccIp=""
         self.SeccTcpPort = 15118 # just a default. Will be overwritten during SDP if we are pev.
+        self.evseMacIsUpdated = False
+        self.evseMac = [0, 0, 0, 0, 0, 0]
         pass
         
     def findLinkLocalIpv6Address(self):
@@ -122,10 +124,12 @@ class addressManager():
         if (len(self.localIpv6Addresses)==0):
             print("[addressManager] Error: No local Ipv6 address was found.")
             self.localIpv6Address = "localhost"
-            cfg_exitIfNoLocalLinkAddressIsFound = 1
+            cfg_exitIfNoLocalLinkAddressIsFound = getConfigValueBool("exit_if_no_local_link_address_is_found")
             if (cfg_exitIfNoLocalLinkAddressIsFound!=0):
-                print("Exiting, because it does not make sense to continue without IPv6 address");
-                sys.exit(1);
+                print("Exiting, because it does not make sense to continue without IPv6 address")
+                sys.exit(1)
+            else:
+                print("Error: It does not make sense to continue without IPv6 address, but exit_if_no_local_link_address_is_found says you want to continue");
         else:
             # at least one address was found. Take the first one (this may be the wrong adaptor).
             self.localIpv6Address = self.localIpv6Addresses[0]
@@ -155,7 +159,15 @@ class addressManager():
     def setEvseMac(self, evseMac):
         # During the SLAC, the MAC of the EVSE was found out. Store it, maybe we need it later.
         self.evseMac = evseMac
+        self.evseMacIsUpdated = True
         print("[addressManager] evse has MAC " + prettyMac(self.evseMac))
+
+    def getEvseMacAsStringAndClearUpdateFlag(self):
+        self.evseMacIsUpdated = False
+        return prettyMac(self.evseMac)
+
+    def isEvseMacNew(self):
+        return self.evseMacIsUpdated
 
     def setPevIp(self, pevIp):
         # During SDP, the IPv6 of the PEV was found out. Store it, maybe we need it later.

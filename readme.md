@@ -492,6 +492,7 @@ In the cable check phase, the charger checks the following things:
 - wrong coupling network between the CP/PE and the PLC modem transformator. This may disturb the PWM levels, due to low-pass-filtering or it may inject too much power from the PLC modem.
 - Software not configured to use the correct output path for the StateC switching
 2. Isolation of the DC path. It is recommended to use two contactors, one for each DC lines, to avoid asymmetrical results in the isolation measurements.
+3. PP line: Some chargers (e.g. some of the Tesla Superchargers) are checking the voltage between the PP line and PE. The "official" recommendation seems to be to use on car side a pull-up of 330 ohm to 5V, and perhaps 3k pulldown to ground. Discussed here: https://openinverter.org/forum/viewtopic.php?p=67464#p67464 However, many chargers (e.g. alpitronics) seem not to care for the PP at all.
 
 ### Q6: How to connect the PLC modem to the CP and PE?
 
@@ -511,6 +512,23 @@ The json data, which is mentioned in the question, is the output of the EXI deco
 - The exi decoder was developed by Siemens and published here: http://openv2g.sourceforge.net/ This is pure C code, which is very fast, but also needs a lot of RAM and ROM space. It also has the drawback, that it will be not available for the latest updates of the ISO15118 (discussed here: https://openinverter.org/forum/viewtopic.php?p=54026#p54026). There are other exi solutions available, with are worst in terms of speed or availability (used in ref [v] and  [vi]).
 - The original Siemens code is mirrored into https://github.com/Martin-P/OpenV2G
 - Since pyPLC is in python and cannot directly use the C code from Siemens, I added a command line interface to it. So python calls the compiled executable exi decoder, gives the input as command line parameter, and gets back the decoded message as standard output of the executable. This standard output is json-like. The extended OpenV2G has the name OpenV2Gx, and is available here: https://github.com/uhi22/OpenV2Gx. The readme contains examples how this can be used stand-alone for decoding and encoding exi message on command line.
+
+### Q8: How can I bring out the target current and target voltage out of pyPLC, to control a power supply?
+
+In EVSE mode, if we want to use pyPLC to physically charge a car, the pyPLC must control the power supply, by providing
+the target current and the target voltage to it. Different types of power supplies may have different needs for their control
+signals, e.g. CAN bus, ethernet, analog inputs, RS232 or RS485 or what ever.
+
+The point in pyPLC, where we can add the communication to the power supply, is the function
+`setPowerSupplyVoltageAndCurrent()` in hardwareInterface.py, which gets two parameters: targetVoltage and targetCurrent.
+
+At the time of writing, the only implemented method to communicate with the power supply is ethernet/homeplug, via
+the function homeplughandler.sendSpecialMessageToControlThePowerSupply(). This is just for demonstration purpose and
+plays together with the adjustable power supply https://github.com/uhi22/stepup-test?tab=readme-ov-file#level-9-software-adjustable-output-voltage
+
+Adding a CAN bus communication to the power supply would be possible e.g. if pyPLC runs on a raspberry pi, a CAN hat can be added,
+and the hardwareInterface.py already contains some CAN bus stuff for the CHAdeMO, which may be used as guidance for further
+implementations.
 
 ## Credits
 Thanks to catphish to start the investigations regarding the homeplug modems and publishing them on OpenInverter forum.
@@ -551,3 +569,8 @@ integrate https://github.com/chargebyte/openv2g (which is basically the same ver
 * [ix] https://www.oppcharge.org/dok/ISO_15118-2_OpportunityCharging_Rev1.3.0.pdf Pantograph specific differences with some insight into ISO15118.
 * [x] https://assured-project.eu/storage/files/assured-10-interoperability-reference.pdf Fast and Smart Charging Solutions for
 Full Size Urban Heavy Duty Applications
+* [xi] https://morth.nic.in/sites/default/files/ASI/320201825106PMAIS_138_Part_2_F.pdf The Indian Fast Charging specification, seems to contain Chademo (Annex A, System A), an other "System B" in annex B, and CCS as "System C" in Annex C.
+* [xii] User group which discusses the issues of the ISO15118. Link found on wikipedia article regarding Megawatt charging, https://de.wikipedia.org/wiki/Megawatt_Charging_System ref 5 https://www.elektroniknet.de/automotive/elektromobilitaet/smart-charging-grundlagen-und-herausforderungen.210253.html points to user group for developers https://iso15118.elaad.io/pt2/15118-20/user-group/ which is public.
+* [xiii] The exi xml schema definitions, e.g. https://standards.iso.org/iso/15118/-20/ed-1/en/
+* [xiv] exi encoders for ISO (din, 2, 20): https://github.com/tux-evse/iso15118-encoders?tab=readme-ov-file
+* [xv] codec generator https://github.com/EVerest/cbexigen and the generated codec library https://github.com/EVerest/libcbv2g

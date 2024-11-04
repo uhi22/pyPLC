@@ -43,6 +43,7 @@ from pyPlcModes import *
 from mytestsuite import *
 from random import random
 from configmodule import getConfigValue, getConfigValueBool
+from datetime import datetime
 import sys
 
 MAC_BROADCAST = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF ]
@@ -119,6 +120,14 @@ class pyPlcHomeplug():
             strSourceFriendlyName="Ioniq"
             
         self.addToTrace("From " + strSourceMac + strSourceFriendlyName + " to " + strDestMac)
+
+    def getSourceMacAddressAsString(self):
+        strSourceMac = ""
+        for i in range(6, 12):
+            strSourceMac = strSourceMac + twoCharHex(self.myreceivebuffer[i])
+            if (i<11):
+                strSourceMac = strSourceMac + ":"
+        return strSourceMac
 
     def getEtherType(self, messagebufferbytearray):
         etherType=0
@@ -257,6 +266,7 @@ class pyPlcHomeplug():
                             # Network ID to be associated with the key distributed herein.
                             # The 54 LSBs of this field contain the NID (refer to Section 3.4.3.1). The
                             # two MSBs shall be set to 0b00.
+        self.addToTrace("NID is " + prettyHexMessage(self.NID))
         self.mytransmitbuffer[40]=0x01 # 21 peks (payload encryption key select) Table 11-83. 01 is NMK. We had 02 here, why???
                                        # with 0x0F we could choose "no key, payload is sent in the clear"
         self.setNmkAt(41) 
@@ -348,7 +358,38 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[35]=0x00 # 
         self.fillRunId(36)  # 36 to 43 runid 8 bytes 
         # rest is 00
-    
+
+    def composeSpecialMessage(self):
+        # special "homeplug" message, to control a hardware device.
+        # We re-purpose the ATTEN_CHAR.IND, because a AR4720 PEV modem is transparent for it also in unpaired state,
+        # and it contains a lot of space which can be used to transfer data. Also it is not expected to disturb the
+        # normal traffic, because it may be also caused by cross-coupling from an other charger, and the normal
+        # communication should be immune to such things.
+        self.mytransmitbuffer = bytearray(129)
+        self.cleanTransmitBuffer()
+        # Destination MAC
+        self.fillDestinationMac(MAC_BROADCAST)
+        # Source MAC
+        self.fillSourceMac(self.myMAC)
+        # Protocol
+        self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
+        self.mytransmitbuffer[13]=0xE1
+        self.mytransmitbuffer[14]=0x01 # version
+        self.mytransmitbuffer[15]=0x6E # ATTEN_CHAR.IND
+        self.mytransmitbuffer[16]=0x60 #
+        self.mytransmitbuffer[17]=0x00 # 2 bytes fragmentation information. 0000 means: unfragmented.
+        self.mytransmitbuffer[18]=0x00 #
+        self.mytransmitbuffer[19]=0x00 # apptype
+        self.mytransmitbuffer[20]=0x00 # security
+        self.fillDestinationMac(MAC_BROADCAST, 21) # The wireshark calls it source_mac, but alpitronic fills it with PEV mac.
+        self.fillRunId(27)  # runid 8 bytes
+        self.mytransmitbuffer[35]=0x00 # 35 - 51 source_id, 17 bytes. The alpitronic fills it with 00
+        self.mytransmitbuffer[52]=0x00 # 52 - 68 response_id, 17 bytes. The alpitronic fills it with 00.
+        self.mytransmitbuffer[69]=0x0A # Number of sounds. 10 in normal case.
+        self.mytransmitbuffer[70]=0x3A # Number of groups = 58.
+        for i in range(71, 129):  # 71 to 128: 58 special-purpose-bytes
+            self.mytransmitbuffer[i]=self.specialMessageTransmitBuffer[i-71]
+
     def composeStartAttenCharInd(self):
         # reference: see wireshark interpreted frame from ioniq
         self.mytransmitbuffer = bytearray(60)
@@ -546,6 +587,19 @@ class pyPlcHomeplug():
             self.composeGetSwWithRamdomMac()
             self.addToTrace("transmitting GetSwWithRamdomMac")           
             self.transmit(self.mytransmitbuffer)
+        if (selection=="5"):
+            self.sendSpecialMessageToControlThePowerSupply(20, 1)
+        if (selection=="6"):
+            self.sendSpecialMessageToControlThePowerSupply(100, 1)
+        if (selection=="7"):
+            self.sendSpecialMessageToControlThePowerSupply(200, 1)
+        if (selection=="8"):
+            self.sendSpecialMessageToControlThePowerSupply(300, 1)
+        if (selection=="9"):
+            self.sendSpecialMessageToControlThePowerSupply(400, 1)
+        if (selection=="0"):
+            self.sendSpecialMessageToControlThePowerSupply(0, 0)
+
             
     def transmit(self, pkt):
         self.sniffer.sendpacket(bytes(pkt))
@@ -657,6 +711,18 @@ class pyPlcHomeplug():
             if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_PARAM_CNF): # we were waiting for the SlacParamCnf
                 self.pevSequenceDelayCycles = 4 # original Ioniq is waiting 200ms
                 self.enterState(STATE_SLAC_PARAM_CNF_RECEIVED) # enter next state. Will be handled in the cyclic runPevSequencer
+        if ((self.iAmListener==1) or (self.iAmPev==1)):
+            # Take the MAC of the charger from the frame, and store it for later use.
+            for i in range(0, 6):
+                self.evseMac[i] = self.myreceivebuffer[6+i] # source MAC starts at offset 6
+            self.addressManager.setEvseMac(self.evseMac)
+            if getConfigValueBool("log_the_evse_mac_to_file"):
+                # Write the MAC address of the charger to a log file
+                self.addToTrace("SECC MAC is " + self.getSourceMacAddressAsString())
+                strDateTime=datetime.today().strftime('%Y-%m-%dT%H:%M:%S.%f')
+                MacLogFile = open('MacLog.txt', 'a')
+                MacLogFile.write(strDateTime + " SECC MAC " + self.getSourceMacAddressAsString() + "\n") # write the MAC to the MacLogFile
+                MacLogFile.close()
             
     def evaluateMnbcSoundInd(self):
         # We received MNBC_SOUND.IND from the PEV. Normally this happens 10times, with a countdown (remaining number of sounds)
@@ -671,6 +737,19 @@ class pyPlcHomeplug():
                 self.addToTrace("[EVSE] transmitting ATTEN_CHAR.IND")
                 self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
                 
+    def evaluateStartAttenCharInd(self):
+        # self.addToTrace("received START_ATTEN_CHAR.IND")
+        # nothing to do as PEV or EVSE.
+        # interpretation just in case we use it as special message in EVSE mode to get information from the power supply
+        if (self.iAmEvse==1):
+            if ((self.myreceivebuffer[38] == 0xDC) and (self.myreceivebuffer[39] == 0x55) and (self.myreceivebuffer[40] == 0xAA)):
+                uPresent = self.myreceivebuffer[43]
+                uPresent*=256
+                uPresent+=self.myreceivebuffer[44]
+                uPresent/=10 # scaling in the message is 0.1V
+                self.callbackShowStatus(str(uPresent), "PowerSupplyUPresent")
+                # Todo: evaluate other information of the power supply, like cable check result, current, temperature, ...
+
     def evaluateAttenCharInd(self):
         self.addToTrace("received ATTEN_CHAR.IND")    
         if (self.iAmPev==1):
@@ -678,10 +757,6 @@ class pyPlcHomeplug():
             if (self.pevSequenceState==STATE_WAIT_FOR_ATTEN_CHAR_IND): # we were waiting for the AttenCharInd
                 # todo: Handle the case when we receive multiple responses from different chargers.
                 #       Wait a certain time, and compare the attenuation profiles. Decide for the nearest charger.
-                # Take the MAC of the charger from the frame, and store it for later use.
-                for i in range(0, 6):
-                    self.evseMac[i] = self.myreceivebuffer[6+i] # source MAC starts at offset 6
-                self.addressManager.setEvseMac(self.evseMac)
                 self.AttenCharIndNumberOfSounds = self.myreceivebuffer[69]
                 self.addToTrace("[PEVSLAC] number of sounds reported by the EVSE (should be 10): " + str(self.AttenCharIndNumberOfSounds)) 
                 self.composeAttenCharRsp()
@@ -722,16 +797,20 @@ class pyPlcHomeplug():
                 self.NMK[i] = self.myreceivebuffer[93+i]
                 s=s+hex(self.NMK[i])+ " "
             self.addToTrace("From SlacMatchCnf, got network membership key (NMK) " + s) 
-            # use the extracted NMK and NID to set the key in the adaptor:
-            self.composeSetKey(0)
-            self.addToTrace("Checkpoint170: transmitting CM_SET_KEY.REQ")
-            self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
-            if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_MATCH_CNF): # we were waiting for finishing the SLAC_MATCH.CNF and SET_KEY.REQ
-                if (self.isSimulationMode!=0):
-                    # In simulation mode, we pretend a successful SetKey response:
-                    self.connMgr.SlacOk()
-                self.enterState(STATE_WAITING_FOR_RESTART2)
-    
+            if (self.iAmPev==1):
+                # use the extracted NMK and NID to set the key in the adaptor:
+                self.composeSetKey(0)
+                self.addToTrace("Checkpoint170: transmitting CM_SET_KEY.REQ")
+                self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
+                if (self.pevSequenceState==STATE_WAITING_FOR_SLAC_MATCH_CNF): # we were waiting for finishing the SLAC_MATCH.CNF and SET_KEY.REQ
+                    if (self.isSimulationMode!=0):
+                        # In simulation mode, we pretend a successful SetKey response:
+                        self.connMgr.SlacOk()
+                    self.enterState(STATE_WAITING_FOR_RESTART2)
+            else:
+                # We are neither Evse nor PEV, so we are just listener. Do not set the key, to avoid disturbing the two participants.
+                self.enterState(STATE_WAITING_FOR_RESTART2) # does not really matter
+
     def evaluateReceivedHomeplugPacket(self):
         mmt = self.getManagementMessageType()
         # print(hex(mmt))
@@ -745,6 +824,8 @@ class pyPlcHomeplug():
             self.evaluateSlacParamReq()
         if (mmt == CM_SLAC_PARAM + MMTYPE_CNF):
             self.evaluateSlacParamCnf()
+        if (mmt == CM_START_ATTEN_CHAR + MMTYPE_IND):
+            self.evaluateStartAttenCharInd()
         if (mmt == CM_MNBC_SOUND + MMTYPE_IND):
             self.evaluateMnbcSoundInd()
         if (mmt == CM_ATTEN_CHAR + MMTYPE_IND):
@@ -773,8 +854,11 @@ class pyPlcHomeplug():
             # Fill some of the bytes of the NMK with random numbers. The others stay at 0x77 for easy visibility.
             self.NMK_EVSE_random[2] = int(random()*255)
             self.NMK_EVSE_random[3] = int(random()*255)
+            self.NMK_EVSE_random[4] = int(random()*255)
+            self.NMK_EVSE_random[5] = int(random()*255)
+            self.NMK_EVSE_random[6] = int(random()*255)
             self.composeSetKey(0)
-            self.addToTrace("transmitting SET_KEY.REQ, to configure the EVSE modem with random NMK")
+            self.addToTrace("transmitting SET_KEY.REQ, to configure the EVSE modem with random NMK " +prettyHexMessage(self.NMK_EVSE_random))
             self.transmit(self.mytransmitbuffer)
             self.evseSlacHandlerState = 1 # setkey was done
             return
@@ -1053,20 +1137,42 @@ class pyPlcHomeplug():
             # Take the interface name from the ini file. For Linux, this is all we need.
             self.strInterfaceName=getConfigValue("eth_interface")
             print("Linux interface is " + self.strInterfaceName)
-            
+
+    def sendSpecialMessageToControlThePowerSupply(self, targetVoltage, targetCurrent):
+        u = int(targetVoltage*10) # resolution: 0.1 volt
+        i = int(targetCurrent*10) # resolution: 0.1 ampere
+        self.specialMessageTransmitBuffer[0] = 0xAF # Header 3 byte
+        self.specialMessageTransmitBuffer[1] = 0xFE #
+        self.specialMessageTransmitBuffer[2] = 0xDC #
+        self.specialMessageTransmitBuffer[3] = u >> 8 # target voltage, MSB first
+        self.specialMessageTransmitBuffer[4] = u & 0xFF # target voltage, LSB
+        self.specialMessageTransmitBuffer[5] = u >> 8 # same again, for plausibilization
+        self.specialMessageTransmitBuffer[6] = u & 0xFF
+        self.specialMessageTransmitBuffer[7] = i >> 8 # target current, MSB first
+        self.specialMessageTransmitBuffer[8] = i & 0xFF # target current, LSB
+        self.specialMessageTransmitBuffer[9] = i >> 8 # same again
+        self.specialMessageTransmitBuffer[10] = i & 0xFF
+        self.composeSpecialMessage()
+        self.addToTrace("transmitting SpecialMessage to control the power supply")
+        self.transmit(self.mytransmitbuffer)
+        self.callbackShowStatus(str(targetVoltage), "PowerSupplyUTarget")
+
     def enterPevMode(self):
         self.iAmEvse = 0 # not emulating a charging station
         self.iAmPev = 1 # emulating a vehicle
+        self.iAmListener = 0 # not a passive listener
         self.ipv6.enterPevMode()
         self.showStatus("PEV mode", "mode")
     def enterEvseMode(self):
         self.iAmEvse = 1 # emulating a charging station
         self.iAmPev = 0 # not emulating a vehicle
+        self.iAmListener = 0 # not a passive listener
         self.ipv6.enterEvseMode()
         self.showStatus("EVSE mode", "mode")
     def enterListenMode(self):
         self.iAmEvse = 0 # not emulating a charging station
         self.iAmPev = 0 # not emulating a vehicle
+        self.iAmListener = 1 # just listening
         self.ipv6.enterListenMode()
         self.showStatus("LISTEN mode", "mode")
 
@@ -1111,11 +1217,16 @@ class pyPlcHomeplug():
         self.NMK = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ] # a default network key. Will be overwritten later.
         self.NMK_EVSE_random = [ 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77 ] # In EvseMode, we use this key.
         self.NID = [ 1, 2, 3, 4, 5, 6, 7 ] # a default network ID
+        self.NID[2] = int(random()*255) # in case we are EVSE, prepare a random network ID, to
+        self.NID[3] = int(random()*255) # allow multiple EVSEs live together without causing modem resets
+        self.NID[4] = int(random()*255)
+        self.NID[5] = int(random()*255)
         self.pevMac = [0xDC, 0x0E, 0xA1, 0x11, 0x67, 0x08 ] # a default pev MAC. Will be overwritten later.
         self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.
         # a default pev RunId. Will be overwritten later, if we are evse. If we are the pev, we are free to choose a
         # RunID, e.g. the Ioniq uses the MAC plus 0x00 0x00 padding, the Tesla uses "TESLA EV".
         self.pevRunId = [0xDC, 0x0E, 0xA1, 0xDE, 0xAD, 0xBE, 0xEF, 0x55 ]
+        self.specialMessageTransmitBuffer = bytearray(58)
         self.myMAC = self.addressManager.getLocalMacAddress()
         self.runningCounter=0
         self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager, self.connMgr, self.callbackShowStatus)

@@ -57,6 +57,15 @@ def cbShowStatus(s, selection=""):
     if (selection == "soc"):
         lblSoc['text']= "SOC " + s + "%"
         s=""
+    if (selection == "UandI"):
+        lblRequestedUandI['text']= "Target " + s + ""
+        s=""
+    if (selection == "PowerSupplyUPresent"):
+        lblPowerSupplyUPresent['text']= "UPresent " + s + "V"
+        s=""
+    if (selection == "PowerSupplyUTarget"):
+        lblPowerSupplyUTarget['text']= "UTarget " + s + "V"
+        s=""
     if (len(s)>0):
         lblStatus['text']=s
     root.update()
@@ -73,6 +82,10 @@ if (len(sys.argv) > 1):
     else:
         if (sys.argv[1] == "E"):
             myMode = C_EVSE_MODE
+        else:
+            if (sys.argv[1] == "L"):
+                myMode = C_LISTEN_MODE
+        
 
 # The simulation mode can be set by command line in addition in both, PevMode and EvseMode.
 isSimulationMode=0
@@ -94,8 +107,19 @@ if (myMode == C_EVSE_MODE):
         print("starting in EvseMode")
  
 root = tk.Tk()
-root.geometry("400x350")
+#root.geometry("400x350")
+root.geometry("600x350")
 lastKey = ''
+if (myMode == C_EVSE_MODE):
+    frmPowerSupply = tk.Frame(root, bg='lightblue', bd=3)
+    frmPowerSupply.pack(side='right', fill='both', expand='True')
+    lblPowerSupplyUTarget = tk.Label(frmPowerSupply, text="(UTarget)", bg='lightblue')
+    lblPowerSupplyUTarget.config(font=('Helvetica bold', 18))
+    lblPowerSupplyUTarget.pack()
+    lblPowerSupplyUPresent = tk.Label(frmPowerSupply, text="(PowerSupplyUPresent)", bg='lightblue')
+    lblPowerSupplyUPresent.config(font=('Helvetica bold', 18))
+    lblPowerSupplyUPresent.pack()
+
 lblHelp = tk.Label(root, justify= "left")
 lblHelp['text']="x=exit \nS=GET_SW \nP=PEV mode \nE=EVSE mode \nL=Listen mode \ns=SET_KEY \nG=GET_KEY (try twice) \nt=SET_KEY modified \n space=stop charging"
 lblHelp.pack()
@@ -108,12 +132,15 @@ lblState.config(font=('Helvetica bold', 20))
 lblState.pack()
 lblSoc = tk.Label(root, text="(soc)")
 lblSoc.pack()
+lblRequestedUandI = tk.Label(root, text="(U and I)")
+lblRequestedUandI.pack()
 lblUInlet = tk.Label(root, text="(U Inlet)")
 lblUInlet.config(font=('Helvetica bold', 26))
 lblUInlet.pack()
 lblEVSEPresentVoltage = tk.Label(root, text="(EVSEPresentVoltage)")
 lblEVSEPresentVoltage.config(font=('Helvetica bold', 16))
 lblEVSEPresentVoltage.pack()
+
 
 if (myMode == C_EVSE_MODE):
     lblTestcase = tk.Label(root, text="(test case)")

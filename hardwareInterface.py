@@ -168,12 +168,6 @@ class hardwareInterface():
         #    return self.lock_confirmed
         return 1 # todo: use the real connector lock feedback
         
-    def setPevRequest(self, voltage, current):
-        #here we can publish the voltage and current requests received from the PEV side
-        if getConfigValue("charge_parameter_backend") == "mqtt":
-            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_voltage", str(voltage))
-            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_current", str(current))
-    
     def setChargerParameters(self, maxVoltage, maxCurrent):
         self.addToTrace("Setting charger parameters maxVoltage=%d V, maxCurrent=%d A" % (maxVoltage, maxCurrent))
         self.maxChargerVoltage = int(maxVoltage)
@@ -186,9 +180,18 @@ class hardwareInterface():
         self.addToTrace("Setting charger present values Voltage=%d V, Current=%d A" % (voltageNow, currentNow))
         self.chargerVoltage = int(voltageNow)
         self.chargerCurrent = int(currentNow)
+
         if getConfigValue("charge_parameter_backend") == "mqtt":
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/charger_voltage", voltageNow)
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/charger_current", currentNow)
+        
+    def setPowerSupplyVoltageAndCurrent(self, targetVoltage, targetCurrent):
+        # if we are the charger, and have a real power supply which we want to control, we do it here
+        self.homeplughandler.sendSpecialMessageToControlThePowerSupply(targetVoltage, targetCurrent)
+        #here we can publish the voltage and current requests received from the PEV side
+        if getConfigValue("charge_parameter_backend") == "mqtt":
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_voltage", str(voltage))
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_current", str(current))
 
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
@@ -243,6 +246,18 @@ class hardwareInterface():
         self.callbackShowStatus(format(self.simulatedSoc,".1f"), "soc")
         return self.simulatedSoc
 
+    def isUserAuthenticated(self):
+        # If the user needs to authorize, fill this function in a way that it returns False as long as
+        # we shall wait for the users authorization, and returns True if the authentication was successfull.
+        # Discussing here: https://github.com/uhi22/pyPLC/issues/28#issuecomment-2230656379
+        # For testing purposes, we just use a counter to decide that we return
+        # once "ongoing" and then "finished".
+        if (self.demoAuthenticationCounter<1):
+            self.demoAuthenticationCounter += 1
+            return False
+        else:
+            return True
+
     def initPorts(self):
         if (getConfigValue("charge_parameter_backend") == "chademo"):
             filters = [
@@ -262,13 +277,15 @@ class hardwareInterface():
         	self.mqttclient.on_message = self.mqtt_on_message
         	self.mqttclient.connect(getConfigValue("mqtt_broker"), 1883, 60)
         
-    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None):
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, homeplughandler=None):
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
+        self.homeplughandler = homeplughandler
 
         self.loopcounter = 0
         self.outvalue = 0
         self.simulatedSoc = 20.0 # percent
+        self.demoAuthenticationCounter = 0
 
         self.inletVoltage = 0.0 # volts
         self.accuVoltage = 0.0
@@ -303,6 +320,7 @@ class hardwareInterface():
     def resetSimulation(self):
         self.simulatedInletVoltage = 0.0 # volts
         self.simulatedSoc = 20.0 # percent
+        self.demoAuthenticationCounter = 0
         
     def simulatePreCharge(self):
         if (self.simulatedInletVoltage<230):

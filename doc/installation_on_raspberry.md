@@ -241,3 +241,23 @@ https://strobelstefan.org/2019/10/16/zugriff-via-ssh-ohne-passworteingabe-anmeld
 - in connection->SSH->Auth, browse to the private key generated above.
 - in session, give a name for the session, and click "safe" to store the connection settings
 - next time, the connection to the pi works just by clicking the saved session.
+
+## Optional: MAC logging with GPS coordinates
+
+0. connect GPS module to the raspberry. This needs only 3 wires: 3V3, GND, RXD. The TXD of the module needs to be connected to the RXD of the raspberry. https://tutorials-raspberrypi.de/raspberry-pi-gps-ortung-navigation/
+1. `sudo apt-get install minicom gpsd gpsd-clients`
+2. in the raspberry pi config, enable the serial port and disable the serial console
+3. reboot
+4. `ls -ltr /dev/ser* # should show all serial devices`
+5. `cat /dev/serial0` Get the the raw NMEA data from the serial line and shows it. Processing of them works also without the daemon.
+6. configure the gsd: `nano /etc/default/gpsd`
+
+```
+    USBAUTO=“false“
+    DEVICES=“/dev/serial0″
+    GPSD_OPTIONS=“-n“
+```
+
+start the GPS daemon: `sudo service gpsd start`
+
+Now this works: `cgps -s`

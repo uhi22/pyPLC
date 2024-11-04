@@ -79,7 +79,8 @@ ip addr >> "$logfile"
 pwd >> "$logfile"
 
 # call the pyPlc python script
-PYTHONUNBUFFERED=1 /usr/bin/python3 pevNoGui.py | tee -a "$logfile"
+#PYTHONUNBUFFERED=1 /usr/bin/python3 pevNoGui.py | tee -a "$logfile"
+PYTHONUNBUFFERED=1 /usr/bin/python3 listenerNoGui.py | tee -a "$logfile"
 pwd >> "$logfile"
 date >> "$logfile"
 

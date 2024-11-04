@@ -298,13 +298,24 @@ def testReadExiFromExiLogFile(strLogFileName):
                 strDecoderSelection = "D" # it is a DIN message
             if (strToDecode[1:3]=="H ") or (strToDecode[1:3]=="h "):
                 strDecoderSelection = "H" # it is a ProtocolHandshake message
-                
+            if (strDecoderSelection==""): # no decoder prefix contained in the file. Assume DIN.
+                strDecoderSelection = "D"
             if (len(strDecoderSelection)>0): # if we have selected a valid decoder
-                posOfSpace=2
-                s = strToDecode[posOfSpace+1:] # The part after the " " contains the EXI hex data.
+                posOfSpace=strToDecode.find(" ")
+                if (posOfSpace>0):
+                    posStartOfData = posOfSpace+1 # we have a space in the line, the exi data starts after the space
+                else:
+                    print(strToDecode[0:4])
+                    if (strToDecode[0:4]=="01fe"):
+                        print("seems we have a v2gtp header")
+                        posStartOfData = 16 # we have a v2gtp header, so the exi data starts after 16 characters
+                    else:
+                        print("seems we have raw exi data")
+                        posStartOfData = 1 # assume raw exi at the start of the line
+                s = strToDecode[posStartOfData:] # The part after the " " contains the EXI hex data.
                 s = s.replace(" ", "") # Remove blanks
                 s = s.replace("\n", "") # Remove line feeds
-                #print(s)
+                print(s)
                 decoded=exiDecode(s, "D"+strDecoderSelection)
                 print(myLine.replace("\n", "") + " means:")
                 print(decoded)
@@ -338,10 +349,20 @@ if __name__ == "__main__":
     if (False):
         testTimeConsumption()
         exit()
-    if (True):        
+    if (False):
         testReadExiFromExiLogFile('DemoExiLog.txt')
         testReadExiFromExiLogFile('PevExiLog.txt')
         exit()
+    if (True):
+        testReadExiFromExiLogFile('RawExiLog.txt')
+        exit()
+    if (True):
+        print("ChargeParameterDiscovery of the BMW iX, https://github.com/uhi22/pyPLC/issues/14#issuecomment-1895437190")
+        print("From Everest logs (successful)")
+        testDecoder("809a0211c1ff77aed4fdff907190000009204061104e04070a8c30102050961f12805000", pre="DD", comment="")
+        testDecoder("809a0211c1ff77aed4fdff90800000040020000405182824138550008000018180c80c1c", pre="DD", comment="")
+        print("From pyPLC (failed)")
+        testDecoder("809A02004080C1014181C21080004800400000C0C320040C0E014060A184060606002060A190020303005030300510", pre="DD", comment="")
     
     if (False):
         testDecoder("8000ebab9371d34b9b79d189a98989c1d191d191818981d26b9b3a232b30010000040001b75726e3a64696e3a37303132313a323031323a4d73674465660020000100880", pre="DH", comment="supportedAppProtocolReq")
