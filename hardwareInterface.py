@@ -190,8 +190,8 @@ class hardwareInterface():
         self.homeplughandler.sendSpecialMessageToControlThePowerSupply(targetVoltage, targetCurrent)
         #here we can publish the voltage and current requests received from the PEV side
         if getConfigValue("charge_parameter_backend") == "mqtt":
-            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_voltage", str(voltage))
-            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_current", str(current))
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_voltage", str(targetVoltage))
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_current", str(targetVoltage))
 
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
