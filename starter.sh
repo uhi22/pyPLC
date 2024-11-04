@@ -39,9 +39,11 @@ sysctl net.ipv6.conf.eth0.keep_addr_on_down=1
 # Todo: Why this needed? On raspberry, where the NetworkManager is not runnning, this disturbs, because
 # afterwards the pyPlc does not see the interfaces IPv6 address.
 # Todo: make this configurable, for the cases we need this.
-# ip link set eth0 down
+ip link set eth0 down
+ip link set can0 down
 sleep 1
-# ip link set eth0 up
+ip link set eth0 up
+ip link set can0 up type can restart-ms 100 bitrate 500000
 sleep 1
 
 # show the addresses
@@ -53,17 +55,25 @@ pwd
 # create directory for the log files.
 mkdir -p log
 # prepare the file names for the log files
+pushd log
+gzip *.log || true
+popd
 date=$(date "+%Y-%m-%d_%H%M%S")
-logfile=./log/"$date"_pevNoGui.log
-tcpdump_logfile=./log/"$date"_tcpdump.pcap
+#logfile=./log/"$date"_pevNoGui.log
+#logfile=./log/pevNoGui.log
+index=`cat log/logindex`
+logfile=`printf "log/%04d_pevNoGui.log" $index`
+tcpdump_logfile=`printf "log/%04d_tcpdump.pcap" $index`
+index=$(($index + 1))
+echo $index > log/logindex
 
 echo "logfile: $logfile"
 echo "tcpdump_logfile: $tcpdump_logfile"
 
 # start the tcpdump
-start_tcpdump "$tcpdump_logfile"
+#start_tcpdump "$tcpdump_logfile"
 
-echo "$date" >> "$logfile"
+echo "$date" > "$logfile"
 git log --oneline -1 >> "$logfile" || echo "Not a git repo" >> "$logfile"
 ip addr >> "$logfile"
 pwd >> "$logfile"

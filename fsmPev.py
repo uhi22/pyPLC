@@ -286,6 +286,7 @@ class fsmPev():
                     self.sessionId = strSessionId
                 except:
                     self.addToTrace("ERROR: Could not decode the sessionID")
+
                 if ((strResponseCode!="OK_NewSessionEstablished") and (strResponseCode!="OK")):
                     # According to the standard, the only valid response code is OK_NewSessionEstablished.
                     # But the ABB chargers use "OK", so we need to accept this, too. Discussed

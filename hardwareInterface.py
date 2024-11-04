@@ -12,8 +12,12 @@ from time import sleep, time
 from configmodule import getConfigValue, getConfigValueBool
 import sys # For exit_on_session_end hack
 
-PinCp = "P8_18"
-PinPowerRelay = "P8_16"
+PinCp = "P9_41"
+PinPowerRelay = "P9_17"
+
+if (getConfigValue("digital_output_device")=="mqtt"):
+    # If we use MQTT as a hardware interface import it here
+    import paho.mqtt.client as mqtt
 
 if (getConfigValue("digital_output_device")=="beaglebone"):
     # In case we run on beaglebone, we want to use GPIO ports.
@@ -85,12 +89,18 @@ class hardwareInterface():
     def addToTrace(self, s):
         self.callbackAddToTrace("[HARDWAREINTERFACE] " + s)            
 
+    def displayState(self, state):
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/fsm_state", state)
+    
     def setStateB(self):
         self.addToTrace("Setting CP line into state B.")
         if (getConfigValue("digital_output_device")=="beaglebone"):
             GPIO.output(PinCp, GPIO.LOW)
         if (getConfigValue("digital_output_device")=="celeron55device"):
             self.ser.write(bytes("cp=0\n", "utf-8"))
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/cpstate", "B")
         self.outvalue &= ~1
         
     def setStateC(self):
@@ -99,6 +109,8 @@ class hardwareInterface():
             GPIO.output(PinCp, GPIO.HIGH)
         if (getConfigValue("digital_output_device")=="celeron55device"):
             self.ser.write(bytes("cp=1\n", "utf-8"))
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/cpstate", "C")
         self.outvalue |= 1
         
     def setPowerRelayOn(self):
@@ -107,6 +119,8 @@ class hardwareInterface():
             GPIO.output(PinPowerRelay, GPIO.HIGH)
         if (getConfigValue("digital_output_device")=="celeron55device"):
             self.ser.write(bytes("contactor=1\n", "utf-8"))
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/relay_request", "on")
         self.outvalue |= 2
 
     def setPowerRelayOff(self):
@@ -115,6 +129,8 @@ class hardwareInterface():
             GPIO.output(PinPowerRelay, GPIO.LOW)
         if (getConfigValue("digital_output_device")=="celeron55device"):
             self.ser.write(bytes("contactor=0\n", "utf-8"))
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/relay_request", "off")
         self.outvalue &= ~2
 
     def setRelay2On(self):
@@ -134,12 +150,16 @@ class hardwareInterface():
         self.addToTrace("Locking the connector")
         if (getConfigValue("digital_output_device")=="celeron55device"):
             self.ser.write(bytes("lock\n", "utf-8"))
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/lock_request", "lock")
         # todo control the lock motor into lock direction until the end (time based or current based stopping?)
 
     def triggerConnectorUnlocking(self):
-        self.addToTrace("Unocking the connector")
+        self.addToTrace("Unlocking the connector")
         if (getConfigValue("digital_output_device")=="celeron55device"):
             self.ser.write(bytes("unlock\n", "utf-8"))
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/lock_request", "unlock")
         # todo control the lock motor into unlock direction until the end (time based or current based stopping?)
 
     def isConnectorLocked(self):
@@ -149,16 +169,29 @@ class hardwareInterface():
         return 1 # todo: use the real connector lock feedback
         
     def setChargerParameters(self, maxVoltage, maxCurrent):
+        self.addToTrace("Setting charger parameters maxVoltage=%d V, maxCurrent=%d A" % (maxVoltage, maxCurrent))
         self.maxChargerVoltage = int(maxVoltage)
         self.maxChargerCurrent = int(maxCurrent)
+        if getConfigValue("charge_parameter_backend") == "mqtt":
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/charger_max_voltage", str(maxVoltage))
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/charger_max_current", str(maxCurrent))
         
     def setChargerVoltageAndCurrent(self, voltageNow, currentNow):
+        self.addToTrace("Setting charger present values Voltage=%d V, Current=%d A" % (voltageNow, currentNow))
         self.chargerVoltage = int(voltageNow)
         self.chargerCurrent = int(currentNow)
+
+        if getConfigValue("charge_parameter_backend") == "mqtt":
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/charger_voltage", voltageNow)
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/charger_current", currentNow)
         
     def setPowerSupplyVoltageAndCurrent(self, targetVoltage, targetCurrent):
         # if we are the charger, and have a real power supply which we want to control, we do it here
         self.homeplughandler.sendSpecialMessageToControlThePowerSupply(targetVoltage, targetCurrent)
+        #here we can publish the voltage and current requests received from the PEV side
+        if getConfigValue("charge_parameter_backend") == "mqtt":
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_voltage", str(targetVoltage))
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_current", str(targetVoltage))
 
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
@@ -166,10 +199,8 @@ class hardwareInterface():
         return self.inletVoltage
         
     def getAccuVoltage(self):
-        if (getConfigValue("digital_output_device")=="celeron55device"):
-            return self.accuVoltage
-        elif getConfigValue("charge_parameter_backend")=="chademo":
-           return self.accuVoltage
+        if getConfigValue("charge_parameter_backend") in ["chademo", "mqtt", "celeron55device"]:
+           return self.accuVoltage 
         #todo: get real measured voltage from the accu
         self.accuVoltage = 230
         return self.accuVoltage
@@ -182,15 +213,15 @@ class hardwareInterface():
             if self.accuMaxCurrent >= EVMaximumCurrentLimit:
                 return EVMaximumCurrentLimit
             return self.accuMaxCurrent
-        elif getConfigValue("charge_parameter_backend")=="chademo":
-            return self.accuMaxCurrent #set by CAN        
+        elif getConfigValue("charge_parameter_backend") in ["chademo", "mqtt"]:
+            return self.accuMaxCurrent #set by CAN or MQTT
         #todo: get max charging current from the BMS
         self.accuMaxCurrent = 10
         return self.accuMaxCurrent
 
     def getAccuMaxVoltage(self):
-        if getConfigValue("charge_parameter_backend")=="chademo":
-            return self.accuMaxVoltage #set by CAN
+        if getConfigValue("charge_parameter_backend") in ["chademo", "mqtt"]:
+            return self.accuMaxVoltage #set by CAN or MQTT
         elif getConfigValue("charge_target_voltage"):
             self.accuMaxVoltage = getConfigValue("charge_target_voltage")            
         else:
@@ -209,7 +240,7 @@ class hardwareInterface():
     def getSoc(self):
         if self.callbackShowStatus:
             self.callbackShowStatus(format(self.soc_percent,".1f"), "soc")
-        if (getConfigValue("digital_output_device")=="celeron55device"):
+        if (getConfigValue("digital_output_device") in ["celeron55device", "mqtt"]):
             return self.soc_percent
         #todo: get SOC from the BMS
         self.callbackShowStatus(format(self.simulatedSoc,".1f"), "soc")
@@ -239,6 +270,12 @@ class hardwareInterface():
             # Port configuration according to https://github.com/jsphuebner/pyPLC/commit/475f7fe9f3a67da3d4bd9e6e16dfb668d0ddb1d6
             GPIO.setup(PinPowerRelay, GPIO.OUT) #output for port relays
             GPIO.setup(PinCp, GPIO.OUT) #output for CP
+            
+        if (getConfigValue("digital_output_device") == "mqtt"):
+        	self.mqttclient = mqtt.Client()
+        	self.mqttclient.on_connect = self.mqtt_on_connect
+        	self.mqttclient.on_message = self.mqtt_on_message
+        	self.mqttclient.connect(getConfigValue("mqtt_broker"), 1883, 60)
         
     def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, homeplughandler=None):
         self.callbackAddToTrace = callbackAddToTrace
@@ -400,6 +437,9 @@ class hardwareInterface():
         if (getConfigValue("digital_output_device")=="celeron55device"):
             self.mainfunction_celeron55device()
 
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mainfunction_mqtt()
+
         if getConfigValueBool("exit_on_session_end"):
             # TODO: This is a hack. Do this in fsmPev instead and publish some
             # of these values into there if needed.
@@ -477,7 +517,36 @@ class hardwareInterface():
            if self.accuMaxCurrent != 0:
               self.addToTrace("CHAdeMO: No current limit update for over 1s, setting current to 0")
            self.accuMaxCurrent = 0
+           
+    def mainfunction_mqtt(self):
+    	self.mqttclient.loop(timeout=0.1)
         
+	# The callback for when the client receives a CONNACK response from the server.
+    def mqtt_on_connect(self, client, userdata, flags, rc):
+        self.addToTrace(f"MQTT connected with result code {rc}")
+
+        # Subscribing in on_connect() means that if we lose the connection and
+        # reconnect then subscriptions will be renewed.
+        client.subscribe(getConfigValue("mqtt_topic") + "/#")
+
+    def mqtt_on_message(self, client, userdata, msg):
+        if msg.topic == getConfigValue("mqtt_topic") + "/battery_voltage":
+            self.accuVoltage = float(msg.payload)
+            self.addToTrace("MQTT: Set battery voltage to %f V" % self.accuVoltage)
+        elif msg.topic == getConfigValue("mqtt_topic") + "/target_voltage":
+            self.accuMaxVoltage = float(msg.payload)
+            self.addToTrace("MQTT: Set target voltage to %f V" % self.accuMaxVoltage)
+        elif msg.topic == getConfigValue("mqtt_topic") + "/target_current":
+            self.accuMaxCurrent = float(msg.payload)
+            self.addToTrace("MQTT: Set current request to %f A" % self.accuMaxCurrent)
+        elif msg.topic == getConfigValue("mqtt_topic") + "/soc":
+            self.simulatedSoc = float(msg.payload)
+            self.soc_percent = self.simulatedSoc
+            self.addToTrace("MQTT: Set SoC to %f %%" % self.simulatedSoc)
+        elif msg.topic == getConfigValue("mqtt_topic") + "/inlet_voltage":
+            self.inletVoltage = float(msg.payload)
+            self.addToTrace("MQTT: Set inlet voltage to %f V" % self.inletVoltage)
+
 def myPrintfunction(s):
     print("myprint " + s)
 
@@ -488,6 +557,8 @@ if __name__ == "__main__":
         hw.mainfunction()
         if (i==20):
             hw.showOnDisplay("Hello", "A DEMO", "321.0V")
+            hw.setChargerParameters(500, 125)
+            hw.setChargerVoltageAndCurrent(360, 100)
         if (i==50):
             hw.setStateC()
         if (i==100):
@@ -505,6 +576,6 @@ if __name__ == "__main__":
             hw.setRelay2Off()
         if (i==320):
             hw.showOnDisplay("This", "...is...", "DONE :-)")
-        sleep(0.03)
+        sleep(0.01)
     hw.close()    
     print("finished.")
