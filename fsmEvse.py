@@ -270,7 +270,7 @@ class fsmEvse():
                     strPresentVoltage = str(self.hardwareInterface.getInletVoltage())
 
                 # in case we control a real power supply: give the precharge target to it
-                self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, 1)
+                self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, 1, 0)
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"g_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Shutdown_during_PreCharge)):
@@ -329,11 +329,11 @@ class fsmEvse():
                     strEVTargetCurrentMultiplier = jsondict["EVTargetCurrent.Multiplier"]
                     iTarget = combineValueAndMultiplier(strEVTargetCurrentValue, strEVTargetCurrentMultiplier)
                     self.addToTrace("EV wants EVTargetVoltage " + str(uTarget) + " and EVTargetCurrent " + str(iTarget))
-                    self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, iTarget)
                     current_soc = int(jsondict.get("DC_EVStatus.EVRESSSOC", -1))
                     full_soc = int(jsondict.get("FullSOC", -1))
                     energy_capacity = int(jsondict.get("EVEnergyCapacity.Value", -1))
                     energy_request = int(jsondict.get("EVEnergyRequest.Value", -1))
+                    self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, iTarget, current_soc)
 
                     self.publishSoCs(current_soc, full_soc, energy_capacity, energy_request, origin="CurrentDemandReq")
 
