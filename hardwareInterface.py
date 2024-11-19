@@ -7,6 +7,7 @@
 #   python -m serial.tools.list_ports
 
 import serial # the pyserial
+from pyPlcModes import *
 from serial.tools.list_ports import comports
 from time import sleep, time
 from configmodule import getConfigValue, getConfigValueBool
@@ -93,6 +94,10 @@ class hardwareInterface():
         if (getConfigValue("digital_output_device")=="mqtt"):
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/fsm_state", state)
     
+    def displaySoc(self, soc):
+        if getConfigValue("charge_parameter_backend") == "mqtt":
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/soc", str(soc))
+
     def setStateB(self):
         self.addToTrace("Setting CP line into state B.")
         if (getConfigValue("digital_output_device")=="beaglebone"):
@@ -190,8 +195,8 @@ class hardwareInterface():
         self.homeplughandler.sendSpecialMessageToControlThePowerSupply(targetVoltage, targetCurrent)
         #here we can publish the voltage and current requests received from the PEV side
         if getConfigValue("charge_parameter_backend") == "mqtt":
-            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_voltage", str(targetVoltage))
-            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/pev_current", str(targetVoltage))
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/target_voltage", str(targetVoltage))
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/target_current", str(targetCurrent))
 
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
@@ -246,6 +251,9 @@ class hardwareInterface():
         self.callbackShowStatus(format(self.simulatedSoc,".1f"), "soc")
         return self.simulatedSoc
 
+    def stopRequest(self):
+        return not self.enabled
+    
     def isUserAuthenticated(self):
         # If the user needs to authorize, fill this function in a way that it returns False as long as
         # we shall wait for the users authorization, and returns True if the authentication was successfull.
@@ -272,20 +280,22 @@ class hardwareInterface():
             GPIO.setup(PinCp, GPIO.OUT) #output for CP
             
         if (getConfigValue("digital_output_device") == "mqtt"):
-        	self.mqttclient = mqtt.Client()
+        	self.mqttclient = mqtt.Client(client_id="pyplc")
         	self.mqttclient.on_connect = self.mqtt_on_connect
         	self.mqttclient.on_message = self.mqtt_on_message
         	self.mqttclient.connect(getConfigValue("mqtt_broker"), 1883, 60)
         
-    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, homeplughandler=None):
+    def __init__(self, callbackAddToTrace=None, callbackShowStatus=None, homeplughandler=None, mode=C_EVSE_MODE):
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
         self.homeplughandler = homeplughandler
+        self.mode = mode
 
         self.loopcounter = 0
         self.outvalue = 0
         self.simulatedSoc = 20.0 # percent
         self.demoAuthenticationCounter = 0
+        self.enabled = True #Charging enabled
 
         self.inletVoltage = 0.0 # volts
         self.accuVoltage = 0.0
@@ -527,25 +537,41 @@ class hardwareInterface():
 
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
-        client.subscribe(getConfigValue("mqtt_topic") + "/#")
+        if self.mode == C_EVSE_MODE:
+            client.subscribe(getConfigValue("mqtt_topic") + "/charger_max_voltage") #todo
+            client.subscribe(getConfigValue("mqtt_topic") + "/charger_max_current") #todo
+            client.subscribe(getConfigValue("mqtt_topic") + "/charger_voltage")
+            client.subscribe(getConfigValue("mqtt_topic") + "/charger_current")
+            client.subscribe(getConfigValue("mqtt_topic") + "/enabled")
+        elif self.mode == C_EVSE_MODE:
+            client.subscribe(getConfigValue("mqtt_topic") + "/battery_voltage")
+            client.subscribe(getConfigValue("mqtt_topic") + "/target_voltage")
+            client.subscribe(getConfigValue("mqtt_topic") + "/target_current")
+            client.subscribe(getConfigValue("mqtt_topic") + "/soc")
+            client.subscribe(getConfigValue("mqtt_topic") + "/inlet_voltage")
 
     def mqtt_on_message(self, client, userdata, msg):
-        if msg.topic == getConfigValue("mqtt_topic") + "/battery_voltage":
+        baseTopic = getConfigValue("mqtt_topic")
+        
+        if msg.topic == (f"{baseTopic}/battery_voltage"):
             self.accuVoltage = float(msg.payload)
             self.addToTrace("MQTT: Set battery voltage to %f V" % self.accuVoltage)
-        elif msg.topic == getConfigValue("mqtt_topic") + "/target_voltage":
+        elif msg.topic == (f"{baseTopic}/target_voltage"):
             self.accuMaxVoltage = float(msg.payload)
             self.addToTrace("MQTT: Set target voltage to %f V" % self.accuMaxVoltage)
-        elif msg.topic == getConfigValue("mqtt_topic") + "/target_current":
+        elif msg.topic == (f"{baseTopic}/target_current") or msg.topic == (f"{baseTopic}/charger_current"):
             self.accuMaxCurrent = float(msg.payload)
-            self.addToTrace("MQTT: Set current request to %f A" % self.accuMaxCurrent)
-        elif msg.topic == getConfigValue("mqtt_topic") + "/soc":
+            self.addToTrace("MQTT: Set current request to %s A" % self.accuMaxCurrent)
+        elif msg.topic == (f"{baseTopic}/soc"):
             self.simulatedSoc = float(msg.payload)
             self.soc_percent = self.simulatedSoc
             self.addToTrace("MQTT: Set SoC to %f %%" % self.simulatedSoc)
-        elif msg.topic == getConfigValue("mqtt_topic") + "/inlet_voltage":
-            self.inletVoltage = float(msg.payload)
-            self.addToTrace("MQTT: Set inlet voltage to %f V" % self.inletVoltage)
+        elif msg.topic == (f"{baseTopic}/inlet_voltage") or msg.topic == (f"{baseTopic}/charger_voltage"):
+            self.inletVoltage = float(msg.payload) #in EVSE mode this is present charger voltage
+            self.addToTrace("MQTT: Set present voltage to %f V" % self.inletVoltage)
+        elif msg.topic == (f"{baseTopic}/enabled"):
+            self.enabled = bool(int(msg.payload))
+            self.addToTrace("MQTT: Setting enable flag to %d" % self.enabled)
 
 def myPrintfunction(s):
     print("myprint " + s)
