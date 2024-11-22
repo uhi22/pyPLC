@@ -187,12 +187,28 @@ and the openinverter wiki: https://openinverter.org/wiki/CCS_EVCC_using_AR7420
 - Modify the configuration of the PLC adaptor, that it supports HomePlug Green Phy including the SLAC.
 - Install wireshark to view the network traffic
 - Optional: Install the Plugin for Wireshark from https://github.com/geynis/v2g-ws-dissectors, to decode the V2GTP. This does NOT decode the EXI itself.
+- Recommended: Install the exi decoder for Wireshark from https://github.com/ChargePoint/wireshark-v2g. See below chapter "wireshark exi decoder plugin" for details.
 - Install Pcap-ct python library
 - Get and compile the exi decoder/encoder from http://github.com/uhi22/OpenV2Gx
 - Run `python pyPlc.py` and use keyboard to trigger actions, or
 - Run `python pyPlc.py E` for EVSE (charger) mode, or
 - Run `python pyPlc.py P` for PEV mode, or
 - Run `python pyPlc.py L` for Listen mode
+
+## Wireshark EXI decoder plugin
+
+To view the content of the EXI encoded network packages, the Wireshark can be extended with a decoder plugin. This is available https://github.com/ChargePoint/wireshark-v2g
+
+* Installation hints for Windows: At the time of writing, the readme says "copy the v2gexi.dll to %APPDATA%/Wireshark/plugins/4.2/epan". This means, the plugin does not work with other Wireshark versions than 4.2. Just using a more recent wireshark (4.4) and renaming the folder to "4.4" leads to the error message "Plugin was compiled for 4.2". So the solution is, to install Wireshark 4.2.
+* Even if the ChargePoint readme talks about "building", there is no need to build, if we just want to use the existing decoder. The only steps necessary are:
+    * install the wireshark 4.2 (also 4.2.9 works). This is available at https://www.wireshark.org/download.html
+    * download the decoder plugin (tar file) from https://github.com/ChargePoint/wireshark-v2g/releases/download/v0.8.0/v2g-v0.8.0-win64.tar
+    * unzip the tar
+    * copy the v2g.lua to %APPDATA%/Wireshark/plugins
+    * copy the v2gexi.dll to %APPDATA%/Wireshark/plugins/4.2/epan (If the subdirectory "4.2" does not exist, then just create it.)
+    * you do NOT need the Wireshark-4.2.6-GithubActionBuild-x64.exe which is also included in the tar.
+    * restart Wireshark. In the Help->AboutWireshark, you should see the version 4.2 (or 4.2.9 or similar), and in the "Plugins" tab there should be the exi.lua and the v2gexi.dll listed.
+
 
 ## Architecture
 ![architectural overview](doc/pyPlc_architecture.png)
