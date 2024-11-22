@@ -27,8 +27,10 @@ class fsmEvse():
 
     def publishStatus(self, s):
         self.callbackShowStatus(s, "evseState")
+        self.hardwareInterface.displayState(s)
 
     def publishSoCs(self, current_soc: int, full_soc: int = -1, energy_capacity: int = -1, energy_request: int = -1, evccid: str = "", origin: str = ""):
+        self.hardwareInterface.displaySoc(current_soc)
         if self.callbackSoCStatus is not None:
             self.callbackSoCStatus(current_soc, full_soc, energy_capacity, energy_request, self.evccid, origin)
 
@@ -262,7 +264,12 @@ class fsmEvse():
                     self.simulatedPresentVoltage += 20
                 if (self.simulatedPresentVoltage<uTarget):
                     self.simulatedPresentVoltage += 5
-                strPresentVoltage = str(int(self.simulatedPresentVoltage*10)/10) # "345"
+                    
+                if getConfigValueBool('evse_simulate_precharge'):
+                    strPresentVoltage = str(int(self.simulatedPresentVoltage*10)/10) # "345"
+                else:
+                    strPresentVoltage = str(self.hardwareInterface.getInletVoltage())
+
                 # in case we control a real power supply: give the precharge target to it
                 self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, 1)
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
@@ -322,11 +329,12 @@ class fsmEvse():
                     strEVTargetCurrentValue = jsondict["EVTargetCurrent.Value"]
                     strEVTargetCurrentMultiplier = jsondict["EVTargetCurrent.Multiplier"]
                     iTarget = combineValueAndMultiplier(strEVTargetCurrentValue, strEVTargetCurrentMultiplier)
-                    self.addToTrace("EV wants EVTargetVoltage " + str(uTarget))
+                    self.addToTrace("EV wants EVTargetVoltage " + str(uTarget) + " and EVTargetCurrent " + str(iTarget))
                     current_soc = int(jsondict.get("DC_EVStatus.EVRESSSOC", -1))
                     full_soc = int(jsondict.get("FullSOC", -1))
                     energy_capacity = int(jsondict.get("EVEnergyCapacity.Value", -1))
                     energy_request = int(jsondict.get("EVEnergyRequest.Value", -1))
+                    self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, iTarget)
 
                     self.publishSoCs(current_soc, full_soc, energy_capacity, energy_request, origin="CurrentDemandReq")
 
@@ -336,10 +344,10 @@ class fsmEvse():
                 except:
                     self.addToTrace("ERROR: Could not decode the CurrentDemandReq")
                 self.simulatedPresentVoltage = uTarget + 3*random() # The charger provides the voltage which is demanded by the car.
-                strPresentVoltage = str(int(self.simulatedPresentVoltage*10)/10) # "345"
+                strPresentVoltage = str(self.hardwareInterface.getInletVoltage()) #str(self.simulatedPresentVoltage)
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
-                strEVSEPresentCurrent = "1" # Just as a dummy current
-                if (self.blChargeStopTrigger == 1):
+                strEVSEPresentCurrent = str(self.hardwareInterface.getAccuMaxCurrent()) #"1" # Just as a dummy current
+                if (self.blChargeStopTrigger == 1 or self.hardwareInterface.stopRequest()):
                     # User pressed the STOP button on the charger. Send EVSE_Shutdown.
                     self.addToTrace("User pressed the STOP button on the charger. Sending EVSE_Shutdown.")
                     strEVSEStatus = "2" # 2=EVSE_Shutdown, means the user stopped the session on the charger.

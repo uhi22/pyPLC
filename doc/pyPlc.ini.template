@@ -44,6 +44,10 @@ light_bulb_demo = no
 # Possible values: yes or no
 soc_simulation = yes
 
+# Precharge simulation
+# In EVSE mode simulate precharging rather than using physical value
+evse_simulate_precharge = yes
+
 # Device selection for the digital outputs, for CP state and power relays
 # Possible options:
 #  dieter: Serial controlled device, which controls the digital outputs. E.g. arduino from https://github.com/uhi22/dieter
@@ -52,6 +56,7 @@ soc_simulation = yes
 digital_output_device = dieter
 #digital_output_device = beaglebone
 #digital_output_device = celeron55device
+#digital_output_device = mqtt
 
 
 # Device to read the physically measured inlet voltage in PevMode
@@ -62,6 +67,7 @@ digital_output_device = dieter
 #analog_input_device = dieter
 analog_input_device = none
 #analog_input_device = celeron55device
+#analog_input_device = mqtt
 
 
 # Criteria for ending the PreCharge phase in PevMode
@@ -89,6 +95,9 @@ u_delta_max_for_end_of_precharge = 10
 #   auto
 serial_port = auto
 serial_baud = 19200
+# MQTT broker and base topic in case MQTT is used
+mqtt_broker = localhost
+mqtt_topic = pyPlc
 
 # The target voltage used in the CurrentDemandRequest.
 # This is a value for first try-outs. Better would
@@ -131,10 +140,13 @@ udp_syslog_enable = Yes
 # Set backend for obtaining charging parameters, we start with CHAdeMO CAN for now
 # Need to make a simulator device and maybe a celeron device?
 # Possible values:
+#  mqtt: pyPLC is used as a bridge between an MQTT broker and the car or EVSE
 #  chademo: pyPLC is used as bridge between a CCS charger and a CHAdeMO* car.
 #           Limitations/explanations here: https://openinverter.org/forum/viewtopic.php?p=57894#p57894 and
 #           https://openinverter.org/forum/viewtopic.php?t=1063 (Is it possible to make a CCS to CHAdeMO adapter?)
 #  none: all other use cases
+#charge_parameter_backend = chademo
+#charge_parameter_backend = mqtt
 charge_parameter_backend = none
 
 # REST callback for SoC states. Comment out to disable. Do not leave a trailing slash
