@@ -282,6 +282,7 @@ class hardwareInterface():
         if (getConfigValue("digital_output_device") == "mqtt"):
         	self.mqttclient = mqtt.Client(client_id="pyplc")
         	self.mqttclient.on_connect = self.mqtt_on_connect
+        	self.mqttclient.on_disconnect = self.mqtt_on_disconnect
         	self.mqttclient.on_message = self.mqtt_on_message
         	self.mqttclient.connect(getConfigValue("mqtt_broker"), 1883, 60)
         
@@ -297,7 +298,7 @@ class hardwareInterface():
         self.demoAuthenticationCounter = 0
         self.enabled = True #Charging enabled
 
-        self.inletVoltage = 0.0 # volts
+        self.inletVoltage = 0.0 # voltsringbuffer
         self.accuVoltage = 0.0
         self.lock_confirmed = False  # Confirmation from hardware
         self.cp_pwm = 0.0
@@ -529,8 +530,12 @@ class hardwareInterface():
            self.accuMaxCurrent = 0
            
     def mainfunction_mqtt(self):
-    	self.mqttclient.loop(timeout=0.1)
+        self.mqttclient.loop(timeout=0.1)
         
+    def mqtt_on_disconnect(self, client, userdata, rc):
+        self.addToTrace(f"MQTT disconnected with result code {rc}")
+        self.mqttclient.connect(getConfigValue("mqtt_broker"), 1883, 60)
+	
 	# The callback for when the client receives a CONNACK response from the server.
     def mqtt_on_connect(self, client, userdata, flags, rc):
         self.addToTrace(f"MQTT connected with result code {rc}")
@@ -543,7 +548,7 @@ class hardwareInterface():
             client.subscribe(getConfigValue("mqtt_topic") + "/charger_voltage")
             client.subscribe(getConfigValue("mqtt_topic") + "/charger_current")
             client.subscribe(getConfigValue("mqtt_topic") + "/enabled")
-        elif self.mode == C_EVSE_MODE:
+        elif self.mode == C_PEV_MODE:
             client.subscribe(getConfigValue("mqtt_topic") + "/battery_voltage")
             client.subscribe(getConfigValue("mqtt_topic") + "/target_voltage")
             client.subscribe(getConfigValue("mqtt_topic") + "/target_current")
