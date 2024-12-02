@@ -90,13 +90,12 @@ class hardwareInterface():
     def addToTrace(self, s):
         self.callbackAddToTrace("[HARDWAREINTERFACE] " + s)            
 
-    def displayState(self, state):
-        if (getConfigValue("digital_output_device")=="mqtt"):
+    def displayStateAndSoc(self, state, soc):
+        if (getConfigValue("digital_output_device")=="mqtt") and (time() - self.lastStatePublish) >= 1:
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/fsm_state", state)
-    
-    def displaySoc(self, soc):
-        if getConfigValue("charge_parameter_backend") == "mqtt":
-            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/soc", str(soc))
+            if soc > 0:
+                self.mqttclient.publish(getConfigValue("mqtt_topic") + "/soc", str(soc))
+            self.lastStatePublish = time()
 
     def setStateB(self):
         self.addToTrace("Setting CP line into state B.")
@@ -194,9 +193,10 @@ class hardwareInterface():
         # if we are the charger, and have a real power supply which we want to control, we do it here
         self.homeplughandler.sendSpecialMessageToControlThePowerSupply(targetVoltage, targetCurrent)
         #here we can publish the voltage and current requests received from the PEV side
-        if getConfigValue("charge_parameter_backend") == "mqtt":
+        if getConfigValue("charge_parameter_backend") == "mqtt" and (time() - self.lastPowerReqPublish) >= 1:
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/target_voltage", str(targetVoltage))
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/target_current", str(targetCurrent))
+            self.lastPowerReqPublish = time()
 
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
@@ -282,6 +282,7 @@ class hardwareInterface():
         if (getConfigValue("digital_output_device") == "mqtt"):
         	self.mqttclient = mqtt.Client(client_id="pyplc")
         	self.mqttclient.on_connect = self.mqtt_on_connect
+        	self.mqttclient.on_disconnect = self.mqtt_on_disconnect
         	self.mqttclient.on_message = self.mqtt_on_message
         	self.mqttclient.connect(getConfigValue("mqtt_broker"), 1883, 60)
         
@@ -297,7 +298,7 @@ class hardwareInterface():
         self.demoAuthenticationCounter = 0
         self.enabled = True #Charging enabled
 
-        self.inletVoltage = 0.0 # volts
+        self.inletVoltage = 0.0 # voltsringbuffer
         self.accuVoltage = 0.0
         self.lock_confirmed = False  # Confirmation from hardware
         self.cp_pwm = 0.0
@@ -323,6 +324,9 @@ class hardwareInterface():
         self.logged_plugged_in = None
 
         self.rxbuffer = ""
+        
+        self.lastStatePublish = 0
+        self.lastPowerReqPublish = 0
 
         self.findSerialPort()
         self.initPorts()
@@ -529,8 +533,12 @@ class hardwareInterface():
            self.accuMaxCurrent = 0
            
     def mainfunction_mqtt(self):
-    	self.mqttclient.loop(timeout=0.1)
+        self.mqttclient.loop(timeout=0.1)
         
+    def mqtt_on_disconnect(self, client, userdata, rc):
+        self.addToTrace(f"MQTT disconnected with result code {rc}")
+        self.mqttclient.connect(getConfigValue("mqtt_broker"), 1883, 60)
+	
 	# The callback for when the client receives a CONNACK response from the server.
     def mqtt_on_connect(self, client, userdata, flags, rc):
         self.addToTrace(f"MQTT connected with result code {rc}")
@@ -543,7 +551,7 @@ class hardwareInterface():
             client.subscribe(getConfigValue("mqtt_topic") + "/charger_voltage")
             client.subscribe(getConfigValue("mqtt_topic") + "/charger_current")
             client.subscribe(getConfigValue("mqtt_topic") + "/enabled")
-        elif self.mode == C_EVSE_MODE:
+        elif self.mode == C_PEV_MODE:
             client.subscribe(getConfigValue("mqtt_topic") + "/battery_voltage")
             client.subscribe(getConfigValue("mqtt_topic") + "/target_voltage")
             client.subscribe(getConfigValue("mqtt_topic") + "/target_current")
