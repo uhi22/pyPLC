@@ -25,12 +25,11 @@ class fsmEvse():
     def addToTrace(self, s):
         self.callbackAddToTrace("[EVSE] " + s)
 
-    def publishStatus(self, s):
+    def publishStatus(self, s, soc=-1):
         self.callbackShowStatus(s, "evseState")
-        self.hardwareInterface.displayState(s)
+        self.hardwareInterface.displayStateAndSoc(s, soc)
 
     def publishSoCs(self, current_soc: int, full_soc: int = -1, energy_capacity: int = -1, energy_request: int = -1, evccid: str = "", origin: str = ""):
-        self.hardwareInterface.displaySoc(current_soc)
         if self.callbackSoCStatus is not None:
             self.callbackSoCStatus(current_soc, full_soc, energy_capacity, energy_request, self.evccid, origin)
 
@@ -243,7 +242,7 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a0125e6cecc5020804080000400")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
-                self.publishStatus("CableCheck")
+                self.publishStatus("CableCheck", current_soc)
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CableCheck)):
                     self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
@@ -284,7 +283,7 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a0125e6cecc516080408000008284de880800")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
-                self.publishStatus("PreCharging " + strPresentVoltage)
+                self.publishStatus("PreCharging")
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_PreCharge)):
                     self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
@@ -368,7 +367,7 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a0125e6cecc50e0804080000082867dc8081818000000040a1b64802030882702038486580800")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
-                self.publishStatus("CurrentDemand")
+                self.publishStatus("CurrentDemand", current_soc)
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CurrentDemand)):
                     self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
