@@ -112,6 +112,11 @@ charge_target_voltage = 270
 # Deeper explanations here: https://github.com/uhi22/pyPLC/blob/master/doc/installation_on_raspberry.md#further-optimizations
 exit_on_session_end = False
 
+# In EVSE Mode, if the user pressed the space button to stop the session,
+# we either allow a new session after the stopped one, or stay in
+# the stopped-state forever.
+allow_new_session_after_stopping = True
+
 # If pyPLC does not find a local link address, this means there is no
 # ethernet connection to the homeplug modem. This is a severe hardware
 # error, so pyPLC will terminate. However, for special testing purposes this can

@@ -20,6 +20,7 @@ stateWaitForChargeParameterDiscoveryRequest = 5
 stateWaitForCableCheckRequest = 6
 stateWaitForPreChargeRequest = 7
 stateWaitForPowerDeliveryRequest = 8
+stateStopped = 9
 
 class fsmEvse():
     def addToTrace(self, s):
@@ -56,6 +57,19 @@ class fsmEvse():
 
 
     def stateFunctionWaitForSupportedApplicationProtocolRequest(self):
+        # This is the first state of the EVSE state machine. Let's first check, whether we came from a former, stoppped session.
+        if (self.blChargeStopTrigger):
+            if (getConfigValueBool('allow_new_session_after_stopping')):
+                self.addToTrace("User had stopped the session, but a new session is allowed.")
+                self.blChargeStopTrigger = 0 # clear the stopTrigger, to allow a new session
+            else:
+                self.addToTrace("User had stopped the session and no new session is allowed. Entering permanent stop state.")
+                self.publishStatus("Stopped")
+                self.enterState(stateStopped)
+        if (self.hardwareInterface.stopRequest()):
+            self.addToTrace("Ignoring new request because a stop request from the hardwareInterface is present.")
+            self.rxData = []
+            return
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForSupportedApplicationProtocolRequest, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
@@ -230,8 +244,10 @@ class fsmEvse():
                 current_soc = int(jsondict.get("DC_EVStatus.EVRESSSOC", -1))
                 self.publishSoCs(current_soc, -1, -1, origin="CableCheckReq")
                 if (self.blChargeStopTrigger == 1 or self.hardwareInterface.stopRequest()):
-                    strCableCheckOngoing = "1"
-                elif (self.nCableCheckLoops<5):
+                    self.addToTrace("STOP was requested during CableCheck. Will not answer the request.")
+                    self.enterState(0)
+                    return
+                if (self.nCableCheckLoops<5): # Just as simulation, answer some cable check requests with "ongoing".
                     self.nCableCheckLoops+=1
                     strCableCheckOngoing = "1"
                 else:
@@ -418,6 +434,14 @@ class fsmEvse():
         if (self.isTooLong()):
             self.enterState(0)
 
+    def stateFunctionStopped(self):
+        if (len(self.rxData)>0):
+            self.addToTrace("In state Stopped, received " + prettyHexMessage(self.rxData) + " but ignoring everything.")
+            self.addToTrace("You want to restart pyPLC or configure allow_new_session_after_stopping = Yes")
+            self.publishStatus("StoppedForever")
+            self.rxData = []
+            
+
 
     stateFunctions = {
             stateWaitForSupportedApplicationProtocolRequest: stateFunctionWaitForSupportedApplicationProtocolRequest,
@@ -429,6 +453,7 @@ class fsmEvse():
             stateWaitForCableCheckRequest: stateFunctionWaitForCableCheckRequest,
             stateWaitForPreChargeRequest: stateFunctionWaitForPreChargeRequest,
             stateWaitForPowerDeliveryRequest: stateFunctionWaitForPowerDeliveryRequest,
+            stateStopped: stateFunctionStopped,
         }
 
     def reInit(self):
