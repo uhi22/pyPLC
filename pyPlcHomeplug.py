@@ -194,6 +194,7 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[19]=0x52 # 
 
     def composeGetSwWithRamdomMac(self):
+        # random MAC, to try some kind of MAC flooding
 		# GET_SW.REQ request, as used by the win10 laptop
         self.mytransmitbuffer = bytearray(60)
         self.cleanTransmitBuffer()
@@ -222,8 +223,8 @@ class pyPlcHomeplug():
         self.mytransmitbuffer[17]=0x00 # Vendor OUI
         self.mytransmitbuffer[18]=0xB0 # 
         self.mytransmitbuffer[19]=0x52 # 
-        
 
+        
     def composeSetKey(self, variation=0):
 		# CM_SET_KEY.REQ request
         # From example trace from catphish https://openinverter.org/forum/viewtopic.php?p=40558&sid=9c23d8c3842e95c4cf42173996803241#p40558
@@ -603,6 +604,12 @@ class pyPlcHomeplug():
             
     def transmit(self, pkt):
         self.sniffer.sendpacket(bytes(pkt))
+
+    def sendExperimentalPacket(self):
+        if (int(getConfigValue("smart_listener_configuration"))>=2):
+            self.addToTrace("sending experimental packet with faked MAC")
+            udplog.udplog_fakeOwnMac([0x02, 0x35, 0x30, 0x69, 0x20, 0x43 ])
+            udplog.udplog_log("with faked MAC", "mac-spoofing")
       
     def evaluateGetKeyCnf(self):
         self.addToTrace("received GET_KEY.CNF")
@@ -809,6 +816,12 @@ class pyPlcHomeplug():
                     self.enterState(STATE_WAITING_FOR_RESTART2)
             else:
                 # We are neither Evse nor PEV, so we are just listener. Do not set the key, to avoid disturbing the two participants.
+                # If we want to be a "smart listener", we use the extracted key to set it into
+                # our listener modem, so that we enter the "private" network.
+                if (int(getConfigValue("smart_listener_configuration"))>0):
+                    self.composeSetKey(0)
+                    self.addToTrace("smart listener transmitting CM_SET_KEY.REQ to enter the private network")
+                    self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
                 self.enterState(STATE_WAITING_FOR_RESTART2) # does not really matter
 
     def evaluateReceivedHomeplugPacket(self):
@@ -1272,7 +1285,9 @@ class pyPlcHomeplug():
             self.runPevSequencer() # run the SLAC message sequencer for the PEV side
             self.runSdpStateMachine() # run the SDP state machine
         if (self.iAmEvse==1):
-            self.runEvseSlacHandler(); # run the SLAC state machine on EVSE side
+            self.runEvseSlacHandler() # run the SLAC state machine on EVSE side
+        if (self.iAmListener):
+            self.sendExperimentalPacket()
         
     def close(self):
         self.sniffer.close()

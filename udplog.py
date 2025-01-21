@@ -99,6 +99,10 @@ class udplog():
         self.transmit(self.EthTxFrame) # and finally transmit the Ethernet frame
 
                         
+    def fakeOwnMac(self, newOwnMac):
+        # allows to fake our own MAC address, to simulate that the syslog messages are sent by an other node
+        self.ownMac = newOwnMac
+        
     def __init__(self, transmitCallback, addressManager):
         self.transmit = transmitCallback
         self.addressManager = addressManager
@@ -117,3 +121,7 @@ def udplog_init(transmitCallback, addressManager):
 def udplog_log(s, purpose=""):
     global udplogger
     udplogger.log(s, purpose)
+    
+def udplog_fakeOwnMac(newmac):
+    global udplogger
+    udplogger.fakeOwnMac(newmac)

@@ -165,3 +165,11 @@ soc_fallback_energy_capacity = 2700
 
 # The URL where to send some logging data.
 logging_url = http://enteryourhosthere.org/pyPlcLogging/addLog.php
+
+# The smart listener configuration. This is only relevant in ListenMode. It
+# configures, which additional features, additionally to just listening, will be
+# active.
+# Possible values:
+# 0: no additional features. Just listening and showing results in the console.
+# >0: take the network key from the slac_match.cnf, and configure the modem with it, to enter the private network.
+smart_listener_configuration = 1
