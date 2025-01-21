@@ -35,6 +35,7 @@
     * Bad: Modem needs more than 5s for restart (between the setkey and the first visible UDP message)
     * Bad2: Only the broadcast messages are visible, not the unicast messages.
     * Log: 2025-01-21_listenMode_01_slow_and_only_broadcast_visible.pcap
+* Conclusion: Yes, joining the private network works.
     
 ## Q: Does it help or hurt to spoof the MAC address, so that the listener claims to have the same MAC as the PEV?
 
@@ -46,7 +47,7 @@
     * using UDP syslog broadcast message for this purpose
 * Observed:
     * Some V2GTP data is visible, mostly as TCP retransmissions. Yeah.
-    * charging is comes unil CableCheck (sometimes), then it aborts.
+    * charging comes until CableCheck (sometimes), then it aborts.
     * Log: 2025-01-21_listenMode_02_mac_spoofing_some_frames_visible.pcapng and 2025-01-21_listenMode_03_mac_spoofing_some_frames_visible.pcapng
 * Conclusion: Using the MAC address of the PEV in the listener helps to receive TCP data. Still with the limitations:
     * charging is interrupted. Most likely because too many messages lost due to wrong routing.
