@@ -72,6 +72,9 @@ How to modify:
 ![image](2025-01-21_TPlink_TL-PA4010P_EU_V2_inside.jpg)
 ![image](2025-01-21_TPlink_TL-PA4010P_EU_V2_pinout.jpg)
 
+Confirmed to be working when supplied with 5V on the original 11V rail. This is a three-board version,
+from which we need only the modem board, and can cut the others completely.
+
 #### TPlink TL-PA4010P v2.3
 ![image](https://github.com/user-attachments/assets/c98d100c-f7fc-4e41-a183-1b5eeebd43fa)
 ![image](https://github.com/user-attachments/assets/6fef8096-4373-42d9-9688-7d284f587940)
