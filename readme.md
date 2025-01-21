@@ -463,6 +463,7 @@ the enable to 1 and adding a senseful MAC address does not lead to a difference.
 The docu of qca/open-plc-utils mentions ampsnif and plcsnif, but these are not included. An old
 release (https://github.com/qca/open-plc-utils/archive/refs/tags/OSR-6010.zip) is mentioning VS_SNIFFER message, ampsnif, plcsnif and even
 functions Monitor() and Sniffer(), but these are included from a path ../nda/ which is not part of the public repository.
+Some experiments are documented in [sniffing_experiments.md](doc/sniffing_experiments.md), but no real break-trough.
 
 Any idea how to enable full-transparency of the AR7420?
 
