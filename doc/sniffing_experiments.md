@@ -56,4 +56,13 @@
 
 ## Q: Does it help or hurt to disable the physical transmit path, to avoid that the listener modem is involved into coordination?
 
-To be tested.
+* Test setup:
+    * As above, but the transmit lines on the listener modem cutted before the transformer.
+    * ![image](2025-01-21_TPlink_TL-PA4010P_EU_V2_cutting_transmit_path.jpg)
+* Observed:
+    * Receive path still works. We see the three SLAC messages.
+    * setkey.req is sent, and the modem sends the confirmation as usual
+    * modem restarts, but does NOT enter the private network. The middle LED stays off. The listener does not receive any UDP/TCP messages.
+    * Logs: 2025-01-21_listenMode_04_cutted_tx_path_no_joining.pcapng and 2025-01-21_listenMode_05_cutted_tx_path_no_joining.pcapng
+* Conclusion: Cutting the transmit path makes it worse: Listener cannot join the network anymore.
+
