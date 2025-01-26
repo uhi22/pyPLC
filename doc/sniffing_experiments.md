@@ -66,3 +66,50 @@
     * Logs: 2025-01-21_listenMode_04_cutted_tx_path_no_joining.pcapng and 2025-01-21_listenMode_05_cutted_tx_path_no_joining.pcapng
 * Conclusion: Cutting the transmit path makes it worse: Listener cannot join the network anymore.
 
+## Q: Does the sniffer modem contain "automatic rules" to filter out the not wanted traffic?
+
+* Background: The homeplug specification (Ref2) explains, that the routing between the RF port and the Ethernet port is done in the "convergence layer", and the routing is controlled by "classifier rules". These rules can be viewed and changed using the qualcom tool (Ref3), with the command "int6krule" (Ref4). At least in theory.
+
+* Test setup:
+    * Three nodes: Foccci as PEV, Win10 with pyPLC and AR7420 as EVSE, Raspberry with pyPLC and AR7420 as listener.
+    * all modems in the same AVLN.
+    * Win10 sends some broadcast messages.
+* Experiment1: Try to read the classifier rules (on the raspberry. From the local modem.)
+* Result1: request is sent. response comes back, but no rule shown.
+* Experiment2: add a classifier rule: dropRX for EthernetSourceAddress==MacOfTheWin10.
+* Result2: This works. The messages disappear.
+* Experiment3: list the rules. int6krule -i eth0 -r -v local
+* Result3: The configured rule is correctly shown.
+* Experiment4: remove the rule.
+* Result4: The formerly suppressed messages are now back again.
+* Experiment5: try to remove the rule again.
+* Result5: Error message. This makes sense, because removing twice cannot work.
+* Experiment6: Set a rule to all three nodes in the network: add .... broadcast
+* Result6: The tool only shows the local response. In Wireshark we see all three responses.
+* Experiment7: Read the rules from all three nodes: int6krule -i eth0 -r -v broadcast
+* Result7: The tool shows only the local response. In Wireshark it is interesting:
+    * The two AR7420 modems show the rule.
+    * Focccis QCA7005 does not show the rule.
+* Experiment8: Remove the rule from all three nodes. remove .... broadcast
+* Result8: In wireshark, all three answer in the same way. No error.
+* Experiment9: Try to remove the rules again from all three nodes.
+* Result9: In wireshark, all three nodes show the negative response.
+
+Conclusions:
+* Adding and removing classifier rules works.
+* When asking for the actual rules, the answer does not tell the full truth. The QCA hides the rule, but it is there. Because we get a positive response when we try to remove it, and get a negative response if we again try to remove it. Let's call this feature "hidden rules".
+* There is no rule shown, if we do not explicitely configure rules.
+* This means: It is not clear, whether the filtering of unwanted traffic uses "hidden rules", or whether this is done on an other layer independent of the classifier rules in the convergence layer.
+
+Ideas:
+* Maybe there are "hidden rules" which filter out the unwanted traffic. Maybe it is possible to remove these rules.
+    * For example: DropRX EthDA for the other two participants, or DropRX IPV6DA or whatever.
+* Analyze, which kind of traffic is filtered out and which is routed. Does it depend on the MAC? Or on the IP address? Source or destination address? Or on anything else?
+
+# References
+
+* Ref1: Discussion on github https://github.com/uhi22/pyPLC/issues/39
+* Ref2: Homeplug AV 1.1 specification: google for "homeplug_av11_specification_final_public.pdf"
+* Ref3: Qualcom PLC tools https://github.com/qca/open-plc-utils
+* Ref4: Description of the int6krule command https://man.cx/int6krule(1)
+
