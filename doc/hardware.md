@@ -81,6 +81,13 @@ from which we need only the modem board, and can cut the others completely.
 
 Confirmed to be working as EVSE (needs patching via open-plc-utils) and supplied with 5V.
 
+#### TPlink TL-PA4010P V6.0
+
+The version 6 of the TL-PA4010 does not fit our needs. It is not configurable via the Qualcom open-plc-utils.
+Instead of the Atheros/Qualcom chip, it uses Unicomsemi MSE1060 and MSEX231.
+
+Discussion and photos: https://openinverter.org/forum/viewtopic.php?p=80185#p80185
+
 ## Controller for the PEV
 
 Besides the homeplug modem, there are additional parts necessary for a vehicle to perform CCS charging. Two of these are: 1. The inlet voltage measurement. 2. The control of CP state and relays.
