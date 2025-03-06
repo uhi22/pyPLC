@@ -81,6 +81,8 @@ from which we need only the modem board, and can cut the others completely.
 
 Confirmed to be working as EVSE (needs patching via open-plc-utils) and supplied with 5V.
 
+Note: Randomly drops connection with firmware `MAC-QCA7420-1.1.0.844-01-20120919-FINAL`, see https://github.com/uhi22/pyPLC/issues/37 .  Consider TPlink TL-PA4010P v5.0 rather.
+
 #### TPlink TL-PA4010P V6.0
 
 The version 6 of the TL-PA4010 does not fit our needs. It is not configurable via the Qualcom open-plc-utils.
