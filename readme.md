@@ -547,6 +547,23 @@ Adding a CAN bus communication to the power supply would be possible e.g. if pyP
 and the hardwareInterface.py already contains some CAN bus stuff for the CHAdeMO, which may be used as guidance for further
 implementations.
 
+### Q9: Can I sniff the charging sequence (current demand, current response etc.) between real EV and real EVSE using a TL-PA4010?
+
+The plan would be: connect a machine running Wireshark to the RJ45 socket of the homeplug modem.
+But the answer is: No, this does not work.
+The modem, depending on the configuration (as PEV or EVSE) routes the half of the SLAC traffic to the RJ45 port. So this will be visisble in Wireshark.
+After the SLAC, the modems change to "encrypted" communication. The key is contained in the SLAC traffic, so it is easy to sniff it
+and set the sniffers modem with the key. So the sniffer modem will joing the homeplug AV network.
+
+Unfortunately, the modem does
+not route unicast traffic (traffic between EV and EVSE which is not broadcast) to the RJ45 port.
+So in best case we see the SDP request (which has a broadcast destination address), but nothing more.
+
+The issue is also described in chapter "biggest challenges" above.
+A workaround is shown in https://github.com/uhi22/pyPLC/issues/39, which applies a man-in-the-middle scheme.
+
+
+
 ## Credits
 Thanks to catphish to start the investigations regarding the homeplug modems and publishing them on OpenInverter forum.
 Thanks to johu for the OpenInverter forum, and for the first video of the early experiments, the beaglebone integration and CHAdeMO integration.
