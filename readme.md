@@ -608,3 +608,4 @@ Full Size Urban Heavy Duty Applications
 * [xiii] The exi xml schema definitions, e.g. https://standards.iso.org/iso/15118/-20/ed-1/en/
 * [xiv] exi encoders for ISO (din, 2, 20): https://github.com/tux-evse/iso15118-encoders?tab=readme-ov-file
 * [xv] codec generator https://github.com/EVerest/cbexigen and the generated codec library https://github.com/EVerest/libcbv2g
+* Ref16: discussion about bidirectional charging, vehicle-to-home, v2g (in german): https://akkudoktor.net/t/open-source-v2g-mit-hybridwechselrichter/19199/53
