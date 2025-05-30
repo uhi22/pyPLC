@@ -67,6 +67,25 @@ with 120ohm termination
 
 210mVpp
 
+## 12. Foccci 1.0 directly measured on TX pins of the QCA
+
+### with flash image of the ioniq
+
+available here: https://github.com/uhi22/Ioniq28Investigations/blob/main/CCM_ChargeControlModule_PLC_CCS/QCA_Analysis/CCM_FlashDump_SpiFlash_2MB_Ioniq_00_33_79.bin
+
+![image](2025-05-30_QCA_TXpins_ParamsIoniq_zoomed.jpg)
+![image](2025-05-30_QCA_TXpins_ParamsIoniq.jpg)
+
+~2.1Vpp
+
+### with flash image of the aliexpress modules, EVSE_1
+
+available here: https://openinverter.org/forum/viewtopic.php?p=33730#p33730
+
+![image](2025-05-30_QCA_TXpins_ParamsAliEVSE1.jpg)
+![image](2025-05-30_QCA_TXpins_ParamsAliEVSE1_zoomed.jpg)
+
+~620mVpp
 
 # Attenuation calculator
 
