@@ -23,3 +23,8 @@ This is a KiCad 8 project. Only the schematic, no board.
 * Prototyping board 100mm x 106mm
 * Housing 3D printed, FreeCad mini-evse-housing.FCStd, or step: mini-evse-housing.step
 * For power supply: USB A cable, cutted and soldered to the board.
+
+## References
+
+* Better alternative TLV1805 instead of the old-fashioned LF355, with high slew rate and better output swing: https://github.com/SebiR/EVSE_Emulator_Shield/blob/master/output/EVSE_Arduino_Shield_SCH.pdf
+* Reference design for EVSE using the TLV1805 from TI: https://www.ti.com/tool/TIDA-010239
