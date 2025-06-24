@@ -161,17 +161,18 @@ class ipv6handler():
                         # 2 is the only valid length for a SDP request.
                         seccDiscoveryReqSecurity = self.udpPayload[8] # normally 0x10 for "no transport layer security". Or 0x00 for "TLS".
                         seccDiscoveryReqTransportProtocol = self.udpPayload[9] # normally 0x00 for TCP
+
                         if (seccDiscoveryReqSecurity!=0x10):
                             print("seccDiscoveryReqSecurity " + str(seccDiscoveryReqSecurity) + " is not supported")
-                        else:    
-                            if (seccDiscoveryReqTransportProtocol!=0x00):
-                                print("seccDiscoveryReqTransportProtocol " + str(seccDiscoveryReqTransportProtocol) + " is not supported")
-                            else:
-                                # This was a valid SDP request. Let's respond, if we are the charger.
-                                if (self.iAmEvse==1):
-                                    print("Ok, this was a valid SDP request. We are the SECC. Sending SDP response.")
-                                    self.callbackShowStatus("SDP 2", "evseState")
-                                    self.sendSdpResponse()
+                        elif (seccDiscoveryReqTransportProtocol!=0x00):
+                            print("seccDiscoveryReqTransportProtocol " + str(seccDiscoveryReqTransportProtocol) + " is not supported")
+
+                        if self.iAmEvse and seccDiscoveryReqSecurity in [0x10, 0x00] and seccDiscoveryReqTransportProtocol == 0x00:
+                            # This was a valid SDP request. Let's respond, if we are the charger.
+                            print("Ok, this was a valid SDP request. We are the SECC. Sending SDP response.")
+                            self.callbackShowStatus("SDP 2", "evseState")
+                            self.sendSdpResponse()
+
                     else:
                         print("v2gptPayloadLen on SDP request is " + str(v2gptPayloadLen) + " not supported")
                     return
