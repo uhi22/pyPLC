@@ -7,7 +7,7 @@
 #   It calculates an overall ConnectionLevel.
 #   This ConnectionLevel is provided to the state machines, so that each state machine
 #   has the possiblity to decide whether it needs to do something or just stays silent.
-#   
+#
 #   The basic rule is, that a good connection on higher layer (e.g. TCP) implicitely
 #   confirms the good connection on lower layer (e.g. Modem presence). This means,
 #   the lower-layer state machine can stay silent as long as the upper layers are working
@@ -59,7 +59,7 @@ class connMgr():
         self.ConnectionLevelOld = 0
         self.cycles = 0
         self.addToTrace = callbackAddToTrace
-        
+
     def mainfunction(self):
         # shortcut: we do not check the ethernet link, instead, we assume it is just always present.
         self.timerEthLink = 10

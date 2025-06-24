@@ -112,11 +112,11 @@ def GpsMainfunction():
             print(" Lat n/a Lon n/a")
             strGpsPos = str(0.0)+"_"+str(0.0)
             print(strGpsPos)
-    
 
 
-    
-    
+
+
+
 
 def mytestfunction():
     global soundstate
@@ -132,7 +132,7 @@ def mytestfunction():
     #soundstate+=1
     #if (soundstate>=3):
     #    soundstate=0
-    
+
 
 myMode = C_LISTEN_MODE
 
@@ -179,5 +179,5 @@ while (1):
         testTime_ms = currentTime_ms
     worker.mainfunction()
     GpsMainfunction()
-        
+
 #---------------------------------------------------------------

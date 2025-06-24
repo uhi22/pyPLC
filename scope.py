@@ -56,7 +56,7 @@ canvas_width = 750
 canvas_height = 400
 divisionsPerScreen = 10
 
-c = Canvas(root, 
+c = Canvas(root,
            width=canvas_width,
            height=canvas_height)
 c.pack()
@@ -122,7 +122,7 @@ for i in range(numberOfChannels):
 
 #print("The channel data")
 #for i in range(numberOfChannels):
-#    print(str(i) + " " + channelNames[i])    
+#    print(str(i) + " " + channelNames[i])
 #    for k in range(len(channelData[i])):
 #        t = channelData[i][k][0]
 #        y = channelData[i][k][1]

@@ -8,7 +8,7 @@
 # 1. You have a capture file with contains V2G traffic (pcap or pcapng file).
 # 2. You installed the python library pyshark, according to https://github.com/KimiNewt/pyshark/
 #    pip install pyshark
-# 3. You cloned and compiled the OpenV2Gx EXI decoder from https://github.com/uhi22/OpenV2Gx 
+# 3. You cloned and compiled the OpenV2Gx EXI decoder from https://github.com/uhi22/OpenV2Gx
 #
 # Limitations:
 # - Only DIN is supported at the moment.
@@ -177,7 +177,7 @@ def convertPcapToTxt(inputFileName):
         print(chargerMAC + ";" + getManufacturerFromMAC(chargerMAC) + ";" + \
         "timeForCableCheck;" + ("%.3f" % timeForCableCheck) + ";" + \
         "timeForPreCharge; " + ("%.3f" % timeForPreCharge), file=fileOutStatistics)
-        
+
     fileOutStatistics.close()
     fileOut.close()
     fileOutValues.close()

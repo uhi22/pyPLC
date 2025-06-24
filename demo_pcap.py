@@ -8,7 +8,7 @@ for i in range(0, 10):
     if (strInterfaceName == '\\Device\\NPF_{E4B8176C-8516-4D48-88BC-85225ABCF259}'):
         print("This is the wanted Ethernet adaptor.")
     print("eth"+ str(i) + " is " + strInterfaceName)
-    
+
 sniffer = pcap.pcap(name=None, promisc=True, immediate=True, timeout_ms=50)
 addr = lambda pkt, offset: '.'.join(str(pkt[i]) for i in range(offset, offset + 4))
 for ts, pkt in sniffer:

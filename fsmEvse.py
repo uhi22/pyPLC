@@ -281,7 +281,7 @@ class fsmEvse():
                     self.simulatedPresentVoltage += 20
                 if (self.simulatedPresentVoltage<uTarget):
                     self.simulatedPresentVoltage += 5
-                    
+
                 if getConfigValueBool('evse_simulate_precharge'):
                     strPresentVoltage = str(int(self.simulatedPresentVoltage*10)/10) # "345"
                 else:
@@ -440,7 +440,7 @@ class fsmEvse():
             self.addToTrace("You want to restart pyPLC or configure allow_new_session_after_stopping = Yes")
             self.publishStatus("StoppedForever")
             self.rxData = []
-            
+
 
 
     stateFunctions = {

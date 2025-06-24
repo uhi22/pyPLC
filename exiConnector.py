@@ -14,7 +14,7 @@
 #
 #      java -jar V2Gdecoder.jar -e -s 8000dbab9371d3234b71d1b981899189d191818991d26b9b3a232b30020000040040
 #      ERROR:  'Premature EOS found while reading data.'
-#      <?xml version="1.0" encoding="UTF-8"?><ns4:supportedAppProtocolReq xmlns:ns4="urn:iso:15118:2:2010:AppProtocol" 
+#      <?xml version="1.0" encoding="UTF-8"?><ns4:supportedAppProtocolReq xmlns:ns4="urn:iso:15118:2:2010:AppProtocol"
 #      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns3="http://www.w3.org/2001/XMLSchema">
 #      <AppProtocol>
 #      <ProtocolNamespace>urn:din:70121:2012:MsgDef</ProtocolNamespace>
@@ -124,14 +124,14 @@ def exiprint(s):
 def exiHexToByteArray(hexString):
     # input: a string with the two-byte-hex representation
     # output: a byte array with the same data.
-    # If the convertion fails, we return an empty byte array. 
+    # If the convertion fails, we return an empty byte array.
     hexlen=len(hexString)
     if ((hexlen % 2)!=0):
         print("exiHexToByteArray: unplausible length of " + hexString)
         return bytearray(0)
     exiframe = bytearray(int(hexlen/2)) # two characters in the input string are one byte in the exiframe
     for i in range(0, int(hexlen/2)):
-        x = hexString[2*i: 2*i+2]        
+        x = hexString[2*i: 2*i+2]
         #print("valuestring = " + x)
         try:
             v = int(x, 16)
@@ -166,7 +166,7 @@ def addV2GTPHeader(exidata):
     header[0] = 0x01 # version
     header[1] = 0xfe # version inverted
     header[2] = 0x80 # payload type. 0x8001 means "EXI data"
-    header[3] = 0x01 # 
+    header[3] = 0x01 #
     header[4] = (exiLen >> 24) & 0xff # length 4 byte.
     header[5] = (exiLen >> 16) & 0xff
     header[6] = (exiLen >> 8) & 0xff
@@ -198,14 +198,14 @@ def exiDecode(exiHex, prefix="DH"):
         print("exiDecode ERROR. stderr:" + result.stderr)
     strConverterResult = result.stdout
     return strConverterResult
-    
+
 def exiEncode(strMessageName):
     # todo: handle the schema, the message name and the parameters
     # param1 = "Eh" # Eh for encode handshake, SupportedApplicationProtocolResponse
     # param1 = "EDa" # EDa for Encode, Din, SessionSetupResponse
     param1 = strMessageName
     exiprint("[EXICONNECTOR] exiEncode " + param1)
-    result = subprocess.run([pathToOpenV2GExe, param1], capture_output=True, text=True)    
+    result = subprocess.run([pathToOpenV2GExe, param1], capture_output=True, text=True)
     if (len(result.stderr)>0):
         strConverterResult = "exiEncode ERROR. stderr:" + result.stderr
         print(strConverterResult)
@@ -227,8 +227,8 @@ def exiEncode(strMessageName):
         except:
             strConverterResult = "exiEncode failed to convert json to dict."
             print(strConverterResult)
-    return strConverterResult    
-    
+    return strConverterResult
+
 
 def testByteArrayConversion(s):
     print("Testing conversion of " + s)
@@ -319,8 +319,8 @@ def testReadExiFromExiLogFile(strLogFileName):
                 decoded=exiDecode(s, "D"+strDecoderSelection)
                 print(myLine.replace("\n", "") + " means:")
                 print(decoded)
-                print(myLine.replace("\n", "") + " means:", file=fileOut)            
-                print(decoded, file=fileOut)            
+                print(myLine.replace("\n", "") + " means:", file=fileOut)
+                print(decoded, file=fileOut)
         fileOut.close()
 
 def testTimeConsumption():
@@ -341,7 +341,7 @@ def testTimeConsumption():
     tStop = time.time()
     elapsed_time = tStop - tStart
     print("Encoder: Execution time for " + str(nRuns) + " runs:", elapsed_time, "seconds")
-    
+
 
 if __name__ == "__main__":
     nFail=0
@@ -363,7 +363,7 @@ if __name__ == "__main__":
         testDecoder("809a0211c1ff77aed4fdff90800000040020000405182824138550008000018180c80c1c", pre="DD", comment="")
         print("From pyPLC (failed)")
         testDecoder("809A02004080C1014181C21080004800400000C0C320040C0E014060A184060606002060A190020303005030300510", pre="DD", comment="")
-    
+
     if (False):
         testDecoder("8000ebab9371d34b9b79d189a98989c1d191d191818981d26b9b3a232b30010000040001b75726e3a64696e3a37303132313a323031323a4d73674465660020000100880", pre="DH", comment="supportedAppProtocolReq")
         testDecoder("80400040", pre="DH", comment="supportedAppProtocolRes")
@@ -374,13 +374,13 @@ if __name__ == "__main__":
         testDecoder("809a0011a0012002412104", pre="DD", comment="ServiceDiscoveryRes")
         testDecoder("809a0011b2001280", pre="DD", comment="ServicePaymentSelectionReq")
         testDecoder("809a0011c000", pre="DD", comment="ServicePaymentSelectionRes")
-        testDecoder("809a00107211400dc0c8c82324701900", pre="DD", comment="ChargeParameterDiscoveryReq")    
+        testDecoder("809a00107211400dc0c8c82324701900", pre="DD", comment="ChargeParameterDiscoveryReq")
         testDecoder("809a001080004820400000c99002062050193080c0c802064c8010190140c80a20", pre="DD", comment="ChargeParameterDiscoveryRes")
         testDecoder("809a001010400000", pre="DD", comment="CableCheckReq")
         testDecoder("809a0010200200000000", pre="DD", comment="CableCheckRes")
         testDecoder("809a001150400000c80006400000", pre="DD", comment="PreChargeReq")
         testDecoder("809a00116002000000320000", pre="DD", comment="PreChargeRes")
-    
+
     if (False):
         print("The request from the Ioniq after the EVSE sent ServicePaymentSelectionRes:")
         testDecoder("809A00113020000A00000000", pre="DD", comment="PowerDeliveryReq")
@@ -390,10 +390,10 @@ if __name__ == "__main__":
         print("Ioniq with pyPlc")
         testDecoder("809a02004080c1014181c2107190000005004061a01e04070c84c02050a02000c2438368040309094820105e0a60", pre="DD") # 2022-11-11, 25.315s ChargeParameterDiscoveryReq
 #testDecoder("809a02004080c1014181c21080004820400000c99002062050193080c0c802064c8010190140c80a20", pre="DD") # 2022-11-11, 25.408s ChargeParamDisc Res
-        
+
         #testDecoder("809a02004080c1014181c210200200000000", pre="DD") # 2022-11-11, 26.32s CableCheckRes
         #testDecoder("809a02004080c1014181c2116002000000320000", pre="DD") # 2022-11-11, 27.659s PrechargeRes
-        #print("A ChargeParameterDiscoveryReq")        
+        #print("A ChargeParameterDiscoveryReq")
         #testDecoder("809a00107211400dc0c8c82324701900", pre="DD", comment="ChargeParameterDiscoveryReq")
     if (False):
         print("From  https://openinverter.org/forum/viewtopic.php?p=54692#p54692")
@@ -407,10 +407,10 @@ if __name__ == "__main__":
         testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 C0 00", pre="DD", comment="ServicePaymentSelectionRes")
         print("The error response of the Ioniq with FAILED_ChargingSystemIncompatibility")
         testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 11 30 20 00 0A 00 00 00 00", pre="DD", comment="PowerDeliveryReq")
-        
+
         print("The request of the Ioniq after ServicePaymentSelectionResponse")
         testDecoder("80 9A 02 00 40 80 C1 01 41 81 C2 10 B8", pre="DD", comment="ContractAuthenticationReq")
-    if (False):        
+    if (False):
         print("The response of the Alpi chargeParameterDiscovery")
         testDecoder("80 9A 02 00 00 00 00 03 1F DC 8B D0 80 02 00 00 00 00 00 10 00 2A 80 04 00 00 14 0C 00 40 80 E1 8A 3A 0A 0A 00 A0 60 60 00 08 0A 01 E2 30 30 06 10", pre="DD", comment="ChargeParameterDiscoveryRes")
 
@@ -424,11 +424,11 @@ if __name__ == "__main__":
         testDecoder("809a00122002000000320000", pre="DD", comment="WeldingDetectionRes")
         testDecoder("809a0011f0", pre="DD", comment="SessionStopReq")
         testDecoder("809a00120000", pre="DD", comment="SessionStopRes")
-    
-    print("Number of fails: " + str(nFail))
-    
 
-        
+    print("Number of fails: " + str(nFail))
+
+
+
     #print("Testing exiDecode with exiHexDemoSupportedApplicationProtocolRequestIoniq")
     #print(exiDecode(exiHexDemoSupportedApplicationProtocolRequestIoniq))
     #print("Testing exiDecode with exiHexDemoSupportedApplicationProtocolRequest2")
@@ -437,4 +437,4 @@ if __name__ == "__main__":
 
     #strConverterResult = exiDecode(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequest2))
     #print(strConverterResult)
-        
+

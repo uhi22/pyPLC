@@ -46,17 +46,17 @@ dinEVSEProcessingType_Ongoing = "1"
 class fsmPev():
     def addToTrace(self, s):
         self.callbackAddToTrace("[PEV] " + s)
-        
+
     def publishStatus(self, s, strAuxInfo1="", strAuxInfo2=""):
         self.callbackShowStatus(s, "pevState", strAuxInfo1, strAuxInfo2)
-        
+
     def exiDecode(self, exidata, schema):
         self.connMgr.ApplOk()
         s = compactHexMessage(exidata)
         strDateTime=datetime.today().strftime('%Y-%m-%dT%H:%M:%S.%f')
         self.exiLogFile.write(strDateTime + "=" + schema + " " + s +"\n") # write the EXI data to the exiLogFile
         return exiDecode(exidata, schema) # call the decoder
-        
+
     def exiEncode(self, input):
         schema = input[0:2]
         exidata = exiEncode(input) # call the encoder
@@ -64,7 +64,7 @@ class fsmPev():
         strDateTime=datetime.today().strftime('%Y-%m-%dT%H:%M:%S.%f')
         self.exiLogFile.write(strDateTime + "=" + schema + " " + s +"\n") # write the EXI data to the exiLogFile
         return exidata
-        
+
     def prettifyState(self, statenumber):
         s="unknownState"
         if (statenumber == stateNotYetInitialized):
@@ -114,7 +114,7 @@ class fsmPev():
         if (statenumber == stateEnd):
             s = "End"
         return s
-    
+
     def  isErrorEvseStatusCode(self, strEvseStatusCode):
         # 0 is EVSE_NotReady. This may be normal, no error, just wait.
         # 1 is EVSE_Ready: The normal case.
@@ -146,13 +146,13 @@ class fsmPev():
         if (strEvseStatusCode == "11"): # Reserved, Error
             return True
         return False # no critical error detected
-            
+
     def sendChargeParameterDiscoveryReq(self):
         soc = str(self.hardwareInterface.getSoc())
         msg = addV2GTPHeader(self.exiEncode("EDE_"+self.sessionId + "_" + soc)) # EDE for Encode, Din, ChargeParameterDiscovery.
         self.addToTrace("responding " + prettyHexMessage(msg))
         self.Tcp.transmit(msg)
-        
+
     def sendCableCheckReq(self):
         soc = str(self.hardwareInterface.getSoc())
         msg = addV2GTPHeader(self.exiEncode("EDF_"+self.sessionId + "_" + soc)) # EDF for Encode, Din, CableCheckReq
@@ -162,8 +162,8 @@ class fsmPev():
         # This makes sure, that the timeout of the state machine comes before the timeout of the connectionManager, so
         # that we enter the safe shutdown sequence as intended.
         self.connMgr.ApplOk(31)
-    
-    
+
+
     def sendCurrentDemandReq(self):
         soc = str(self.hardwareInterface.getSoc())
         EVTargetCurrent = str(self.hardwareInterface.getAccuMaxCurrent())
@@ -177,12 +177,12 @@ class fsmPev():
         msg = addV2GTPHeader(self.exiEncode("EDJ_"+self.sessionId + "_" + soc)) # EDI for Encode, Din, WeldingDetectionReq
         self.addToTrace("responding " + prettyHexMessage(msg))
         self.Tcp.transmit(msg)
-            
+
     def enterState(self, n):
         self.addToTrace("from " + str(self.state) + ":" + self.prettifyState(self.state) + " entering " + str(n) + ":" + self.prettifyState(n))
         self.state = n
         self.cyclesInState = 0
-        
+
     def isTooLong(self):
         # The timeout handling function.
         limit = 66 # number of call cycles until timeout. Default 66 cycles with 30ms, means approx. 2 seconds.
@@ -201,7 +201,7 @@ class fsmPev():
             limit = 5*33 # Test with 5s timeout. Just experimental.
             # The specified performance time is 25ms (ISO), the specified timeout 250ms.
         return (self.cyclesInState > limit)
-        
+
     def stateFunctionNotYetInitialized(self):
         pass # nothing to do, just wait for external event for re-initialization
 
@@ -226,7 +226,7 @@ class fsmPev():
             self.isUserStopRequest = False
             self.enterState(stateConnected)
             return
-    
+
     def stateFunctionConnected(self):
         # We have a freshly established TCP channel. We start the V2GTP/EXI communication now.
         # We just use the initial request message from the Ioniq. It contains one entry: DIN.
@@ -237,7 +237,7 @@ class fsmPev():
         #self.Tcp.transmit(addV2GTPHeader(exiHexToByteArray(exiHexDemoSupportedApplicationProtocolRequestBMWiX3)))
         self.hardwareInterface.resetSimulation()
         self.enterState(stateWaitForSupportedApplicationProtocolResponse)
-        
+
     def stateFunctionWaitForSupportedApplicationProtocolResponse(self):
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForSupportedApplicationProtocolResponse, received " + prettyHexMessage(self.rxData))
@@ -266,7 +266,7 @@ class fsmPev():
                 self.enterState(stateWaitForSessionSetupResponse)
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
-            
+
     def stateFunctionWaitForSessionSetupResponse(self):
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForSessionSetupResponse, received " + prettyHexMessage(self.rxData))
@@ -357,7 +357,7 @@ class fsmPev():
                 self.enterState(stateWaitForContractAuthenticationResponse)
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
-                
+
     def stateFunctionWaitForContractAuthenticationResponse(self):
         if (self.cyclesInState<30): # The first second in the state just do nothing.
             return
@@ -401,14 +401,14 @@ class fsmPev():
                         self.addToTrace("responding " + prettyHexMessage(msg))
                         self.Tcp.transmit(msg)
                         # We just stay in the same state, until the timeout elapses.
-                        self.enterState(stateWaitForContractAuthenticationResponse) 
+                        self.enterState(stateWaitForContractAuthenticationResponse)
         if (self.isTooLong()):
             # The timeout in case if nothing is received at all.
             self.enterState(stateSequenceTimeout)
-        
+
     def stateFunctionWaitForChargeParameterDiscoveryResponse(self):
         if (self.cyclesInState<30): # The first second in the state just do nothing.
-            return    
+            return
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForChargeParameterDiscoveryResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
@@ -462,7 +462,7 @@ class fsmPev():
                         self.addToTrace("Not (yet) finished. Will again send ChargeParameterDiscoveryReq #" + str(self.numberOfChargeParameterDiscoveryReq))
                         self.sendChargeParameterDiscoveryReq()
                         # we stay in the same state
-                        self.enterState(stateWaitForChargeParameterDiscoveryResponse)                
+                        self.enterState(stateWaitForChargeParameterDiscoveryResponse)
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
 
@@ -474,10 +474,10 @@ class fsmPev():
             self.enterState(stateWaitForCableCheckResponse)
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
-    
+
     def stateFunctionWaitForCableCheckResponse(self):
         if (self.cyclesInState<30): # The first second in the state just do nothing.
-            return     
+            return
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForCableCheckResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
@@ -515,7 +515,7 @@ class fsmPev():
                     if (self.numberOfCableCheckReq>60): # approx 60s should be sufficient for cable check. The ISO allows up to 55s reaction time and 60s timeout for "ongoing".
                         self.addToTrace("CableCheck lasted too long. " + str(self.numberOfCableCheckReq) + " Giving up.")
                         self.enterState(stateSequenceTimeout)
-                    else:    
+                    else:
                         # cable check not yet finished or finished with bad result -> try again
                         self.numberOfCableCheckReq += 1
                         self.publishStatus("CbleChck ongoing", format(self.hardwareInterface.getInletVoltage(),".0f") + "V")
@@ -523,7 +523,7 @@ class fsmPev():
                         self.sendCableCheckReq()
                         # stay in the same state
                         self.enterState(stateWaitForCableCheckResponse)
-                    
+
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
 
@@ -531,7 +531,7 @@ class fsmPev():
         self.hardwareInterface.simulatePreCharge()
         if (self.DelayCycles>0):
             self.DelayCycles-=1
-            return    
+            return
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForPreChargeResponse, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
@@ -592,7 +592,7 @@ class fsmPev():
                     self.DelayCycles=15 # wait with the next evaluation approx half a second
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
-            
+
     def stateFunctionWaitForContactorsClosed(self):
         if (self.DelayCycles>0):
             self.DelayCycles-=1
@@ -614,7 +614,7 @@ class fsmPev():
             self.enterState(stateWaitForPowerDeliveryResponse)
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
-    
+
     def stateFunctionWaitForPowerDeliveryResponse(self):
         if (len(self.rxData)>0):
             self.addToTrace("In state WaitForPowerDeliveryRes, received " + prettyHexMessage(self.rxData))
@@ -643,7 +643,7 @@ class fsmPev():
                     self.publishStatus("PwrDelvry OFF success")
                     self.addToTrace("Checkpoint806: PowerDelivery Off confirmed.")
                     self.addToTrace("Checkpoint810: Changing CP line to State B.")
-                    # set the CP line to B 
+                    # set the CP line to B
                     self.hardwareInterface.setStateB()
                     self.addToTrace("Turning off the relay and starting the WeldingDetection")
                     self.hardwareInterface.setPowerRelayOff()
@@ -714,8 +714,8 @@ class fsmPev():
             else:
                 if (not self.isBulbOn):
                     self.addToTrace("This is a light bulb demo. Turning-on the bulb when 2s in the main charging loop.")
-                    self.hardwareInterface.setPowerRelayOn()   
-                    self.hardwareInterface.setRelay2On() 
+                    self.hardwareInterface.setPowerRelayOn()
+                    self.hardwareInterface.setRelay2On()
                     self.isBulbOn = True
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
@@ -731,7 +731,7 @@ class fsmPev():
                     strResponseCode = "na"
                     # todo: add real welding detection here, run in welding detection loop until finished.
                     self.publishStatus("WldingDet done")
-                    self.addToTrace("Sending SessionStopReq")                    
+                    self.addToTrace("Sending SessionStopReq")
                     msg = addV2GTPHeader(self.exiEncode("EDK_"+self.sessionId)) # EDI for Encode, Din, SessionStopReq
                     self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
@@ -755,7 +755,7 @@ class fsmPev():
                 self.enterState(stateChargingFinished)
         if (self.isTooLong()):
             self.enterState(stateSequenceTimeout)
-    
+
     def stateFunctionChargingFinished(self):
         # charging is finished.
         # Finally unlock the connector
@@ -772,7 +772,7 @@ class fsmPev():
         self.hardwareInterface.setStateB() # setting CP line to B disables in the charger the current flow.
         self.DelayCycles = 66 # 66*30ms=2s for charger shutdown
         self.enterState(stateSafeShutDownWaitForChargerShutdown)
-        
+
     def stateFunctionUnrecoverableError(self):
         # Here we end, if the EVSE reported an error code, which terminates the charging session.
         self.publishStatus("ERROR reported")
@@ -800,20 +800,20 @@ class fsmPev():
         self.connMgr.ApplOk() # Trigger the communication manager, so that it does not disturb our safe-shutdown.
         if (self.DelayCycles>0):
             self.DelayCycles-=1
-            return    
+            return
         # Finally, when we have no current and no voltage, unlock the connector
         self.addToTrace("Safe-shutdown-sequence: unlocking the connector")
         self.hardwareInterface.triggerConnectorUnlocking()
         testsuite_reportstatus("TSRS_SafeShutdownFinished")
-        # This is the end of the safe-shutdown-sequence. 
+        # This is the end of the safe-shutdown-sequence.
         self.enterState(stateEnd)
 
     def stateFunctionEnd(self):
         # Just stay here, until we get re-initialized after a new SLAC/SDP.
         pass
 
-    
-    stateFunctions = { 
+
+    stateFunctions = {
             stateNotYetInitialized: stateFunctionNotYetInitialized,
             stateConnecting: stateFunctionConnecting,
             stateConnected: stateFunctionConnected,
@@ -842,10 +842,10 @@ class fsmPev():
     def stopCharging(self):
         # API function to stop the charging.
         self.isUserStopRequest = True
-        
+
 
     def reInit(self):
-        self.addToTrace("re-initializing fsmPev") 
+        self.addToTrace("re-initializing fsmPev")
         self.Tcp.disconnect()
         self.hardwareInterface.setStateB()
         self.hardwareInterface.setPowerRelayOff()
@@ -855,11 +855,11 @@ class fsmPev():
         self.state = stateConnecting
         self.cyclesInState = 0
         self.rxData = []
-        
+
     def __init__(self, addressManager, connMgr, callbackAddToTrace, hardwareInterface, callbackShowStatus):
         self.callbackAddToTrace = callbackAddToTrace
         self.callbackShowStatus = callbackShowStatus
-        self.addToTrace("initializing fsmPev") 
+        self.addToTrace("initializing fsmPev")
         self.exiLogFile = open('PevExiLog.txt', 'a')
         self.exiLogFile.write("init\n")
         self.Tcp = pyPlcTcpSocket.pyPlcTcpClientSocket(self.callbackAddToTrace)
@@ -871,17 +871,17 @@ class fsmPev():
         self.evccid = addressManager.getLocalMacAsTwelfCharString()
         self.cyclesInState = 0
         self.DelayCycles = 0
-        self.rxData = []        
+        self.rxData = []
         self.isLightBulbDemo = getConfigValueBool("light_bulb_demo")
         self.isBulbOn = False
         self.cyclesLightBulbDelay = 0
         self.isUserStopRequest = False
         # we do NOT call the reInit, because we want to wait with the connection until external trigger comes
-                
+
     def __del__(self):
         self.exiLogFile.write("closing\n")
         self.exiLogFile.close()
-        
+
     def mainfunction(self):
         #self.Tcp.mainfunction() # call the lower-level worker
         if (self.Tcp.isRxDataAvailable()):
@@ -890,8 +890,8 @@ class fsmPev():
         # run the state machine:
         self.cyclesInState += 1 # for timeout handling, count how long we are in a state
         self.stateFunctions[self.state](self)
-                
-                
+
+
 if __name__ == "__main__":
     print("Testing the pev state machine")
     pev = fsmPev()
@@ -899,5 +899,5 @@ if __name__ == "__main__":
     while (True):
         time.sleep(0.1)
         pev.mainfunction()
-        
+
 

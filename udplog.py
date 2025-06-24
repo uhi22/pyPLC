@@ -8,8 +8,8 @@ class udplog():
     def fillMac(self, macbytearray, position=6): # position 6 is the source MAC
         for i in range(0, 6):
             self.EthTxFrame[6+i] = macbytearray[i]
-            
-                          
+
+
     def log(self, s, purpose=""):
         # return # activate this line to disable the logging completely
         #
@@ -28,16 +28,16 @@ class udplog():
         if (len(s)>700):
             s = s[0:700] # Limit the length. Too long messages crash the transmit. Todo: Find out the real limit.
         strMessage=s+"\0"
-      
+
         lenPayLoad = 4 + len(strMessage) # length of level is 4
-        
+
         buffer=bytearray(lenPayLoad+28) # prepare the IPv4 buffer. Including 28 bytes IP header.
         # syslog level (4 characters)
         for i in range(0, len(strLevel)):
             buffer[28+i] = ord(strLevel[i])
-        # the message, terminated by 00    
+        # the message, terminated by 00
         for i in range(0, len(strMessage)):
-            buffer[32+i] = ord(strMessage[i])        
+            buffer[32+i] = ord(strMessage[i])
         buffer[0] = 0x45 # IP header len
         buffer[1] = 0
         iplen=len(buffer) # including IP header and all payload
@@ -76,9 +76,9 @@ class udplog():
         udpchecksum = 0 # checksum 0 has the special meaning: no checksum. Receiver ignores it.
         buffer[26] = udpchecksum >> 8
         buffer[27] = (udpchecksum & 0xff)
-        
 
-            
+
+
         # packs the IP packet into an ethernet packet
         self.EthTxFrame = bytearray(len(buffer) + 6 + 6 + 2) # Ethernet header needs 14 bytes:
                                                       #  6 bytes destination MAC
@@ -98,11 +98,11 @@ class udplog():
             self.EthTxFrame[14+i] = buffer[i]
         self.transmit(self.EthTxFrame) # and finally transmit the Ethernet frame
 
-                        
+
     def fakeOwnMac(self, newOwnMac):
         # allows to fake our own MAC address, to simulate that the syslog messages are sent by an other node
         self.ownMac = newOwnMac
-        
+
     def __init__(self, transmitCallback, addressManager):
         self.transmit = transmitCallback
         self.addressManager = addressManager
@@ -117,11 +117,11 @@ class udplog():
 def udplog_init(transmitCallback, addressManager):
     global udplogger
     udplogger = udplog(transmitCallback, addressManager) # create a global logger object
-    
+
 def udplog_log(s, purpose=""):
     global udplogger
     udplogger.log(s, purpose)
-    
+
 def udplog_fakeOwnMac(newmac):
     global udplogger
     udplogger.fakeOwnMac(newmac)

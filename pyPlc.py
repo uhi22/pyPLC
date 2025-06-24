@@ -12,7 +12,7 @@ import pyPlcWorker
 from pyPlcModes import *
 import sys # for argv
 from configmodule import getConfigValue, getConfigValueBool
-from mytestsuite import * 
+from mytestsuite import *
 
 startTime_ms = round(time.time()*1000)
 
@@ -85,7 +85,7 @@ if (len(sys.argv) > 1):
         else:
             if (sys.argv[1] == "L"):
                 myMode = C_LISTEN_MODE
-        
+
 
 # The simulation mode can be set by command line in addition in both, PevMode and EvseMode.
 isSimulationMode=0
@@ -105,7 +105,7 @@ if (myMode == C_EVSE_MODE):
         print("starting in EvseMode, simulated environment")
     else:
         print("starting in EvseMode")
- 
+
 root = tk.Tk()
 #root.geometry("400x350")
 root.geometry("600x350")
@@ -170,5 +170,5 @@ while lastKey!="x":
         lblTestcase['text']= "Testcase " + str(testsuite_getTcNumber())
 
 del(worker)
-        
+
 #---------------------------------------------------------------

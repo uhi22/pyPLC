@@ -6,7 +6,7 @@
 #
 # Preconditions:
 # 1. You have a log file which contains V2G traffic (e.g. from https://openinverter.org/forum/viewtopic.php?p=64655#p64655)
-# 2. You cloned and compiled the OpenV2Gx EXI decoder from https://github.com/uhi22/OpenV2Gx 
+# 2. You cloned and compiled the OpenV2Gx EXI decoder from https://github.com/uhi22/OpenV2Gx
 #
 # Limitations:
 # - Only DIN is supported at the moment.
@@ -103,13 +103,13 @@ def convertClaralogToTxt(inputFileName):
                             print("[" + strTimeStamp + "] EVRESSSOC=" + str(soc), file=fileOutValues)
                         except:
                             pass
-                            
+
                         try:
                             soc = jsondict["DC_EVSEStatus.EVSEStatusCode"]
                             print("[" + strTimeStamp + "] EVSEStatusCode=" + str(soc), file=fileOutValues)
                         except:
                             pass
-                            
+
                     except:
                         pass
         if ((numberOfPackets % 100)==0):
@@ -130,7 +130,7 @@ def convertClaralogToTxt(inputFileName):
         print(chargerMAC + ";" + getManufacturerFromMAC(chargerMAC) + ";" + \
         "timeForCableCheck;" + ("%.3f" % timeForCableCheck) + ";" + \
         "timeForPreCharge; " + ("%.3f" % timeForPreCharge), file=fileOutStatistics)
-        
+
     fileOutStatistics.close()
     fileOut.close()
     fileOutValues.close()

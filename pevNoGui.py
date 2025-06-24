@@ -33,5 +33,5 @@ while (1):
     time.sleep(.03) # 'do some calculation'
     nMainloops+=1
     worker.mainfunction()
-        
+
 #---------------------------------------------------------------
