@@ -30,7 +30,7 @@ class pyPlcTcpClientSocket():
 
     def addToTrace(self, s):
         self.callbackAddToTrace(s)
-        
+
     def connect(self, host, port):
         try:
             self.addToTrace("TCP connecting to " + str(host) + " port " + str(port) + "...")
@@ -56,7 +56,7 @@ class pyPlcTcpClientSocket():
                     ethInterface = getConfigValue("eth_interface") # e.g. "eth0"
                     host = host + "%" + ethInterface
             socket_addr = socket.getaddrinfo(host,port,socket.AF_INET6,socket.SOCK_DGRAM,socket.SOL_UDP)[0][4]
-            
+
             #print(socket_addr)
             #print("step2b")
             # https://stackoverflow.com/questions/5358021/establishing-an-ipv6-connection-using-sockets-in-python
@@ -75,7 +75,7 @@ class pyPlcTcpClientSocket():
     def disconnect(self):
         # When connection is broken, the OS may still keep the information of socket usage in the background,
         # and this could raise the error "A connect request was made on an already connected socket" when
-        # we try a simple connect again. 
+        # we try a simple connect again.
         # This is explained here:
         # https://www.codeproject.com/Questions/1187207/A-connect-request-was-made-on-an-already-connected
         try:
@@ -85,13 +85,13 @@ class pyPlcTcpClientSocket():
             # https://stackoverflow.com/questions/29217502/socket-error-address-already-in-use
             # The SO_REUSEADDR flag tells the kernel to reuse a local socket in TIME_WAIT state, without
             # waiting for its natural timeout to expire.
-            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)            
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             pass
         except socket.error as e:
             # if it was already closed, it is also fine.
             pass
         self.isConnected = False
-            
+
     def transmit(self, msg):
         if (self.isConnected == False):
             # if not connected, just ignore the transmission request
@@ -110,7 +110,7 @@ class pyPlcTcpClientSocket():
                 self.isConnected = False
                 return -1
         return 0 # success
-        
+
     def isRxDataAvailable(self):
         # check for availability of data, and get the data from the socket into local buffer.
         if (self.isConnected == False):
@@ -138,12 +138,12 @@ class pyPlcTcpClientSocket():
                 self.rxData = msg
                 blDataAvail=True
         return blDataAvail
-        
+
     def getRxData(self):
         # provides the received data, and clears the receive buffer
         d = self.rxData
         self.rxData = []
-        return d 
+        return d
 
 class pyPlcTcpServerSocket():
     def __init__(self, callbackAddToTrace, callbackStateNotification):
@@ -171,7 +171,7 @@ class pyPlcTcpServerSocket():
         self.addToTrace("Hostname is " + hostname)
         self.read_list = [self.ourSocket]
         self.rxData = []
-        
+
     def resetTheConnection(self):
         # in case of a broken connection, here we try to start it again
         self.addToTrace("Trying to reset the TCP socket")
@@ -189,19 +189,19 @@ class pyPlcTcpServerSocket():
         # (unused gethostbyname removed, see https://openinverter.org/forum/viewtopic.php?p=59970#p59970)
         self.read_list = [self.ourSocket]
         self.rxData = []
-        
+
     def addToTrace(self, s):
         self.callbackAddToTrace(s)
 
     def isRxDataAvailable(self):
         return (len(self.rxData)>0)
-        
+
     def getRxData(self):
         # provides the received data, and clears the receive buffer
         d = self.rxData
         self.rxData = []
         return d
-        
+
     def transmit(self, txMessage):
         numberOfSockets = len(self.read_list)
         if (numberOfSockets<2):
@@ -220,7 +220,7 @@ class pyPlcTcpServerSocket():
                 return -1
             totalsent = totalsent + sent
         return 0 # success
-        
+
     def mainfunction(self):
         # The select() function will block until one of the socket states has changed.
         # We specify a timeout, to be able to run it in the main loop.
@@ -279,7 +279,7 @@ def testServerSocket():
             print("trying to send something else")
             msg = "ok, something else..."
             s.transmit(bytes(msg, "utf-8"))
-            
+
 
 def testClientSocket():
     print("Testing the pyPlcTcpClientSocket...")
@@ -301,17 +301,17 @@ def testClientSocket():
             if ((i % 3)==0):
                 print("sending something to the server")
                 c.transmit(bytes("Test", "utf-8"))
-            
+
     print("end")
 
 def testExtra():
     print("testExtra")
     #findLinkLocalIpv6Address()
-    
+
 
 if __name__ == "__main__":
     print("Testing pyPlcTcpSocket.py....")
-    
+
     if (len(sys.argv) == 1):
         print("Use command line argument c for clientSocket or s for serverSocket")
         exit()

@@ -59,8 +59,8 @@ def calculateUdpChecksumForIPv6(udpframe, ipv6source, ipv6dest):
         totalSum += value16 # we start with a normal addition of the value to the totalSum
         # But we do not want normal addition, we want a 16 bit one's complement sum,
         # see https://en.wikipedia.org/wiki/User_Datagram_Protocol
-        if (totalSum>=65536): # On each addition, if a carry-out (17th bit) is produced, 
-            totalSum-=65536 # swing that 17th carry bit around 
+        if (totalSum>=65536): # On each addition, if a carry-out (17th bit) is produced,
+            totalSum-=65536 # swing that 17th carry bit around
             totalSum+=1 # and add it to the least significant bit of the running total.
     # Finally, the sum is then one's complemented to yield the value of the UDP checksum field.
     checksum = totalSum ^ 0xffff
@@ -73,8 +73,8 @@ if __name__ == "__main__":
     ipv6frame = bytearray(len(testethernetframe)-6-6-2) # without the ethernet header (MAC, MAC, ethertype)
     for i in range(0, len(ipv6frame)):
         ipv6frame[i] = testethernetframe[14+i]
-        
-    showAsHex(ipv6frame, "ipv6frame ")    
+
+    showAsHex(ipv6frame, "ipv6frame ")
     # checksum calculation see https://en.wikipedia.org/wiki/User_Datagram_Protocol
 
     # We want to calculate the UDP checksum. This needs to include also some data from "lower level" IP header, so we need the complete IP frame, not
@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     # The pseudoIPv6 header for checksum calculation has a DIFFERENT format then a normal IPv6 header. So we cannot use the original frame,
     # instead, we copy the relevant information out of it into a dedicated buffer.
-    # We have IPv6, so the IP header is 
+    # We have IPv6, so the IP header is
     ipv6pseudoheader = bytearray(40)
     for i in range(0, 16):
         ipv6pseudoheader[i] = ipv6frame[8+i] # IPv6 source address
@@ -130,22 +130,22 @@ if __name__ == "__main__":
     for i in range(0, len(ipv6pseudoheader)>>1):
         value16 = ipv6pseudoheader[2*i] * 256 + ipv6pseudoheader[2*i+1]
         runningTotal += value16
-        if (runningTotal>=65536): # On each addition, if a carry-out (17th bit) is produced, 
-            runningTotal-=65536 # swing that 17th carry bit around 
+        if (runningTotal>=65536): # On each addition, if a carry-out (17th bit) is produced,
+            runningTotal-=65536 # swing that 17th carry bit around
             runningTotal+=1 # and add it to the least significant bit of the running total.
 
     for i in range(0, len(udpHeader)>>1):
         value16 = udpHeader[2*i] * 256 + udpHeader[2*i+1]
         runningTotal += value16
-        if (runningTotal>=65536): # On each addition, if a carry-out (17th bit) is produced, 
-            runningTotal-=65536 # swing that 17th carry bit around 
+        if (runningTotal>=65536): # On each addition, if a carry-out (17th bit) is produced,
+            runningTotal-=65536 # swing that 17th carry bit around
             runningTotal+=1 # and add it to the least significant bit of the running total.
 
     for i in range(0, len(udpPayload)>>1):
         value16 = udpPayload[2*i] * 256 + udpPayload[2*i+1]
         runningTotal += value16
-        if (runningTotal>=65536): # On each addition, if a carry-out (17th bit) is produced, 
-            runningTotal-=65536 # swing that 17th carry bit around 
+        if (runningTotal>=65536): # On each addition, if a carry-out (17th bit) is produced,
+            runningTotal-=65536 # swing that 17th carry bit around
             runningTotal+=1 # and add it to the least significant bit of the running total.
 
     # Finally, the sum is then one's complemented to yield the value of the UDP checksum field.
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     myUdpFrame = bytearray(udplen) # payload size is the announced udp size
     for i in range(0, len(myUdpFrame)):
         myUdpFrame[i] = ipv6frame[40+i]
-        
+
     myIpv6Source = bytearray(16)
     myIpv6Dest = bytearray(16)
     for i in range(0, 16):
