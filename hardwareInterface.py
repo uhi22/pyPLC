@@ -97,6 +97,16 @@ class hardwareInterface():
                 self.mqttclient.publish(getConfigValue("mqtt_topic") + "/soc", str(soc))
             self.lastStatePublish = time()
 
+    def displayVehicleBatteryCapacity(self, batteryCapacity):
+        self.addToTrace("displayVehicleBatteryCapacity " + str(batteryCapacity))
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/battery_capacity", batteryCapacity)
+
+    def displayVehicleEVCCID(self, evccid):
+        self.addToTrace("displayVehicleEVCCID " + evccid)
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/evccid", evccid)
+
     def setStateB(self):
         self.addToTrace("Setting CP line into state B.")
         if (getConfigValue("digital_output_device")=="beaglebone"):

@@ -145,6 +145,7 @@ class fsmEvse():
                 self.enterState(stateWaitForServiceDiscoveryRequest)
                 jsondict = json.loads(strConverterResult)
                 self.evccid = jsondict.get("EVCCID", "")
+                self.hardwareInterface.displayVehicleEVCCID(self.evccid)
 
         if (self.isTooLong()):
             self.enterState(0)
@@ -224,6 +225,11 @@ class fsmEvse():
                 energy_capacity = int(jsondict.get("EVEnergyCapacity.Value", -1))
                 energy_request = int(jsondict.get("EVEnergyRequest.Value", -1))
                 self.publishSoCs(current_soc, full_soc, energy_capacity, energy_request, origin="ChargeParameterDiscoveryReq")
+                try:
+                    energy_capacity_Wh = combineValueAndMultiplier(jsondict["EVEnergyCapacity.Value"], jsondict["EVEnergyCapacity.Multiplier"])
+                except:
+                    energy_capacity_Wh = 0 # in case the vehicle does not provide the EVEnergyCapacity
+                self.hardwareInterface.displayVehicleBatteryCapacity(energy_capacity_Wh)
 
                 # todo: check the request content, and fill response parameters
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"e")) # EDe for Encode, Din, ChargeParameterDiscoveryResponse
