@@ -562,7 +562,34 @@ So in best case we see the SDP request (which has a broadcast destination addres
 The issue is also described in chapter "biggest challenges" above.
 A workaround is shown in https://github.com/uhi22/pyPLC/issues/39, which applies a man-in-the-middle scheme.
 
+### Q10: What is the way of the charge parameters (target current, target voltage), and how can I change them?
 
+The usual source of the target current and target voltage for charging is the battery management system (BMS). It
+decides, which current and voltage is suitable for the battery, depending on the battery type, state of charge, temperature
+and battery health. The BMS itself is not in scope of the pyPLC project. However, pyPLC can use the data from a BMS to
+control the charging. The BMS can be connected via a serial line, or CAN, or MQTT.
+
+* pyPLC in PevMode
+    * getAccuMaxCurrent() decides about the source of the charge parameters.
+        * if no source is configured (digital_output_device is not celeron55device, and charge_parameter_backend is neither chademo nor mqtt, pyPLC uses 230V and 10A just for demonstration.
+        * if digital_output_device is celeron55device, the charge parameters are taken from a serial link (via evaluateReceivedData_celeron55device())
+        * if charge_parameter_backend is chademo, the charge parameters are taken from CAN bus. (via mainfunction_chademo()).
+        * if charge_parameter_backend is mqtt, the charge parameters are taken from mqtt via mqtt_on_message().
+    * sendCurrentDemandReq()
+        * gets the target voltage and current from hardwareInterface.getAccuMaxCurrent() and hardwareInterface.getAccuMaxVoltage()
+        * calls the EXI encoder (exiEncode() which gives the target voltage and target current via command line parameters to the openV2Gx)
+        * sends the exi-encoded message via TCP/IP
+
+Now, the charge parameters are travelling on the charge cable to the charging station (EVSE). If pyPLC is used as EVSE, the way continues in the following way:
+
+* pyPLC in EvseMode
+    * stateFunctionWaitForFlexibleRequest()
+        * decodes the received exi message
+        * if the message is a CurrentDemandReq, extracts the EVTargetCurrent and EVTargetVoltage.
+        * informs the hardware interface via hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, iTarget)
+    * setPowerSupplyVoltageAndCurrent() distributs the charge parameters in two directions:
+        * compose a special homeplug message (sendSpecialMessageToControlThePowerSupply()) which is intended to be received by a power supply
+        * publishes the charge parameters on mqtt, for the case that the power supply is controllable via MQTT.
 
 ## Credits
 Thanks to catphish to start the investigations regarding the homeplug modems and publishing them on OpenInverter forum.
