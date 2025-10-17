@@ -391,6 +391,40 @@ class pyPlcHomeplug():
         for i in range(71, 129):  # 71 to 128: 58 special-purpose-bytes
             self.mytransmitbuffer[i]=self.specialMessageTransmitBuffer[i-71]
 
+    def composeFlexibleMessage(self):
+        # special "
+        self.mytransmitbuffer = bytearray(129)
+        self.cleanTransmitBuffer()
+        # Destination MAC
+        self.fillDestinationMac(MAC_BROADCAST)
+        # Source MAC
+        self.fillSourceMac(self.myMAC)
+        # Protocol
+        self.mytransmitbuffer[12]=0x88 # Protocol HomeplugAV
+        self.mytransmitbuffer[13]=0xE1
+        self.mytransmitbuffer[14]=0x01 # version
+        self.flexibleHomeplugCommand = 0x606e # ATTEN_CHAR.IND
+        print("composeFlexibleMessage " + hex(self.flexibleHomeplugCommand))
+        self.mytransmitbuffer[15]=self.flexibleHomeplugCommand & 0xff 
+        self.mytransmitbuffer[16]=self.flexibleHomeplugCommand >>8
+        self.mytransmitbuffer[17]=0x00 # 2 bytes fragmentation information. 0000 means: unfragmented.
+        self.mytransmitbuffer[18]=0x00 #
+        self.mytransmitbuffer[19]=0x00 # apptype
+        self.mytransmitbuffer[20]=0x00 # security
+        self.fillDestinationMac(MAC_BROADCAST, 21) # The wireshark calls it source_mac, but alpitronic fills it with PEV mac.
+        self.fillRunId(27)  # runid 8 bytes
+        self.mytransmitbuffer[35]=0x00 # 35 - 51 source_id, 17 bytes. The alpitronic fills it with 00
+        self.mytransmitbuffer[52]=0x00 # 52 - 68 response_id, 17 bytes. The alpitronic fills it with 00.
+        self.mytransmitbuffer[69]=0x0A # Number of sounds. 10 in normal case.
+        self.mytransmitbuffer[70]=0x3A # Number of groups = 58.
+        self.mytransmitbuffer[71]=ord('F')
+        self.mytransmitbuffer[72]=ord('I')
+        self.mytransmitbuffer[73]=ord('N')
+        self.mytransmitbuffer[74]=ord('D')
+        self.mytransmitbuffer[75]=ord('M')
+        self.mytransmitbuffer[76]=ord('E')
+        #self.flexibleHomeplugCommand = self.flexibleHomeplugCommand +
+
     def composeStartAttenCharInd(self):
         # reference: see wireshark interpreted frame from ioniq
         self.mytransmitbuffer = bytearray(60)
@@ -567,6 +601,10 @@ class pyPlcHomeplug():
         if (selection=="2"):
             self.composeSlacParamCnf()
             self.addToTrace("transmitting SLAC_PARAM.CNF...")
+            self.transmit(self.mytransmitbuffer)
+        if (selection=="3"):
+            self.composeFlexibleMessage()
+            self.addToTrace("transmitting flexible message...")
             self.transmit(self.mytransmitbuffer)
         if (selection=="S"):
             self.composeGetSwReq()
@@ -1244,6 +1282,7 @@ class pyPlcHomeplug():
         self.runningCounter=0
         self.ipv6 = pyPlcIpv6.ipv6handler(self.transmit, self.addressManager, self.connMgr, self.callbackShowStatus)
         self.ipv6.ownMac = self.myMAC
+        self.flexibleHomeplugCommand = 0x6000 # 0x6000
         udplog.udplog_init(self.transmit, self.addressManager)
         udplog.udplog_log("Test message to verify the syslog. pyPlcHomeplug.py is in the init function.", "initalive")
         if (mode == C_LISTEN_MODE):
