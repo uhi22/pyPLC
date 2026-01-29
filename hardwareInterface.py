@@ -27,6 +27,25 @@ if (getConfigValue("digital_output_device")=="beaglebone"):
 if (getConfigValue("charge_parameter_backend")=="chademo"):
     # In case we use the CHAdeMO backend, we want to use CAN
     import can
+    
+if (getConfigValue("evsemode_environment")=="focccicape"):
+    # In case we have the FoccciCape on BeagleBone, we want to use CAN and the GPIOs
+    import can
+    import Adafruit_BBIO.GPIO as GPIO
+    print("We are running on BeagleBone with FoccciCape")
+    print("As demo, just blink the relay outputs")
+    mypinRelay1 = "P9_14"
+    mypinRelay2 = "P9_16"
+    GPIO.setup(mypinRelay1, GPIO.OUT)
+    GPIO.setup(mypinRelay2, GPIO.OUT)
+    GPIO.output(mypinRelay1, GPIO.HIGH)
+    sleep(0.3)
+    GPIO.output(mypinRelay1, GPIO.LOW)
+    sleep(0.3)
+    GPIO.output(mypinRelay2, GPIO.HIGH)
+    sleep(0.3)
+    GPIO.output(mypinRelay2, GPIO.LOW)
+    sleep(0.3)
 
 class hardwareInterface():
     def needsSerial(self):
@@ -207,6 +226,8 @@ class hardwareInterface():
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/target_voltage", str(targetVoltage))
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/target_current", str(targetCurrent))
             self.lastPowerReqPublish = time()
+        self.evseModePowerSupplyTargetVoltage = targetVoltage
+        self.evseModePowerSupplyTargetCurrent = targetCurrent
 
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
@@ -284,6 +305,9 @@ class hardwareInterface():
                {"can_id": 0x102, "can_mask": 0x7FF, "extended": False}]
             self.canbus = can.interface.Bus(bustype='socketcan', channel="can0", can_filters = filters)
 
+        if (getConfigValue("evsemode_environment") == "focccicape"):
+            self.canbus0 = can.interface.Bus(bustype='socketcan', channel="can0")
+
         if (getConfigValue("digital_output_device") == "beaglebone"):
             # Port configuration according to https://github.com/jsphuebner/pyPLC/commit/475f7fe9f3a67da3d4bd9e6e16dfb668d0ddb1d6
             GPIO.setup(PinPowerRelay, GPIO.OUT) #output for port relays
@@ -324,6 +348,9 @@ class hardwareInterface():
         self.maxChargerCurrent = 10
         self.chargerVoltage = 0
         self.chargerCurrent = 0
+        self.focccicapeCycleCounter = 0
+        self.evseModePowerSupplyTargetVoltage = 0
+        self.evseModePowerSupplyTargetCurrent = 0
 
         self.logged_inlet_voltage = None
         self.logged_dc_link_voltage = None
@@ -463,6 +490,9 @@ class hardwareInterface():
 
         if (getConfigValue("digital_output_device")=="mqtt"):
             self.mainfunction_mqtt()
+            
+        if (getConfigValue("evsemode_environment")=="focccicape"):
+            self.mainfunction_focccicape()
 
         if getConfigValueBool("exit_on_session_end"):
             # TODO: This is a hack. Do this in fsmPev instead and publish some
@@ -544,6 +574,16 @@ class hardwareInterface():
 
     def mainfunction_mqtt(self):
         self.mqttclient.loop(timeout=0.1)
+
+    def mainfunction_focccicape(self):
+        self.focccicapeCycleCounter+=1
+        if ((self.focccicapeCycleCounter % 2)== 0):
+            GPIO.output(mypinRelay1, GPIO.LOW)
+        else:
+            GPIO.output(mypinRelay1, GPIO.HIGH)
+        u = int(self.evseModePowerSupplyTargetVoltage)
+        msg = can.Message(arbitration_id=0x678, data=[  u & 0xff, u >> 8, 0xff, 0xff, 0x44, 0x55, 0x66, 0x77], is_extended_id=False)
+        self.canbus0.send(msg)
 
     def mqtt_on_disconnect(self, client, userdata, rc):
         self.addToTrace(f"MQTT disconnected with result code {rc}")

@@ -154,6 +154,11 @@ udp_syslog_enable = Yes
 #charge_parameter_backend = mqtt
 charge_parameter_backend = none
 
+# Set the hardware environment where we run in EvseMode
+# Possible values:
+#   focccicape: pyPLC runs on a beaglebone with FoccciCape as described on the openinverter forum https://openinverter.org/forum/viewtopic.php?p=88946#p88946
+evsemode_environment = none
+
 # REST callback for SoC states. Comment out to disable. Do not leave a trailing slash
 # This parameter is used in EvseMode, to configure where the data which is retrieved
 # from the vehicle shall go to. Discussed
