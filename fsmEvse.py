@@ -6,6 +6,7 @@
 
 import pyPlcTcpSocket
 import time # for time.sleep()
+from pyPlcInfoNumbers import *
 from helpers import prettyHexMessage, combineValueAndMultiplier
 from mytestsuite import *
 from random import random
@@ -26,9 +27,9 @@ class fsmEvse():
     def addToTrace(self, s):
         self.callbackAddToTrace("[EVSE] " + s)
 
-    def publishStatus(self, s, soc=-1):
+    def publishStatus(self, infonumber, s, soc=-1):
         self.callbackShowStatus(s, "evseState")
-        self.hardwareInterface.displayStateAndSoc(s, soc)
+        self.hardwareInterface.displayStateAndSoc(infonumber, s, soc)
 
     def publishSoCs(self, current_soc: int, full_soc: int = -1, energy_capacity: int = -1, energy_request: int = -1, evccid: str = "", origin: str = ""):
         if self.callbackSoCStatus is not None:
@@ -37,7 +38,7 @@ class fsmEvse():
     def enterState(self, n):
         self.addToTrace("from " + str(self.state) + " entering " + str(n))
         if (self.state!=0) and (n==0):
-            self.publishStatus("Waiting f AppHandShake")
+            self.publishStatus(INFONR_WAITING_FOR_APP_HANDSHAKE, "Waiting f AppHandShake")
         self.state = n
         self.cyclesInState = 0
 
@@ -64,7 +65,7 @@ class fsmEvse():
                 self.blChargeStopTrigger = 0 # clear the stopTrigger, to allow a new session
             else:
                 self.addToTrace("User had stopped the session and no new session is allowed. Entering permanent stop state.")
-                self.publishStatus("Stopped")
+                self.publishStatus(INFONR_STOPPED, "Stopped")
                 self.enterState(stateStopped)
         if (self.hardwareInterface.stopRequest()):
             self.addToTrace("Ignoring new request because a stop request from the hardwareInterface is present.")
@@ -107,7 +108,7 @@ class fsmEvse():
                     msg = addV2GTPHeader(exiEncode("Eh__"+str(nDinSchemaID)))
                     self.addToTrace("responding " + prettyHexMessage(msg))
                     self.Tcp.transmit(msg)
-                    self.publishStatus("Schema negotiated")
+                    self.publishStatus(INFONR_SCHEMA_NEGOTIATED, "Schema negotiated")
                     self.schemaSelection = "D" # D for DIN
                     self.enterState(stateWaitForSessionSetupRequest)
                 else:
@@ -119,7 +120,7 @@ class fsmEvse():
                         msg = addV2GTPHeader(exiEncode("Eh__"+str(nIso1SchemaID)))
                         self.addToTrace("responding " + prettyHexMessage(msg))
                         self.Tcp.transmit(msg)
-                        self.publishStatus("Schema negotiated")
+                        self.publishStatus(INFONR_SCHEMA_NEGOTIATED, "Schema negotiated")
                         self.schemaSelection = "1" # 1 for ISO1
                         self.enterState(stateWaitForSessionSetupRequest)
                     else:
@@ -141,7 +142,7 @@ class fsmEvse():
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
                 self.Tcp.transmit(msg)
-                self.publishStatus("Session established")
+                self.publishStatus(INFONR_SESSION_ESTABLISHED, "Session established")
                 self.enterState(stateWaitForServiceDiscoveryRequest)
                 jsondict = json.loads(strConverterResult)
                 self.evccid = jsondict.get("EVCCID", "")
@@ -166,7 +167,7 @@ class fsmEvse():
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
                 self.Tcp.transmit(msg)
-                self.publishStatus("Services discovered")
+                self.publishStatus(INFONR_SERVICES_DISCOVERED, "Services discovered")
                 self.enterState(stateWaitForServicePaymentSelectionRequest)
         if (self.isTooLong()):
             self.enterState(0)
@@ -190,7 +191,7 @@ class fsmEvse():
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
                 self.Tcp.transmit(msg)
-                self.publishStatus("ServicePayment selected")
+                self.publishStatus(INFONR_SERVICEPAYMENT_SELECTED, "ServicePayment selected")
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified. The Ioniq sends PowerDeliveryReq as next.
         if (self.isTooLong()):
             self.enterState(0)
@@ -214,7 +215,7 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a0125e6cecc51408420400000")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
-                self.publishStatus("PowerDelivery")
+                self.publishStatus(INFONR_POWERDELIVERY, "PowerDelivery")
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("ChargeParameterDiscoveryReq")>0):
@@ -238,7 +239,7 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a0125e6cecd50810001ec00201004051828758405500080000101844138101c2432c04081436c900c0c000041435ecc044606000200")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
-                self.publishStatus("ChargeParamDiscovery")
+                self.publishStatus(INFONR_CHARGEPARAMETER_DISCOVERY, "ChargeParamDiscovery")
                 self.Tcp.transmit(msg)
                 self.nCableCheckLoops = 0 # start with a fresh full cable check
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
@@ -264,7 +265,7 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a0125e6cecc5020804080000400")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
-                self.publishStatus("CableCheck", current_soc)
+                self.publishStatus(INFONR_CABLE_CHECK, "CableCheck", current_soc)
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CableCheck)):
                     self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
@@ -305,7 +306,7 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a0125e6cecc516080408000008284de880800")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
-                self.publishStatus("PreCharging")
+                self.publishStatus(INFONR_PRECHARGING, "PreCharging")
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_PreCharge)):
                     self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
@@ -323,7 +324,7 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a021a3b7c417774813310c0A200")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
-                self.publishStatus("ContractAuthentication")
+                self.publishStatus(INFONR_CONTRACT_AUTHENTICATION, "ContractAuthentication")
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("AuthorizationReq")>0):
@@ -337,7 +338,7 @@ class fsmEvse():
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"l_" + strAuthFinished)) # E1l for Encode, Iso1, AuthorizationResponse
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
-                self.publishStatus("Authorization")
+                self.publishStatus(INFONR_AUTHORIZATION, "Authorization")
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest)
             if (strConverterResult.find("CurrentDemandReq")>0):
@@ -389,7 +390,7 @@ class fsmEvse():
                     msg = addV2GTPHeader("809a0125e6cecc50e0804080000082867dc8081818000000040a1b64802030882702038486580800")
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
-                self.publishStatus("CurrentDemand", current_soc)
+                self.publishStatus(INFONR_CURRENT_DEMAND, "CurrentDemand", current_soc)
                 if (not testsuite_faultinjection_is_triggered(TC_EVSE_Timeout_during_CurrentDemand)):
                     self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
@@ -402,7 +403,7 @@ class fsmEvse():
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"j_"+strPresentVoltage)) # EDj for Encode, Din, WeldingDetectionRes
                 self.showDecodedTransmitMessage(msg)
                 self.addToTrace("responding " + prettyHexMessage(msg))
-                self.publishStatus("WeldingDetection")
+                self.publishStatus(INFONR_WELDING_DETECTION, "WeldingDetection")
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("SessionStopReq")>0):
@@ -410,7 +411,7 @@ class fsmEvse():
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"k")) # EDk for Encode, Din, SessionStopRes
                 self.showDecodedTransmitMessage(msg)
                 self.addToTrace("responding " + prettyHexMessage(msg))
-                self.publishStatus("SessionStop")
+                self.publishStatus(INFONR_SESSION_STOP, "SessionStop")
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
 
@@ -444,7 +445,7 @@ class fsmEvse():
         if (len(self.rxData)>0):
             self.addToTrace("In state Stopped, received " + prettyHexMessage(self.rxData) + " but ignoring everything.")
             self.addToTrace("You want to restart pyPLC or configure allow_new_session_after_stopping = Yes")
-            self.publishStatus("StoppedForever")
+            self.publishStatus(INFONR_STOPPED_FOREVER, "StoppedForever")
             self.rxData = []
 
 
@@ -474,15 +475,15 @@ class fsmEvse():
         if (notification==0):
             # The TCP informs us, that the connection is broken.
             # Let's restart the state machine.
-            self.publishStatus("TCP conn broken")
+            self.publishStatus(INFONR_TCP_CONN_BROKEN, "TCP conn broken")
             self.addToTrace("re-initializing fsmEvse due to broken connection")
             self.reInit()
         if (notification==1):
             # The TCP informs us, that it is listening, means waiting for incoming connection.
-            self.publishStatus("Listening TCP")
+            self.publishStatus(INFONR_LISTENING_TCP, "Listening TCP")
         if (notification==2):
             # The TCP informs us, that a connection is established.
-            self.publishStatus("TCP connected")
+            self.publishStatus(INFONR_TCP_CONNECTED, "TCP connected")
 
     def __init__(self, addressManager, callbackAddToTrace, hardwareInterface, callbackShowStatus, callbackSoCStatus = None):
         self.callbackAddToTrace = callbackAddToTrace

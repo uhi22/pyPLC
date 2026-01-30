@@ -109,12 +109,15 @@ class hardwareInterface():
     def addToTrace(self, s):
         self.callbackAddToTrace("[HARDWAREINTERFACE] " + s)
 
-    def displayStateAndSoc(self, state, soc):
+    def displayStateAndSoc(self, infonumber, state, soc):
         if (getConfigValue("digital_output_device")=="mqtt") and (time() - self.lastStatePublish) >= 1:
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/fsm_state", state)
             if soc > 0:
                 self.mqttclient.publish(getConfigValue("mqtt_topic") + "/soc", str(soc))
             self.lastStatePublish = time()
+        self.infonumber = infonumber
+        if (soc>=0) and (soc<=100):
+            self.soc_percent = soc
 
     def displayVehicleBatteryCapacity(self, batteryCapacity):
         self.addToTrace("displayVehicleBatteryCapacity " + str(batteryCapacity))
@@ -348,6 +351,7 @@ class hardwareInterface():
         self.maxChargerCurrent = 10
         self.chargerVoltage = 0
         self.chargerCurrent = 0
+        self.infonumber = 0
         self.focccicapeCycleCounter = 0
         self.evseModePowerSupplyTargetVoltage = 0
         self.evseModePowerSupplyTargetCurrent = 0
@@ -581,8 +585,14 @@ class hardwareInterface():
             GPIO.output(mypinRelay1, GPIO.LOW)
         else:
             GPIO.output(mypinRelay1, GPIO.HIGH)
+        # Transmitting two CAN messages with status information
+        # Message 0x678
+        msg = can.Message(arbitration_id=0x678, data=[  self.infonumber, int(self.soc_percent), 0x22, 0x33, 0x44, 0x55, 0x66, 0x77], is_extended_id=False)
+        self.canbus0.send(msg)
+        # Message 0x679
         u = int(self.evseModePowerSupplyTargetVoltage)
-        msg = can.Message(arbitration_id=0x678, data=[  u & 0xff, u >> 8, 0xff, 0xff, 0x44, 0x55, 0x66, 0x77], is_extended_id=False)
+        i = int(self.evseModePowerSupplyTargetCurrent)
+        msg = can.Message(arbitration_id=0x679, data=[  u & 0xff, u >> 8, i & 0xff, i >> 8, 0x40, 0x50, 0x60, 0x70], is_extended_id=False)
         self.canbus0.send(msg)
 
     def mqtt_on_disconnect(self, client, userdata, rc):
