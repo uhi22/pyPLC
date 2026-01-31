@@ -52,9 +52,10 @@ class fsmEvse():
         # command line interface, while DEcoding for the transmit data is
         # technically not necessary. Only for logging. In case this
         # introduces timing problems, just remove the three lines below.
-        exidataTx = removeV2GTPHeader(msg)
-        strConverterResultTx = exiDecode(exidataTx, "D"+self.schemaSelection)
-        self.addToTrace(strConverterResultTx)
+        if (getConfigValueBool("evse_show_decoded_transmit_message")):
+            exidataTx = removeV2GTPHeader(msg)
+            strConverterResultTx = exiDecode(exidataTx, "D"+self.schemaSelection)
+            self.addToTrace(strConverterResultTx)
 
 
     def stateFunctionWaitForSupportedApplicationProtocolRequest(self):

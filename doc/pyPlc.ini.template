@@ -159,6 +159,24 @@ charge_parameter_backend = none
 #   focccicape: pyPLC runs on a beaglebone with FoccciCape as described on the openinverter forum https://openinverter.org/forum/viewtopic.php?p=88946#p88946
 evsemode_environment = none
 
+# In EvseMode, shall pyPLC control a power supply using a special homeplug message?
+# This is experimental, so normally it shall be False.
+evse_power_supply_control_via_special_homeplug_message = False
+
+# Shall pyPLC print a lot of status messages? This is helpful for debugging, but also slows
+# down the performance, and spams the logs.
+evse_printtrace = False
+
+# Shall pyPLC decode and print the own transmit messages? This is helpful for debugging,
+# but consumes some additional run time. Recommendation: False.
+evse_show_decoded_transmit_message = False
+
+# Do you want see all raw exi data in the log? This may help for debugging.
+# Normally this is False. For debugging it is better to record a trace using tcpdump or wireshark,
+# instead spamming the log.
+sniffer_print_raw_exi = False
+
+
 # REST callback for SoC states. Comment out to disable. Do not leave a trailing slash
 # This parameter is used in EvseMode, to configure where the data which is retrieved
 # from the vehicle shall go to. Discussed

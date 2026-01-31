@@ -223,7 +223,9 @@ class hardwareInterface():
 
     def setPowerSupplyVoltageAndCurrent(self, targetVoltage, targetCurrent):
         # if we are the charger, and have a real power supply which we want to control, we do it here
-        self.homeplughandler.sendSpecialMessageToControlThePowerSupply(targetVoltage, targetCurrent)
+        if getConfigValueBool("evse_power_supply_control_via_special_homeplug_message"):
+            # we control the power supply via a special homeplug message
+            self.homeplughandler.sendSpecialMessageToControlThePowerSupply(targetVoltage, targetCurrent)
         #here we can publish the voltage and current requests received from the PEV side
         if getConfigValue("charge_parameter_backend") == "mqtt" and (time() - self.lastPowerReqPublish) >= 1:
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/target_voltage", str(targetVoltage))

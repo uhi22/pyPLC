@@ -24,6 +24,7 @@
 
 from helpers import showAsHex, prettyHexMessage, prettyMac
 import udpChecksum
+from configmodule import getConfigValueBool
 
 
 class ipv6handler():
@@ -313,11 +314,12 @@ class ipv6handler():
         # 0x8001 EXI encoded V2G message
         if (v2gptPayloadType == 0x8001):
             self.ExiPacket = self.v2gframe[8:] # the exi payload, without the 8 bytes V2GTP header
-            s = "[SNIFFER] EXI from " + str(self.tcpsourceport) + " to " + str(self.tcpdestinationport) + " " + prettyHexMessage(self.ExiPacket)
-            print(s)
-            # print(s, file=self.exiLogFile)
-            # Todo: further process the EXI packet. E.g. write it into file for offline analysis.
-            # And send it to decoder.
+            if (getConfigValueBool("sniffer_print_raw_exi")):
+                s = "[SNIFFER] EXI from " + str(self.tcpsourceport) + " to " + str(self.tcpdestinationport) + " " + prettyHexMessage(self.ExiPacket)
+                print(s)
+                # print(s, file=self.exiLogFile)
+                # Todo: further process the EXI packet. E.g. write it into file for offline analysis.
+                # And send it to decoder.
 
     def evaluateTcpPacket(self):
         # We received a TCP packet. We do NOT want to make real TCP here (the OS will do it much better). We

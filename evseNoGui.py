@@ -11,9 +11,10 @@ import requests
 startTime_ms = round(time.time()*1000)
 
 def cbAddToTrace(s):
-    currentTime_ms = round(time.time()*1000)
-    dT_ms = currentTime_ms - startTime_ms
-    print("[" + str(dT_ms) + "ms] " + s)
+    if (getConfigValueBool("evse_printtrace")):
+        currentTime_ms = round(time.time()*1000)
+        dT_ms = currentTime_ms - startTime_ms
+        print("[" + str(dT_ms) + "ms] " + s)
 
 def cbShowStatus(s, selection=""):
     pass
@@ -44,14 +45,13 @@ def socStatusCallback(current_soc: int, full_soc: int = -1, energy_capacity: int
     else:
        energy_request = -1
 
-    print(f"Received SoC status from {origin}.\n"
+    if soc_callback_enabled:
+        print(f"Received SoC status from {origin}.\n"
           f"    Current SoC {current_soc}% \n"
           f"    Full SoC {full_soc}%\n"
           f"    Energy capacity {energy_capacity} Wh \n"
           f"    Energy request {energy_request} Wh \n"
           f"    EVCCID {evccid} \n")
-
-    if soc_callback_enabled:
         requests.post(f"{soc_callback_url}?current_soc={current_soc}&full_soc={full_soc}&energy_capacity={energy_capacity}&energy_request={energy_request}&evccid={evccid}")
 
 myMode = C_EVSE_MODE
