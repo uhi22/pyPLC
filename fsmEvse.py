@@ -281,7 +281,7 @@ class fsmEvse():
                     self.addToTrace("EV wants EVTargetVoltage " + str(uTarget))
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeReq")
-
+                self.batteryVoltageDuringPrecharge = uTarget
                 # simulating preCharge
                 if (self.simulatedPresentVoltage<uTarget/2):
                     self.simulatedPresentVoltage = uTarget/2
@@ -368,8 +368,17 @@ class fsmEvse():
 
                 except:
                     self.addToTrace("ERROR: Could not decode the CurrentDemandReq")
-                self.simulatedPresentVoltage = uTarget + 3*random() # The charger provides the voltage which is demanded by the car.
-                strPresentVoltage = str(self.hardwareInterface.getInletVoltage()) #str(self.simulatedPresentVoltage)
+                if getConfigValueBool('evse_simulate_precharge'):
+                    # We have no hardware voltage measurement, and so we faked the precharge, and also keep
+                    # faking the EVSEPresentVoltage in the CurrentDemand loop.
+                    # The simulated charger provides the battery voltage which we have seen during
+                    # precharge. Not the voltage which is demanded by the car, because this may be much
+                    # higher. Discussion here: https://github.com/uhi22/pyPLC/issues/44
+                    # We add a small jitter to avoid frozen-looking value.
+                    self.simulatedPresentVoltage = self.batteryVoltageDuringPrecharge + 3*random()
+                    strPresentVoltage = str(self.simulatedPresentVoltage)
+                else:
+                    strPresentVoltage = str(self.hardwareInterface.getInletVoltage())
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
                 strEVSEPresentCurrent = str(self.hardwareInterface.getAccuMaxCurrent()) #"1" # Just as a dummy current
                 if (self.blChargeStopTrigger == 1 or self.hardwareInterface.stopRequest()):
