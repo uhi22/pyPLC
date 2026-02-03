@@ -298,6 +298,7 @@ class fsmEvse():
                 # in case we control a real power supply: give the precharge target to it
                 self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, 1)
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
+                self.hardwareInterface.showEvsePresentVoltageAndCurrent(int(float(strPresentVoltage)), 1)
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"g_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Shutdown_during_PreCharge)):
                     # send a PreChargeResponse with StatusCode EVSE_Shutdown, to simulate a user-triggered session stop
@@ -388,6 +389,7 @@ class fsmEvse():
                 else:
                     # The normal case. No stop requested from user. Just send EVSE_Ready.
                     strEVSEStatus = "1" # 1=EVSE_Ready
+                self.hardwareInterface.showEvsePresentVoltageAndCurrent(int(float(strPresentVoltage)), int(float(strEVSEPresentCurrent)))
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"i_"+strPresentVoltage + "_" + strEVSEPresentCurrent + "_" + strEVSEStatus)) # EDi for Encode, Din, CurrentDemandRes
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Malfunction_during_CurrentDemand)):
                     # send a CurrentDemandResponse with StatusCode EVSE_Malfunction, to simulate e.g. a voltage overshoot
@@ -410,6 +412,7 @@ class fsmEvse():
                 self.simulatedPresentVoltage = self.simulatedPresentVoltage*0.8 + 3*random()
                 strPresentVoltage = str(int(self.simulatedPresentVoltage*10)/10) # "345"
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
+                self.hardwareInterface.showEvsePresentVoltageAndCurrent(int(float(strPresentVoltage)), 0)
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"j_"+strPresentVoltage)) # EDj for Encode, Din, WeldingDetectionRes
                 self.showDecodedTransmitMessage(msg)
                 self.addToTrace("responding " + prettyHexMessage(msg))

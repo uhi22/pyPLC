@@ -119,6 +119,10 @@ class hardwareInterface():
         if (soc>=0) and (soc<=100):
             self.soc_percent = soc
 
+    def showEvsePresentVoltageAndCurrent(self, u, i):
+        self.EvsePresentVoltage = u
+        self.EvsePresentCurrent = i
+
     def displayVehicleBatteryCapacity(self, batteryCapacity):
         self.addToTrace("displayVehicleBatteryCapacity " + str(batteryCapacity))
         if (getConfigValue("digital_output_device")=="mqtt"):
@@ -357,6 +361,8 @@ class hardwareInterface():
         self.focccicapeCycleCounter = 0
         self.evseModePowerSupplyTargetVoltage = 0
         self.evseModePowerSupplyTargetCurrent = 0
+        self.EvsePresentVoltage = 0
+        self.EvsePresentCurrent = 0
 
         self.logged_inlet_voltage = None
         self.logged_dc_link_voltage = None
@@ -592,9 +598,11 @@ class hardwareInterface():
         msg = can.Message(arbitration_id=0x678, data=[  self.infonumber, int(self.soc_percent), 0x22, 0x33, 0x44, 0x55, 0x66, 0x77], is_extended_id=False)
         self.canbus0.send(msg)
         # Message 0x679
-        u = int(self.evseModePowerSupplyTargetVoltage)
-        i = int(self.evseModePowerSupplyTargetCurrent)
-        msg = can.Message(arbitration_id=0x679, data=[  u & 0xff, u >> 8, i & 0xff, i >> 8, 0x40, 0x50, 0x60, 0x70], is_extended_id=False)
+        uT = int(self.evseModePowerSupplyTargetVoltage)
+        iT = int(self.evseModePowerSupplyTargetCurrent)
+        uP = int(self.EvsePresentVoltage)
+        iP = int(self.EvsePresentCurrent)
+        msg = can.Message(arbitration_id=0x679, data=[  uT & 0xff, uT >> 8, iT & 0xff, iT >> 8, uP & 0xff, uP >> 8, iP & 0xff, iP >> 8], is_extended_id=False)
         self.canbus0.send(msg)
 
     def mqtt_on_disconnect(self, client, userdata, rc):
