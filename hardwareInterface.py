@@ -626,14 +626,20 @@ class hardwareInterface():
             if (self.evseModeSlacState == 3):
                 infonr = INFONR_SLAC_MATCH
         msg = can.Message(arbitration_id=0x678, data=[  infonr, int(self.soc_percent), 0x22, 0x33, 0x44, 0x55, 0x66, 0x77], is_extended_id=False)
-        self.canbus0.send(msg)
+        try:
+            self.canbus0.send(msg)
+        except:
+            pass # could not transmit the CAN message, just ignore and continue
         # Message 0x679
         uT = int(self.evseModePowerSupplyTargetVoltage)
         iT = int(self.evseModePowerSupplyTargetCurrent)
         uP = int(self.EvsePresentVoltage)
         iP = int(self.EvsePresentCurrent)
         msg = can.Message(arbitration_id=0x679, data=[  uT & 0xff, uT >> 8, iT & 0xff, iT >> 8, uP & 0xff, uP >> 8, iP & 0xff, iP >> 8], is_extended_id=False)
-        self.canbus0.send(msg)
+        try:
+            self.canbus0.send(msg)
+        except:
+            pass # could not transmit the CAN message, just ignore and continue
         # Message 0x67A: MAC address of the PEV
         if ((self.focccicapeCycleCounter % 10)== 0): # transmit in slower cycle 
             data8 = []
@@ -641,7 +647,10 @@ class hardwareInterface():
             data8.append(0x06) # unused byte 6
             data8.append(0x07) # unused byte 7
             msg = can.Message(arbitration_id=0x67A, data=data8, is_extended_id=False)
-            self.canbus0.send(msg)
+            try:
+                self.canbus0.send(msg)
+            except:
+                pass # could not transmit the CAN message, just ignore and continue
 
     def mqtt_on_disconnect(self, client, userdata, rc):
         self.addToTrace(f"MQTT disconnected with result code {rc}")
