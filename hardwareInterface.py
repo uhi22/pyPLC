@@ -8,6 +8,7 @@
 
 import serial # the pyserial
 from pyPlcModes import *
+from pyPlcInfoNumbers import *
 from serial.tools.list_ports import comports
 from time import sleep, time
 from configmodule import getConfigValue, getConfigValueBool
@@ -363,6 +364,9 @@ class hardwareInterface():
         self.evseModePowerSupplyTargetCurrent = 0
         self.EvsePresentVoltage = 0
         self.EvsePresentCurrent = 0
+        self.evseModeSlacState = 0
+        self.evseModeSlacStateValidityTimer = 0
+        self.evseModePevMac = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
 
         self.logged_inlet_voltage = None
         self.logged_dc_link_voltage = None
@@ -480,6 +484,22 @@ class hardwareInterface():
                 s = "lc" + s1 + "\n" + "lc" + s2 + "\n" + "lc" + s3 + "\n"
                 self.ser.write(bytes(s, "utf-8"))
 
+    def visualizeStatus(self, s, strSelection, strAux1, strAux2):
+        # distribute the status info to the user
+        if (strSelection == "evseSlacState"):
+            # print("visualizeStatus with evseSlacState " + s)
+            self.evseModeSlacState = int(s)
+            self.evseModeSlacStateValidityTimer = 20
+        if (strSelection == "pevmac"):
+            # print("visualizeStatus with pevmac " + s)
+            macbytes = s.split(":")
+            if (len(macbytes)==6):
+                self.evseModePevMac = []
+                for i in range(0, 6):
+                    self.evseModePevMac.append(int(macbytes[i], 16))
+                print(self.evseModePevMac)
+
+
     def mainfunction(self):
         if (getConfigValueBool("soc_simulation")):
             if (self.simulatedSoc<100):
@@ -595,7 +615,17 @@ class hardwareInterface():
             GPIO.output(mypinRelay1, GPIO.HIGH)
         # Transmitting two CAN messages with status information
         # Message 0x678
-        msg = can.Message(arbitration_id=0x678, data=[  self.infonumber, int(self.soc_percent), 0x22, 0x33, 0x44, 0x55, 0x66, 0x77], is_extended_id=False)
+        infonr = self.infonumber # use the info number which was reported from the evse state machine
+        if (self.evseModeSlacStateValidityTimer > 0):
+            # if we recently got an update from the SLAC handler, show this status instead of the evse state machine info
+            self.evseModeSlacStateValidityTimer-=1
+            if (self.evseModeSlacState == 1):
+                infonr = INFONR_SLAC_PARAM_REQ
+            if (self.evseModeSlacState == 2):
+                infonr = INFONR_SLAC_SOUNDING
+            if (self.evseModeSlacState == 3):
+                infonr = INFONR_SLAC_MATCH
+        msg = can.Message(arbitration_id=0x678, data=[  infonr, int(self.soc_percent), 0x22, 0x33, 0x44, 0x55, 0x66, 0x77], is_extended_id=False)
         self.canbus0.send(msg)
         # Message 0x679
         uT = int(self.evseModePowerSupplyTargetVoltage)
@@ -604,6 +634,14 @@ class hardwareInterface():
         iP = int(self.EvsePresentCurrent)
         msg = can.Message(arbitration_id=0x679, data=[  uT & 0xff, uT >> 8, iT & 0xff, iT >> 8, uP & 0xff, uP >> 8, iP & 0xff, iP >> 8], is_extended_id=False)
         self.canbus0.send(msg)
+        # Message 0x67A: MAC address of the PEV
+        if ((self.focccicapeCycleCounter % 10)== 0): # transmit in slower cycle 
+            data8 = []
+            data8.extend(self.evseModePevMac)
+            data8.append(0x06) # unused byte 6
+            data8.append(0x07) # unused byte 7
+            msg = can.Message(arbitration_id=0x67A, data=data8, is_extended_id=False)
+            self.canbus0.send(msg)
 
     def mqtt_on_disconnect(self, client, userdata, rc):
         self.addToTrace(f"MQTT disconnected with result code {rc}")

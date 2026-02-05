@@ -62,6 +62,10 @@ class pyPlcWorker():
         self.callbackShowStatus(s, selection)
         if (selection == "pevState"):
             self.hardwareInterface.showOnDisplay(s, strAuxInfo1, strAuxInfo2)
+        try:
+            self.hardwareInterface.visualizeStatus(s, selection, strAuxInfo1, strAuxInfo2)
+        except:
+            pass
 
     def handleTcpConnectionTrigger(self):
         if (self.mode == C_PEV_MODE) and (self.connMgr.getConnectionLevel()==50) and (self.oldAvlnStatus==0):

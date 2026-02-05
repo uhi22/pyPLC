@@ -745,6 +745,7 @@ class pyPlcHomeplug():
                 self.pevRunId[i] = self.myreceivebuffer[21+i]
             # We are EVSE, we want to answer.
             self.showStatus("SLAC started", "evseState")
+            self.showStatus("1", "evseSlacState") # 1 SlacParamReq
             self.composeSlacParamCnf()
             self.addToTrace("[EVSE] transmitting CM_SLAC_PARAM.CNF")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
@@ -776,6 +777,7 @@ class pyPlcHomeplug():
         self.addToTrace("received MNBC_SOUND.IND")
         if (self.iAmEvse==1):
             self.showStatus("SLAC 2", "evseState")
+            self.showStatus("2", "evseSlacState") # 2 MnbcSoundInd
             countdown = self.myreceivebuffer[38]
             if (countdown == 0):
                 self.composeAttenCharInd()
@@ -816,6 +818,7 @@ class pyPlcHomeplug():
         self.addToTrace("received SLAC_MATCH.REQ")
         if (self.iAmEvse==1):
             self.showStatus("SLAC match", "evseState")
+            self.showStatus("3", "evseSlacState") # 3 SlacMatchReq
             self.composeSlacMatchCnf()
             self.addToTrace("[EVSE] transmitting SLAC_MATCH.CNF")
             self.sniffer.sendpacket(bytes(self.mytransmitbuffer))
@@ -1272,7 +1275,7 @@ class pyPlcHomeplug():
         self.NID[3] = int(random()*255) # allow multiple EVSEs live together without causing modem resets
         self.NID[4] = int(random()*255)
         self.NID[5] = int(random()*255)
-        self.pevMac = [0xDC, 0x0E, 0xA1, 0x11, 0x67, 0x08 ] # a default pev MAC. Will be overwritten later.
+        self.pevMac = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00 ] # a default pev MAC. Will be overwritten later.
         self.evseMac = [0x55, 0x56, 0x57, 0xAA, 0xAA, 0xAA ] # a default evse MAC. Will be overwritten later.
         # a default pev RunId. Will be overwritten later, if we are evse. If we are the pev, we are free to choose a
         # RunID, e.g. the Ioniq uses the MAC plus 0x00 0x00 padding, the Tesla uses "TESLA EV".
