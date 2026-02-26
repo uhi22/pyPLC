@@ -242,7 +242,7 @@ class fsmEvse():
                 self.showDecodedTransmitMessage(msg)
                 self.publishStatus(INFONR_CHARGEPARAMETER_DISCOVERY, "ChargeParamDiscovery")
                 self.Tcp.transmit(msg)
-                self.nCableCheckLoops = 0 # start with a fresh full cable check
+                self.hardwareInterface.resetCableCheckTimer()  # start with a fresh full cable check
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("CableCheckReq")>0):
                 # todo: check the request content, and fill response parameters
@@ -255,11 +255,11 @@ class fsmEvse():
                     self.addToTrace("STOP was requested during CableCheck. Will not answer the request.")
                     self.enterState(0)
                     return
-                if (self.nCableCheckLoops<5): # Just as simulation, answer some cable check requests with "ongoing".
-                    self.nCableCheckLoops+=1
-                    strCableCheckOngoing = "1"
-                else:
+                self.hardwareInterface.triggerCableCheck()
+                if (self.hardwareInterface.isCableCheckFinished()):
                     strCableCheckOngoing = "0" # Now the cable check is finished.
+                else:
+                    strCableCheckOngoing = "1" # "Ongoing"
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"f_"+strCableCheckOngoing)) # EDf for Encode, Din, CableCheckResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_CableCheckRes)):
                     # send a CableCheckResponse with Responsecode Failed
@@ -515,7 +515,6 @@ class fsmEvse():
         self.rxData = []
         self.evccid = ""
         self.blChargeStopTrigger = 0
-        self.nCableCheckLoops = 0
 
     def mainfunction(self):
         self.Tcp.mainfunction() # call the lower-level worker

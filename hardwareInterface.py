@@ -13,6 +13,7 @@ from serial.tools.list_ports import comports
 from time import sleep, time
 from configmodule import getConfigValue, getConfigValueBool
 import sys # For exit_on_session_end hack
+from cableChecker import *
 
 PinCp = "P9_41"
 PinPowerRelay = "P9_17"
@@ -335,6 +336,8 @@ class hardwareInterface():
         self.callbackShowStatus = callbackShowStatus
         self.homeplughandler = homeplughandler
         self.mode = mode
+        if (self.mode==C_EVSE_MODE):
+            self.cableChecker = cableChecker()
 
         self.loopcounter = 0
         self.outvalue = 0
@@ -383,6 +386,9 @@ class hardwareInterface():
 
         self.findSerialPort()
         self.initPorts()
+        
+        self.cableCheckTimer = 0
+        self.cableCheckMaxTime = 50 # 100 is ~ 10s
 
     def resetSimulation(self):
         self.simulatedInletVoltage = 0.0 # volts
@@ -392,6 +398,19 @@ class hardwareInterface():
     def simulatePreCharge(self):
         if (self.simulatedInletVoltage<230):
             self.simulatedInletVoltage = self.simulatedInletVoltage + 1.0 # simulate increasing voltage during PreCharge
+            
+    def resetCableCheckTimer(self):
+        self.cableCheckTimer = 0
+
+    def triggerCableCheck(self):
+        if (self.cableCheckTimer==0):
+            self.cableCheckTimer=1
+    
+    def isCableCheckFinished(self):
+        if (self.cableCheckTimer>=self.cableCheckMaxTime):
+            return True
+        else:
+            return False
 
     def close(self):
         if (self.isSerialInterfaceOk):
@@ -532,6 +551,10 @@ class hardwareInterface():
             if (self.plugged_in is not None and self.plugged_in == False and
                     self.inletVoltage < 50):
                 sys.exit(0)
+                
+        if (self.cableCheckTimer>0) and (self.cableCheckTimer<=self.cableCheckMaxTime):
+            # count the cableCheckTimer, if it is not halted and not expired
+            self.cableCheckTimer+=1
 
     def mainfunction_dieter(self):
         self.loopcounter+=1
@@ -651,6 +674,12 @@ class hardwareInterface():
                 self.canbus0.send(msg)
             except:
                 pass # could not transmit the CAN message, just ignore and continue
+        if (self.cableCheckTimer==1):
+            # CableCheck just started
+            self.cableChecker.startCheck()
+        if (self.cableCheckTimer==self.cableCheckMaxTime-1):
+            # CableCheck nearly finished
+            self.cableChecker.evaluateResultAndCleanUp()
 
     def mqtt_on_disconnect(self, client, userdata, rc):
         self.addToTrace(f"MQTT disconnected with result code {rc}")
