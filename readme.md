@@ -11,6 +11,14 @@ In this project, we call this mode *ListenMode*.
 
 ## News / Change History / Functional Status
 
+### 2026-02-21 Discharge-Experiments on BeagleBone with FoccciCape
+
+A lot happened in the meanwhile. The highlights:
+- Added ISO1 (experimental) additional to DIN70121
+- Added MQTT communication
+- BeagleBone with FoccciCape acts as bidirectional charging station. https://openinverter.org/forum/viewtopic.php?t=6745&start=75 e.g. in the Discharge-Demo-Box (DiDeBoCCS) https://github.com/uhi22/DiDeBoCCS
+- Bugfix in OpenV2Gx: Avoid the NotReady during CableCheck
+
 ### 2023-06-29 v0.9 Released
 
 Highlights:
