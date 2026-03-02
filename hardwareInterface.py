@@ -337,7 +337,12 @@ class hardwareInterface():
         self.homeplughandler = homeplughandler
         self.mode = mode
         if (self.mode==C_EVSE_MODE):
-            self.cableChecker = cableChecker()
+            if (getConfigValue("evsemode_environment") == "focccicape"):
+                from powersupplyInterface_DiDeBoCCS import powersupplyInterface
+            else:
+                from powersupplyInterface_other import powersupplyInterface
+            self.psu = powersupplyInterface()
+            self.cableChecker = cableChecker(self.psu)
 
         self.loopcounter = 0
         self.outvalue = 0
@@ -386,9 +391,6 @@ class hardwareInterface():
 
         self.findSerialPort()
         self.initPorts()
-        
-        self.cableCheckTimer = 0
-        self.cableCheckMaxTime = 50 # 100 is ~ 10s
 
     def resetSimulation(self):
         self.simulatedInletVoltage = 0.0 # volts
@@ -399,18 +401,17 @@ class hardwareInterface():
         if (self.simulatedInletVoltage<230):
             self.simulatedInletVoltage = self.simulatedInletVoltage + 1.0 # simulate increasing voltage during PreCharge
             
-    def resetCableCheckTimer(self):
-        self.cableCheckTimer = 0
+    def resetCableCheck(self):
+        self.cableChecker.resetCableCheck()
 
     def triggerCableCheck(self):
-        if (self.cableCheckTimer==0):
-            self.cableCheckTimer=1
+        self.cableChecker.triggerCableCheck()
     
     def isCableCheckFinished(self):
-        if (self.cableCheckTimer>=self.cableCheckMaxTime):
-            return True
-        else:
-            return False
+        return self.cableChecker.isCableCheckFinished()
+
+    def isCableCheckOk(self):
+        return self.cableChecker.isCableCheckOk()
 
     def close(self):
         if (self.isSerialInterfaceOk):
@@ -544,6 +545,9 @@ class hardwareInterface():
             
         if (getConfigValue("evsemode_environment")=="focccicape"):
             self.mainfunction_focccicape()
+            
+        if (self.mode==C_EVSE_MODE):
+            self.cableChecker.mainfunction()
 
         if getConfigValueBool("exit_on_session_end"):
             # TODO: This is a hack. Do this in fsmPev instead and publish some
@@ -551,10 +555,6 @@ class hardwareInterface():
             if (self.plugged_in is not None and self.plugged_in == False and
                     self.inletVoltage < 50):
                 sys.exit(0)
-                
-        if (self.cableCheckTimer>0) and (self.cableCheckTimer<=self.cableCheckMaxTime):
-            # count the cableCheckTimer, if it is not halted and not expired
-            self.cableCheckTimer+=1
 
     def mainfunction_dieter(self):
         self.loopcounter+=1
@@ -674,12 +674,6 @@ class hardwareInterface():
                 self.canbus0.send(msg)
             except:
                 pass # could not transmit the CAN message, just ignore and continue
-        if (self.cableCheckTimer==1):
-            # CableCheck just started
-            self.cableChecker.startCheck()
-        if (self.cableCheckTimer==self.cableCheckMaxTime-1):
-            # CableCheck nearly finished
-            self.cableChecker.evaluateResultAndCleanUp()
 
     def mqtt_on_disconnect(self, client, userdata, rc):
         self.addToTrace(f"MQTT disconnected with result code {rc}")

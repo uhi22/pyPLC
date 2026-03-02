@@ -242,7 +242,7 @@ class fsmEvse():
                 self.showDecodedTransmitMessage(msg)
                 self.publishStatus(INFONR_CHARGEPARAMETER_DISCOVERY, "ChargeParamDiscovery")
                 self.Tcp.transmit(msg)
-                self.hardwareInterface.resetCableCheckTimer()  # start with a fresh full cable check
+                self.hardwareInterface.resetCableCheck()  # start with a fresh full cable check
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("CableCheckReq")>0):
                 # todo: check the request content, and fill response parameters
@@ -258,6 +258,14 @@ class fsmEvse():
                 self.hardwareInterface.triggerCableCheck()
                 if (self.hardwareInterface.isCableCheckFinished()):
                     strCableCheckOngoing = "0" # Now the cable check is finished.
+                    if (self.hardwareInterface.isCableCheckOk()):
+                        print("cable check is finished and ok")
+                        pass
+                    else:
+                        print("cable check is finished and failed")
+                        self.addToTrace("CableCheck failed. Will not answer the request.")
+                        self.enterState(0)
+                        return
                 else:
                     strCableCheckOngoing = "1" # "Ongoing"
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"f_"+strCableCheckOngoing)) # EDf for Encode, Din, CableCheckResponse
