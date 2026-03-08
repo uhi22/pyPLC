@@ -13,6 +13,7 @@ from serial.tools.list_ports import comports
 from time import sleep, time
 from configmodule import getConfigValue, getConfigValueBool
 import sys # For exit_on_session_end hack
+from random import random
 from cableChecker import *
 
 PinCp = "P9_41"
@@ -121,9 +122,9 @@ class hardwareInterface():
         if (soc>=0) and (soc<=100):
             self.soc_percent = soc
 
-    def showEvsePresentVoltageAndCurrent(self, u, i):
-        self.EvsePresentVoltage = u
-        self.EvsePresentCurrent = i
+    #def showEvsePresentVoltageAndCurrent(self, u, i):
+    #    self.EvsePresentVoltage = u
+    #    self.EvsePresentCurrent = i
 
     def displayVehicleBatteryCapacity(self, batteryCapacity):
         self.addToTrace("displayVehicleBatteryCapacity " + str(batteryCapacity))
@@ -227,7 +228,7 @@ class hardwareInterface():
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/charger_voltage", voltageNow)
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/charger_current", currentNow)
 
-    def setPowerSupplyVoltageAndCurrent(self, targetVoltage, targetCurrent):
+    def setPowerSupplyVoltageAndCurrent(self, targetVoltage, targetCurrent, strMode):
         # if we are the charger, and have a real power supply which we want to control, we do it here
         if getConfigValueBool("evse_power_supply_control_via_special_homeplug_message"):
             # we control the power supply via a special homeplug message
@@ -239,11 +240,23 @@ class hardwareInterface():
             self.lastPowerReqPublish = time()
         self.evseModePowerSupplyTargetVoltage = targetVoltage
         self.evseModePowerSupplyTargetCurrent = targetCurrent
+        self.evseModePowerSupplyMode = strMode
+        if (strMode == "precharge"):
+            self.psu.selectDriverForPrecharge()
+            self.psu.setVoltage(targetVoltage)
+        if (strMode == "weldingdetection"):
+            self.psu.setVoltage(targetVoltage)
 
     def getInletVoltage(self):
         # uncomment this line, to take the simulated inlet voltage instead of the really measured
         # self.inletVoltage = self.simulatedInletVoltage
         return self.inletVoltage
+        
+    def getEvsePhysicalVoltage(self):
+        return self.EvsePhysicalVoltage
+
+    def getEvsePhysicalCurrent(self):
+        return self.EvsePhysicalCurrent
 
     def getAccuVoltage(self):
         if getConfigValue("charge_parameter_backend") in ["chademo", "mqtt", "celeron55device"]:
@@ -337,6 +350,13 @@ class hardwareInterface():
         self.homeplughandler = homeplughandler
         self.mode = mode
         if (self.mode==C_EVSE_MODE):
+            if (getConfigValueBool('evse_simulate_precharge')):
+                self.isPhysicalVoltageSimulated = True
+                self.simulatedPhysicalVoltage = 2.2 # simulate a small offset in measurement
+            else:
+                 # We have a physical voltage measurement. The physical voltage
+                 # is available in self.EvsePhysicalVoltage.
+                self.isPhysicalVoltageSimulated = False
             if (getConfigValue("evsemode_environment") == "focccicape"):
                 from powersupplyInterface_DiDeBoCCS import powersupplyInterface
             else:
@@ -370,8 +390,9 @@ class hardwareInterface():
         self.focccicapeCycleCounter = 0
         self.evseModePowerSupplyTargetVoltage = 0
         self.evseModePowerSupplyTargetCurrent = 0
-        self.EvsePresentVoltage = 0
-        self.EvsePresentCurrent = 0
+        self.evseModePowerSupplyMode = "init"
+        self.EvsePhysicalVoltage = 1
+        self.EvsePhysicalCurrent = 0
         self.evseModeSlacState = 0
         self.evseModeSlacStateValidityTimer = 0
         self.evseModePevMac = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
@@ -397,10 +418,50 @@ class hardwareInterface():
         self.simulatedSoc = 20.0 # percent
         self.demoAuthenticationCounter = 0
 
-    def simulatePreCharge(self):
+    def pevMode_simulatePreCharge(self):
         if (self.simulatedInletVoltage<230):
             self.simulatedInletVoltage = self.simulatedInletVoltage + 1.0 # simulate increasing voltage during PreCharge
+    
+    def evseMode_physicalVoltageSimulationMainfunction(self):
+        # - in precharge state, increase the voltage.
+        # - in current demand, keep the voltage (with random jitter).
+        # - in welding detection state, ramp down the voltage.
+        
+        if (self.evseModePowerSupplyMode == "init"):
+             self.EvsePhysicalCurrent = 0
+             self.simulatedPhysicalVoltage = 2*random() # simulate a small offset in voltage measurement
+
+        if (self.evseModePowerSupplyMode == "precharge"):
+            self.batteryVoltageDuringPrecharge = self.evseModePowerSupplyTargetVoltage
+            # simulating preCharge
+            if (self.simulatedPhysicalVoltage<self.batteryVoltageDuringPrecharge/2):
+                self.simulatedPhysicalVoltage = self.batteryVoltageDuringPrecharge/2
+            if (self.simulatedPhysicalVoltage<self.batteryVoltageDuringPrecharge-30):
+                self.simulatedPhysicalVoltage += 2
+            if (self.simulatedPhysicalVoltage<self.batteryVoltageDuringPrecharge):
+                self.simulatedPhysicalVoltage += 0.5
+            self.EvsePhysicalCurrent = 0 # no current flow during precharge
             
+        if (self.evseModePowerSupplyMode == "currentdemand"):
+            # We have no hardware voltage measurement, and so we faked the precharge, and also keep
+            # faking the EVSEPresentVoltage in the CurrentDemand loop.
+            # The simulated charger provides the battery voltage which we have seen during
+            # precharge. Not the voltage which is demanded by the car, because this may be much
+            # higher. Discussion here: https://github.com/uhi22/pyPLC/issues/44
+            # We add a small jitter to avoid frozen-looking value.
+            self.simulatedPhysicalVoltage = self.batteryVoltageDuringPrecharge + 3*random()
+            self.EvsePhysicalCurrent = self.getAccuMaxCurrent() # just say 10A
+            
+        if (self.evseModePowerSupplyMode == "weldingdetection"):
+            
+            # simulate the decreasing voltage during the weldingDetection:
+            self.simulatedPhysicalVoltage = self.simulatedPhysicalVoltage*0.95 + 3*random()
+            self.EvsePhysicalCurrent = 0 # no current flow during welding detection
+
+        # finally transfer the float simulated voltage to an integer "official" voltage
+        self.EvsePhysicalVoltage = int(self.simulatedPhysicalVoltage*10)/10 # e.g.345
+
+        
     def resetCableCheck(self):
         self.cableChecker.resetCableCheck()
 
@@ -548,6 +609,8 @@ class hardwareInterface():
             
         if (self.mode==C_EVSE_MODE):
             self.cableChecker.mainfunction()
+            if (self.isPhysicalVoltageSimulated):
+                self.evseMode_physicalVoltageSimulationMainfunction()
 
         if getConfigValueBool("exit_on_session_end"):
             # TODO: This is a hack. Do this in fsmPev instead and publish some
@@ -636,6 +699,10 @@ class hardwareInterface():
             GPIO.output(mypinRelay1, GPIO.LOW)
         else:
             GPIO.output(mypinRelay1, GPIO.HIGH)
+        if (self.psu.isPhysicalVoltageMeasurementPossible()):
+            self.EvsePhysicalVoltage = int(self.psu.readPhysicalVoltage())
+            if (self.EvsePhysicalVoltage<0):
+                self.EvsePhysicalVoltage = 0
         # Transmitting two CAN messages with status information
         # Message 0x678
         infonr = self.infonumber # use the info number which was reported from the evse state machine
@@ -656,8 +723,8 @@ class hardwareInterface():
         # Message 0x679
         uT = int(self.evseModePowerSupplyTargetVoltage)
         iT = int(self.evseModePowerSupplyTargetCurrent)
-        uP = int(self.EvsePresentVoltage)
-        iP = int(self.EvsePresentCurrent)
+        uP = int(self.EvsePhysicalVoltage)
+        iP = int(self.EvsePhysicalCurrent)
         msg = can.Message(arbitration_id=0x679, data=[  uT & 0xff, uT >> 8, iT & 0xff, iT >> 8, uP & 0xff, uP >> 8, iP & 0xff, iP >> 8], is_extended_id=False)
         try:
             self.canbus0.send(msg)

@@ -528,7 +528,7 @@ class fsmPev():
             self.enterState(stateSequenceTimeout)
 
     def stateFunctionWaitForPreChargeResponse(self):
-        self.hardwareInterface.simulatePreCharge()
+        self.hardwareInterface.pevMode_simulatePreCharge()
         if (self.DelayCycles>0):
             self.DelayCycles-=1
             return

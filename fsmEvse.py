@@ -129,7 +129,7 @@ class fsmEvse():
 
     def stateFunctionWaitForSessionSetupRequest(self):
         if (len(self.rxData)>0):
-            self.simulatedPresentVoltage = 0
+            self.hardwareInterface.setPowerSupplyVoltageAndCurrent(0, 0, "init")
             self.addToTrace("In state WaitForSessionSetupRequest, received " + prettyHexMessage(self.rxData))
             exidata = removeV2GTPHeader(self.rxData)
             self.rxData = []
@@ -289,24 +289,12 @@ class fsmEvse():
                     self.addToTrace("EV wants EVTargetVoltage " + str(uTarget))
                 except:
                     self.addToTrace("ERROR: Could not decode the PreChargeReq")
-                self.batteryVoltageDuringPrecharge = uTarget
-                # simulating preCharge
-                if (self.simulatedPresentVoltage<uTarget/2):
-                    self.simulatedPresentVoltage = uTarget/2
-                if (self.simulatedPresentVoltage<uTarget-30):
-                    self.simulatedPresentVoltage += 20
-                if (self.simulatedPresentVoltage<uTarget):
-                    self.simulatedPresentVoltage += 5
 
-                if getConfigValueBool('evse_simulate_precharge'):
-                    strPresentVoltage = str(int(self.simulatedPresentVoltage*10)/10) # "345"
-                else:
-                    strPresentVoltage = str(self.hardwareInterface.getInletVoltage())
+                strPresentVoltage = str(self.hardwareInterface.getEvsePhysicalVoltage())
 
                 # in case we control a real power supply: give the precharge target to it
-                self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, 1)
+                self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, 1, "precharge")
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
-                self.hardwareInterface.showEvsePresentVoltageAndCurrent(int(float(strPresentVoltage)), 1)
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"g_"+strPresentVoltage)) # EDg for Encode, Din, PreChargeResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Shutdown_during_PreCharge)):
                     # send a PreChargeResponse with StatusCode EVSE_Shutdown, to simulate a user-triggered session stop
@@ -368,7 +356,7 @@ class fsmEvse():
                     full_soc = int(jsondict.get("FullSOC", -1))
                     energy_capacity = int(jsondict.get("EVEnergyCapacity.Value", -1))
                     energy_request = int(jsondict.get("EVEnergyRequest.Value", -1))
-                    self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, iTarget)
+                    self.hardwareInterface.setPowerSupplyVoltageAndCurrent(uTarget, iTarget, "currentdemand")
 
                     self.publishSoCs(current_soc, full_soc, energy_capacity, energy_request, origin="CurrentDemandReq")
 
@@ -377,19 +365,10 @@ class fsmEvse():
 
                 except:
                     self.addToTrace("ERROR: Could not decode the CurrentDemandReq")
-                if getConfigValueBool('evse_simulate_precharge'):
-                    # We have no hardware voltage measurement, and so we faked the precharge, and also keep
-                    # faking the EVSEPresentVoltage in the CurrentDemand loop.
-                    # The simulated charger provides the battery voltage which we have seen during
-                    # precharge. Not the voltage which is demanded by the car, because this may be much
-                    # higher. Discussion here: https://github.com/uhi22/pyPLC/issues/44
-                    # We add a small jitter to avoid frozen-looking value.
-                    self.simulatedPresentVoltage = self.batteryVoltageDuringPrecharge + 3*random()
-                    strPresentVoltage = str(self.simulatedPresentVoltage)
-                else:
-                    strPresentVoltage = str(self.hardwareInterface.getInletVoltage())
+
+                strPresentVoltage = str(self.hardwareInterface.getEvsePhysicalVoltage())
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
-                strEVSEPresentCurrent = str(self.hardwareInterface.getAccuMaxCurrent()) #"1" # Just as a dummy current
+                strEVSEPresentCurrent = str(self.hardwareInterface.getEvsePhysicalCurrent())
                 if (self.blChargeStopTrigger == 1 or self.hardwareInterface.stopRequest()):
                     # User pressed the STOP button on the charger. Send EVSE_Shutdown.
                     self.addToTrace("User pressed the STOP button on the charger. Sending EVSE_Shutdown.")
@@ -397,7 +376,6 @@ class fsmEvse():
                 else:
                     # The normal case. No stop requested from user. Just send EVSE_Ready.
                     strEVSEStatus = "1" # 1=EVSE_Ready
-                self.hardwareInterface.showEvsePresentVoltageAndCurrent(int(float(strPresentVoltage)), int(float(strEVSEPresentCurrent)))
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"i_"+strPresentVoltage + "_" + strEVSEPresentCurrent + "_" + strEVSEStatus)) # EDi for Encode, Din, CurrentDemandRes
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_Malfunction_during_CurrentDemand)):
                     # send a CurrentDemandResponse with StatusCode EVSE_Malfunction, to simulate e.g. a voltage overshoot
@@ -415,12 +393,9 @@ class fsmEvse():
                     self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("WeldingDetectionReq")>0):
-                # todo: check the request content, and fill response parameters
-                # simulate the decreasing voltage during the weldingDetection:
-                self.simulatedPresentVoltage = self.simulatedPresentVoltage*0.8 + 3*random()
-                strPresentVoltage = str(int(self.simulatedPresentVoltage*10)/10) # "345"
+                self.hardwareInterface.setPowerSupplyVoltageAndCurrent(0, 0, "weldingdetection")
+                strPresentVoltage = str(self.hardwareInterface.getEvsePhysicalVoltage())
                 self.callbackShowStatus(strPresentVoltage, "EVSEPresentVoltage")
-                self.hardwareInterface.showEvsePresentVoltageAndCurrent(int(float(strPresentVoltage)), 0)
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"j_"+strPresentVoltage)) # EDj for Encode, Din, WeldingDetectionRes
                 self.showDecodedTransmitMessage(msg)
                 self.addToTrace("responding " + prettyHexMessage(msg))
@@ -489,7 +464,6 @@ class fsmEvse():
         self.state = 0
         self.cyclesInState = 0
         self.rxData = []
-        self.simulatedPresentVoltage = 0
         self.Tcp.resetTheConnection()
 
     def socketStateNotification(self, notification):

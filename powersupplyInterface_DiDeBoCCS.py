@@ -25,7 +25,7 @@ def boolToGpiostate(x):
 
 class powersupplyInterface():
     def setVoltage(self, targetVoltage):
-        if (targetVoltage<=230):
+        if (targetVoltage<=220):
             GPIO.output(PIN_hv225V, GPIO.LOW)
             if (targetVoltage>100+50+25+12):
                 targetVoltage = 100+50+25+12
@@ -33,7 +33,11 @@ class powersupplyInterface():
             # special case, because the most significant output has 225V instead of "binary-correct" 200V.
             # We get a gap between 175V and 230V, but this range is not of interest anyway.
             GPIO.output(PIN_hv225V, GPIO.HIGH)
-            targetVoltage -= 230
+            targetVoltage -= 225
+            if (targetVoltage<0):
+                targetVoltage = 0
+            if (targetVoltage>100+50+25+12):
+                targetVoltage = 100+50+25+12
         b = int(targetVoltage / 12)
         GPIO.output(PIN_hv100V, boolToGpiostate(b & 8))
         GPIO.output(PIN_hv50V, boolToGpiostate(b & 4))
@@ -47,6 +51,9 @@ class powersupplyInterface():
         uHvMeasured_V = (uHvFeedbackBBB_V - OFFSET_AT_ZERO_DC_V) * GAIN
         return uHvMeasured_V
         
+    def isPhysicalVoltageMeasurementPossible(self):
+        return True # The module supports physical voltage measurement.
+
     def selectDriverForCableCheck(self):
         # very weak driver strengh, e.g. for cable check
         print("selecting weakest driver for cable check")

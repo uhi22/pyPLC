@@ -15,6 +15,9 @@ class powersupplyInterface():
     def readPhysicalVoltage(self):
         return 0
         
+    def isPhysicalVoltageMeasurementPossible(self):
+        return False # the dummy power supply does not have physical voltage measurement.
+        
     def selectDriverForCableCheck(self):
         # very weak driver strengh, e.g. for cable check
         pass
