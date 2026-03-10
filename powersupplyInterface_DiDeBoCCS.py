@@ -33,13 +33,22 @@ def boolToGpiostate(x):
 
 class powersupplyInterface():
     def setVoltage(self, targetVoltage):
+        if (self.selectedDriverStrength==DRIVER_STRENGTH_PRECHARGE):
+            self.prechargeTargetVoltage = targetVoltage # save the precharge voltage for later
+
         if (self.selectedDriverStrength==DRIVER_STRENGTH_CURRENTDEMAND):
             # Special case for the discharge demo box: In currentdemand, we do NOT want
-            # to use our small step-up converter to charge the car. That's why we set
-            # the target voltage of the converter to zero. It will get physical voltage
+            # to use our small step-up converter to charge the car.
+            # We have two options to act:
+            # (A) we set the target voltage of the converter to zero. It will get physical voltage
             # from the car, and this is fine, because the step-up does not actively pull
             # the voltage down, it has output diodes integrated.
-            targetVoltage = 0
+            # targetVoltage = 0
+            # (B) We just continue with the battery voltage which we know from precharge phase,
+            # and subtract some volts to avoid a current flow.
+            # This leads to nearly zero current. Advantage: even with disconnected HV lines we
+            # get a nearly consistent behavior of the voltage.
+            targetVoltage = self.prechargeTargetVoltage - 5
             
         if (targetVoltage<=220):
             GPIO.output(PIN_hv225V, GPIO.LOW)
