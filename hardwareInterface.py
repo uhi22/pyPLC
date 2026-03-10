@@ -15,6 +15,7 @@ from configmodule import getConfigValue, getConfigValueBool
 import sys # For exit_on_session_end hack
 from random import random
 from cableChecker import *
+from environment_info import getLogFileNumber
 
 PinCp = "P9_41"
 PinPowerRelay = "P9_17"
@@ -734,11 +735,12 @@ class hardwareInterface():
         except:
             pass # could not transmit the CAN message, just ignore and continue
         # Message 0x67A: MAC address of the PEV
-        if ((self.focccicapeCycleCounter % 10)== 0): # transmit in slower cycle 
+        if ((self.focccicapeCycleCounter % 30)== 0): # transmit in slower cycle 
             data8 = []
             data8.extend(self.evseModePevMac)
-            data8.append(0x06) # unused byte 6
-            data8.append(0x07) # unused byte 7
+            nLogFileNumber=getLogFileNumber()
+            data8.append(nLogFileNumber & 0xff) # byte6: logFileNumber low byte
+            data8.append(nLogFileNumber >> 8)   # byte7: logFileNumber high byte
             msg = can.Message(arbitration_id=0x67A, data=data8, is_extended_id=False)
             try:
                 self.canbus0.send(msg)
