@@ -122,10 +122,6 @@ class hardwareInterface():
         if (soc>=0) and (soc<=100):
             self.soc_percent = soc
 
-    #def showEvsePresentVoltageAndCurrent(self, u, i):
-    #    self.EvsePresentVoltage = u
-    #    self.EvsePresentCurrent = i
-
     def displayVehicleBatteryCapacity(self, batteryCapacity):
         self.addToTrace("displayVehicleBatteryCapacity " + str(batteryCapacity))
         if (getConfigValue("digital_output_device")=="mqtt"):
@@ -244,7 +240,11 @@ class hardwareInterface():
         if (strMode == "precharge"):
             self.psu.selectDriverForPrecharge()
             self.psu.setVoltage(targetVoltage)
+        if (strMode == "currentdemand"):
+            self.psu.selectDriverForCurrentDemand()
+            self.psu.setVoltage(targetVoltage)
         if (strMode == "weldingdetection"):
+            self.psu.selectDriverForWeldingDetection()
             self.psu.setVoltage(targetVoltage)
 
     def getInletVoltage(self):
@@ -703,6 +703,9 @@ class hardwareInterface():
             self.EvsePhysicalVoltage = int(self.psu.readPhysicalVoltage())
             if (self.EvsePhysicalVoltage<0):
                 self.EvsePhysicalVoltage = 0
+            self.EvsePhysicalCurrent = int(self.psu.readPhysicalCurrent())
+            if (self.EvsePhysicalCurrent<0):
+                self.EvsePhysicalCurrent = 0
         # Transmitting two CAN messages with status information
         # Message 0x678
         infonr = self.infonumber # use the info number which was reported from the evse state machine

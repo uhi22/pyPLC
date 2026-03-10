@@ -15,6 +15,9 @@ class powersupplyInterface():
     def readPhysicalVoltage(self):
         return 0
         
+    def readPhysicalCurrent(self):
+        return 0
+        
     def isPhysicalVoltageMeasurementPossible(self):
         return False # the dummy power supply does not have physical voltage measurement.
         
@@ -23,8 +26,17 @@ class powersupplyInterface():
         pass
 
     def selectDriverForPrecharge(self):
+        # select medium strengh driver for precharging
         pass
-        
+
+    def selectDriverForCurrentDemand(self):
+        # select the high-power electronica for charging / discharging
+        pass
+
+    def selectDriverForWeldingDetection(self):
+        # select a weak pull-down to discharge the output capacitor
+        pass
+
     def __init__(self):
         pass
 
