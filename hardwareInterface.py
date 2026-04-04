@@ -40,16 +40,27 @@ if (getConfigValue("evsemode_environment")=="focccicape"):
     print("As demo, just blink the relay outputs")
     mypinRelay1 = "P9_14"
     mypinRelay2 = "P9_16"
+    # If the P9_28 does not work as general purpose output (GPIO), check whether the
+    # SPI1 consumes this pin (seems to be default on debian 5.10.168-ti-r72). In this
+    # case, a solution is to create a special overlay which removes the SPI1 and
+    # configures the P9_28 as GPIO. See setup_focccicape.md.
+    PIN_buttonLedControl = "P9_28"
+    PIN_buttonReadback = "P9_30"
     GPIO.setup(mypinRelay1, GPIO.OUT)
     GPIO.setup(mypinRelay2, GPIO.OUT)
-    GPIO.output(mypinRelay1, GPIO.HIGH)
-    sleep(0.3)
-    GPIO.output(mypinRelay1, GPIO.LOW)
-    sleep(0.3)
-    GPIO.output(mypinRelay2, GPIO.HIGH)
-    sleep(0.3)
-    GPIO.output(mypinRelay2, GPIO.LOW)
-    sleep(0.3)
+    GPIO.setup(PIN_buttonLedControl, GPIO.OUT)
+    GPIO.setup(PIN_buttonReadback, GPIO.IN)
+    for i in range(0, 3): # welcome illumination with 3 LEDs
+        GPIO.output(PIN_buttonLedControl, GPIO.HIGH)
+        sleep(0.2)
+        GPIO.output(PIN_buttonLedControl, GPIO.LOW)
+        GPIO.output(mypinRelay1, GPIO.HIGH)
+        sleep(0.2)
+        GPIO.output(mypinRelay1, GPIO.LOW)
+        GPIO.output(mypinRelay2, GPIO.HIGH)
+        sleep(0.2)
+        GPIO.output(mypinRelay2, GPIO.LOW)
+    GPIO.output(PIN_buttonLedControl, GPIO.HIGH) # for reading the button we must supply it
 
 class hardwareInterface():
     def needsSerial(self):
@@ -360,8 +371,10 @@ class hardwareInterface():
                 self.isPhysicalVoltageSimulated = False
             if (getConfigValue("evsemode_environment") == "focccicape"):
                 from powersupplyInterface_DiDeBoCCS import powersupplyInterface
+                self.isFoccciCape = True
             else:
                 from powersupplyInterface_other import powersupplyInterface
+                self.isFoccciCape = False
             self.psu = powersupplyInterface()
             self.cableChecker = cableChecker(self.psu)
 
@@ -370,6 +383,8 @@ class hardwareInterface():
         self.simulatedSoc = 20.0 # percent
         self.demoAuthenticationCounter = 0
         self.enabled = True #Charging enabled
+        self.buttonDebounceCounter = 0
+        self.buttonStopPhaseCounter = 0
 
         self.inletVoltage = 0.0 # voltsringbuffer
         self.accuVoltage = 0.0
@@ -605,7 +620,7 @@ class hardwareInterface():
         if (getConfigValue("digital_output_device")=="mqtt"):
             self.mainfunction_mqtt()
             
-        if (getConfigValue("evsemode_environment")=="focccicape"):
+        if (self.isFoccciCape):
             self.mainfunction_focccicape()
             
         if (self.mode==C_EVSE_MODE):
@@ -700,6 +715,28 @@ class hardwareInterface():
             GPIO.output(mypinRelay1, GPIO.LOW)
         else:
             GPIO.output(mypinRelay1, GPIO.HIGH)
+        if (GPIO.input(PIN_buttonReadback)==0):
+            # button is pressed. Debounce it to avoid reacting on short spikes.
+            self.buttonDebounceCounter += 1
+            if (self.buttonDebounceCounter >= 3):
+                self.enabled = False # stop charging when button press is qualified
+                self.buttonStopPhaseCounter = 100 # Number of call cycles how long a stop request shall be present
+                self.buttonDebounceCounter = 0
+                print("button is valid")
+        else:
+            self.buttonDebounceCounter = 0 # button is released -> reset the debounce counter
+        if (self.buttonStopPhaseCounter>0):
+            # as long as we are in the ButtonStopPhase, just decrement the counter
+            # print("button still valid " + str(self.buttonStopPhaseCounter))
+            if (self.buttonStopPhaseCounter & 1): # blink the button as long as ButtonStopPhase lasts
+                GPIO.output(PIN_buttonLedControl, GPIO.HIGH)
+            else:
+                GPIO.output(PIN_buttonLedControl, GPIO.LOW)
+            self.buttonStopPhaseCounter -= 1
+            if (self.buttonStopPhaseCounter==0):
+                # The ButtonStopPhase is over --> re-enable to allow the next session
+                self.enabled = True
+                GPIO.output(PIN_buttonLedControl, GPIO.HIGH) # LED on to be able to read the button
         if (self.psu.isPhysicalVoltageMeasurementPossible()):
             self.EvsePhysicalVoltage = int(self.psu.readPhysicalVoltage())
             if (self.EvsePhysicalVoltage<0):
