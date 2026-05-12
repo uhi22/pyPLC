@@ -141,6 +141,12 @@ class hardwareInterface():
         if (soc>=0) and (soc<=100):
             self.soc_percent = soc
 
+    def publishChargeProgress(self, value):
+        # Publish Start/Stop/Renegotiate explicitly so external orchestrators
+        # can act on the EV's intent without inferring it from fsm_state.
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/charge_progress", value)
+
     def displayVehicleBatteryCapacity(self, batteryCapacity):
         self.addToTrace("displayVehicleBatteryCapacity " + str(batteryCapacity))
         if (getConfigValue("digital_output_device")=="mqtt"):
