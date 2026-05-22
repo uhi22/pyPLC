@@ -126,14 +126,26 @@ class hardwareInterface():
         self.callbackAddToTrace("[HARDWAREINTERFACE] " + s)
 
     def displayStateAndSoc(self, infonumber, state, soc):
-        if (getConfigValue("digital_output_device")=="mqtt") and (time() - self.lastStatePublish) >= 1:
+        # Always publish on state change; rate-limit only repeats. Otherwise
+        # fast transitions (WeldingDetection -> SessionStop -> Listening TCP)
+        # are swallowed by the 1 Hz throttle and downstream consumers miss them.
+        is_new_state = (state != self.lastPublishedState)
+        if (getConfigValue("digital_output_device")=="mqtt") and \
+           (is_new_state or (time() - self.lastStatePublish) >= 1):
             self.mqttclient.publish(getConfigValue("mqtt_topic") + "/fsm_state", state)
             if soc > 0:
                 self.mqttclient.publish(getConfigValue("mqtt_topic") + "/soc", str(soc))
             self.lastStatePublish = time()
+            self.lastPublishedState = state
         self.infonumber = infonumber
         if (soc>=0) and (soc<=100):
             self.soc_percent = soc
+
+    def publishChargeProgress(self, value):
+        # Publish Start/Stop/Renegotiate explicitly so external orchestrators
+        # can act on the EV's intent without inferring it from fsm_state.
+        if (getConfigValue("digital_output_device")=="mqtt"):
+            self.mqttclient.publish(getConfigValue("mqtt_topic") + "/charge_progress", value)
 
     def displayVehicleBatteryCapacity(self, batteryCapacity):
         self.addToTrace("displayVehicleBatteryCapacity " + str(batteryCapacity))
@@ -433,6 +445,7 @@ class hardwareInterface():
         self.rxbuffer = ""
 
         self.lastStatePublish = 0
+        self.lastPublishedState = None
         self.lastPowerReqPublish = 0
 
         self.findSerialPort()

@@ -10,7 +10,7 @@ from pyPlcInfoNumbers import *
 from helpers import prettyHexMessage, combineValueAndMultiplier
 from mytestsuite import *
 from random import random
-from configmodule import getConfigValueBool
+from configmodule import getConfigValue, getConfigValueBool
 from exiConnector import * # for EXI data handling/converting
 
 stateWaitForSupportedApplicationProtocolRequest = 0
@@ -213,6 +213,15 @@ class fsmEvse():
                 jsondict = json.loads(strConverterResult)
                 current_soc = int(jsondict.get("EVRESSSOC", -1))
                 self.publishSoCs(current_soc, origin="PowerDeliveryReq")
+                # DIN 70121: ReadyToChargeState 1=Start, 0=Stop. ISO 15118 uses
+                # the field "ChargeProgress" with Start/Stop/Renegotiate; fall
+                # back to that if present.
+                charge_progress = jsondict.get("ChargeProgress")
+                if charge_progress is None:
+                    ready = jsondict.get("ReadyToChargeState", "")
+                    charge_progress = "Start" if str(ready) == "1" else "Stop"
+                self.addToTrace("PowerDeliveryReq: ChargeProgress=%s" % charge_progress)
+                self.hardwareInterface.publishChargeProgress(charge_progress)
                 msg = addV2GTPHeader(exiEncode("E"+self.schemaSelection+"h")) # EDh for Encode, Din, PowerDeliveryResponse
                 if (testsuite_faultinjection_is_triggered(TC_EVSE_ResponseCode_Failed_for_PowerDeliveryRes)):
                     # send a PowerDeliveryResponse with Responsecode Failed
@@ -220,6 +229,17 @@ class fsmEvse():
                 self.addToTrace("responding " + prettyHexMessage(msg))
                 self.showDecodedTransmitMessage(msg)
                 self.publishStatus(INFONR_POWERDELIVERY, "PowerDelivery")
+                # On a Stop request, give the upstream orchestrator time to halt
+                # the power source before Tesla moves on to SessionStop and
+                # opens its contactor on a still-energised bus.
+                if charge_progress == "Stop":
+                    try:
+                        delay_s = float(getConfigValue("pre_powerdelivery_stop_delay_s"))
+                    except (ValueError, TypeError):
+                        delay_s = 1.0
+                    if delay_s > 0:
+                        self.addToTrace("delaying PowerDeliveryRes (Stop) by %.2fs" % delay_s)
+                        time.sleep(delay_s)
                 self.Tcp.transmit(msg)
                 self.enterState(stateWaitForFlexibleRequest) # todo: not clear, what is specified in DIN
             if (strConverterResult.find("ChargeParameterDiscoveryReq")>0):
