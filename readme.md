@@ -475,6 +475,8 @@ Some experiments are documented in [sniffing_experiments.md](doc/sniffing_experi
 
 Any idea how to enable full-transparency of the AR7420?
 
+Breakthrough for the QCA7005: A dedicated firmware image exists with the features "transparent routing of SLAC" and "auto-apply of NMK" and "pingpong transparency of IPv6". This firmware image can be used for QCA7000/QCA7005 boards which are connected via SPI to Linux computer like raspberry pi or beaglebone. And on these, the pyPLC can be run in ListenMode. But in fact, pyPLC is not necessary in this case, because the QCA will auto-apply the NMK which it observed in the SLAC. So even a simple wireshark or TCPdump gets the full SLAC and V2G traffic. The firmware image lives in https://github.com/uhi22/ccs32dave, this project also demonstrates the use of an ESP32 together with QCA7005 for live sniffing without linux computer.
+
 ## Other open topics
 
 See [todo.md](doc/todo.md) and [bug_analysis.md](doc/bug_analysis.md)
@@ -569,6 +571,8 @@ So in best case we see the SDP request (which has a broadcast destination addres
 
 The issue is also described in chapter "biggest challenges" above.
 A workaround is shown in https://github.com/uhi22/pyPLC/issues/39, which applies a man-in-the-middle scheme.
+
+The transparent-routing was solved in https://github.com/uhi22/ccs32dave. This is not (yet?) ported to the AR7420 modem familiy, so at the time of writing not available for the TL-PA4010 homeplug adaptors.
 
 ### Q10: What is the way of the charge parameters (target current, target voltage), and how can I change them?
 
