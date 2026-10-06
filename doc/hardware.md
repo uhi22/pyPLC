@@ -1,5 +1,19 @@
 # Hardware for CCS Sniffing
 
+Which hardware for which purpose:
+* Full sniffing between real EV and real EVSE (SLAC and V2G, both directions): QCA7000/QCA7005 modem with the transparent firmware from https://github.com/uhi22/ccs32dave. See chapter "QCA7000/QCA7005 modem with transparent firmware" below.
+* EvseMode and PevMode: TPlink TL-PA4010P (v5.0 recommended). Not suitable for full sniffing, it routes only its own direction of traffic to Ethernet.
+* Sniffing only the SLAC (both directions): Devolo dLAN 200 AVplus.
+
+## QCA7000/QCA7005 modem with transparent firmware
+
+This is the recommended hardware for sniffing. The modem runs a dedicated firmware image with "transparent routing of SLAC", "auto-apply of NMK" and "pingpong transparency of IPv6".
+How to build and flash the firmware image is described in https://github.com/uhi22/ccs32dave.
+
+Two ways to use it:
+* Connected via SPI to a Linux computer (Raspberry, BeagleBone) using the qcaspi driver. Wireshark or tcpdump on the resulting network interface shows the full SLAC and V2G traffic. pyPLC in ListenMode can be used, but is not necessary.
+* Connected to an ESP32-S3, as in ccs32dave, for live sniffing without Linux computer.
+
 ## Homeplug adaptors
 
 ### Devolo dLAN 200 AVplus

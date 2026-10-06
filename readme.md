@@ -6,6 +6,8 @@ This project tries to use cheap powerline network adaptors for communication wit
 There are three different use cases, where this project can be helpful:
 1. Sniffing the traffic between an CCS charger and a car. For instance to measure which side is the limiting element for reduced charging power.
 In this project, we call this mode *ListenMode*.
+Status: Full sniffing (SLAC and V2G in both directions) works with a QCA7000/QCA7005 modem running the transparent firmware from https://github.com/uhi22/ccs32dave.
+It does NOT work with the TPlink TL-PA4010 / AR7420 homeplug adaptors, these show only the SLAC and broadcast messages. Details in FAQ Q9.
 2. Building a charger for CCS or for AC with digital communication. We call this *EvseMode*. [EvseMode manual](doc/EvseMode.md)
 3. Building a charging unit for a car which does not support powerline communication. Let's call it *PevMode*.
 
@@ -201,7 +203,7 @@ and the openinverter wiki: https://openinverter.org/wiki/CCS_EVCC_using_AR7420
 - Run `python pyPlc.py` and use keyboard to trigger actions, or
 - Run `python pyPlc.py E` for EVSE (charger) mode, or
 - Run `python pyPlc.py P` for PEV mode, or
-- Run `python pyPlc.py L` for Listen mode
+- Run `python pyPlc.py L` for Listen mode. With TPlink adaptors this shows only SLAC and broadcast messages. For full sniffing use a QCA7005 with the ccs32dave firmware (see FAQ Q9), then even wireshark or tcpdump alone is sufficient.
 
 ## Wireshark EXI decoder plugin
 
@@ -560,7 +562,8 @@ implementations.
 ### Q9: Can I sniff the charging sequence (current demand, current response etc.) between real EV and real EVSE using a TL-PA4010?
 
 The plan would be: connect a machine running Wireshark to the RJ45 socket of the homeplug modem.
-But the answer is: No, this does not work.
+But the answer is: No, this does not work with the TL-PA4010 (AR7420 / QCA7420).
+Yes, it works with a QCA7000/QCA7005 modem and the transparent firmware from https://github.com/uhi22/ccs32dave, see the end of this answer.
 The modem, depending on the configuration (as PEV or EVSE) routes the half of the SLAC traffic to the RJ45 port. So this will be visisble in Wireshark.
 After the SLAC, the modems change to "encrypted" communication. The key is contained in the SLAC traffic, so it is easy to sniff it
 and set the sniffers modem with the key. So the sniffer modem will joing the homeplug AV network.
@@ -573,6 +576,11 @@ The issue is also described in chapter "biggest challenges" above.
 A workaround is shown in https://github.com/uhi22/pyPLC/issues/39, which applies a man-in-the-middle scheme.
 
 The transparent-routing was solved in https://github.com/uhi22/ccs32dave. This is not (yet?) ported to the AR7420 modem familiy, so at the time of writing not available for the TL-PA4010 homeplug adaptors.
+
+Setup for full sniffing:
+- QCA7000/QCA7005 modem board, flashed with the transparent firmware from ccs32dave (the firmware image is built from an original QCA7005 image, see the ccs32dave readme).
+- Either connected via SPI to a Linux computer (Raspberry, BeagleBone) using the qcaspi driver. The modem auto-applies the NMK which it observed in the SLAC, so wireshark or tcpdump on the qcaspi network interface shows the full SLAC and V2G traffic. pyPLC is not needed for this.
+- Or connected to an ESP32, as demonstrated in ccs32dave, for live sniffing without Linux computer.
 
 ### Q10: What is the way of the charge parameters (target current, target voltage), and how can I change them?
 

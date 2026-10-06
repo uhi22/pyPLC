@@ -1,5 +1,9 @@
 # Experiments for Sniffing
 
+Summary:
+* The experiments below use AR7420 modems (TPlink TL-PA4010). With these, complete sniffing between a real EV and a real EVSE was NOT achieved. Joining the network works, but only broadcast messages are visible. MAC spoofing shows some frames, but disturbs the charging session.
+* Solution: Full sniffing (SLAC and V2G in both directions) works with a QCA7000/QCA7005 modem and the transparent firmware from https://github.com/uhi22/ccs32dave. See also FAQ Q9 in the [readme](../readme.md).
+
 * Configuration of the sniffer device
 
 ## Q: Does it help or harm, to set the hfid different to "PEV", e.g. "PEV5E"?
