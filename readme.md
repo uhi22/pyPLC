@@ -7,11 +7,18 @@ There are three different use cases, where this project can be helpful:
 1. Sniffing the traffic between an CCS charger and a car. For instance to measure which side is the limiting element for reduced charging power.
 In this project, we call this mode *ListenMode*.
 Status: Full sniffing (SLAC and V2G in both directions) works with a QCA7000/QCA7005 modem running the transparent firmware from https://github.com/uhi22/ccs32dave.
-It does NOT work with the TPlink TL-PA4010 / AR7420 homeplug adaptors, these show only the SLAC and broadcast messages. Details in FAQ Q9.
+With the stock firmware, the TPlink TL-PA4010P V2 / AR7420 homeplug adaptors show only the SLAC and broadcast messages. A patched firmware now achieves full transparency too - see [ar7420-sniffer-patch/](ar7420-sniffer-patch/README_ar7420_sniffer.md) and FAQ Q9.
 2. Building a charger for CCS or for AC with digital communication. We call this *EvseMode*. [EvseMode manual](doc/EvseMode.md)
 3. Building a charging unit for a car which does not support powerline communication. Let's call it *PevMode*.
 
 ## News / Change History / Functional Status
+
+### 2026-10-09 AR7420 full-transparency sniffer
+
+Full sniffing (SLAC, SDP and V2G in both directions, routed to the Ethernet host) now also works on the
+TP-Link TL-PA4010P V2 (AR7420), with a patched firmware build. Patch + instructions:
+[ar7420-sniffer-patch/](ar7420-sniffer-patch/README_ar7420_sniffer.md). Functionally verified; large-scale
+field testing ongoing, feedback and test results welcome.
 
 ### 2026-02-21 Discharge-Experiments on BeagleBone with FoccciCape
 
@@ -203,7 +210,7 @@ and the openinverter wiki: https://openinverter.org/wiki/CCS_EVCC_using_AR7420
 - Run `python pyPlc.py` and use keyboard to trigger actions, or
 - Run `python pyPlc.py E` for EVSE (charger) mode, or
 - Run `python pyPlc.py P` for PEV mode, or
-- Run `python pyPlc.py L` for Listen mode. With TPlink adaptors this shows only SLAC and broadcast messages. For full sniffing use a QCA7005 with the ccs32dave firmware (see FAQ Q9), then even wireshark or tcpdump alone is sufficient.
+- Run `python pyPlc.py L` for Listen mode. With stock TPlink adaptors this shows only SLAC and broadcast messages. For full sniffing use a QCA7005 with the ccs32dave firmware, or a TL-PA4010P V2 (AR7420) with the patched firmware from [ar7420-sniffer-patch/](ar7420-sniffer-patch/README_ar7420_sniffer.md) (see FAQ Q9), then even wireshark or tcpdump alone is sufficient.
 
 ## Wireshark EXI decoder plugin
 
@@ -466,16 +473,6 @@ See [charger_test_results.md](doc/charger_test_results.md)
 See [testing_and_simulation.md](doc/testing_and_simulation.md)
 
 ## Biggest Challenges
-- [*ListenMode*] Find a way to enable the sniffer mode or monitor mode in the AR7420. Seems to be not included in the public qca/open-plc-utils.
-Without this mode, we see only the broadcast messages, not the TCP / UDP traffic between the EVSE and the PEV.
-The \open-plc-utils\pib\piboffset.xml mentions a setting "SnifferEnable" at 0102 and "SnifferReturnMACAddress" starting at 0103. But setting
-the enable to 1 and adding a senseful MAC address does not lead to a difference.
-The docu of qca/open-plc-utils mentions ampsnif and plcsnif, but these are not included. An old
-release (https://github.com/qca/open-plc-utils/archive/refs/tags/OSR-6010.zip) is mentioning VS_SNIFFER message, ampsnif, plcsnif and even
-functions Monitor() and Sniffer(), but these are included from a path ../nda/ which is not part of the public repository.
-Some experiments are documented in [sniffing_experiments.md](doc/sniffing_experiments.md), but no real break-trough.
-
-Any idea how to enable full-transparency of the AR7420?
 
 Breakthrough for the QCA7005: A dedicated firmware image exists with the features "transparent routing of SLAC" and "auto-apply of NMK" and "pingpong transparency of IPv6". This firmware image can be used for QCA7000/QCA7005 boards which are connected via SPI to Linux computer like raspberry pi or beaglebone. And on these, the pyPLC can be run in ListenMode. But in fact, pyPLC is not necessary in this case, because the QCA will auto-apply the NMK which it observed in the SLAC. So even a simple wireshark or TCPdump gets the full SLAC and V2G traffic. The firmware image lives in https://github.com/uhi22/ccs32dave, this project also demonstrates the use of an ESP32 together with QCA7005 for live sniffing without linux computer.
 
@@ -562,8 +559,8 @@ implementations.
 ### Q9: Can I sniff the charging sequence (current demand, current response etc.) between real EV and real EVSE using a TL-PA4010?
 
 The plan would be: connect a machine running Wireshark to the RJ45 socket of the homeplug modem.
-But the answer is: No, this does not work with the TL-PA4010 (AR7420 / QCA7420).
-Yes, it works with a QCA7000/QCA7005 modem and the transparent firmware from https://github.com/uhi22/ccs32dave, see the end of this answer.
+With the stock firmware the answer is No. But a patched firmware now makes it work on the TL-PA4010P V2 (AR7420) - see [ar7420-sniffer-patch/](ar7420-sniffer-patch/README_ar7420_sniffer.md).
+It also works with a QCA7000/QCA7005 modem and the transparent firmware from https://github.com/uhi22/ccs32dave, see the end of this answer.
 The modem, depending on the configuration (as PEV or EVSE) routes the half of the SLAC traffic to the RJ45 port. So this will be visisble in Wireshark.
 After the SLAC, the modems change to "encrypted" communication. The key is contained in the SLAC traffic, so it is easy to sniff it
 and set the sniffers modem with the key. So the sniffer modem will joing the homeplug AV network.
@@ -575,9 +572,10 @@ So in best case we see the SDP request (which has a broadcast destination addres
 The issue is also described in chapter "biggest challenges" above.
 A workaround is shown in https://github.com/uhi22/pyPLC/issues/39, which applies a man-in-the-middle scheme.
 
-The transparent-routing was solved in https://github.com/uhi22/ccs32dave. This is not (yet?) ported to the AR7420 modem familiy, so at the time of writing not available for the TL-PA4010 homeplug adaptors.
+The transparent-routing was first solved for the QCA7005 in https://github.com/uhi22/ccs32dave. It has since been ported to the AR7420 family (TL-PA4010P V2) as a patched firmware - see [ar7420-sniffer-patch/](ar7420-sniffer-patch/README_ar7420_sniffer.md).
 
 Setup for full sniffing:
+- TP-Link TL-PA4010P V2 (AR7420), flashed with the patched firmware from [ar7420-sniffer-patch/](ar7420-sniffer-patch/README_ar7420_sniffer.md). The modem auto-joins the overheard network and routes the full SLAC/SDP/V2G traffic to its Ethernet port, so wireshark or tcpdump on the host is sufficient.
 - QCA7000/QCA7005 modem board, flashed with the transparent firmware from ccs32dave (the firmware image is built from an original QCA7005 image, see the ccs32dave readme).
 - Either connected via SPI to a Linux computer (Raspberry, BeagleBone) using the qcaspi driver. The modem auto-applies the NMK which it observed in the SLAC, so wireshark or tcpdump on the qcaspi network interface shows the full SLAC and V2G traffic. pyPLC is not needed for this.
 - Or connected to an ESP32, as demonstrated in ccs32dave, for live sniffing without Linux computer.
