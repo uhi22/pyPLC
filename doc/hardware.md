@@ -97,6 +97,16 @@ Confirmed to be working as EVSE (needs patching via open-plc-utils) and supplied
 
 Note: Randomly drops connection with firmware `MAC-QCA7420-1.1.0.844-01-20120919-FINAL`, see https://github.com/uhi22/pyPLC/issues/37 .  Consider TPlink TL-PA4010P v5.0 rather.
 
+#### TPlink TL-PA4010P v2.4
+
+Confirmed to be working. Supply 5V from USB power bank on the 11-V-rail is fine. The "Z" connector was the zero-crossing-detector signal. Not needed for our case.
+
+![image](TPLinkV2_4_plate.jpg)
+![image](TPLinkV2_4_ThreeBoards.jpg)
+![image](TPLinkV2_4_RfBoardTop.jpg)
+![image](TPLinkV2_4_RfBoardBottom.jpg)
+
+
 #### TPlink TL-PA4010P V6.0
 
 The version 6 of the TL-PA4010 does not fit our needs. It is not configurable via the Qualcom open-plc-utils.
