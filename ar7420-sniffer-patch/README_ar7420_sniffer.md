@@ -1,5 +1,11 @@
 # ISO15118 / HomePlug-AV sniffer firmware for the TP-Link TL-PA4010P V2 (QCA AR7420)
 
+> **⚠️ Older build — v159 is now available.** For new field tests use
+> [`README_ar7420_sniffer_v159.md`](README_ar7420_sniffer_v159.md). v159 is a drop-in replacement with the
+> same transparent behaviour out of the box, plus a correct car-TEI lookup (v142 only works when the network
+> uses TEIs {1, 2, 3}), a crash-proof management-message path, and a readable status block. This v142 document
+> is kept for reference.
+
 `patch_ar7420_sniffer_v142.py` turns the **official TP-Link TL-PA4010P V2 firmware (1.1.0.844)** into a
 transparent sniffer for CCS charging. It overhears the SLAC handshake between a car and a charging station,
 joins the HomePlug-AV network those two set up, and forwards all SLAC, SDP and V2G traffic to its Ethernet
