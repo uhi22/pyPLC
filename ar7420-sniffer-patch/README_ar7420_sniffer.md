@@ -59,6 +59,15 @@ plctool -i <iface> -P my_backup.pib -N ar7420_sniffer_v142.nvm -R <modem-mac>
 ```
 After the reset the modem runs the sniffer build. Point pyPLC / Wireshark at the host interface.
 
+**Capture on a promiscuous-capable interface.** The sniffer forwards the *whole* session — the SLAC
+handshake plus the unicast SDP response and V2G TCP (port 61851) data plane. Those unicast frames are
+addressed to the car's and charger's MACs, not the host's, so a NIC that silently filters by destination
+MAC (many built-in laptop ports do) will show the broadcast/multicast SLAC but drop the unicast — making
+it look like unicast forwarding is broken when it is not. Capture with a promiscuous-capable adapter (a
+USB Ethernet dongle is reliable), and make sure your capture tool enables promiscuous mode: `tcpdump` and
+Wireshark do by default; a raw socket in your own script does **not** unless you set it. If you see SLAC
+but no SDP/V2G, suspect the capture interface first.
+
 **PIB configuration (required):** this build **requires** a PIB set up in the **PEV role** — the same modem
 configuration pyPLC uses for its adapters. If your modem's PIB is not already a PEV PIB, set one up with pyPLC's
 [step-by-step PIB setup](https://github.com/uhi22/pyPLC#step-by-step) and flash the sniffer firmware together
