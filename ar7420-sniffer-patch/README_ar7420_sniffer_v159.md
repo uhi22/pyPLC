@@ -9,6 +9,10 @@ home powerline networks; it keys itself only to the car↔charger network it lea
 The script is pure Python standard library, runs offline, and **contains no TP-Link or Qualcomm firmware** —
 only the bytes this project changed. You supply the stock firmware yourself from a lawful copy.
 
+> **Two variants, in parallel:** v159 is the **joined** sniffer (it warm-joins the overheard car↔charger network).
+> There is also an **unjoined** variant, [v218](README_ar7420_sniffer_v218.md), which never joins, decrypts the
+> session in-modem, and stays silent on the powerline. v218 does not replace v159 — pick the one that fits your test.
+
 > **v159 supersedes v142.** If you ran the earlier v142 build, v159 is a drop-in replacement with the same
 > transparent behaviour out of the box (no configuration needed) plus the fixes in *What's new* below. v142 is
 > still in this folder for reference, but new field tests should use v159.
