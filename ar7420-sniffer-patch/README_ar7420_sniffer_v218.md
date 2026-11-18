@@ -146,7 +146,7 @@ frames flow to the host.
 
 ## Status frame (optional, for live monitoring)
 
-The modem can send a small **status frame** to the host every **250 ms**, carrying live counters (uptime, how many
+The modem can send a small **status frame** to the host every **250 ms**, carrying live counters (how many
 key messages were seen, how many frames were shipped, beacon/SOF/SACK counts). It is **off by default** — a modem
 with no monitor stays silent — and it is enabled by the host writing one byte over the vendor GET_SW diagnostic MME.
 
@@ -188,7 +188,7 @@ force, which confirms the write.
 | 0 | `MAGIC` | the four ASCII bytes `S` `T` `A` `T` (`0x54415453` little-endian) |
 | 4 | `LAYOUT_VER` | `8` for this (AR7420 unjoined) build; the QCA7000 build uses `7` |
 | 8 | `SEQ` | increments by 1 per frame since the last firmware start |
-| 12 | `UPTIME_MS` | milliseconds since power-on (free-running hardware counter) |
+| 12 | `TIMER_25MHZ` | the modem's free-running 25 MHz timer (40 ns per tick). It wraps about every 172 s, so it is **not** a time since power-on |
 | 16 | `SEEN` | encrypted-payload messages seen on the key-recovery path |
 | 20 | `CNFCNT` | key-confirm messages recognised |
 | 24 | `OKCNT` | session key successfully installed (decryption live) |
@@ -199,8 +199,8 @@ force, which confirms the write.
 | 44 | `SACK` | selective-acknowledge delimiters counted |
 | 48 | `SHIP` | decrypted IPv6 frames delivered to the host |
 
-All counters are relative to the last firmware start; show them as rates (delta per second) or as growing totals.
-`SEQ` dropping back means the modem restarted.
+All counters except `TIMER_25MHZ` are relative to the last firmware start; show them as rates (delta per second) or as
+growing totals. `SEQ` × 250 ms is the time since that start, and `SEQ` dropping back means the modem restarted.
 
 ## Licence
 
