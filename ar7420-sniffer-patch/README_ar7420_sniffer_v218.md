@@ -1,5 +1,8 @@
 # ISO15118 / HomePlug-AV sniffer firmware **v218** for the TP-Link TL-PA4010P V2 (QCA AR7420)
 
+> **⚠️ Older build: v231 is now available.** For new field tests use [`README_ar7420_sniffer_v231.md`](README_ar7420_sniffer_v231.md).
+> v231 fixes the forwarding gap of about 6 % reported in pyPLC issue #54 and other causes of missing frames.
+
 `patch_ar7420_sniffer_v218.py` turns the **official TP-Link TL-PA4010P V2 firmware (1.1.0.844)** into an
 **unjoined** transparent sniffer for CCS charging. It listens to the powerline **without joining any network**,
 recovers the network key of a car↔charger session from the traffic it overhears, decrypts the session inside the

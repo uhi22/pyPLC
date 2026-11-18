@@ -17,7 +17,7 @@ With the stock firmware, the TPlink TL-PA4010P V2 / AR7420 homeplug adaptors sho
 
 The former sniffer software was joining the network, so the sniffer became a third station in the network. Now with the "unjoined" sniffing, the sniffer is invisible to the car and evse.
 
-Patch + instructions: [ar7420-sniffer-patch/](ar7420-sniffer-patch/README_ar7420_sniffer_v218.md). This is the **unjoined** variant (v218); the joined [v159 build](ar7420-sniffer-patch/README_ar7420_sniffer_v159.md) stays available in parallel. Bench-verified; field testing ongoing, feedback welcome.
+Patch + instructions: [ar7420-sniffer-patch/](ar7420-sniffer-patch/README_ar7420_sniffer_v231.md). This is the **unjoined** variant (v231); the joined [v159 build](ar7420-sniffer-patch/README_ar7420_sniffer_v159.md) stays available in parallel. Bench-verified; field testing ongoing, feedback welcome.
 
 ### 2026-10-09 AR7420 full-transparency sniffer
 
